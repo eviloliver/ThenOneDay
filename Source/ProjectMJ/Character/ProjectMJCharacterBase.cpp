@@ -2,8 +2,8 @@
 
 
 #include "Character/ProjectMJCharacterBase.h"
-#include "AbilitySystem/ProjectMJAttributeSet.h"
-#include "AbilitySystem/ProjectyMJAbilitySystemComponent.h"
+#include "AbilitySystem/ProjectMJAbilitySystemComponent.h"
+#include "Player/ProjectMJPlayerState.h"
 
 // Sets default values
 AProjectMJCharacterBase::AProjectMJCharacterBase()
@@ -12,24 +12,24 @@ AProjectMJCharacterBase::AProjectMJCharacterBase()
 	
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = false;
-
 	GetMesh()->bReceivesDecals = false;
-	ProjectyMJAbilitySystemComponent = CreateDefaultSubobject<UProjectyMJAbilitySystemComponent>(TEXT("ProjectMJAbilitySystemComponent"));
-	ProjectMJAttributeSet = CreateDefaultSubobject<UProjectMJAttributeSet>(TEXT("ProjectMJAttributeSet"));
+	ASC = nullptr;
 }
 
 UAbilitySystemComponent* AProjectMJCharacterBase::GetAbilitySystemComponent() const
 {
-	return GetProjectMJAbilitySystemComponent();
+	return ASC;
 }
 
 void AProjectMJCharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	if (ProjectyMJAbilitySystemComponent)
+	AProjectMJPlayerState* PS = GetPlayerState<AProjectMJPlayerState>();
+	if (PS)
 	{
-		ProjectyMJAbilitySystemComponent->InitAbilityActorInfo(this, this);
+		ASC = CastChecked<UProjectMJAbilitySystemComponent>(PS->GetAbilitySystemComponent());
+		ASC->InitAbilityActorInfo(PS, this);
 	}
 }
 

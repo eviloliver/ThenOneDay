@@ -7,7 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "ProjectMJCharacterBase.generated.h"
 
-class UProjectyMJAbilitySystemComponent;
+class UProjectMJAbilitySystemComponent;
 class UProjectMJAttributeSet;
 UCLASS()
 class PROJECTMJ_API AProjectMJCharacterBase : public ACharacter , public IAbilitySystemInterface
@@ -18,25 +18,15 @@ public:
 	// Sets default values for this character's properties
 	AProjectMJCharacterBase();
 
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const;
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 protected:
 	
 	virtual void PossessedBy(AController* NewController)override;
-
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
+	TObjectPtr<UProjectMJAbilitySystemComponent> ASC;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AbilitySystem")
-	TObjectPtr<UProjectyMJAbilitySystemComponent> ProjectyMJAbilitySystemComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AbilitySystem")
-	TObjectPtr<UProjectMJAttributeSet> ProjectMJAttributeSet;
-
-public:
-	FORCEINLINE UProjectyMJAbilitySystemComponent* GetProjectMJAbilitySystemComponent()const {
-		return ProjectyMJAbilitySystemComponent;}
-
-	FORCEINLINE UProjectMJAttributeSet* GetProjectMJAttributeSet()const { return ProjectMJAttributeSet; }
 
 };
 
