@@ -2,7 +2,7 @@
 
 
 #include "AbilitySystem/Abilities/ProjectMJGameplayAbility.h"
-#include "AbilitySystem/ProjectyMJAbilitySystemComponent.h"
+#include "AbilitySystem/ProjectMJAbilitySystemComponent.h"
 #include "ProjectMJGameplayAbility.h"
 
 void UProjectMJGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)

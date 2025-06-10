@@ -4,14 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
-#include "ProjectyMJAbilitySystemComponent.generated.h"
+#include "ProjectMJAbilitySystemComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTMJ_API UProjectyMJAbilitySystemComponent : public UAbilitySystemComponent
+class PROJECTMJ_API UProjectMJAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
+
+	// What for ? 
 	
 };
