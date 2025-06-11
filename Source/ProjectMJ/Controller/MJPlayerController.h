@@ -21,7 +21,8 @@ public:
 protected:
 	
 	virtual void SetupInputComponent() override;
-
+	
+	virtual void PlayerTick(float DeltaTime)override;
 #pragma region Inputs
 	void OnInputStarted();
 	void OnSetDestinationTriggered();
@@ -29,6 +30,8 @@ protected:
 	void OnTouchTriggered();
 	void OnTouchReleased();
 
+	void SetNewDestination(const FVector DestLocation);
+	void MoveToMouseCurser();
 #pragma endregion 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
