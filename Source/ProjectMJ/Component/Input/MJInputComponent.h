@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "EnhancedInputComponent.h"
 #include "DataAsset/DataAsset_InputConfig.h"
-#include "ProjectMJInputComponent.generated.h"
+#include "MJInputComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTMJ_API UProjectMJInputComponent : public UEnhancedInputComponent
+class PROJECTMJ_API UMJInputComponent : public UEnhancedInputComponent
 {
 	GENERATED_BODY()
 	
@@ -21,7 +21,7 @@ public:
 };
 
 template<class UserObject, class CallbackFunc>
-inline void UProjectMJInputComponent::BindNativeInputAction(const UDataAsset_InputConfig* InInputConfig, const FGameplayTag& InInputTag, ETriggerEvent TriggerEvent, UserObject* ContextObject, CallbackFunc Func)
+inline void UMJInputComponent::BindNativeInputAction(const UDataAsset_InputConfig* InInputConfig, const FGameplayTag& InInputTag, ETriggerEvent TriggerEvent, UserObject* ContextObject, CallbackFunc Func)
 {
 	if (UInputAction* FoundAction = InInputConfig->FindNativeInputActionByTag(InInputTag))
 	{

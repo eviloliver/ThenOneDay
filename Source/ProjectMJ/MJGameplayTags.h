@@ -8,7 +8,7 @@
 *
 */
 
-namespace ProjectMJGameplayTags
+namespace MJGameplayTags
 {
 	PROJECTMJ_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_SetDestination_Click)
 	PROJECTMJ_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Input_SetDestination_Touch)

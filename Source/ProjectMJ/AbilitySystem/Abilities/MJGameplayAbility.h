@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "ProjectMJGameplayAbility.generated.h"
+#include "MJGameplayAbility.generated.h"
 
 UENUM(BlueprintType)
 enum class EProjectMJAbilityActivationPolicy :uint8
@@ -16,7 +16,7 @@ enum class EProjectMJAbilityActivationPolicy :uint8
  * 
  */
 UCLASS()
-class PROJECTMJ_API UProjectMJGameplayAbility : public UGameplayAbility
+class PROJECTMJ_API UMJGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 	

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
 #include "AttributeSet.h"
-#include "ProjectMJCharacterAttributeSet.generated.h"
+#include "MJCharacterAttributeSet.generated.h"
 
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
 GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
@@ -17,27 +17,27 @@ GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
  * 
  */
 UCLASS()
-class PROJECTMJ_API UProjectMJCharacterAttributeSet : public UAttributeSet
+class PROJECTMJ_API UMJCharacterAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
 
 public:
-	UProjectMJCharacterAttributeSet();
+	UMJCharacterAttributeSet();
 
-	ATTRIBUTE_ACCESSORS(UProjectMJCharacterAttributeSet, Health);
-	ATTRIBUTE_ACCESSORS(UProjectMJCharacterAttributeSet, MaxHealth);
-	ATTRIBUTE_ACCESSORS(UProjectMJCharacterAttributeSet, AttackPower);
-	ATTRIBUTE_ACCESSORS(UProjectMJCharacterAttributeSet, MaxAttackPower);
-	ATTRIBUTE_ACCESSORS(UProjectMJCharacterAttributeSet, SpellPower);
-	ATTRIBUTE_ACCESSORS(UProjectMJCharacterAttributeSet, MaxSpellPower);
-	ATTRIBUTE_ACCESSORS(UProjectMJCharacterAttributeSet, CriticalProbability);
-	ATTRIBUTE_ACCESSORS(UProjectMJCharacterAttributeSet, MaxCriticalProbability);
-	ATTRIBUTE_ACCESSORS(UProjectMJCharacterAttributeSet, CriticalRate);
-	ATTRIBUTE_ACCESSORS(UProjectMJCharacterAttributeSet, MaxCriticalRate);
-	ATTRIBUTE_ACCESSORS(UProjectMJCharacterAttributeSet, AttackRate);
-	ATTRIBUTE_ACCESSORS(UProjectMJCharacterAttributeSet, MaxAttackRate);
-	ATTRIBUTE_ACCESSORS(UProjectMJCharacterAttributeSet, Speed);
-	ATTRIBUTE_ACCESSORS(UProjectMJCharacterAttributeSet, MaxSpeed);
+	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, Health);
+	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxHealth);
+	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, AttackPower);
+	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxAttackPower);
+	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, SpellPower);
+	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxSpellPower);
+	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, CriticalProbability);
+	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxCriticalProbability);
+	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, CriticalRate);
+	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxCriticalRate);
+	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, AttackRate);
+	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxAttackRate);
+	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, Speed);
+	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxSpeed);
 
 	virtual bool PreGameplayEffectExecute(struct FGameplayEffectModCallbackData& Data) override;
 

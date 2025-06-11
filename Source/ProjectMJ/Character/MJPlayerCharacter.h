@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/ProjectMJCharacterBase.h"
-#include "ProjectMJPlayerCharacter.generated.h"
+#include "Character/MJCharacterBase.h"
+#include "MJPlayerCharacter.generated.h"
 
 class USpringArmComponent;
 class UCameraComponent;
@@ -12,12 +12,12 @@ class UCameraComponent;
  * 
  */
 UCLASS()
-class PROJECTMJ_API AProjectMJPlayerCharacter : public AProjectMJCharacterBase
+class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase
 {
 	GENERATED_BODY()
 	
 public:
-	AProjectMJPlayerCharacter();
+	AMJPlayerCharacter();
 
 protected:
 	virtual void BeginPlay() override;

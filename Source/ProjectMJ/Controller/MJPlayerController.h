@@ -5,18 +5,18 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 
-#include "ProjectMJPlayerController.generated.h"
+#include "MJPlayerController.generated.h"
 
 class UDataAsset_InputConfig;
 /**
  * 
  */
 UCLASS()
-class PROJECTMJ_API AProjectMJPlayerController : public APlayerController
+class PROJECTMJ_API AMJPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
-	AProjectMJPlayerController();
+	AMJPlayerController();
 
 protected:
 	

@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Character/ProjectMJPlayerCharacter.h"
+#include "Character/MJPlayerCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-AProjectMJPlayerCharacter::AProjectMJPlayerCharacter()
+AMJPlayerCharacter::AMJPlayerCharacter()
 {
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
@@ -35,12 +35,12 @@ AProjectMJPlayerCharacter::AProjectMJPlayerCharacter()
 
 }
 
-void AProjectMJPlayerCharacter::BeginPlay()
+void AMJPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void AProjectMJPlayerCharacter::PossessedBy(AController* NewController)
+void AMJPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 

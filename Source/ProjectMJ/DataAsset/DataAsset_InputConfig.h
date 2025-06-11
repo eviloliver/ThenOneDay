@@ -10,7 +10,7 @@
 class UInputAction;
 class UInputMappingContext;
 USTRUCT(BlueprintType)
-struct FProjectMJInputActionConfig
+struct FMJInputActionConfig
 {
 	GENERATED_BODY()
 
@@ -36,7 +36,7 @@ public:
 	TObjectPtr<UInputMappingContext>DefaultMappingContext;
 	
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, meta=(TitleProperty=InputAction))
-	TArray<FProjectMJInputActionConfig> NativeInputActions;
+	TArray<FMJInputActionConfig> NativeInputActions;
 
 	UInputAction* FindNativeInputActionByTag(const FGameplayTag& InInputTag) const;
 };
