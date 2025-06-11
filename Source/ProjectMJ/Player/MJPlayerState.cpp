@@ -2,16 +2,16 @@
 
 
 #include "Player/MJPlayerState.h"
-#include "AbilitySystemComponent.h"
+#include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/MJCharacterAttributeSet.h"
 
 AMJPlayerState::AMJPlayerState()
 {
-	ASC = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("ASC"));
+	ASC = CreateDefaultSubobject<UMJAbilitySystemComponent>(TEXT("ASC"));
 	CharacterAttributeSet = CreateDefaultSubobject<UMJCharacterAttributeSet>(TEXT("CharacterAttributeSet"));
 }
 
-\
+
 class UAbilitySystemComponent* AMJPlayerState::GetAbilitySystemComponent() const
 {
 	return ASC;
