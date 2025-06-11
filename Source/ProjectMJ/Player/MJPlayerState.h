@@ -5,18 +5,18 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameFramework/PlayerState.h"
-#include "ProjectMJPlayerState.generated.h"
+#include "MJPlayerState.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTMJ_API AProjectMJPlayerState : public APlayerState, public IAbilitySystemInterface
+class PROJECTMJ_API AMJPlayerState : public APlayerState, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
-	AProjectMJPlayerState();
+	AMJPlayerState();
 
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
@@ -26,7 +26,7 @@ protected:
 	TObjectPtr<class UAbilitySystemComponent> ASC;
 
 	UPROPERTY()
-	TObjectPtr<class UProjectMJCharacterAttributeSet> CharacterAttributeSet;
+	TObjectPtr<class UMJCharacterAttributeSet> CharacterAttributeSet;
 	
 };
 

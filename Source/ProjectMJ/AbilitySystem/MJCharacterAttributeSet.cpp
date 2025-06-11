@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ProjectMJCharacterAttributeSet.h"
+#include "MJCharacterAttributeSet.h"
 
-UProjectMJCharacterAttributeSet::UProjectMJCharacterAttributeSet() :
+UMJCharacterAttributeSet::UMJCharacterAttributeSet() :
 	Health(100.f),
 	MaxHealth(100.f),
 	AttackPower(20.f),
@@ -23,7 +23,7 @@ UProjectMJCharacterAttributeSet::UProjectMJCharacterAttributeSet() :
 	
 }
 
-bool UProjectMJCharacterAttributeSet::PreGameplayEffectExecute(struct FGameplayEffectModCallbackData& Data)
+bool UMJCharacterAttributeSet::PreGameplayEffectExecute(struct FGameplayEffectModCallbackData& Data)
 {
 	if (!Super::PreGameplayEffectExecute(Data))
 	{
@@ -34,7 +34,7 @@ bool UProjectMJCharacterAttributeSet::PreGameplayEffectExecute(struct FGameplayE
 		
 }
 
-void UProjectMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
+void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
 	
