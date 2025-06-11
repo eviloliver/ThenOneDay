@@ -12,7 +12,7 @@ AMJPlayerState::AMJPlayerState()
 }
 
 
-class UAbilitySystemComponent* AMJPlayerState::GetAbilitySystemComponent() const
+UAbilitySystemComponent* AMJPlayerState::GetAbilitySystemComponent() const
 {
 	return ASC;
 }

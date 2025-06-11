@@ -18,12 +18,12 @@ class PROJECTMJ_API AMJPlayerState : public APlayerState, public IAbilitySystemI
 public:
 	AMJPlayerState();
 
-	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 protected:
 
 	UPROPERTY(EditAnywhere, Category = "GAS")
-	TObjectPtr<class UAbilitySystemComponent> ASC;
+	TObjectPtr<class UMJAbilitySystemComponent> ASC;
 
 	UPROPERTY()
 	TObjectPtr<class UMJCharacterAttributeSet> CharacterAttributeSet;
