@@ -38,7 +38,7 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 {
 	Super::PostGameplayEffectExecute(Data);
 	
-
+	
 
 	
 }
