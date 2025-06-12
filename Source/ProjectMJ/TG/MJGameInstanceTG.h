@@ -30,7 +30,7 @@ public:
 	void CreateSaveGame();
 	
 	UFUNCTION(BlueprintCallable)
-	void LoadSaveGame();
+	void LoadSaveGame(AMJPlayerCharacter* Player);
 
 	UFUNCTION(BlueprintCallable)
 	void SaveGameToSlot(AMJPlayerCharacter* Player);
