@@ -39,6 +39,12 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 	Super::PostGameplayEffectExecute(Data);
 	
 	
-
 	
+	
+}
+
+void UMJCharacterAttributeSet::UpHealth(float Input)
+{
+	
+	SetHealth(GetHealth()+Input);
 }

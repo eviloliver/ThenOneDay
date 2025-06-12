@@ -2,6 +2,9 @@
 
 
 #include "Character/MJPlayerCharacter.h"
+
+#include "MJGameInstanceTG.h"
+#include "MJSaveGame.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -43,5 +46,20 @@ void AMJPlayerCharacter::BeginPlay()
 void AMJPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+	Cast<UMJGameInstanceTG>(GetWorld()->GetGameInstance())->LoadSaveGame();
+	
+	UE_LOG(LogTemp,Log,TEXT("player loaded health : %f"), 
+	GetAbilitySystemComponent()->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));
+}
 
+void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	
+	if (UMJGameInstanceTG* GI = Cast<UMJGameInstanceTG>(GetGameInstance()))
+	{
+		GI->SaveGameToSlot(this); // 캐릭터 자신 넘겨줌
+	}
+
+	UE_LOG(LogTemp,Log,TEXT("Character :: Saved"));
 }
