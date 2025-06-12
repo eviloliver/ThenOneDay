@@ -9,6 +9,13 @@
 
 class UMJAbilitySystemComponent;
 class UMJAttributeSet;
+/**
+ * Class Description: 
+ * Author: Lee JuHyeon
+ * Created Date: 2025_06_11
+ * Last Modified By: (Last Modifier)
+ * Last Modified Date: (Last Modified Date)
+ */
 UCLASS()
 class PROJECTMJ_API AMJCharacterBase : public ACharacter , public IAbilitySystemInterface
 {

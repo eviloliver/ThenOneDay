@@ -7,7 +7,11 @@
 #include "MJAbilitySystemComponent.generated.h"
 
 /**
- * 
+ * Class Description:
+ * Author: Lee JuHyeon
+ * Created Date: 2025_06_12
+ * Last Modified By: (Last Modifier)
+ * Last Modified Date: (Last Modified Date)
  */
 UCLASS()
 class PROJECTMJ_API UMJAbilitySystemComponent : public UAbilitySystemComponent

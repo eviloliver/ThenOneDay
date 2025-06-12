@@ -8,7 +8,7 @@
 void UMJGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	Super::OnGiveAbility(ActorInfo, Spec);
-	if (AbilityActivationPolicy == EProjectMJAbilityActivationPolicy::OnGiven)
+	if (AbilityActivationPolicy == EMJAbilityActivationPolicy::OnGiven)
 	{
 		if (ActorInfo && !Spec.IsActive())
 		{
@@ -21,7 +21,7 @@ void UMJGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	if (AbilityActivationPolicy == EProjectMJAbilityActivationPolicy::OnGiven)
+	if (AbilityActivationPolicy == EMJAbilityActivationPolicy::OnGiven)
 	{
 		if (ActorInfo)
 		{

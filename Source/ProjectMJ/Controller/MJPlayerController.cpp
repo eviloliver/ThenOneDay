@@ -5,6 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "DataAsset/DataAsset_InputConfig.h"
 #include "Component/Input/MJInputComponent.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "MJGamePlayTags.h"
 
 AMJPlayerController::AMJPlayerController()
@@ -13,6 +14,7 @@ AMJPlayerController::AMJPlayerController()
 	DefaultMouseCursor = EMouseCursor::Default;
 	CachedDestination = FVector::ZeroVector;
 	FollowTime = 0.f;
+	bIsTouch=false;
 }
 
 void AMJPlayerController::SetupInputComponent()
@@ -38,6 +40,15 @@ void AMJPlayerController::SetupInputComponent()
 
 }
 
+void AMJPlayerController::PlayerTick(float DeltaTime)
+{
+	Super::PlayerTick(DeltaTime);
+	if (bIsTouch)
+	{
+		MoveToMouseCurser();
+	}
+}
+
 void AMJPlayerController::OnInputStarted()
 {
 	StopMovement();
@@ -52,7 +63,7 @@ void AMJPlayerController::OnSetDestinationTriggered()
 	bool bHitSuccessful = false;
 	if (bIsTouch)
 	{
-		bHitSuccessful = GetHitResultUnderFinger(ETouchIndex::Touch1, ECollisionChannel::ECC_Visibility, true, Hit);
+		
 	}
 	else
 	{
@@ -82,11 +93,34 @@ void AMJPlayerController::OnSetDestinationReleased()
 void AMJPlayerController::OnTouchTriggered()
 {
 	bIsTouch = true;
-	OnSetDestinationTriggered();
 }
 
 void AMJPlayerController::OnTouchReleased()
 {
 	bIsTouch = false;
-	OnSetDestinationReleased();
+}
+
+void AMJPlayerController::SetNewDestination(const FVector DestLocation)
+{
+	APawn* ControlledPawn = GetPawn();
+	if (ControlledPawn)
+	{
+		float const Distance = FVector::Dist(DestLocation, ControlledPawn->GetActorLocation());
+
+		if (Distance > 30.0f)
+		{
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, DestLocation);
+		}
+	}
+}
+
+void AMJPlayerController::MoveToMouseCurser()
+{
+	FHitResult Hit;
+
+	GetHitResultUnderCursor(ECC_Visibility, false, Hit);
+	if (Hit.bBlockingHit)
+	{
+		SetNewDestination(Hit.ImpactPoint);
+	}
 }

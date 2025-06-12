@@ -7,13 +7,17 @@
 #include "MJGameplayAbility.generated.h"
 
 UENUM(BlueprintType)
-enum class EProjectMJAbilityActivationPolicy :uint8
+enum class EMJAbilityActivationPolicy :uint8
 {
 	OnTriggered,
 	OnGiven
 };
 /**
- * 
+ * Class Description:
+ * Author: Lee JuHyeon
+ * Created Date: 2025_06_11
+ * Last Modified By: (Last Modifier)
+ * Last Modified Date: (Last Modified Date)
  */
 UCLASS()
 class PROJECTMJ_API UMJGameplayAbility : public UGameplayAbility
@@ -25,6 +29,6 @@ protected:
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)override;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
-	EProjectMJAbilityActivationPolicy AbilityActivationPolicy = EProjectMJAbilityActivationPolicy::OnTriggered;
+	EMJAbilityActivationPolicy AbilityActivationPolicy = EMJAbilityActivationPolicy::OnTriggered;
 	
 };
