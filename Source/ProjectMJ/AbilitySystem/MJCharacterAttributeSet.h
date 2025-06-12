@@ -43,7 +43,8 @@ public:
 
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 	
-
+	UFUNCTION(BlueprintCallable)
+	void UpHealth(float Input);
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, Category="Stat", Meta = (AllowPrivateAccess = true))
