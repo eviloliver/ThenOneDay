@@ -3,11 +3,12 @@
 
 #include "Character/MJPlayerCharacter.h"
 
-#include "MJGameInstanceTG.h"
-#include "MJSaveGame.h"
+#include "AbilitySystemComponent.h"
+#include "AbilitySystem/MJCharacterAttributeSet.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "TG/MJGameInstanceTG.h"
 
 AMJPlayerCharacter::AMJPlayerCharacter()
 {
@@ -46,7 +47,7 @@ void AMJPlayerCharacter::BeginPlay()
 void AMJPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	Cast<UMJGameInstanceTG>(GetWorld()->GetGameInstance())->LoadSaveGame();
+	Cast<UMJGameInstanceTG>(GetWorld()->GetGameInstance())->LoadSaveGame(this);
 	
 	UE_LOG(LogTemp,Log,TEXT("player loaded health : %f"), 
 	GetAbilitySystemComponent()->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));

@@ -24,12 +24,12 @@ void UMJGameInstanceTG::Init()
 		UE_LOG(LogTemp,Log,TEXT("createsavegame"));
 	 
 	}
-	else
-	{
-		LoadSaveGame();
-		
-		UE_LOG(LogTemp,Log,TEXT("loadsavegame"));
-	}
+	// else
+	// {
+	// 	LoadSaveGame();
+	// 	
+	// 	UE_LOG(LogTemp,Log,TEXT("loadsavegame"));
+	// }
 	
 }
 
@@ -43,20 +43,30 @@ void UMJGameInstanceTG::CreateSaveGame()
 	SaveGameData = CastChecked<UMJSaveGame>(UGameplayStatics::CreateSaveGameObject(UMJSaveGame::StaticClass()));
 	if (SaveGameData)
 	{
-		//SaveGameToSlot();
+		//SaveGameToSlot(nullptr);
 	}
 }
 
-void UMJGameInstanceTG::LoadSaveGame()
+void UMJGameInstanceTG::LoadSaveGame(AMJPlayerCharacter* Player)
 {
+	if (!Player) return;
+	
+	if (!UGameplayStatics::DoesSaveGameExist(SaveSlotName, UserIndex))
+	{
+		UE_LOG(LogTemp, Log, TEXT("No save found. Saving current character state as default."));
+
+		SaveGameData = CastChecked<UMJSaveGame>(UGameplayStatics::CreateSaveGameObject(UMJSaveGame::StaticClass()));
+		SaveGameToSlot(Player); // 현재 캐릭터의 기본값으로 저장
+		return;
+	}
+
 	
 	 SaveGameData = Cast<UMJSaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlotName, UserIndex));
 	if (SaveGameData)
 	 {
-		 AMJPlayerCharacter* MJPlayer = Cast<AMJPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this,0));
-	 	if (MJPlayer)
+		if (Player)
 	 	{
-	 		UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(MJPlayer->GetAbilitySystemComponent());
+	 		UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(Player->GetAbilitySystemComponent());
 	 		
 	 		UMJCharacterAttributeSet* MJCAS = const_cast<UMJCharacterAttributeSet*>(MJASC->GetSet<UMJCharacterAttributeSet>());
 
@@ -80,15 +90,15 @@ void UMJGameInstanceTG::SaveGameToSlot(AMJPlayerCharacter* Player)
 			SaveGameData->GetAttributeSaveData() = FCharacterAttributeSaveData::FromAttributeSet(MJCAS);
 			
 			UE_LOG(LogTemp,Log,TEXT("saved health : %f"), SaveGameData->GetAttributeSaveData().Health);
-			
-			bool bSaved = UGameplayStatics::SaveGameToSlot(SaveGameData, SaveSlotName, UserIndex);
-			UE_LOG(LogTemp, Log, TEXT("Save success: %s"), bSaved ? TEXT("true") : TEXT("false"));
 		}
 		else
 		{
 			bool bSaved = false;
-			UE_LOG(LogTemp, Log, TEXT("Save success: %s"), bSaved ? TEXT("true") : TEXT("false"));
+			UE_LOG(LogTemp, Log, TEXT("Character Info Save success: %s"), bSaved ? TEXT("true") : TEXT("false"));
 		}
+		
+		bool bSaved = UGameplayStatics::SaveGameToSlot(SaveGameData, SaveSlotName, UserIndex);
+		UE_LOG(LogTemp, Log, TEXT("Save success: %s"), bSaved ? TEXT("true") : TEXT("false"));
 		
 	}
 }
