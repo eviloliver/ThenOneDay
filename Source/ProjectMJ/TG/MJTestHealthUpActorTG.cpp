@@ -3,6 +3,7 @@
 
 #include "MJTestHealthUpActorTG.h"
 
+#include "ProjectMJ.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/MJCharacterAttributeSet.h"
 #include "Character/MJPlayerCharacter.h"
@@ -33,7 +34,7 @@ void AMJTestHealthUpActorTG::UpHealth(UPrimitiveComponent* OverlappedComponent, 
 
 	
 	MJCAS->UpHealth(30);
-	UE_LOG(LogTemp,Log,TEXT("AMJTestHealthUpActorTG ::UpHealth /  loaded health : %f"), MJCAS->GetHealth());
+	MJ_LOG(LogTG,Log,TEXT("AMJTestHealthUpActorTG ::UpHealth /  loaded health : %f"), MJCAS->GetHealth());
 
 }
 

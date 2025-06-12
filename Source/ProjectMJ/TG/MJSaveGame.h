@@ -21,6 +21,25 @@ USTRUCT(BlueprintType)
 struct FCharacterAttributeSaveData
 {
 	GENERATED_BODY()
+	
+public:
+
+	FCharacterAttributeSaveData()
+		: Health(0.0f)
+		, MaxHealth(0.0f)
+		, AttackPower(0.0f)
+		, MaxAttackPower(0.0f)
+		, SpellPower(0.0f)
+		, MaxSpellPower(0.0f)
+		, CriticalProbability(0.0f)
+		, MaxCriticalProbability(0.0f)
+		, CriticalRate(0.0f)
+		, MaxCriticalRate(0.0f)
+		, AttackRate(0.0f)
+		, MaxAttackRate(0.0f)
+		, Speed(0.0f)
+		, MaxSpeed(0.0f)
+	{}
 
 public:
 	UPROPERTY(BlueprintReadWrite)

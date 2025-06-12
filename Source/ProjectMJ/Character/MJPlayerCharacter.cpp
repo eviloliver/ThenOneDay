@@ -4,6 +4,7 @@
 #include "Character/MJPlayerCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "ProjectMJ.h"
 #include "AbilitySystem/MJCharacterAttributeSet.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -47,10 +48,18 @@ void AMJPlayerCharacter::BeginPlay()
 void AMJPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	Cast<UMJGameInstanceTG>(GetWorld()->GetGameInstance())->LoadSaveGame(this);
+	// 로딩 데이터 있을 시 받아와서 AttributeSet에 적용
+	// 없을 시엔 무시하고 기본 AttributeSet 으로 진행됩니다.
+
 	
-	UE_LOG(LogTemp,Log,TEXT("player loaded health : %f"), 
-	GetAbilitySystemComponent()->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));
+	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetWorld()->GetGameInstance());
+	if (MJGI)
+	{
+		MJGI->LoadSaveGame(this);
+
+		MJ_LOG(LogTG, Log, TEXT("player loaded health : %f"),  GetAbilitySystemComponent()->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));
+	}
+	
 }
 
 void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -59,8 +68,8 @@ void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	
 	if (UMJGameInstanceTG* GI = Cast<UMJGameInstanceTG>(GetGameInstance()))
 	{
-		GI->SaveGameToSlot(this); // 캐릭터 자신 넘겨줌
+		GI->SaveGameToSlot(this);
+		UE_LOG(LogTemp,Log,TEXT("Character :: Saved"));
 	}
 
-	UE_LOG(LogTemp,Log,TEXT("Character :: Saved"));
 }
