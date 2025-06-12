@@ -15,7 +15,7 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetRootComponent());
 	CameraBoom->TargetArmLength = 800.0f;
-	CameraBoom->SocketOffset = FVector(0.0f, 55.0f, 65.0);
+	//CameraBoom->SocketOffset = FVector(0.0f, 55.0f, 65.0);
 	CameraBoom->SetRelativeRotation(FRotator(-45.0f, 0.0f, 0.0f));
 	CameraBoom->bUsePawnControlRotation = false;
 	CameraBoom->bInheritPitch = false;
