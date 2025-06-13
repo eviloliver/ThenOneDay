@@ -26,4 +26,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void HideDialogue();
+	
+	// //Typing Function
+	// UPROPERTY(meta = (BindWidget))
+	// UTextBlock*	DialogueText;
 };

@@ -4,12 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-
 #include "MJPlayerController.generated.h"
 
 class UDataAsset_InputConfig;
+class UInputAction;
+class UMJDialogueWidget;
+
 /**
- * 
+ * Class Description:
+ * Author: Lee JuHyeon
+ * Created Date: 
+ * Last Modified By: Lee Jisoo
+ * Last Modified Date: 2025.06.13(Add Dialogue Input)
  */
 UCLASS()
 class PROJECTMJ_API AMJPlayerController : public APlayerController
@@ -19,7 +25,8 @@ public:
 	AMJPlayerController();
 
 protected:
-	
+
+	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 	
 	virtual void PlayerTick(float DeltaTime)override;
@@ -38,9 +45,48 @@ private:
 	UDataAsset_InputConfig* InputConfigDataAsset;
 
 private:
-
 	FVector CachedDestination;
 
 	bool bIsTouch; // Is it a touch device
 	float FollowTime; // For how long it has been pressed
+
+
+	
+#pragma region DialoguePart
+private:
+	bool bIsDialogueActive = false;
+	void OnDialogueStateChanged();
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* BeginDialogueAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* NextDialogueAction;
+
+	UPROPERTY()
+	UMJDialogueWidget* DialogueWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+	TSubclassOf<UMJDialogueWidget> DialogueWidgetClass;
+
+	bool IsTriggered;
+	
+	UFUNCTION()
+	void BeginDialogue();
+
+	UFUNCTION()
+	void EndDialog();
+
+	UFUNCTION()
+	void OnNextDialogue();
+
+	UFUNCTION()
+	void OnTriggeredDialogueIn();
+
+	UFUNCTION()
+	void OnTriggeredDialogueOut();
+	
+#pragma endregion
+	
 };

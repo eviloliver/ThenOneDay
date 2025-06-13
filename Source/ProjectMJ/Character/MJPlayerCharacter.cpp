@@ -2,7 +2,7 @@
 
 
 #include "Character/MJPlayerCharacter.h"
-
+#include "UI/Dialogue/MJDialogueComponent.h"
 #include "AbilitySystemComponent.h"
 #include "ProjectMJ.h"
 #include "AbilitySystem/MJCharacterAttributeSet.h"
@@ -10,6 +10,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TG/MJGameInstanceTG.h"
+
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -56,21 +57,8 @@ void AMJPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	DialogueTrigger->OnComponentBeginOverlap.AddDynamic(this,&AMJPlayerCharacter::OnTriggerBegin);
-	DialogueTrigger->OnComponentEndOverlap.AddDynamic(this,&AMJPlayerCharacter::OnTriggerEnd);
-}
-
-void AMJPlayerCharacter::NotifyControllerChanged()
-{
-	Super::NotifyControllerChanged();
-	
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
+	 DialogueTrigger->OnComponentBeginOverlap.AddDynamic(this,&AMJPlayerCharacter::OnTriggerBegin);
+	 DialogueTrigger->OnComponentEndOverlap.AddDynamic(this,&AMJPlayerCharacter::OnTriggerEnd);
 }
 
 void AMJPlayerCharacter::PossessedBy(AController* NewController)
@@ -102,17 +90,6 @@ void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 }
 
-void AMJPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		EnhancedInputComponent->BindAction(BeginDialogueAction, ETriggerEvent::Triggered, this, &AMJPlayerCharacter::BeginDialogue);
-		EnhancedInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &AMJPlayerCharacter::OnNextDialogue);
-	}
-}
-
 void AMJPlayerCharacter::OnTriggerBegin(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
                                         int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -120,6 +97,7 @@ void AMJPlayerCharacter::OnTriggerBegin(UPrimitiveComponent* Overlapped, AActor*
 	if ( Other && Other->FindComponentByClass<UMJDialogueComponent>())
 	{
 		DialogueTarget = Other;
+		OnRequestDialogueIn.Broadcast();
 	}
 }
 
@@ -129,81 +107,6 @@ void AMJPlayerCharacter::OnTriggerEnd(UPrimitiveComponent* Overlapped, AActor* O
 	if (DialogueTarget == Other)
 	{
 		DialogueTarget = nullptr;
-	}
-}
-
-void AMJPlayerCharacter::BeginDialogue()
-{
-	if (DialogueWidget && DialogueWidget->IsInViewport())
-		return; 
-	
-	if (DialogueTarget)
-	{
-		UE_LOG(LogTemp, Log, TEXT("와"));
-		UMJDialogueComponent* DialogueComp = DialogueTarget->GetComponentByClass<UMJDialogueComponent>();
-		if (!DialogueComp) return;
-        
-		DialogueComp->StartDialogue();
-		
-		DialogueWidget = CreateWidget<UMJDialogueWidget>(GetWorld(), DialogueWidgetClass);
-		DialogueWidget->AddToViewport();
-
-		APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
-		if (PC)
-		{
-			PC->SetIgnoreLookInput(true);
-			PC->SetIgnoreMoveInput(true);
-			//PC->SetInputMode(FInputModeUIOnly());
-			//PC->bShowMouseCursor = true; // 원래 TRUE임;
-		}
-        
-		if (const FMJDialogueRow* Row = DialogueComp->GetCurrentRow())
-		{
-			DialogueWidget->ShowDialogue(*Row);
-		}
-	}
-}
-
-void AMJPlayerCharacter::EndDialog()
-{
-	if (DialogueTarget)
-	{
-		APlayerController* PC = UGameplayStatics::GetPlayerController(this,0);
-		if (PC)
-		{
-			PC->SetIgnoreLookInput(false);
-			PC->SetIgnoreMoveInput(false);
-			//PC->SetInputMode(FInputModeGameOnly());
-		}
-       
-		if (DialogueWidget)
-		{
-			DialogueWidget->RemoveFromParent();
-			DialogueWidget = nullptr;
-		}
-	}
-}
-
-void AMJPlayerCharacter::OnNextDialogue()
-{
-	if (DialogueTarget)
-	{
-		UMJDialogueComponent* DialogueComp = DialogueTarget->GetComponentByClass<UMJDialogueComponent>();
-		if (!DialogueComp) return;
-		
-		UE_LOG(LogTemp, Warning, TEXT("CurrentIndex is %d"), DialogueComp->CurrentIndex);
-		if (!DialogueComp || !DialogueWidget)
-			return;
-
-		DialogueComp->NextDialogue();
-	
-		if (DialogueComp->IsDialogueEnd())
-		{
-			EndDialog();
-		}
-		else if (const FMJDialogueRow* Row = DialogueComp->GetCurrentRow())
-		{
-			DialogueWidget->ShowDialogue(*Row);
-		}
+		OnRequestDialogueOut.Broadcast();
 	}
 }

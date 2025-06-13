@@ -2,11 +2,18 @@
 
 
 #include "Controller/MJPlayerController.h"
+#include "InputAction.h"
+#include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "DataAsset/DataAsset_InputConfig.h"
 #include "Component/Input/MJInputComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "MJGamePlayTags.h"
+#include "UI/Dialogue/MJDialogueWidget.h"
+
+#include "Kismet/GameplayStatics.h"
+#include "ProjectMJ.h"
+#include "Character/MJPlayerCharacter.h"
 
 AMJPlayerController::AMJPlayerController()
 {
@@ -15,6 +22,19 @@ AMJPlayerController::AMJPlayerController()
 	CachedDestination = FVector::ZeroVector;
 	FollowTime = 0.f;
 	bIsTouch=false;
+
+}
+
+void AMJPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
+	if (MJChar)
+	{
+		MJChar->OnRequestDialogueIn.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueIn);
+		MJChar->OnRequestDialogueOut.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueOut);
+	}
 }
 
 void AMJPlayerController::SetupInputComponent()
@@ -25,6 +45,7 @@ void AMJPlayerController::SetupInputComponent()
 	{
 		Subsystem->AddMappingContext(InputConfigDataAsset->DefaultMappingContext, 0);
 	}
+	
 	UMJInputComponent* ProjectMJInputComponent = CastChecked< UMJInputComponent>(InputComponent);
 
 	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Click, ETriggerEvent::Started, this, &ThisClass::OnInputStarted);
@@ -37,9 +58,11 @@ void AMJPlayerController::SetupInputComponent()
 	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Touch, ETriggerEvent::Completed, this, &ThisClass::OnTouchReleased);
 	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Touch, ETriggerEvent::Canceled, this, &ThisClass::OnTouchReleased);
 
-
+	//Dialogue Input
+	ProjectMJInputComponent->BindAction(BeginDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::BeginDialogue);
+	ProjectMJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::OnNextDialogue);
+	
 }
-
 void AMJPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
@@ -123,4 +146,103 @@ void AMJPlayerController::MoveToMouseCurser()
 	{
 		SetNewDestination(Hit.ImpactPoint);
 	}
+}
+
+void AMJPlayerController::OnDialogueStateChanged()
+{
+	MJ_LOG(LogTG,Log,TEXT("www"));
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		if (bIsDialogueActive) 
+		{
+			Subsystem->AddMappingContext(InputConfigDataAsset->DialogueMappingContext, 0);
+			Subsystem->RemoveMappingContext(InputConfigDataAsset->DefaultMappingContext);
+		}
+		else
+		{
+			Subsystem->AddMappingContext(InputConfigDataAsset->DefaultMappingContext, 0);
+			Subsystem->RemoveMappingContext(InputConfigDataAsset->DialogueMappingContext);
+		}
+	}
+}
+
+void AMJPlayerController::BeginDialogue()
+{
+	if (DialogueWidget && DialogueWidget->IsInViewport()) return; 
+
+	if (IsTriggered)
+	{
+		bIsDialogueActive = true;
+        OnDialogueStateChanged();
+        
+        AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
+        if (!MyChar) return;
+        AActor* DialogueTarget = MyChar->DialogueTarget;
+        if (!DialogueTarget) return;
+        UMJDialogueComponent* DialogueComp = DialogueTarget->GetComponentByClass<UMJDialogueComponent>();
+        if (!DialogueComp) return;
+        
+        DialogueComp->StartDialogue();
+        
+        UE_LOG(LogTemp, Warning, TEXT("DialogueWidgetClass ptr: %s"), *GetNameSafe(DialogueWidgetClass));
+        
+        DialogueWidget = CreateWidget<UMJDialogueWidget>(GetWorld(), DialogueWidgetClass);
+        if (!DialogueWidget) return;
+        DialogueWidget->AddToViewport();
+        
+        if (const FMJDialogueRow* Row = DialogueComp->GetCurrentRow())
+        {
+        	DialogueWidget->ShowDialogue(*Row);
+        }
+	}
+}
+
+void AMJPlayerController::EndDialog()
+{	
+	bIsDialogueActive = false;
+	OnDialogueStateChanged();
+
+	if (DialogueWidget)
+	{
+		DialogueWidget->RemoveFromParent();
+		DialogueWidget = nullptr;
+	}
+}
+
+void AMJPlayerController::OnNextDialogue()
+{
+	if (IsTriggered)
+	{
+		AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
+        if (!MyChar) return;
+        AActor* DialogueTarget = MyChar->DialogueTarget;
+        if (!DialogueTarget) return;
+        UMJDialogueComponent* DialogueComp = DialogueTarget->GetComponentByClass<UMJDialogueComponent>();
+        if (!DialogueComp) return;
+        
+        UE_LOG(LogTemp, Warning, TEXT("CurrentIndex is %d"), DialogueComp->CurrentIndex);
+        if (!DialogueComp || !DialogueWidget)
+        	return;
+        
+        DialogueComp->NextDialogue();
+        
+        if (DialogueComp->IsDialogueEnd())
+        {
+        	EndDialog();
+        }
+        else if (const FMJDialogueRow* Row = DialogueComp->GetCurrentRow())
+        {
+        	DialogueWidget->ShowDialogue(*Row);
+        }
+	}
+}
+
+void AMJPlayerController::OnTriggeredDialogueIn()
+{
+	IsTriggered = true;
+}
+
+void AMJPlayerController::OnTriggeredDialogueOut()
+{
+	IsTriggered = false;
 }

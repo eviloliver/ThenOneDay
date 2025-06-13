@@ -5,13 +5,10 @@
 #include "CoreMinimal.h"
 #include "Character/MJCharacterBase.h"
 
-#include "UI/Dialogue/MJDialogueWidget.h"
 #include "Components/SphereComponent.h"
-#include "InputAction.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
-
 #include "MJPlayerCharacter.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRequestDialogue);
 
 class USpringArmComponent;
 class UCameraComponent;
@@ -19,8 +16,8 @@ class UCameraComponent;
  * Class Description:
  * Author: Lee JuHyeon
  * Created Date: 2025_06_11
- * Last Modified By: Lee JuHyeon
- * Last Modified Date: Delete CameraBoom Sockect
+ * Last Modified By: Lee Jisoo
+ * Last Modified Date: Delete CameraBoom Sockect, 2025.06.13(Delete Dialogue Input)
  */
 UCLASS()
 class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase
@@ -32,9 +29,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
-	virtual void NotifyControllerChanged() override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void PossessedBy(AController* NewController)override;
 
@@ -52,39 +46,24 @@ private:
 	
 
 #pragma region DialoguePart	
-	public:
-	// Input
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* DefaultMappingContext;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* BeginDialogueAction;
+public:
+ 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly ,Category = "Trigger")
+ 	USphereComponent* DialogueTrigger;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* NextDialogueAction;
-	
-	UPROPERTY()
-	UMJDialogueWidget* DialogueWidget;
+ 	UPROPERTY()
+ 	AActor* DialogueTarget;
 
-	UPROPERTY(EditAnywhere, Category = "Dialogue")
-	TSubclassOf<UMJDialogueWidget> DialogueWidgetClass;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly ,Category = "Trigger")
-	USphereComponent* DialogueTrigger;
+	UPROPERTY(BlueprintAssignable)
+	FOnRequestDialogue OnRequestDialogueIn;
 
-	UPROPERTY()
-	AActor* DialogueTarget;
+	UPROPERTY(BlueprintAssignable)
+	FOnRequestDialogue OnRequestDialogueOut;
 
-	//
-	UFUNCTION()
-	void OnTriggerBegin(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+ 	UFUNCTION()
+ 	void OnTriggerBegin(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UFUNCTION()
-	void OnTriggerEnd(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+ 	UFUNCTION()
+ 	void OnTriggerEnd(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	void BeginDialogue();
-	void EndDialog();
-	void OnNextDialogue();
-	
 #pragma endregion
 };
