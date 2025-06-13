@@ -21,6 +21,12 @@ class PROJECTMJ_API AMJGameModeTG : public AMJGameModeBase
 public:
 	AMJGameModeTG();
 
+	virtual void BeginPlay() override;
+	
+
+	UFUNCTION(BlueprintCallable)
+	FString GetCurrentMapName();
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -29,8 +35,18 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	FString CurrentMapName;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UStringTable> DungeonNames;
+	
 	UFUNCTION(BlueprintCallable)
 	bool TravelToMap(const FString MapName);
+	
+	void HandleTownLogic();
+
+	void HandleeDungeonLogic();
+
+	
+
 	
 	
 };
