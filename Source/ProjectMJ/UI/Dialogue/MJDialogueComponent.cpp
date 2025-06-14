@@ -10,17 +10,6 @@ UMJDialogueComponent::UMJDialogueComponent()
 	RowNames.Empty();
 }
 
-void UMJDialogueComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	if (DialogueTable)
-	{
-		RowNames = DialogueTable->GetRowNames();
-		CurrentIndex = 0;
-	}
-}
-
 void UMJDialogueComponent::StartDialogue()
 {
 	// BeginPlay에 이미 있는 코드인데 또 필요할지 모르겠다 흠

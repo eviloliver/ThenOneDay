@@ -25,7 +25,6 @@ public:
 	AMJPlayerController();
 
 protected:
-
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 	
@@ -82,10 +81,12 @@ public:
 	void OnNextDialogue();
 
 	UFUNCTION()
-	void OnTriggeredDialogueIn();
+	void OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
+										int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-	void OnTriggeredDialogueOut();
+	void OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
+										int32 OtherBodyIndex);
 	
 #pragma endregion
 	

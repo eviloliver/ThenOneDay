@@ -4,14 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Character/MJCharacterBase.h"
-
-#include "Components/SphereComponent.h"
 #include "MJPlayerCharacter.generated.h"
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRequestDialogue);
 
 class USpringArmComponent;
 class UCameraComponent;
+class USphereComponent;
 /**
  * Class Description:
  * Author: Lee JuHyeon
@@ -28,10 +25,7 @@ public:
 	AMJPlayerCharacter();
 
 protected:
-	virtual void BeginPlay() override;
-
 	virtual void PossessedBy(AController* NewController)override;
-
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
@@ -46,24 +40,17 @@ private:
 	
 
 #pragma region DialoguePart	
-public:
+protected:
  	UPROPERTY(VisibleAnywhere, BlueprintReadOnly ,Category = "Trigger")
  	USphereComponent* DialogueTrigger;
 
  	UPROPERTY()
  	AActor* DialogueTarget;
 
-	UPROPERTY(BlueprintAssignable)
-	FOnRequestDialogue OnRequestDialogueIn;
-
-	UPROPERTY(BlueprintAssignable)
-	FOnRequestDialogue OnRequestDialogueOut;
-
- 	UFUNCTION()
- 	void OnTriggerBegin(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
- 	UFUNCTION()
- 	void OnTriggerEnd(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
+public:
+	void SetDialogueTarget(AActor* NewTarget) { DialogueTarget = NewTarget; }
+	
+	AActor* GetDialogueTarget() {return DialogueTarget;}
+	USphereComponent* GetDialogueTrigger() {return DialogueTrigger;}
 #pragma endregion
 };

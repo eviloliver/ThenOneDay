@@ -23,10 +23,7 @@ class PROJECTMJ_API UMJDialogueComponent : public UActorComponent
 public:	
 	UMJDialogueComponent();
 
-protected:
-	virtual void BeginPlay() override;
-
-public:
+protected:	
 	// UDataTable 이 들어올 수 있는 방 -> 세입자를 넣어 줘야함 (포인터 == 누군가를 가리킬 수 있음)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Component")
 	UDataTable* DialogueTable;
@@ -37,6 +34,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Dialogue")
 	TArray<FName> RowNames;
 
+public:
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	void StartDialogue();
 

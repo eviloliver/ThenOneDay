@@ -10,10 +10,10 @@
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "MJGamePlayTags.h"
 #include "UI/Dialogue/MJDialogueWidget.h"
-
-#include "Kismet/GameplayStatics.h"
 #include "ProjectMJ.h"
 #include "Character/MJPlayerCharacter.h"
+#include "Components/SphereComponent.h"
+#include "UI/Dialogue/MJDialogueComponent.h"
 
 AMJPlayerController::AMJPlayerController()
 {
@@ -32,8 +32,8 @@ void AMJPlayerController::BeginPlay()
 	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
 	if (MJChar)
 	{
-		MJChar->OnRequestDialogueIn.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueIn);
-		MJChar->OnRequestDialogueOut.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueOut);
+		MJChar->GetDialogueTrigger()->OnComponentBeginOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueIn);
+		MJChar->GetDialogueTrigger()->OnComponentEndOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueOut);
 	}
 }
 
@@ -177,7 +177,7 @@ void AMJPlayerController::BeginDialogue()
         
         AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
         if (!MyChar) return;
-        AActor* DialogueTarget = MyChar->DialogueTarget;
+        AActor* DialogueTarget = MyChar->GetDialogueTarget();
         if (!DialogueTarget) return;
         UMJDialogueComponent* DialogueComp = DialogueTarget->GetComponentByClass<UMJDialogueComponent>();
         if (!DialogueComp) return;
@@ -214,18 +214,19 @@ void AMJPlayerController::OnNextDialogue()
 	if (IsTriggered)
 	{
 		AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
-        if (!MyChar) return;
-        AActor* DialogueTarget = MyChar->DialogueTarget;
-        if (!DialogueTarget) return;
-        UMJDialogueComponent* DialogueComp = DialogueTarget->GetComponentByClass<UMJDialogueComponent>();
-        if (!DialogueComp) return;
-        
-        UE_LOG(LogTemp, Warning, TEXT("CurrentIndex is %d"), DialogueComp->CurrentIndex);
-        if (!DialogueComp || !DialogueWidget)
+        if (!MyChar)
         	return;
+        AActor* DialogueTarget = MyChar->GetDialogueTarget();
+        if (!DialogueTarget)
+        	return;
+        UMJDialogueComponent* DialogueComp = DialogueTarget->GetComponentByClass<UMJDialogueComponent>();
+        if (!DialogueComp)
+        	return;
+		
+        if (!DialogueComp || !DialogueWidget) return;
         
         DialogueComp->NextDialogue();
-        
+		
         if (DialogueComp->IsDialogueEnd())
         {
         	EndDialog();
@@ -237,12 +238,27 @@ void AMJPlayerController::OnNextDialogue()
 	}
 }
 
-void AMJPlayerController::OnTriggeredDialogueIn()
+void AMJPlayerController::OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
+										int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	IsTriggered = true;
+	
+	UE_LOG(LogTemp, Log, TEXT("OnTriggerBegin"));
+	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
+	if ( Other && Other->FindComponentByClass<UMJDialogueComponent>())
+	{
+		MJChar->SetDialogueTarget(Other);
+	}
 }
 
-void AMJPlayerController::OnTriggeredDialogueOut()
+void AMJPlayerController::OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex)
 {
 	IsTriggered = false;
+
+	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
+	if (MJChar->GetDialogueTarget()== Other)
+	{
+		MJChar->SetDialogueTarget(nullptr);	
+	}
 }

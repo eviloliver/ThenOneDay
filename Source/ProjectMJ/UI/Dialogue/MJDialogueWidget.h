@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "MJDialogueRow.h"
-#include "MJDialogueComponent.h"
+
 #include "MJDialogueWidget.generated.h"
 
 /**
@@ -28,6 +28,7 @@ public:
 	void HideDialogue();
 	
 	// //Typing Function
+	// protected:
 	// UPROPERTY(meta = (BindWidget))
 	// UTextBlock*	DialogueText;
 };

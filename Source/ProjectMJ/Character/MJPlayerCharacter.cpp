@@ -2,7 +2,7 @@
 
 
 #include "Character/MJPlayerCharacter.h"
-#include "UI/Dialogue/MJDialogueComponent.h"
+#include "Components/SphereComponent.h"
 #include "AbilitySystemComponent.h"
 #include "ProjectMJ.h"
 #include "AbilitySystem/MJCharacterAttributeSet.h"
@@ -10,11 +10,6 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TG/MJGameInstanceTG.h"
-
-
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
-#include "Kismet/GameplayStatics.h"
 
 AMJPlayerCharacter::AMJPlayerCharacter()
 {
@@ -53,14 +48,6 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	DialogueTrigger->SetHiddenInGame(false);
 }
 
-void AMJPlayerCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-
-	 DialogueTrigger->OnComponentBeginOverlap.AddDynamic(this,&AMJPlayerCharacter::OnTriggerBegin);
-	 DialogueTrigger->OnComponentEndOverlap.AddDynamic(this,&AMJPlayerCharacter::OnTriggerEnd);
-}
-
 void AMJPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -75,7 +62,6 @@ void AMJPlayerCharacter::PossessedBy(AController* NewController)
 
 		MJ_LOG(LogTG, Log, TEXT("player loaded health : %f"),  GetAbilitySystemComponent()->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));
 	}
-	
 }
 
 void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -86,27 +72,5 @@ void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	{
 		GI->SaveGameToSlot(this);
 		UE_LOG(LogTemp,Log,TEXT("Character :: Saved"));
-	}
-
-}
-
-void AMJPlayerCharacter::OnTriggerBegin(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
-                                        int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	UE_LOG(LogTemp, Log, TEXT("OnTriggerBegin"));
-	if ( Other && Other->FindComponentByClass<UMJDialogueComponent>())
-	{
-		DialogueTarget = Other;
-		OnRequestDialogueIn.Broadcast();
-	}
-}
-
-void AMJPlayerCharacter::OnTriggerEnd(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex)
-{
-	if (DialogueTarget == Other)
-	{
-		DialogueTarget = nullptr;
-		OnRequestDialogueOut.Broadcast();
 	}
 }
