@@ -10,6 +10,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TG/MJGameInstanceTG.h"
+#include "AbilitySystem/MJAbilitySystemComponent.h"
+#include "DataAsset/DataAsset_StartDataBase.h"
 
 AMJPlayerCharacter::AMJPlayerCharacter()
 {
@@ -48,6 +50,13 @@ void AMJPlayerCharacter::BeginPlay()
 void AMJPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+	if (!CharacterStartData.IsNull())
+	{
+		if (UDataAsset_StartDataBase* LoadData = CharacterStartData.LoadSynchronous())
+		{
+			LoadData->GiveToAbilitySystemComponent(Cast<UMJAbilitySystemComponent>(GetAbilitySystemComponent()));
+		}
+	}
 	// 로딩 데이터 있을 시 받아와서 AttributeSet에 적용
 	// 없을 시엔 무시하고 기본 AttributeSet 으로 진행됩니다.
 

@@ -9,12 +9,13 @@
 
 class UMJAbilitySystemComponent;
 class UMJAttributeSet;
+class UDataAsset_StartDataBase;
 /**
  * Class Description: 
  * Author: Lee JuHyeon
  * Created Date: 2025_06_11
- * Last Modified By: (Last Modifier)
- * Last Modified Date: (Last Modified Date)
+ * Last Modified By: Lee JuHyeon
+ * Last Modified Date: Add DA_StartData;
  */
 UCLASS()
 class PROJECTMJ_API AMJCharacterBase : public ACharacter , public IAbilitySystemInterface
@@ -34,7 +35,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
 	TObjectPtr<UMJAbilitySystemComponent> ASC;
 
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS")
+	TSoftObjectPtr<UDataAsset_StartDataBase>CharacterStartData;
 };
 
 
