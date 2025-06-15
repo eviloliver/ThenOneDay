@@ -9,11 +9,13 @@
 #include "Component/Input/MJInputComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "MJGamePlayTags.h"
+#include "UI/Dialogue/MJDialogueComponent.h"
+#include "Components/SphereComponent.h"
 #include "UI/Dialogue/MJDialogueWidget.h"
 #include "ProjectMJ.h"
 #include "Character/MJPlayerCharacter.h"
-#include "Components/SphereComponent.h"
-#include "UI/Dialogue/MJDialogueComponent.h"
+
+
 
 AMJPlayerController::AMJPlayerController()
 {
@@ -22,7 +24,7 @@ AMJPlayerController::AMJPlayerController()
 	CachedDestination = FVector::ZeroVector;
 	FollowTime = 0.f;
 	bIsTouch=false;
-
+	DialogueSpeed = 0.08f;
 }
 
 void AMJPlayerController::BeginPlay()
@@ -193,6 +195,7 @@ void AMJPlayerController::BeginDialogue()
         if (const FMJDialogueRow* Row = DialogueComp->GetCurrentRow())
         {
         	DialogueWidget->ShowDialogue(*Row);
+        	DialogueWidget->StartTyping(Row->Text, DialogueSpeed);
         }
 	}
 }
@@ -234,6 +237,7 @@ void AMJPlayerController::OnNextDialogue()
         else if (const FMJDialogueRow* Row = DialogueComp->GetCurrentRow())
         {
         	DialogueWidget->ShowDialogue(*Row);
+        	DialogueWidget->StartTyping(Row->Text, DialogueSpeed);
         }
 	}
 }

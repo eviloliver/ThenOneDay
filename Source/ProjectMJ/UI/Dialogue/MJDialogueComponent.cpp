@@ -12,7 +12,6 @@ UMJDialogueComponent::UMJDialogueComponent()
 
 void UMJDialogueComponent::StartDialogue()
 {
-	// BeginPlay에 이미 있는 코드인데 또 필요할지 모르겠다 흠
 	if (DialogueTable)
 	{
 		RowNames = DialogueTable->GetRowNames();

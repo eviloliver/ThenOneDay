@@ -19,5 +19,5 @@ struct FMJDialogueRow : public FTableRowBase
 	FString Speaker;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FText Text;
+	FString Text;
 };

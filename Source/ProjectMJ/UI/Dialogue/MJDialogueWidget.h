@@ -4,8 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "MJDialogueRow.h"
-
+//#include "MJDialogueRow.h"
 #include "MJDialogueWidget.generated.h"
 
 /**
@@ -15,6 +14,8 @@
  * Last Modified By: 이지수
  * Last Modified Date: 2025.06.12
  */
+class UTextBlock;
+
 UCLASS()
 class PROJECTMJ_API UMJDialogueWidget : public UUserWidget
 {
@@ -24,11 +25,23 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void ShowDialogue(const FMJDialogueRow& DialogueRow);
 
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void HideDialogue();
+	// UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	// void HideDialogue();
+
+	//Typing Function
+	UFUNCTION()
+	void StartTyping(const FString& InText, float TypingSpeed = 0.05f);
+
+	UFUNCTION()
+	void UpdateTyping();
 	
-	// //Typing Function
-	// protected:
-	// UPROPERTY(meta = (BindWidget))
-	// UTextBlock*	DialogueText;
+protected:
+	//Typing Function
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock*	Text;
+
+	FTimerHandle TypingTimerHandle;
+	FString FullText;
+	int32 CurrentCharIndex;
+
 };

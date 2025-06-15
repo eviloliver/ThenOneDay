@@ -54,6 +54,8 @@ private:
 #pragma region DialoguePart
 private:
 	bool bIsDialogueActive = false;
+	float DialogueSpeed;
+	
 	void OnDialogueStateChanged();
 
 public:
