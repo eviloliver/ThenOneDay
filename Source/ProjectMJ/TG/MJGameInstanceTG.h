@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "MJGameInstanceTG.generated.h"
 
+class UMJHttpDownloadManager;
 class UMJSaveGame;
 /**
  * Class Description: 게임 시작부터 종료까지 유지될 GameInstance
@@ -22,6 +23,8 @@ public:
 	UMJGameInstanceTG();
 
 	virtual void Init() override;
+
+	TObjectPtr<UMJHttpDownloadManager> HttpDownloader;
 
 	UFUNCTION(BlueprintCallable)
 	UMJSaveGame* GetSaveGameData();
