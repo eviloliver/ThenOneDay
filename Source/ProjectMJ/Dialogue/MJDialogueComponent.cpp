@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/Dialogue/MJDialogueComponent.h"
+#include "Dialogue/MJDialogueComponent.h"
 
 UMJDialogueComponent::UMJDialogueComponent()
 {

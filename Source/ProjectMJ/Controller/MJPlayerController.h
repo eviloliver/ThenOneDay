@@ -54,8 +54,9 @@ private:
 #pragma region DialoguePart
 private:
 	bool bIsDialogueActive = false;
+	bool IsTriggered = false;
 	float DialogueSpeed;
-	
+
 	void OnDialogueStateChanged();
 
 public:
@@ -71,7 +72,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
 	TSubclassOf<UMJDialogueWidget> DialogueWidgetClass;
 
-	bool IsTriggered;
 	
 	UFUNCTION()
 	void BeginDialogue();

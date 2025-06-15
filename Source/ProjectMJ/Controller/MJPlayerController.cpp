@@ -9,9 +9,9 @@
 #include "Component/Input/MJInputComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "MJGamePlayTags.h"
-#include "UI/Dialogue/MJDialogueComponent.h"
+#include "Dialogue/MJDialogueComponent.h"
 #include "Components/SphereComponent.h"
-#include "UI/Dialogue/MJDialogueWidget.h"
+#include "Dialogue/MJDialogueWidget.h"
 #include "ProjectMJ.h"
 #include "Character/MJPlayerCharacter.h"
 
@@ -152,7 +152,6 @@ void AMJPlayerController::MoveToMouseCurser()
 
 void AMJPlayerController::OnDialogueStateChanged()
 {
-	MJ_LOG(LogTG,Log,TEXT("www"));
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		if (bIsDialogueActive) 
@@ -170,10 +169,16 @@ void AMJPlayerController::OnDialogueStateChanged()
 
 void AMJPlayerController::BeginDialogue()
 {
-	if (DialogueWidget && DialogueWidget->IsInViewport()) return; 
-
+	if (DialogueWidget && DialogueWidget->IsInViewport())
+		return;
+	
+	if (!IsTriggered)
+		return;
+	
 	if (IsTriggered)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("IsTriggered: %hhd"), IsTriggered);
+		
 		bIsDialogueActive = true;
         OnDialogueStateChanged();
         
@@ -201,15 +206,19 @@ void AMJPlayerController::BeginDialogue()
 }
 
 void AMJPlayerController::EndDialog()
-{	
-	bIsDialogueActive = false;
-	OnDialogueStateChanged();
-
-	if (DialogueWidget)
+{
+	if (IsTriggered)
 	{
-		DialogueWidget->RemoveFromParent();
-		DialogueWidget = nullptr;
+		bIsDialogueActive = false;
+       	OnDialogueStateChanged();
+       
+       	if (DialogueWidget)
+       	{
+       		DialogueWidget->RemoveFromParent();
+       		DialogueWidget = nullptr;
+       	}
 	}
+
 }
 
 void AMJPlayerController::OnNextDialogue()
@@ -245,24 +254,22 @@ void AMJPlayerController::OnNextDialogue()
 void AMJPlayerController::OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 										int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	IsTriggered = true;
-	
 	UE_LOG(LogTemp, Log, TEXT("OnTriggerBegin"));
 	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
 	if ( Other && Other->FindComponentByClass<UMJDialogueComponent>())
 	{
 		MJChar->SetDialogueTarget(Other);
+		IsTriggered = true;
 	}
 }
 
 void AMJPlayerController::OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex)
 {
-	IsTriggered = false;
-
 	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
 	if (MJChar->GetDialogueTarget()== Other)
 	{
-		MJChar->SetDialogueTarget(nullptr);	
+		MJChar->SetDialogueTarget(nullptr);
+		IsTriggered = false;
 	}
 }

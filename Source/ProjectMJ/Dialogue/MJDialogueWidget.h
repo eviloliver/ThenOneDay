@@ -25,8 +25,11 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void ShowDialogue(const FMJDialogueRow& DialogueRow);
 
-	// UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	// void HideDialogue();
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void ShowDialogueHistoru(const FMJDialogueRow& DialogueRow);
+	
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
+	void HideDialogue();
 
 	//Typing Function
 	UFUNCTION()

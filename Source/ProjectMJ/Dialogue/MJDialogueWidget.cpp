@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/Dialogue/MJDialogueWidget.h"
+#include "Dialogue/MJDialogueWidget.h"
 #include "Components/TextBlock.h"
 
 void UMJDialogueWidget::StartTyping(const FString& InText, float TypingSpeed)
