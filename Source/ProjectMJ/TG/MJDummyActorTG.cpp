@@ -2,7 +2,7 @@
 
 
 #include "TG/MJDummyActorTG.h"
-#include "MJDungeonGameState.h"
+#include "MJGameStateDungeonTG.h"
 #include "ProjectMJ.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -35,7 +35,7 @@ void AMJDummyActorTG::PostInitializeComponents()
 
 void AMJDummyActorTG::ApplySavedPosition()
 {
-	if (AMJDungeonGameState* GS = Cast<AMJDungeonGameState>(UGameplayStatics::GetGameState(this)))
+	if (AMJGameStateDungeonTG* GS = Cast<AMJGameStateDungeonTG>(UGameplayStatics::GetGameState(this)))
 	{
 		FVector SavedPos = GS->GetDummyPos();
 
@@ -55,7 +55,7 @@ void AMJDummyActorTG::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
-	AMJDungeonGameState* GS = Cast<AMJDungeonGameState>(UGameplayStatics::GetGameState(this));
+	AMJGameStateDungeonTG* GS = Cast<AMJGameStateDungeonTG>(UGameplayStatics::GetGameState(this));
 	if (GS)
 	{
 		GS->SetDummyPos(GetActorLocation());

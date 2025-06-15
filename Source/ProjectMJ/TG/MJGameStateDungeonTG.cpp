@@ -1,19 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TG/MJDungeonGameState.h"
+#include "TG/MJGameStateDungeonTG.h"
 
 #include "MJGameInstanceTG.h"
 #include "ProjectMJ.h"
 #include "Kismet/GameplayStatics.h"
 
 
-AMJDungeonGameState::AMJDungeonGameState()
+AMJGameStateDungeonTG::AMJGameStateDungeonTG()
 {
 	DummyPos = FVector(0.0f,0.0f, 0.0f);
 }
 
-void AMJDungeonGameState::BeginPlay()
+void AMJGameStateDungeonTG::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -22,7 +22,7 @@ void AMJDungeonGameState::BeginPlay()
 	
 }
 
-void AMJDungeonGameState::PostInitializeComponents()
+void AMJGameStateDungeonTG::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	
@@ -43,7 +43,7 @@ void AMJDungeonGameState::PostInitializeComponents()
 	
 }
 
-void AMJDungeonGameState::EndPlay(const EEndPlayReason::Type EndPlayReason)
+void AMJGameStateDungeonTG::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
@@ -61,12 +61,12 @@ void AMJDungeonGameState::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	
 }
 
-FVector AMJDungeonGameState::GetDummyPos()
+FVector AMJGameStateDungeonTG::GetDummyPos()
 {
 	return DummyPos;
 }
 
-void AMJDungeonGameState::SetDummyPos(FVector Input)
+void AMJGameStateDungeonTG::SetDummyPos(FVector Input)
 {
 	DummyPos = Input;
 	

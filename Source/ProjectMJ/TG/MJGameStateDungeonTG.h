@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
-#include "MJDungeonGameState.generated.h"
+#include "MJGameStateDungeonTG.generated.h"
 
 /**
  * Class Description: 던전의 상태를 저장할 GameState
@@ -14,12 +14,12 @@
  * Last Modified Date: 2025-06-13
  */
 UCLASS()
-class PROJECTMJ_API AMJDungeonGameState : public AGameStateBase
+class PROJECTMJ_API AMJGameStateDungeonTG : public AGameStateBase
 {
 	GENERATED_BODY()
 	
 public:
-	AMJDungeonGameState();
+	AMJGameStateDungeonTG();
 
 	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
