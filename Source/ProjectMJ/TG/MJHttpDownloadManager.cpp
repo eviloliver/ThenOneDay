@@ -48,7 +48,14 @@ void UMJHttpDownloadManager::OnResponseReceived(FHttpRequestPtr Request, FHttpRe
         MJ_LOG(LogTGJSON, Log, TEXT("UMJHttpDownloadManager OnResponseReceived valid"));
     	
     	FString ResponseString = Response->GetContentAsString();
-    	MJ_LOG(LogTGJSON, Warning, TEXT("Raw Response: %s"), *ResponseString);
+    	MJ_LOG(LogTemp, Warning, TEXT("==== Raw JSON START ===="));
+    	for (int32 i = 0; i < ResponseString.Len(); i += 512)
+    	{
+    		FString Chunk = ResponseString.Mid(i, 512);
+    		MJ_LOG(LogTemp, Warning, TEXT("%s"), *Chunk);
+    	}
+    	MJ_LOG(LogTemp, Warning, TEXT("==== Raw JSON END ===="));
+
 
 
         // JSON 파싱
