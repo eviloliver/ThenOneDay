@@ -3,6 +3,7 @@
 
 #include "MJGameInstanceTG.h"
 
+#include "MJHttpDownloadManager.h"
 #include "MJSaveGame.h"
 #include "ProjectMJ.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
@@ -19,12 +20,18 @@ UMJGameInstanceTG::UMJGameInstanceTG()
 void UMJGameInstanceTG::Init()
 {
 	Super::Init();
+
+	// Google Sheet Load
+	HttpDownloader = NewObject<UMJHttpDownloadManager>();
+	HttpDownloader->FetchGoogleSheetData();
 	
 	if (!UGameplayStatics::DoesSaveGameExist(SaveSlotName, UserIndex))
 	{
 		CreateSaveGame();
 		MJ_LOG(LogTG,Log,TEXT("Create SaveGame File"));
 	}
+
+	
 }
 
 UMJSaveGame* UMJGameInstanceTG::GetSaveGameData()
