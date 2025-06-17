@@ -9,7 +9,7 @@
 class UMJGameplayAbility;
 class UMJAbilitySystemComponent;
 /**
- * Class Description:
+ * Class Description: Character Stat Data
  * Author: Lee JuHyeon
  * Created Date: 2025_06_14
  * Last Modified By: (Last Modifier)
@@ -24,10 +24,10 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, Category="StartData")
+	UPROPERTY(EditDefaultsOnly, Category="Stat")
 	TArray<TSubclassOf<UMJGameplayAbility>>ActivateOnGivenAbility;
 
-	UPROPERTY(EditDefaultsOnly, Category="StartData")
+	UPROPERTY(EditDefaultsOnly, Category="Stat")
 	TArray<TSubclassOf<UMJGameplayAbility>>ReactiveAbilities;
 
 	void GrantAbilities(const TArray<TSubclassOf<UMJGameplayAbility>>& InAbilitesToGive, UMJAbilitySystemComponent* InASCToGive, int32 ApplyLevel = 1);
