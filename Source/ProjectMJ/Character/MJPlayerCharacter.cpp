@@ -69,7 +69,7 @@ void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	if (UMJGameInstanceTG* GI = Cast<UMJGameInstanceTG>(GetGameInstance()))
 	{
 		GI->SaveGameToSlot(this);
-		UE_LOG(LogTemp,Log,TEXT("Character :: Saved"));
+		MJ_LOG(LogTG,Log, TEXT("Character Attribute Saved"));
 	}
 
 }

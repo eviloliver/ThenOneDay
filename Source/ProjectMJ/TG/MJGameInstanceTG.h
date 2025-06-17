@@ -36,7 +36,18 @@ public:
 	void SaveGameToSlot(AMJPlayerCharacter* Player);
 
 	virtual void Shutdown() override;
+	
+	UFUNCTION(BlueprintCallable)
+	FVector GetSavedDummyPos();
+
+	UFUNCTION(BlueprintCallable)
+	void SetSavedDummyPos(FVector Input);
+	
 protected:
+
+
+	UPROPERTY(VisibleAnywhere)
+	FVector SavedDummyPos;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UMJSaveGame> SaveGameData;

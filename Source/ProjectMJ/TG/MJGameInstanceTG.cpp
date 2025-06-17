@@ -12,6 +12,7 @@
 
 UMJGameInstanceTG::UMJGameInstanceTG()
 {
+	SavedDummyPos = FVector(0.0f,0.0f,0.0f);
 	
 }
 
@@ -19,7 +20,6 @@ void UMJGameInstanceTG::Init()
 {
 	Super::Init();
 	
-	UE_LOG(LogTemp, Log, TEXT("LogTG 대신 LogTemp 테스트"));
 	if (!UGameplayStatics::DoesSaveGameExist(SaveSlotName, UserIndex))
 	{
 		CreateSaveGame();
@@ -99,4 +99,14 @@ void UMJGameInstanceTG::SaveGameToSlot(AMJPlayerCharacter* Player)
 void UMJGameInstanceTG::Shutdown()
 {
 	Super::Shutdown();
+}
+
+FVector UMJGameInstanceTG::GetSavedDummyPos()
+{
+	return SavedDummyPos;
+}
+
+void UMJGameInstanceTG::SetSavedDummyPos(FVector Input)
+{
+	SavedDummyPos = Input;
 }
