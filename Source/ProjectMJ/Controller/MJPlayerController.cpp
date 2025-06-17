@@ -12,9 +12,10 @@
 #include "Dialogue/MJDialogueComponent.h"
 #include "Components/SphereComponent.h"
 #include "Dialogue/MJDialogueWidget.h"
+#include "Dialogue/MJBacklogWidget.h"
 #include "ProjectMJ.h"
 #include "Character/MJPlayerCharacter.h"
-
+#include "Compression/lz4.h"
 
 
 AMJPlayerController::AMJPlayerController()
@@ -62,7 +63,7 @@ void AMJPlayerController::SetupInputComponent()
 
 	//Dialogue Input
 	ProjectMJInputComponent->BindAction(BeginDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::BeginDialogue);
-	ProjectMJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::OnNextDialogue);
+	ProjectMJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::NextDialogue);
 	
 }
 void AMJPlayerController::PlayerTick(float DeltaTime)
@@ -191,17 +192,20 @@ void AMJPlayerController::BeginDialogue()
         
         DialogueComp->StartDialogue();
         
-        UE_LOG(LogTemp, Warning, TEXT("DialogueWidgetClass ptr: %s"), *GetNameSafe(DialogueWidgetClass));
-        
         DialogueWidget = CreateWidget<UMJDialogueWidget>(GetWorld(), DialogueWidgetClass);
         if (!DialogueWidget) return;
-        DialogueWidget->AddToViewport();
-        
+		DialogueWidget->AddToViewport();
+		
         if (const FMJDialogueRow* Row = DialogueComp->GetCurrentRow())
         {
         	DialogueWidget->ShowDialogue(*Row);
         	DialogueWidget->StartTyping(Row->Text, DialogueSpeed);
         }
+
+		if (const FMJDialogueRow* Row = DialogueComp->GetPreviousRow())
+		{
+			DialogueWidget->BacklogWidget->AddLine(*Row);
+		}
 	}
 }
 
@@ -218,11 +222,16 @@ void AMJPlayerController::EndDialog()
        		DialogueWidget = nullptr;
        	}
 	}
-
 }
 
-void AMJPlayerController::OnNextDialogue()
+void AMJPlayerController::NextDialogue()
 {
+	if (DialogueWidget->GetIsTyping())
+	{
+		DialogueWidget->SkipTyping();
+		return;
+	}
+	
 	if (IsTriggered)
 	{
 		AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
@@ -238,16 +247,21 @@ void AMJPlayerController::OnNextDialogue()
         if (!DialogueComp || !DialogueWidget) return;
         
         DialogueComp->NextDialogue();
-		
-        if (DialogueComp->IsDialogueEnd())
+		if (DialogueComp->IsDialogueEnd())
         {
         	EndDialog();
+			return;
         }
-        else if (const FMJDialogueRow* Row = DialogueComp->GetCurrentRow())
+		
+        if (const FMJDialogueRow* Row = DialogueComp->GetCurrentRow())
         {
         	DialogueWidget->ShowDialogue(*Row);
         	DialogueWidget->StartTyping(Row->Text, DialogueSpeed);
         }
+		if (const FMJDialogueRow* Row = DialogueComp->GetPreviousRow())
+		{
+			DialogueWidget->BacklogWidget->AddLine(*Row);
+		}
 	}
 }
 

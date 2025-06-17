@@ -45,5 +45,6 @@ public:
 	bool IsDialogueEnd() const;
 	
 	const FMJDialogueRow* GetCurrentRow() const;
-	
+
+	const FMJDialogueRow* GetPreviousRow() const;
 };

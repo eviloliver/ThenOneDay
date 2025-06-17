@@ -9,7 +9,7 @@
 class UDataAsset_InputConfig;
 class UInputAction;
 class UMJDialogueWidget;
-
+class UMJBacklogWidget;
 /**
  * Class Description:
  * Author: Lee JuHyeon
@@ -68,19 +68,14 @@ public:
 
 	UPROPERTY()
 	UMJDialogueWidget* DialogueWidget;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
 	TSubclassOf<UMJDialogueWidget> DialogueWidgetClass;
 
-	
-	UFUNCTION()
+
 	void BeginDialogue();
-
-	UFUNCTION()
 	void EndDialog();
-
-	UFUNCTION()
-	void OnNextDialogue();
+	void NextDialogue();
 
 	UFUNCTION()
 	void OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
@@ -89,6 +84,7 @@ public:
 	UFUNCTION()
 	void OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 										int32 OtherBodyIndex);
+
 	
 #pragma endregion
 	

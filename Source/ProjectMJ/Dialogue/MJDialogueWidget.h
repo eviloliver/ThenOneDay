@@ -25,26 +25,35 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void ShowDialogue(const FMJDialogueRow& DialogueRow);
 
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void ShowDialogueHistoru(const FMJDialogueRow& DialogueRow);
-	
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void HideDialogue();
-
 	//Typing Function
 	UFUNCTION()
 	void StartTyping(const FString& InText, float TypingSpeed = 0.05f);
 
 	UFUNCTION()
 	void UpdateTyping();
+
+	UFUNCTION()
+	void SkipTyping();
 	
+	UPROPERTY(meta = (BindWidget))
+	class UMJBacklogWidget* BacklogWidget;
+	
+	bool GetIsTyping() {return bIsTyping;}
+
 protected:
 	//Typing Function
+	
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock*	Text;
 
+	// UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	// UButton* BacklogButton;
+	
 	FTimerHandle TypingTimerHandle;
 	FString FullText;
 	int32 CurrentCharIndex;
+	bool bIsTyping = false;
+
+	
 
 };
