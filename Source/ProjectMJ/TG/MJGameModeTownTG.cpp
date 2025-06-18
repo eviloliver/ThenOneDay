@@ -17,7 +17,6 @@
 
 AMJGameModeTownTG::AMJGameModeTownTG()
 {
-	CurrentMapName = TEXT("");
 	MJ_LOG(LogTG,Log,TEXT("New GameMode Instance Created"));
 }
 
