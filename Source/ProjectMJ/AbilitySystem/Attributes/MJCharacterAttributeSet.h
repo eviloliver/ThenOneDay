@@ -14,7 +14,11 @@ GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
 /**
- * 
+ * Class Description: 캐릭터 어트리뷰트 세트
+ * Author: 차태관
+ * Created Date: 미상
+ * Last Modified By: 신동민
+ * Last Modified Date: 2025-06-18
  */
 UCLASS()
 class PROJECTMJ_API UMJCharacterAttributeSet : public UAttributeSet
