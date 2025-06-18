@@ -3,7 +3,7 @@
 
 #include "Player/MJPlayerState.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
-#include "AbilitySystem/MJCharacterAttributeSet.h"
+#include "AbilitySystem//Attributes/MJCharacterAttributeSet.h"
 
 AMJPlayerState::AMJPlayerState()
 {

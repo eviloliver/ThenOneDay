@@ -4,7 +4,7 @@
 #include "Character/MJPlayerCharacter.h"
 #include "AbilitySystemComponent.h"
 #include "ProjectMJ.h"
-#include "AbilitySystem/MJCharacterAttributeSet.h"
+#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"

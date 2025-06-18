@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystem/MJCharacterAttributeSet.h"
+#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "GameFramework/SaveGame.h"
 #include "MJSaveGame.generated.h"
 

@@ -10,7 +10,7 @@
 #include "MJSaveGameSubsystem.h"
 #include "ProjectMJ.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
-#include "AbilitySystem/MJCharacterAttributeSet.h"
+#include "AbilitySystem//Attributes/MJCharacterAttributeSet.h"
 #include "Character/MJPlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 

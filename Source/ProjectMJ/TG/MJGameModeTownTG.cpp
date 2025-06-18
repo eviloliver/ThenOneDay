@@ -7,7 +7,7 @@
 #include "MJGameInstanceTG.h"
 #include "ProjectMJ.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
-#include "AbilitySystem/MJCharacterAttributeSet.h"
+#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "Character/MJPlayerCharacter.h"
 #include "Controller/MJPlayerController.h"
 #include "Internationalization/StringTableCore.h"
