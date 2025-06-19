@@ -12,6 +12,9 @@
 #include "TG/MJSaveGameSubsystem.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "DataAsset/DataAsset_StartDataBase.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
+#include "MJ/AI/AIPerceptionInfo.h"
 
 class UMJSaveGameSubsystem;
 
@@ -41,7 +44,22 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 	GetCharacterMovement()->MaxWalkSpeed = 400.0;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.0;
+	
+	// AI Perception-캐릭터를 StimuliSource로 등록(AI가 감지)
+	PerceptionStimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("AIPerceptionStimuliSourceComponent"));
+	if (nullptr!= PerceptionStimuliSourceComponent)
+	{
+		// Sight source 등록
+		PerceptionStimuliSourceComponent->RegisterForSense(UAISense_Sight::StaticClass());
 
+		// RegisterWithPerceptionSystem(): bAutoRegisterAsSource == true 해줌
+		PerceptionStimuliSourceComponent->RegisterWithPerceptionSystem();
+	}
+
+	// TeamId 설정 - 적/중립/아군 구별용
+	// static_cast를 해야 한다...~~
+	TeamId = FGenericTeamId(static_cast<uint8>(ETeam_ID::Player));
+	
 }
 
 void AMJPlayerCharacter::BeginPlay()
