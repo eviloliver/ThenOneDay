@@ -6,11 +6,12 @@
 #include "AbilitySystemComponent.h"
 #include "MJAbilitySystemComponent.generated.h"
 
+class AMJPlayerCharacter;
 /**
  * Class Description:
  * Author: Lee JuHyeon
  * Created Date: 2025_06_12
- * Last Modified By: (Last Modifier)
+ * Last Modified By:
  * Last Modified Date: (Last Modified Date)
  */
 UCLASS()

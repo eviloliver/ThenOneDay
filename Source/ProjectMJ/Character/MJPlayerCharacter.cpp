@@ -12,6 +12,7 @@
 #include "TG/MJGameInstanceTG.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "DataAsset/DataAsset_StartDataBase.h"
+#include "Component/MJPlayerCombatComponent.h"
 
 AMJPlayerCharacter::AMJPlayerCharacter()
 {
@@ -39,6 +40,8 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 	GetCharacterMovement()->MaxWalkSpeed = 400.0;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.0;
+
+	PlayerCombatComponent = CreateDefaultSubobject<UMJPlayerCombatComponent>(TEXT("PlayerCombatComponent"));
 
 }
 

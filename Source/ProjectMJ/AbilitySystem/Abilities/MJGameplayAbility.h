@@ -6,6 +6,9 @@
 #include "Abilities/GameplayAbility.h"
 #include "MJGameplayAbility.generated.h"
 
+class UMJCombatComponent;
+class UMJAbilitySystemComponent;
+
 UENUM(BlueprintType)
 enum class EMJAbilityActivationPolicy :uint8
 {
@@ -16,8 +19,8 @@ enum class EMJAbilityActivationPolicy :uint8
  * Class Description:
  * Author: Lee JuHyeon
  * Created Date: 2025_06_11
- * Last Modified By: (Last Modifier)
- * Last Modified Date: (Last Modified Date)
+ * Last Modified By: Add CombatComponent Data
+ * Last Modified Date: 2025_06_18
  */
 UCLASS()
 class PROJECTMJ_API UMJGameplayAbility : public UGameplayAbility
@@ -30,5 +33,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	EMJAbilityActivationPolicy AbilityActivationPolicy = EMJAbilityActivationPolicy::OnTriggered;
-	
+
+	UFUNCTION(BlueprintPure, Category="Player|Combat")
+	UMJCombatComponent* GetPawnCombatComponentFromActorInfo() const;
+
+	UFUNCTION(BlueprintPure, Category = "Player|Combat")
+	UMJAbilitySystemComponent* GetAbilitySysteamComponent() const;
 };

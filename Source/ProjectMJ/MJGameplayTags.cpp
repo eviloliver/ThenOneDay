@@ -5,6 +5,13 @@
 
 namespace MJGameplayTags
 {
-	UE_DEFINE_GAMEPLAY_TAG(Input_SetDestination_Click,"Input.SetDestination.Click")
-	UE_DEFINE_GAMEPLAY_TAG(Input_SetDestination_Touch,"Input.SetDestination.Touch")
+	/*Input_Tag*/
+	UE_DEFINE_GAMEPLAY_TAG(Input_SetDestination_Click, "Input.SetDestination.Click");
+	UE_DEFINE_GAMEPLAY_TAG(Input_SetDestination_Touch, "Input.SetDestination.Touch");
+	UE_DEFINE_GAMEPLAY_TAG(Input_Equip_Weapon, "Input.Equip.Weapon");
+	UE_DEFINE_GAMEPLAY_TAG(Input_UnEquip_Weapon, "Input.UnEquip.Weapon");
+
+
+	/*Weapon_Tag*/
+	UE_DEFINE_GAMEPLAY_TAG(Player_Weapon_Sword, "Player.Weapon.Sword");
 }
