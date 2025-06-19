@@ -13,6 +13,9 @@
  * Last Modified By: (Last Modifier)
  * Last Modified Date: (Last Modified Date)
  */
+
+class UAIPerceptionComponent;
+
 UCLASS()
 class PROJECTMJ_API AMJAIController : public AAIController
 {
@@ -24,9 +27,27 @@ public:
 	void RunAI();
 	void StopAI();
 
+	// AI Affiliation
+	virtual FGenericTeamId GetGenericTeamId() const override {return TeamId;}
+
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
+	// AI Perception
+	UPROPERTY()
+	TObjectPtr<class UAIPerceptionComponent> AIPerceptionComponent;
+	
+	UFUNCTION()
+	 void TargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+	
+	// Sight
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<class UAISenseConfig_Sight> AISenseConfig_Sight;
+
+	// AI Affiliation
+	FGenericTeamId TeamId;
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
+	
 private:
 	UPROPERTY()
 	TObjectPtr<class UBlackboardData> BBAsset;
