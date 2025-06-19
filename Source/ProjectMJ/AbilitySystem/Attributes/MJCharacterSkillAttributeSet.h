@@ -17,8 +17,8 @@
  * Class Description: 스킬 어트리뷰트 세트
  * Author: 신동민
  * Created Date: 2025_06_18
- * Last Modified By: (Last Modifier)
- * Last Modified Date: (Last Modified Date)
+ * Last Modified By: 신동민
+ * Last Modified Date: 2025_06_19
  */
 UCLASS()
 class PROJECTMJ_API UMJCharacterSkillAttributeSet : public UAttributeSet
@@ -28,131 +28,223 @@ class PROJECTMJ_API UMJCharacterSkillAttributeSet : public UAttributeSet
 public:
 	UMJCharacterSkillAttributeSet();
 
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, CostStamina);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, CostMana);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, CostFocus);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, BaseDamage);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, AttackDamageScaling);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, AbilityPowerScaling);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, EffectRadius);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, SkillRange);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, SkillLevel);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, Cooldown);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, SkillAttackRate);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, CastTime);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, EffectDuration);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, StatusEffectChance);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, ProjectileSpeed);
+	// Level
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, SkillLevel)
 
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCostStamina);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCostMana);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCostFocus);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxBaseDamage);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxAttackDamageScaling);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxAbilityPowerScaling);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxEffectRadius);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxSkillRange);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxSkillLevel);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCooldown);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxSkillAttackRate);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCastTime);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxEffectDuration);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxStatusEffectChance);
-	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxProjectileSpeed);
+		// Cost
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, CostStamina)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, CostMana)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, CostFocus)
+
+		// Damage / Scaling
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, BaseDamage)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, Healing)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, LifeSteal)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, AttackDamageScaling)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, AbilityPowerScaling)
+
+		// Range
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, SkillRadius)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, SkillRange)
+
+		// Time
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, Cooldown)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, SkillAttackRate)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, CastTime)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, PreDelay)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, PostDelay)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, EffectDuration)
+
+		// Status effect
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, StatusEffectChance)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, StatusEffectDuration)
+
+		// Projectile
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, ProjectileSpeed)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, ProjectileCount)
 
 
+		// --- Max Skill ---
+
+		// Level
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxSkillLevel)
+
+		// Cost
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCostStamina)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCostMana)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCostFocus)
+
+		// Damage / Scaling
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxBaseDamage)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxHealing)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxLifeSteal)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxAttackDamageScaling)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxAbilityPowerScaling)
+
+		// Range
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxSkillRadius)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxSkillRange)
+
+		// Time
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCooldown)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxSkillAttackRate)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCastTime)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxPreDelay)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxPostDelay)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxEffectDuration)
+
+		// Status effect
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxStatusEffectChance)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxStatusEffectDuration)
+
+		// Projectile
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxProjectileSpeed)
+		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxProjectileCount)
 
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
+	virtual bool PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data) override;
+	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
 protected:
+	// Level
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Level", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData SkillLevel;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+	// Cost
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Cost", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData CostStamina;		 
 											 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Cost", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData CostMana;		 
 											 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Cost", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData CostFocus;		 
+
+	// Damage / Scaling
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Damage", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData BaseDamage;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Damage", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData Healing;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Damage", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData LifeSteal;
 											 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData BaseDamage;		 
-											 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Damage", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData AttackDamageScaling;
 											 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Damage", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData AbilityPowerScaling;
+
+	// Range
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Range", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData SkillRadius;	 
 											 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData EffectRadius;	 
-											 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData SkillRange;		 
-											 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData SkillLevel;		 
-											 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Range", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData SkillRange;
+
+	// Time
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Time", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Cooldown;		 
 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Time", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData SkillAttackRate;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData CastTime;		 
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Time", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData CastTime;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Time", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData PreDelay;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Time", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData PostDelay;
 											 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Time", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData EffectDuration;	 
-											 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+
+	// Status effect
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData StatusEffectChance;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData StatusEffectDuration;
+	// Projectile
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Projectile", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData ProjectileSpeed;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxCostStamina;
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Projectile", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData ProjectileCount;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxCostMana;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxCostFocus;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxBaseDamage;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxAttackDamageScaling;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxAbilityPowerScaling;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxEffectRadius;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxSkillRange;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+	// --- Max Ability ---
+	// Level
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Level", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData MaxSkillLevel;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+	// Cost
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Cost", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxCostStamina;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Cost", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxCostMana;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Cost", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxCostFocus;
+
+	// Damage / Scaling
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Damage", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxBaseDamage;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Damage", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxHealing;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Damage", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxLifeSteal;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Damage", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxAttackDamageScaling;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Damage", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxAbilityPowerScaling;
+
+	// Range
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Range", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxSkillRadius;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Range", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxSkillRange;
+
+	// Time
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Time", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData MaxCooldown;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Time", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData MaxSkillAttackRate;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Time", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData MaxCastTime;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Time", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxPreDelay;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Time", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxPostDelay;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Time", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData MaxEffectDuration;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+	// Status effect
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData MaxStatusEffectChance;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Ability|", Meta = (AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxStatusEffectDuration;
+
+	// Projectile
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Projectile", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData MaxProjectileSpeed;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Projectile", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxProjectileCount;
+
 };
