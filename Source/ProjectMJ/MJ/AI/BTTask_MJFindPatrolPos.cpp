@@ -1,16 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MJ/AI/BTTask_FindPatrolPos.h"
-#include "MJAIController.h"
+#include "MJ/AI/BTTask_MJFindPatrolPos.h"
+#include "AIController.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
-UBTTask_FindPatrolPos::UBTTask_FindPatrolPos()
+UBTTask_MJFindPatrolPos::UBTTask_MJFindPatrolPos()
 {
+	NodeName = TEXT("FindPatrolPos");
 }
 
-EBTNodeResult::Type UBTTask_FindPatrolPos::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_MJFindPatrolPos::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 	
