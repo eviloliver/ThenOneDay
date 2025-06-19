@@ -32,9 +32,6 @@ void AMJTestHealthUpActorTG::UpHealth(UPrimitiveComponent* OverlappedComponent, 
 
 	UMJCharacterAttributeSet* MJCAS = const_cast<UMJCharacterAttributeSet*>(ASC->GetSet<UMJCharacterAttributeSet>());
 
-	
-	MJCAS->UpHealth(30);
-	MJ_LOG(LogTG,Log,TEXT("AMJTestHealthUpActorTG ::UpHealth /  loaded health : %f"), MJCAS->GetHealth());
 
 }
 

@@ -93,23 +93,23 @@ public:
 		Data.Health = AttrSet->GetHealth();
 		Data.MaxHealth = AttrSet->GetMaxHealth();
 
-		Data.AttackPower = AttrSet->GetAttackPower();
-		Data.MaxAttackPower = AttrSet->GetMaxAttackPower();
+		//Data.AttackPower = AttrSet->GetAttackPower();
+		//Data.MaxAttackPower = AttrSet->GetMaxAttackPower();
 
-		Data.SpellPower = AttrSet->GetSpellPower();
-		Data.MaxSpellPower = AttrSet->GetMaxSpellPower();
+		//Data.SpellPower = AttrSet->GetSpellPower();
+		//Data.MaxSpellPower = AttrSet->GetMaxSpellPower();
 
-		Data.CriticalProbability = AttrSet->GetCriticalProbability();
-		Data.MaxCriticalProbability = AttrSet->GetMaxCriticalProbability();
+		//Data.CriticalProbability = AttrSet->GetCriticalProbability();
+		//Data.MaxCriticalProbability = AttrSet->GetMaxCriticalProbability();
 
-		Data.CriticalRate = AttrSet->GetCriticalRate();
-		Data.MaxCriticalRate = AttrSet->GetMaxCriticalRate();
+		//Data.CriticalRate = AttrSet->GetCriticalRate();
+		//Data.MaxCriticalRate = AttrSet->GetMaxCriticalRate();
 
-		Data.AttackRate = AttrSet->GetAttackRate();
-		Data.MaxAttackRate = AttrSet->GetMaxAttackRate();
+		//Data.AttackRate = AttrSet->GetAttackRate();
+		//Data.MaxAttackRate = AttrSet->GetMaxAttackRate();
 
-		Data.Speed = AttrSet->GetSpeed();
-		Data.MaxSpeed = AttrSet->GetMaxSpeed();
+		//Data.Speed = AttrSet->GetSpeed();
+		//Data.MaxSpeed = AttrSet->GetMaxSpeed();
 
 		return Data;
 	}
@@ -122,29 +122,29 @@ public:
 		ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetHealthAttribute(), Health);
 		ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetMaxHealthAttribute(), MaxHealth);
 
-		// AttackPower
-		ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetAttackPowerAttribute(), AttackPower);
-		ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetMaxAttackPowerAttribute(), MaxAttackPower);
+		//// AttackPower
+		//ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetAttackPowerAttribute(), AttackPower);
+		//ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetMaxAttackPowerAttribute(), MaxAttackPower);
 
-		// SpellPower
-		ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetSpellPowerAttribute(), SpellPower);
-		ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetMaxSpellPowerAttribute(), MaxSpellPower);
+		//// SpellPower
+		//ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetSpellPowerAttribute(), SpellPower);
+		//ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetMaxSpellPowerAttribute(), MaxSpellPower);
 
-		// CriticalProbability
-		ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetCriticalProbabilityAttribute(), CriticalProbability);
-		ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetMaxCriticalProbabilityAttribute(), MaxCriticalProbability);
+		//// CriticalProbability
+		//ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetCriticalProbabilityAttribute(), CriticalProbability);
+		//ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetMaxCriticalProbabilityAttribute(), MaxCriticalProbability);
 
-		// CriticalRate
-		ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetCriticalRateAttribute(), CriticalRate);
-		ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetMaxCriticalRateAttribute(), MaxCriticalRate);
+		//// CriticalRate
+		//ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetCriticalRateAttribute(), CriticalRate);
+		//ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetMaxCriticalRateAttribute(), MaxCriticalRate);
 
-		// AttackRate
-		ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetAttackRateAttribute(), AttackRate);
-		ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetMaxAttackRateAttribute(), MaxAttackRate);
+		//// AttackRate
+		//ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetAttackRateAttribute(), AttackRate);
+		//ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetMaxAttackRateAttribute(), MaxAttackRate);
 
-		// Speed
-		ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetSpeedAttribute(), Speed);
-		ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetMaxSpeedAttribute(), MaxSpeed);
+		//// Speed
+		//ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetSpeedAttribute(), Speed);
+		//ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetMaxSpeedAttribute(), MaxSpeed);
 	}
 
 	
