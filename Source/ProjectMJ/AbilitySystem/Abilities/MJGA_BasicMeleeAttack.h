@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystem/Abilities/MJMeleeAttack.h"
-#include "MJBasicMeleeAttack.generated.h"
+#include "AbilitySystem/Abilities/MJGA_MeleeAttack.h"
+#include "MJGA_BasicMeleeAttack.generated.h"
 
 /**
  * Class Description: 평타 근접 공격 어빌리티
@@ -14,7 +14,7 @@
  * Last Modified Date: (Last Modified Date)
  */
 UCLASS()
-class PROJECTMJ_API UMJBasicMeleeAttack : public UMJMeleeAttack
+class PROJECTMJ_API UMJGA_BasicMeleeAttack : public UMJGA_MeleeAttack
 {
 	GENERATED_BODY()
 

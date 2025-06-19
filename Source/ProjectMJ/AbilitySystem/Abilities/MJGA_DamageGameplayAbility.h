@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystem/Abilities/MJGameplayAbility.h"
-#include "MJDamageGameplayAbility.generated.h"
+#include "AbilitySystem/Abilities/MJGA_GameplayAbility.h"
+#include "MJGA_DamageGameplayAbility.generated.h"
 
 /**
  * Class Description: 데미지를 주는 어빌리티
@@ -14,12 +14,12 @@
  * Last Modified Date: (Last Modified Date)
  */
 UCLASS()
-class PROJECTMJ_API UMJDamageGameplayAbility : public UMJGameplayAbility
+class PROJECTMJ_API UMJGA_DamageGameplayAbility : public UMJGA_GameplayAbility
 {
 	GENERATED_BODY()
 	
 public:
-	UMJDamageGameplayAbility();
+	UMJGA_DamageGameplayAbility();
 
 	UFUNCTION(BlueprintCallable)
 	void CauseDamage(AActor* TargetActor);
