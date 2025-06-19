@@ -15,6 +15,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTraceResultDelegate, const FGamepla
  * Last Modified By: (Last Modifier)
  * Last Modified Date: (Last Modified Date)
  */
+
+class AMJTA_Trace;
+
 UCLASS()
 class PROJECTMJ_API UMJAT_Trace : public UAbilityTask
 {
@@ -24,7 +27,7 @@ public:
 	UMJAT_Trace();
 
 	UFUNCTION(BlueprintCallable, Category = "Ability|Tasks", meta = (DisplayName = "WaitForTrace", HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
-	static UMJAT_Trace* CreateTask(UGameplayAbility* OwningAbility, TSubclassOf<class AMJTA_Trace> TargetActorClass);
+	static UMJAT_Trace* CreateTask(UGameplayAbility* OwningAbility, TSubclassOf<AMJTA_Trace> TargetActorClass);
 
 	virtual void Activate() override;
 	virtual void OnDestroy(bool bInOwnerFinished) override;
@@ -33,9 +36,15 @@ public:
 	void FinalizeTargetActor();
 
 protected:
-	void OnTargetDataReadyCallBack(const FGameplayAbilityTargetDataHandle& DataHandle);
-
+	void OnTargetDataReadyCallback(const FGameplayAbilityTargetDataHandle& DataHandle);
 public:
 	UPROPERTY(BlueprintAssignable)
 	FTraceResultDelegate OnComplete;
+
+protected:
+	UPROPERTY()
+	TSubclassOf<AMJTA_Trace> TargetActorClass;
+
+	UPROPERTY()
+	TObjectPtr<AMJTA_Trace> SpawnedTargetActor;
 };
