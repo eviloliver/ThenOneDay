@@ -20,5 +20,4 @@ class PROJECTMJ_API AMJAICharacter_Test : public AMJCharacterBase
 
 public:
 	AMJAICharacter_Test();
-	
 };
