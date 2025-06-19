@@ -75,24 +75,28 @@ protected:
 	FDungeonNode MakeNewNode(uint8 NodeNum, uint8 AssignedMapID,  ENodeType NodeType, FVector2D UICoordinate);
 	
 	UFUNCTION(BlueprintCallable)
-	void ConnectDungeonNodesByDistance(float MaxDistance, int MaxEdgePerNode);
+	void ConnectNodesByDistance(float MaxDistance, int MaxEdgePerNode);
 
+	UFUNCTION(BlueprintCallable)
+	void ConnectNodesByMST(float MaxDistance);
 
 	UFUNCTION(BlueprintCallable)
 	bool CheckHasRoute(uint8 CurrentNodeNum, uint8 DestNodeNum);
 
-
-	void DFS(uint8 Node);
-
-	TArray<uint8> Vector;
-
-	TArray<bool> Visited;
+	UFUNCTION(BlueprintCallable)
+	FVector2D GetCubicBezier(float t, const FVector2D Point);
+	
+	UFUNCTION(BlueprintCallable)
+	FVector2D GetQuadBezier(float t, const FVector2D StartPoint, const FVector2D EndPoint, const FVector2D ControlPoint);
 	
 	UPROPERTY(VisibleAnywhere)
 	FVector SavedDummyPos;
 
 	UPROPERTY(VisibleAnywhere)
 	uint8 SavedMapNodeNum;
+	
+	UPROPERTY(VisibleAnywhere)
+	uint8 MaxNodeNum;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UMJSaveGame> SaveGameData;

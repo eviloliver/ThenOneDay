@@ -44,13 +44,13 @@ bool AMJGameModeBase::TravelToMapByNode(const FString MapName, const uint8 NodeN
 		MJGI->SetSavedMapNodeNum(NodeNum);
 	}
 	
-	AMJGameStateDungeonTG* MJGS = GetGameState<AMJGameStateDungeonTG>();
-	if (MJGS)
-	{
-		
-		MJGS->SetCurrentNodeNum(NodeNum);
-		
-	}	
+	// AMJGameStateDungeonTG* MJGS = GetGameState<AMJGameStateDungeonTG>();
+	// if (MJGS)
+	// {
+	// 	
+	// 	MJGS->SetCurrentNodeNum(NodeNum);
+	// 	
+	// }	
 
 	if (TravelToMap(MapName))
 	{

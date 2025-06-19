@@ -57,6 +57,9 @@ struct FDungeonGraph
 	TArray<FDungeonNode> Nodes;
 
 	UPROPERTY(BlueprintReadWrite)
+	TArray<FVector2D> BezierPoints;
+
+	UPROPERTY(BlueprintReadWrite)
 	int32 StartNodeID = -1;
 
 	UPROPERTY(BlueprintReadWrite)
