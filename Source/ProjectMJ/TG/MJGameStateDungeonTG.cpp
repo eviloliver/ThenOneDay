@@ -11,6 +11,7 @@
 AMJGameStateDungeonTG::AMJGameStateDungeonTG()
 {
 	DummyPos = FVector(0.0f,0.0f, 0.0f);
+	CurrentNodeNum = -1;
 }
 
 void AMJGameStateDungeonTG::BeginPlay()
@@ -39,8 +40,14 @@ void AMJGameStateDungeonTG::PostInitializeComponents()
 	{
 		MJ_LOG(LogTG, Warning, TEXT("This level is not a dungeon! "));
 	}
-		
-	
+
+	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
+
+	if (MJGI)
+	{
+		CurrentNodeNum = MJGI->GetSavedMapNodeNum();
+		//GEngine->AddOnScreenDebugMessage(-1,5.f,FColor::Red,FString::Printf(TEXT("Your CurrentMapNodeNum == %d"),CurrentNodeNum));
+	}
 }
 
 void AMJGameStateDungeonTG::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -56,9 +63,6 @@ void AMJGameStateDungeonTG::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		MJ_LOG(LogTG, Warning, TEXT("DUNGEON END  !!!!"));
 		MJ_LOG(LogTG,Warning,TEXT("Dummy Pos : %f %f %f "), DummyPos.X,DummyPos.Y,DummyPos.Z);
 	}
-	
-	
-	
 }
 
 FVector AMJGameStateDungeonTG::GetDummyPos()
@@ -71,4 +75,8 @@ void AMJGameStateDungeonTG::SetDummyPos(FVector Input)
 	DummyPos = Input;
 	
 	MJ_LOG(LogTG,Warning,TEXT("Dummy Pos : %f %f %f "), DummyPos.X,DummyPos.Y,DummyPos.Z);
+}
+void AMJGameStateDungeonTG::SetCurrentNodeNum(uint8 InputNodeNum)
+{
+	CurrentNodeNum = InputNodeNum;
 }

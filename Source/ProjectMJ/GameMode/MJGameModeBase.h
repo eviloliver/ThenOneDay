@@ -18,20 +18,15 @@ public:
 	AMJGameModeBase();
 
 	
-	UFUNCTION(BlueprintCallable)
-	FString GetCurrentMapName();
 
 
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UDataTable> MapNames;
-
-	UPROPERTY(BlueprintReadOnly)
-	FString CurrentMapName;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UStringTable> DungeonNames;
+	UFUNCTION(BlueprintCallable)
+	bool TravelToMapByNode(const FString MapName, const uint8 NodeNum);
 	
 	UFUNCTION(BlueprintCallable)
 	bool TravelToMap(const FString MapName);

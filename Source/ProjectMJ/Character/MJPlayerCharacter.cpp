@@ -2,7 +2,6 @@
 
 
 #include "Character/MJPlayerCharacter.h"
-
 #include "AbilitySystemComponent.h"
 #include "ProjectMJ.h"
 #include "AbilitySystem/MJCharacterAttributeSet.h"
@@ -10,8 +9,11 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TG/MJGameInstanceTG.h"
+#include "TG/MJSaveGameSubsystem.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "DataAsset/DataAsset_StartDataBase.h"
+
+class UMJSaveGameSubsystem;
 
 AMJPlayerCharacter::AMJPlayerCharacter()
 {
@@ -62,10 +64,14 @@ void AMJPlayerCharacter::PossessedBy(AController* NewController)
 
 	
 	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetWorld()->GetGameInstance());
+
 	if (MJGI)
 	{
-		MJGI->LoadSaveGame(this);
-
+		UMJSaveGameSubsystem* MJSaveGameSubsystem = MJGI->GetSubsystem<UMJSaveGameSubsystem>();
+		if (MJSaveGameSubsystem)
+		{
+			MJSaveGameSubsystem->LoadSaveGame(this);
+		}
 		MJ_LOG(LogTG, Log, TEXT("player loaded health : %f"),  GetAbilitySystemComponent()->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));
 	}
 	
@@ -75,9 +81,13 @@ void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 	
-	if (UMJGameInstanceTG* GI = Cast<UMJGameInstanceTG>(GetGameInstance()))
+	if (UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetGameInstance()))
 	{
-		GI->SaveGameToSlot(this);
+		UMJSaveGameSubsystem* MJSaveGameSubsystem = MJGI->GetSubsystem<UMJSaveGameSubsystem>();
+		if (MJSaveGameSubsystem)
+		{
+			MJSaveGameSubsystem->SaveGameToSlot(this);
+		}
 		MJ_LOG(LogTG,Log, TEXT("Character Attribute Saved"));
 	}
 

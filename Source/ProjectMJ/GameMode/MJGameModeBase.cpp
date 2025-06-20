@@ -5,6 +5,8 @@
 
 #include "ProjectMJ.h"
 #include "Internationalization/StringTableRegistry.h"
+#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameStateDungeonTG.h"
 
 AMJGameModeBase::AMJGameModeBase()
 {
@@ -17,20 +19,13 @@ AMJGameModeBase::AMJGameModeBase()
 	//MapNames = FStringTableRegistry::Get().FindStringTable(FName(TEXT("/Script/Engine.StringTable'/Game/Blueprint/GameData/TG_MapNames.TG_MapNames'")));
 }
 
-FString AMJGameModeBase::GetCurrentMapName()
-{
-	return CurrentMapName;
-}
 
 bool AMJGameModeBase::TravelToMap(const FString MapName)
 {
 	bool bAbsolute = false;
 	if (CanServerTravel(MapName, bAbsolute))
 	{
-		if (GetWorld()->ServerTravel(MapName))
-		{
-			CurrentMapName = MapName;
-		}
+		GetWorld()->ServerTravel(MapName);
 	}
 	else
 	{
@@ -38,4 +33,31 @@ bool AMJGameModeBase::TravelToMap(const FString MapName)
 	}
 
 	return false;
+}
+
+bool AMJGameModeBase::TravelToMapByNode(const FString MapName, const uint8 NodeNum)
+{
+
+	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
+	if (MJGI)
+	{
+		MJGI->SetSavedMapNodeNum(NodeNum);
+	}
+	
+	// AMJGameStateDungeonTG* MJGS = GetGameState<AMJGameStateDungeonTG>();
+	// if (MJGS)
+	// {
+	// 	
+	// 	MJGS->SetCurrentNodeNum(NodeNum);
+	// 	
+	// }	
+
+	if (TravelToMap(MapName))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
