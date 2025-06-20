@@ -12,8 +12,8 @@ class UCameraComponent;
  * Class Description:
  * Author: Lee JuHyeon
  * Created Date: 2025_06_11
- * Last Modified By: Lee JuHyeon
- * Last Modified Date: Delete CameraBoom Sockect
+ * Last Modified By: Cha Tae Gwan
+ * Last Modified Date: add GameInstance SubSystem Logic
  */
 UCLASS()
 class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase
