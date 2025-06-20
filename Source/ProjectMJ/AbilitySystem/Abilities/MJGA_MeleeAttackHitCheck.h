@@ -36,9 +36,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TSubclassOf<UGameplayEffect> AttackDamageEffect;
 
+	// 사용할 어빌리티들 적용을 해야하나
+	// 버프/디버프 등
+
 	// 데이터로 따로 관리할 가능성이 높음
 	// 그래서 추후 사용할지도
-	//float CurrentLevel;
+	// 명시 안해주면 1.f긴 함
+	// float CurrentLevel;
 
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TSubclassOf<AMJTA_Trace> TargetActorClass;
