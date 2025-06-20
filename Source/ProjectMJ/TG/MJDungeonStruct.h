@@ -6,9 +6,9 @@
 UENUM(BlueprintType)
 enum class ENodeType : uint8
 {
-	Battle,
-	Reward,
-	Boss
+	Battle UMETA(DisplayName = "Battle"),
+	Reward UMETA(DisplayName = "Reward"),
+	Boss UMETA(DisplayName = "Boss")
 };
 
 USTRUCT(BlueprintType)

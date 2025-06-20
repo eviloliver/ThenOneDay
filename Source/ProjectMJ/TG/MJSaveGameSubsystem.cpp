@@ -42,11 +42,15 @@ void UMJSaveGameSubsystem::LoadSaveGame(AMJPlayerCharacter* Player)
 		if (Player)
 		{
 			UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(Player->GetAbilitySystemComponent());
-	 		
-			UMJCharacterAttributeSet* MJCAS = const_cast<UMJCharacterAttributeSet*>(MJASC->GetSet<UMJCharacterAttributeSet>());
-
-			SaveGameData->GetAttributeSaveData().ApplyTo(MJASC);
-	 		
+	 		if (MJASC)
+	 		{
+	 			UMJCharacterAttributeSet* MJCAS = const_cast<UMJCharacterAttributeSet*>(MJASC->GetSet<UMJCharacterAttributeSet>());
+				if (MJCAS)
+				{
+					SaveGameData->GetAttributeSaveData().ApplyTo(MJASC);
+				}
+	 		}
+			
 			MJ_LOG(LogTG,Log,TEXT("loaded health : %f"), MJASC->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));
 		}
 	}
@@ -59,9 +63,16 @@ void UMJSaveGameSubsystem::SaveGameToSlot(AMJPlayerCharacter* Player)
 		if (Player)
 		{
 			UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(Player->GetAbilitySystemComponent());
-			UMJCharacterAttributeSet* MJCAS = const_cast<UMJCharacterAttributeSet*>(MJASC->GetSet<UMJCharacterAttributeSet>());
 
-			SaveGameData->GetAttributeSaveData() = FCharacterAttributeSaveData::FromAttributeSet(MJCAS);
+			if (MJASC)
+			{
+			
+				UMJCharacterAttributeSet* MJCAS = const_cast<UMJCharacterAttributeSet*>(MJASC->GetSet<UMJCharacterAttributeSet>());
+				if (MJCAS)
+				{
+					SaveGameData->GetAttributeSaveData() = FCharacterAttributeSaveData::FromAttributeSet(MJCAS);
+				}
+			}
 			
 			MJ_LOG(LogTG,Log,TEXT("saved health : %f"), SaveGameData->GetAttributeSaveData().Health);
 		}
