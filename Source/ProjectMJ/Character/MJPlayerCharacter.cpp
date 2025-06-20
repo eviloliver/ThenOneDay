@@ -14,7 +14,6 @@
 #include "DataAsset/DataAsset_StartDataBase.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
-#include "MJ/AI/AIPerceptionInfo.h"
 
 class UMJSaveGameSubsystem;
 
@@ -55,16 +54,15 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 		// RegisterWithPerceptionSystem(): bAutoRegisterAsSource == true 해줌
 		PerceptionStimuliSourceComponent->RegisterWithPerceptionSystem();
 	}
-
-	// TeamId 설정 - 적/중립/아군 구별용
-	// static_cast를 해야 한다...~~
-	TeamId = FGenericTeamId(static_cast<uint8>(ETeam_ID::Player));
-	
 }
 
 void AMJPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// TeamId 설정 - 적/중립/아군 구별용
+	TeamId = FGenericTeamId(static_cast<uint8>(ID));
+	UE_LOG(LogTemp, Log, TEXT("Selected Team Enum: %d"), TeamId.GetId());
 }
 
 void AMJPlayerCharacter::PossessedBy(AController* NewController)

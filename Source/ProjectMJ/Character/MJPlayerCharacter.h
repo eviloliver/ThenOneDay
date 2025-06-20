@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Character/MJCharacterBase.h"
 #include "GenericTeamAgentInterface.h"
+#include "MJ/AI/AIPerceptionInfo.h"
 #include "MJPlayerCharacter.generated.h"
 
 class USpringArmComponent;
@@ -26,19 +27,14 @@ public:
 	AMJPlayerCharacter();
 
 	// GenericTeamAgentInterface 구현
-	/*
-	 * TODO
-	 * CharacterBase에 해야 할지 고민: TeamId는 플레이어 뿐만 아니라 모든 캐릭터들이 있어야 할 것 같음.
-	 */
 	virtual FGenericTeamId GetGenericTeamId() const override {return TeamId;}
-	/*
-	 * TODO
-	 * SetTeamId 만들어서 에디터상에서 편집이 가능하게 할까 고민
-	 */
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ID")
+	ETeam_ID ID = ETeam_ID::NONE;
+
 protected:
 	virtual void BeginPlay() override;
-
-
+	
 	virtual void PossessedBy(AController* NewController)override;
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
