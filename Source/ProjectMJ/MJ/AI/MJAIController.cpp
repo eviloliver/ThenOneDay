@@ -39,7 +39,7 @@ AMJAIController::AMJAIController()
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AMJAIController::TargetPerceptionUpdated);
 
 	// TeamId
-	TeamId = FGenericTeamId(static_cast<uint8>(ETeam_ID::Monster));
+	TeamId = FGenericTeamId(static_cast<uint8>(ETeam_ID::MONSTER));
 	
 	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBAssetRef(TEXT("/Script/AIModule.BlackboardData'/Game/AI/BB_MJMonster.BB_MJMonster'"));
 	if (nullptr!=BBAssetRef.Object)
@@ -131,18 +131,23 @@ ETeamAttitude::Type AMJAIController::GetTeamAttitudeTowards(const AActor& Other)
 	}
 
 	FGenericTeamId OtherTeamId = OtherCharacter->GetGenericTeamId();
+	if (OtherTeamId == 255)
+	{
+		// NONE
+		return ETeamAttitude::Neutral;
+	}
 	if (OtherTeamId == 0)
 	{
 		// 플레이어인 경우
 		return ETeamAttitude::Hostile;
 	}
 	else if ((OtherTeamId>=static_cast<uint8>(ETeam_ID::NPC))&&
-		(OtherTeamId<static_cast<uint8>(ETeam_ID::Monster)))
+		(OtherTeamId<static_cast<uint8>(ETeam_ID::MONSTER)))
 	{
 		// NPC인 경우
 		return ETeamAttitude::Neutral;
 	}
-	else if (OtherTeamId>=static_cast<uint8>(ETeam_ID::Monster))
+	else if (OtherTeamId>=static_cast<uint8>(ETeam_ID::MONSTER))
 	{
 		if (OtherTeamId == GetGenericTeamId())
 		{
