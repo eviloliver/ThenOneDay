@@ -14,4 +14,8 @@ namespace MJGameplayTags
 
 	/*Weapon_Tag*/
 	UE_DEFINE_GAMEPLAY_TAG(Player_Weapon_Sword, "Player.Weapon.Sword");
+
+
+	UE_DEFINE_GAMEPLAY_TAG(Player_State_Equip_Sword, "Player.State.Equip.Sword");
+	UE_DEFINE_GAMEPLAY_TAG(Player_State_Unequip_Sword, "Player.State.Unequip.Sword");
 }

@@ -20,5 +20,8 @@ class PROJECTMJ_API UMJAbilitySystemComponent : public UAbilitySystemComponent
 	GENERATED_BODY()
 
 	// What for ? 
-	
+public:
+	void OnAbilityInputPressed(const FGameplayTag& InInputTag);
+
+	void OnAbilityInputReleased(const FGameplayTag& InInputTag);
 };

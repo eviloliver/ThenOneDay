@@ -18,5 +18,8 @@ namespace MJGameplayTags
 
 	/*Weapon_Tag*/
 	PROJECTMJ_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Weapon_Sword);
+	/*State_Tag*/
+	PROJECTMJ_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_State_Equip_Sword);
+	PROJECTMJ_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_State_Unequip_Sword);
 
 }
