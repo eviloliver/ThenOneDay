@@ -11,8 +11,7 @@
 #include "MJGamePlayTags.h"
 #include "Dialogue/MJDialogueComponent.h"
 #include "Components/SphereComponent.h"
-#include "Dialogue/MJDialogueWidget.h"
-#include "Dialogue/MJBacklogWidget.h"
+#include "UI/MJUIManagerSubsystem.h"
 #include "ProjectMJ.h"
 #include "Character/MJPlayerCharacter.h"
 #include "Compression/lz4.h"
@@ -25,13 +24,14 @@ AMJPlayerController::AMJPlayerController()
 	CachedDestination = FVector::ZeroVector;
 	FollowTime = 0.f;
 	bIsTouch=false;
-	DialogueSpeed = 0.08f;
 }
 
 void AMJPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UIManager =	GetGameInstance()->GetSubsystem<UMJUIManagerSubsystem>();
+	
 	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
 	if (MJChar)
 	{
@@ -62,9 +62,9 @@ void AMJPlayerController::SetupInputComponent()
 	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Touch, ETriggerEvent::Canceled, this, &ThisClass::OnTouchReleased);
 
 	//Dialogue Input
-	ProjectMJInputComponent->BindAction(BeginDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::BeginDialogue);
-	ProjectMJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::NextDialogue);
-	
+	ProjectMJInputComponent->BindAction(ChangeIMCAction, ETriggerEvent::Triggered, this, &ThisClass::ChangeToIMCDialogue);
+	ProjectMJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
+	ProjectMJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
 }
 void AMJPlayerController::PlayerTick(float DeltaTime)
 {
@@ -151,122 +151,63 @@ void AMJPlayerController::MoveToMouseCurser()
 	}
 }
 
-void AMJPlayerController::OnDialogueStateChanged()
+void AMJPlayerController::ChangeToIMCDialogue()
 {
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-	{
-		if (bIsDialogueActive) 
-		{
-			Subsystem->AddMappingContext(InputConfigDataAsset->DialogueMappingContext, 0);
-			Subsystem->RemoveMappingContext(InputConfigDataAsset->DefaultMappingContext);
-		}
-		else
-		{
-			Subsystem->AddMappingContext(InputConfigDataAsset->DefaultMappingContext, 0);
-			Subsystem->RemoveMappingContext(InputConfigDataAsset->DialogueMappingContext);
-		}
-	}
-}
-
-void AMJPlayerController::BeginDialogue()
-{
-	if (DialogueWidget && DialogueWidget->IsInViewport())
-		return;
-	
-	if (!IsTriggered)
-		return;
-	
-	if (IsTriggered)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("IsTriggered: %hhd"), IsTriggered);
-		
-		bIsDialogueActive = true;
-        OnDialogueStateChanged();
-        
-        AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
-        if (!MyChar) return;
-        AActor* DialogueTarget = MyChar->GetDialogueTarget();
-        if (!DialogueTarget) return;
-        UMJDialogueComponent* DialogueComp = DialogueTarget->GetComponentByClass<UMJDialogueComponent>();
-        if (!DialogueComp) return;
-        
-        DialogueComp->StartDialogue();
-        
-        DialogueWidget = CreateWidget<UMJDialogueWidget>(GetWorld(), DialogueWidgetClass);
-        if (!DialogueWidget) return;
-		DialogueWidget->AddToViewport();
-		
-        if (const FMJDialogueRow* Row = DialogueComp->GetCurrentRow())
-        {
-        	DialogueWidget->ShowDialogue(*Row);
-        	DialogueWidget->StartTyping(Row->Text, DialogueSpeed);
-        }
-
-		if (const FMJDialogueRow* Row = DialogueComp->GetPreviousRow())
-		{
-			DialogueWidget->BacklogWidget->AddLine(*Row);
-		}
-	}
-}
-
-void AMJPlayerController::EndDialog()
-{
-	if (IsTriggered)
-	{
-		bIsDialogueActive = false;
-       	OnDialogueStateChanged();
-       
-       	if (DialogueWidget)
-       	{
-       		DialogueWidget->RemoveFromParent();
-       		DialogueWidget = nullptr;
-       	}
-	}
-}
-
-void AMJPlayerController::NextDialogue()
-{
-	if (DialogueWidget->GetIsTyping())
-	{
-		DialogueWidget->SkipTyping();
-		return;
-	}
-	
 	if (IsTriggered)
 	{
 		AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
-        if (!MyChar)
-        	return;
-        AActor* DialogueTarget = MyChar->GetDialogueTarget();
-        if (!DialogueTarget)
-        	return;
-        UMJDialogueComponent* DialogueComp = DialogueTarget->GetComponentByClass<UMJDialogueComponent>();
-        if (!DialogueComp)
-        	return;
+		if (!MyChar) return;
+		AActor* DialogueTarget = MyChar->GetDialogueTarget();
+		if (!DialogueTarget) return;
+		UMJDialogueComponent* DialogueComp = DialogueTarget->GetComponentByClass<UMJDialogueComponent>();
+		if (!DialogueComp) return;
 		
-        if (!DialogueComp || !DialogueWidget) return;
-        
-        DialogueComp->NextDialogue();
-		if (DialogueComp->IsDialogueEnd())
-        {
-        	EndDialog();
-			return;
-        }
+		UIManager->ShowDialogue(DialogueComp);
 		
-        if (const FMJDialogueRow* Row = DialogueComp->GetCurrentRow())
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
         {
-        	DialogueWidget->ShowDialogue(*Row);
-        	DialogueWidget->StartTyping(Row->Text, DialogueSpeed);
+        		Subsystem->AddMappingContext(InputConfigDataAsset->DialogueMappingContext, 0);
+        		Subsystem->RemoveMappingContext(InputConfigDataAsset->DefaultMappingContext);
         }
-		if (const FMJDialogueRow* Row = DialogueComp->GetPreviousRow())
+	}
+}
+
+void AMJPlayerController::ChangeToIMCDefault() // showDialogue 마지막에 들어가야 함
+{
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->AddMappingContext(InputConfigDataAsset->DefaultMappingContext, 0);
+		Subsystem->RemoveMappingContext(InputConfigDataAsset->DialogueMappingContext);
+	}
+}
+
+void AMJPlayerController::ProceedDialogue() 
+{
+	if (IsTriggered)
+	{
+		AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
+		if (!MyChar) return;
+		AActor* DialogueTarget = MyChar->GetDialogueTarget();
+		if (!DialogueTarget) return;
+		UMJDialogueComponent* DialogueComp = DialogueTarget->GetComponentByClass<UMJDialogueComponent>();
+		if (!DialogueComp) return;
+
+		UIManager->NextDialogue(DialogueComp);
+		
+		if (DialogueComp->IsDialogueEnd()) // 마지막 대사라면 imc 전환
 		{
-			DialogueWidget->BacklogWidget->AddLine(*Row);
+			ChangeToIMCDefault();
 		}
 	}
 }
 
+void AMJPlayerController::ShowBacklog()
+{
+	UIManager->ShowBacklog();
+}
+
 void AMJPlayerController::OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
-										int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                                int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Log, TEXT("OnTriggerBegin"));
 	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
@@ -287,3 +228,5 @@ void AMJPlayerController::OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped
 		IsTriggered = false;
 	}
 }
+
+

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Image.h"
 //#include "MJDialogueRow.h"
 #include "MJDialogueWidget.generated.h"
 
@@ -22,18 +23,21 @@ class PROJECTMJ_API UMJDialogueWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	UFUNCTION()
+	virtual void NativeConstruct() override;
+	
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
 	void ShowDialogue(const FMJDialogueRow& DialogueRow);
 
-	//Typing Function
-	UFUNCTION()
+	void ShowBacklog();
+
+	//Typing Section
 	void StartTyping(const FString& InText, float TypingSpeed = 0.05f);
-
-	UFUNCTION()
 	void UpdateTyping();
-
-	UFUNCTION()
 	void SkipTyping();
+
+	// Image
+	void SetImageOpacity(const FString& SpeakerName);
 	
 	UPROPERTY(meta = (BindWidget))
 	class UMJBacklogWidget* BacklogWidget;
@@ -41,13 +45,17 @@ public:
 	bool GetIsTyping() {return bIsTyping;}
 
 protected:
-	//Typing Function
-	
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock*	Text;
 
-	// UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	// UButton* BacklogButton;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UImage* PlayerImage;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UImage* NPCImage;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UImage* BacklogKey;
 	
 	FTimerHandle TypingTimerHandle;
 	FString FullText;

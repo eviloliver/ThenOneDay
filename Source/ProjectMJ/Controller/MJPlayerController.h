@@ -8,14 +8,14 @@
 
 class UDataAsset_InputConfig;
 class UInputAction;
-class UMJDialogueWidget;
-class UMJBacklogWidget;
+class UMJUIManagerSubsystem;
+
 /**
  * Class Description:
  * Author: Lee JuHyeon
- * Created Date: 
+ * Created Date: ?
  * Last Modified By: Lee Jisoo
- * Last Modified Date: 2025.06.13(Add Dialogue Input)
+ * Last Modified Date: 2025.06.20(Delete Function Related to Dialogue)
  */
 UCLASS()
 class PROJECTMJ_API AMJPlayerController : public APlayerController
@@ -53,29 +53,27 @@ private:
 	
 #pragma region DialoguePart
 private:
-	bool bIsDialogueActive = false;
 	bool IsTriggered = false;
-	float DialogueSpeed;
-
-	void OnDialogueStateChanged();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* BeginDialogueAction;
+	UInputAction* ChangeIMCAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* NextDialogueAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* ShowBacklogAction;
+
 	UPROPERTY()
-	UMJDialogueWidget* DialogueWidget;
+	UMJUIManagerSubsystem* UIManager; 
+
+	// 이것들이 작동하면 아래 4개 함수는 지워도된다
+	void ChangeToIMCDialogue();
+	void ChangeToIMCDefault();
+	void ProceedDialogue();
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
-	TSubclassOf<UMJDialogueWidget> DialogueWidgetClass;
-
-
-	void BeginDialogue();
-	void EndDialog();
-	void NextDialogue();
+	void ShowBacklog();
 
 	UFUNCTION()
 	void OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
