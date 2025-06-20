@@ -7,6 +7,7 @@
 #include "ProjectMJ.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
+#include "Physics/MJCollision.h"
 
 AMJTA_Trace::AMJTA_Trace()
 {
@@ -49,7 +50,7 @@ FGameplayAbilityTargetDataHandle AMJTA_Trace::MakeTargetData() const
 	const FVector Start = Character->GetActorLocation() + Forward * Character->GetCapsuleComponent()->GetScaledCapsuleRadius();
 	const FVector End = Start + Forward * AttackRange;
 
-	bool HitDetected = GetWorld()->SweepSingleByChannel(OutHitResult, Start, End, FQuat::Identity, ECollisionChannel::ECC_Visibility, FCollisionShape::MakeSphere(AttackRadius), Params);
+	bool HitDetected = GetWorld()->SweepSingleByChannel(OutHitResult, Start, End, FQuat::Identity, CCHANNEL_MJAbilityTargetTrace, FCollisionShape::MakeSphere(AttackRadius), Params);
 
 	FGameplayAbilityTargetDataHandle DataHandle;
 	if (HitDetected)
