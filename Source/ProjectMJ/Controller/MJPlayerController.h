@@ -17,6 +17,7 @@ class UMJUIManagerSubsystem;
  * Last Modified By: Lee Jisoo
  * Last Modified Date: 2025.06.20(Delete Function Related to Dialogue)
  */
+
 UCLASS()
 class PROJECTMJ_API AMJPlayerController : public APlayerController
 {

@@ -30,6 +30,8 @@ void AMJCharacterBase::PossessedBy(AController* NewController)
 	{
 		ASC = CastChecked<UMJAbilitySystemComponent>(PS->GetAbilitySystemComponent());
 		ASC->InitAbilityActorInfo(PS, this);
+		
+		ensureMsgf(!CharacterStartData.IsNull(), TEXT("Forgot to assign start data to %s"), *GetName());
 	}
 }
 

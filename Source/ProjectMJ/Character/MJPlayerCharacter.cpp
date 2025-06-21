@@ -10,6 +10,11 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TG/MJGameInstanceTG.h"
+#include "TG/MJSaveGameSubsystem.h"
+#include "AbilitySystem/MJAbilitySystemComponent.h"
+#include "DataAsset/DataAsset_StartDataBase.h"
+
+class UMJSaveGameSubsystem;
 
 AMJPlayerCharacter::AMJPlayerCharacter()
 {
@@ -51,15 +56,26 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 void AMJPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+	if (!CharacterStartData.IsNull())
+	{
+		if (UDataAsset_StartDataBase* LoadData = CharacterStartData.LoadSynchronous())
+		{
+			LoadData->GiveToAbilitySystemComponent(Cast<UMJAbilitySystemComponent>(GetAbilitySystemComponent()));
+		}
+	}
 	// 로딩 데이터 있을 시 받아와서 AttributeSet에 적용
 	// 없을 시엔 무시하고 기본 AttributeSet 으로 진행됩니다.
 
 	
 	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetWorld()->GetGameInstance());
+
 	if (MJGI)
 	{
-		MJGI->LoadSaveGame(this);
-
+		UMJSaveGameSubsystem* MJSaveGameSubsystem = MJGI->GetSubsystem<UMJSaveGameSubsystem>();
+		if (MJSaveGameSubsystem)
+		{
+			MJSaveGameSubsystem->LoadSaveGame(this);
+		}
 		MJ_LOG(LogTG, Log, TEXT("player loaded health : %f"),  GetAbilitySystemComponent()->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));
 	}
 }
@@ -68,9 +84,13 @@ void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 	
-	if (UMJGameInstanceTG* GI = Cast<UMJGameInstanceTG>(GetGameInstance()))
+	if (UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetGameInstance()))
 	{
-		GI->SaveGameToSlot(this);
-		UE_LOG(LogTemp,Log,TEXT("Character :: Saved"));
+		UMJSaveGameSubsystem* MJSaveGameSubsystem = MJGI->GetSubsystem<UMJSaveGameSubsystem>();
+		if (MJSaveGameSubsystem)
+		{
+			MJSaveGameSubsystem->SaveGameToSlot(this);
+		}
+		MJ_LOG(LogTG,Log, TEXT("Character Attribute Saved"));
 	}
 }
