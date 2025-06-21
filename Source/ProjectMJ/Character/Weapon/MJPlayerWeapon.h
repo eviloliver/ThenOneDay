@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/Weapon/MJWeaponBase.h"
+#include "PlayerType/MJPlayerStructType.h"
 #include "MJPlayerWeapon.generated.h"
 
 /**
@@ -17,5 +18,9 @@ UCLASS()
 class PROJECTMJ_API AMJPlayerWeapon : public AMJWeaponBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="WeaponData")
+	FMJPlayerWeaponData PlayerWeaponData;
+
 };
