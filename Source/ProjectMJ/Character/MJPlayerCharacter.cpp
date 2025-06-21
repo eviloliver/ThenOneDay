@@ -43,7 +43,7 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 	GetCharacterMovement()->MaxWalkSpeed = 400.0;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.0;
-	
+
 	// AI Perception-캐릭터를 StimuliSource로 등록(AI가 감지)
 	PerceptionStimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("AIPerceptionStimuliSourceComponent"));
 	if (nullptr!= PerceptionStimuliSourceComponent)
@@ -59,10 +59,6 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 void AMJPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// TeamId 설정 - 적/중립/아군 구별용
-	TeamId = FGenericTeamId(static_cast<uint8>(ID));
-	UE_LOG(LogTemp, Log, TEXT("Selected Team Enum: %d"), TeamId.GetId());
 }
 
 void AMJPlayerCharacter::PossessedBy(AController* NewController)
@@ -77,7 +73,6 @@ void AMJPlayerCharacter::PossessedBy(AController* NewController)
 	}
 	// 로딩 데이터 있을 시 받아와서 AttributeSet에 적용
 	// 없을 시엔 무시하고 기본 AttributeSet 으로 진행됩니다.
-
 	
 	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetWorld()->GetGameInstance());
 

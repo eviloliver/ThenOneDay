@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Character/MJCharacterBase.h"
-#include "GenericTeamAgentInterface.h"
-#include "MJ/AI/AIPerceptionInfo.h"
 #include "MJPlayerCharacter.generated.h"
 
 class USpringArmComponent;
@@ -19,18 +17,12 @@ class UAIPerceptionStimuliSourceComponent;
  * Last Modified Date: add GameInstance SubSystem Logic
  */
 UCLASS()
-class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase, public IGenericTeamAgentInterface
+class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase
 {
 	GENERATED_BODY()
 	
 public:
 	AMJPlayerCharacter();
-
-	// GenericTeamAgentInterface 구현
-	virtual FGenericTeamId GetGenericTeamId() const override {return TeamId;}
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ID")
-	ETeam_ID ID = ETeam_ID::NONE;
 
 protected:
 	virtual void BeginPlay() override;
@@ -42,8 +34,6 @@ protected:
 	// AI Perception
 	UPROPERTY()
 	TObjectPtr<UAIPerceptionStimuliSourceComponent> PerceptionStimuliSourceComponent;
-	
-	FGenericTeamId TeamId;
 	
 private:
 
