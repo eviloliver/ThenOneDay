@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MJDungeonStruct.h"
 #include "Engine/GameInstance.h"
 #include "MJGameInstanceTG.generated.h"
 
