@@ -1,23 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MJGameInstanceTG.h"
+#include "SubSystem/MJDungeonGenerationSubSystem.h"
 
-#include <functional>
-
-#include "MJDungeonGenerationSubSystem.h"
-#include "MJHttpDownloadManager.h"
-#include "MJSaveGame.h"
-#include "MJSaveGameSubsystem.h"
-#include "ProjectMJ.h"
-#include "AbilitySystem/MJAbilitySystemComponent.h"
-#include "AbilitySystem/MJCharacterAttributeSet.h"
-#include "Character/MJPlayerCharacter.h"
-#include "Kismet/GameplayStatics.h"
+class UMJSaveGameSubsystem;
+class UMJDungeonGenerationSubSystem;
 
 UMJGameInstanceTG::UMJGameInstanceTG()
 {
-	SavedDummyPos = FVector(0.0f,0.0f,0.0f);
-	SavedMapNodeNum = -1;
+	PlayerSessionData.CurrentDungeonMapNum = -1;
 }
 
 void UMJGameInstanceTG::Init()
@@ -28,35 +19,23 @@ void UMJGameInstanceTG::Init()
 	GetSubsystem<UMJDungeonGenerationSubSystem>()->GenerateDungeonGraph();
 	
 	// Google Sheet Load
-	HttpDownloader = NewObject<UMJHttpDownloadManager>();
-	HttpDownloader->FetchGoogleSheetData();
+	//HttpDownloader = NewObject<UMJHttpDownloadManager>();
+	//HttpDownloader->FetchGoogleSheetData();
 	
-	UMJSaveGameSubsystem* SaveGameSubsystem = GetSubsystem<UMJSaveGameSubsystem>();
-	if (!UGameplayStatics::DoesSaveGameExist(SaveGameSubsystem->GetSaveSlotName(), SaveGameSubsystem->GetUserIndex()))
-	{
-		SaveGameSubsystem->CreateSaveGame();
-		MJ_LOG(LogTG,Log,TEXT("Create SaveGame File"));
-	}
+	// UMJSaveGameSubsystem* SaveGameSubsystem = GetSubsystem<UMJSaveGameSubsystem>();
+	// if (!UGameplayStatics::DoesSaveGameExist(SaveGameSubsystem->GetSaveSlotName(), SaveGameSubsystem->GetUserIndex()))
+	// {
+	// 	SaveGameSubsystem->CreateSaveGame();
+	// 	MJ_LOG(LogTG,Log,TEXT("Create SaveGame File"));
+	// }
 }
 
-FVector UMJGameInstanceTG::GetSavedDummyPos()
+FMJPlayerSessionData& UMJGameInstanceTG::GetPlayerSessionDataRef() 
 {
-	return SavedDummyPos;
+	return PlayerSessionData;
 }
 
-uint8 UMJGameInstanceTG::GetSavedMapNodeNum()
+TArray<FMJDungeonSessionData>& UMJGameInstanceTG::GetDungeonSessionDataRef()
 {
-	return SavedMapNodeNum;
+	return DungeonSessionData;
 }
-
-
-void UMJGameInstanceTG::SetSavedMapNodeNum(uint8 Input)
-{
-	SavedMapNodeNum = Input;
-}
-
-void UMJGameInstanceTG::SetSavedDummyPos(FVector Input)
-{
-	SavedDummyPos = Input;
-}
-

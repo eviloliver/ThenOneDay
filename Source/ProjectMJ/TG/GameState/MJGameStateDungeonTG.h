@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
+#include "TG/Struct/MJDungeonSessionDataStruct.h"
 #include "MJGameStateDungeonTG.generated.h"
 
 /**
@@ -24,24 +25,24 @@ public:
 	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
 	
-	UFUNCTION(BlueprintCallable)
-	FVector GetDummyPos();
 
 	UFUNCTION(BlueprintCallable)
-	void SetDummyPos(FVector Input);
+	void SetDungeonSessionData(FMJDungeonSessionData& DungeonSessionData);
 
 	UFUNCTION(BlueprintCallable)
-	void SetCurrentNodeNum(uint8 InputNodeNum);
+	void SaveDungeonSessionDataToGameInstance();
 
 protected:
 
-	UPROPERTY()
-	FVector DummyPos;
+	UPROPERTY(BlueprintReadOnly)
+	FMJDungeonSessionData CurrentDungeonSessionData;
 
-	UPROPERTY(BlueprintReadOnly, meta =( AllowPrivateAccess = "true"))
-	uint8 CurrentNodeNum;
+	UPROPERTY(BlueprintReadOnly)
+	uint8 CurrentDungeonNodeNum;
+	
+		
+
 
 	
 };
