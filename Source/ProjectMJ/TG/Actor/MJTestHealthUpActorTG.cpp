@@ -29,12 +29,10 @@ void AMJTestHealthUpActorTG::UpHealth(UPrimitiveComponent* OverlappedComponent, 
 
 	AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(OtherActor);
 	UMJAbilitySystemComponent* ASC = Cast<UMJAbilitySystemComponent>(Player->GetAbilitySystemComponent());
-
-	UMJCharacterAttributeSet* MJCAS = const_cast<UMJCharacterAttributeSet*>(ASC->GetSet<UMJCharacterAttributeSet>());
+	ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetHealthAttribute(),ASC->GetSet<UMJCharacterAttributeSet>()->GetHealth()+10.f);
 
 	
-	MJCAS->UpHealth(30);
-	MJ_LOG(LogTG,Log,TEXT("AMJTestHealthUpActorTG ::UpHealth /  loaded health : %f"), MJCAS->GetHealth());
+	MJ_LOG(LogTG,Log,TEXT("AMJTestHealthUpActorTG ::UpHealth /  loaded health : %f"), ASC->GetSet<UMJCharacterAttributeSet>()->GetHealth());
 
 }
 
