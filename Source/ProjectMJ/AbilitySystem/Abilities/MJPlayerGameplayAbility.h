@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -11,7 +11,11 @@ class AMJPlayerCharacter;
 class AMJPlayerController;
 class UMJPlayerCombatComponent;
 /**
- * 
+ * Class Description:
+ * Author: Lee JuHyeon
+ * Created Date: 2025_06_18
+ * Last Modified By:HelpFunc
+ * Last Modified Date: 2025-06_20
  */
 UCLASS()
 class PROJECTMJ_API UMJPlayerGameplayAbility : public UMJGameplayAbility

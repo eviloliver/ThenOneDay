@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -8,24 +8,13 @@
 #include "DA_PlayerStartData.generated.h"
 
 /**
- * 
+ * Class Description: Character Stat Data
+ * Author: Lee JuHyeon
+ * Created Date: 2025_06_19
+ * Last Modified By: Add Start Player Ability
+ * Last Modified Date: 2025_06_19
  */
 
-USTRUCT(BlueprintType)
-struct FPlayerAbilitySet
-{
-	GENERATED_BODY()
-
-public:
-	
-	UPROPERTY( EditDefaultsOnly,BlueprintReadOnly,meta=(Categories="InputTag"))
-	FGameplayTag InputTag;
-
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	TSubclassOf<UMJGameplayAbility>AbilityToGrant;
-
-	bool IsValid() const;
-};
 
 
 
