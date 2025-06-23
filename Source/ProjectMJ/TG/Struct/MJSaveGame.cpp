@@ -2,11 +2,9 @@
 
 
 #include "MJSaveGame.h"
-
-#include "AbilitySystem/MJCharacterAttributeSet.h"
-
 UMJSaveGame::UMJSaveGame()
 {
+	
 }
 
 FCharacterAttributeSaveData& UMJSaveGame::GetAttributeSaveData()

@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TG/MJHttpDownloadManager.h"
+#include "MJHttpDownloadManager.h"
 #include "HttpModule.h"
 #include "ProjectMJ.h"
 #include "Interfaces/IHttpResponse.h"
