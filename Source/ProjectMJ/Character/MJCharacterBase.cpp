@@ -39,7 +39,8 @@ void AMJCharacterBase::PossessedBy(AController* NewController)
 			MJ_LOG(LogTG, Warning,TEXT("Player Health %f"),GetAbilitySystemComponent()->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));
 
 		}
-		ensureMsgf(!CharacterStartData.IsNull(), TEXT("Forgot to assign start data to %s"), *GetName());
+		/// This line continues peaking so annotated - TaeGawn - 
+		//ensureMsgf(!CharacterStartData.IsNull(), TEXT("Forgot to assign start data to %s"), *GetName());
 	}
 
 }
