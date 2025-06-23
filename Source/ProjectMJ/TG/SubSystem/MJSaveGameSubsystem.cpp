@@ -1,14 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TG/MJSaveGameSubsystem.h"
+#include "MJSaveGameSubsystem.h"
 
-#include "MJSaveGame.h"
 #include "ProjectMJ.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
+#include "AbilitySystem/MJCharacterAttributeSet.h"
 #include "Character/MJPlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
-#include "Slate/SGameLayerManager.h"
+#include "TG/Struct/MJSaveGame.h"
 
 UMJSaveGameSubsystem::UMJSaveGameSubsystem()
 {
@@ -47,7 +47,7 @@ void UMJSaveGameSubsystem::LoadSaveGame(AMJPlayerCharacter* Player)
 	 			UMJCharacterAttributeSet* MJCAS = const_cast<UMJCharacterAttributeSet*>(MJASC->GetSet<UMJCharacterAttributeSet>());
 				if (MJCAS)
 				{
-					SaveGameData->GetAttributeSaveData().ApplyTo(MJASC);
+					//SaveGameData->GetAttributeSaveData().ApplyTo(MJASC);
 				}
 	 		}
 			
@@ -70,7 +70,7 @@ void UMJSaveGameSubsystem::SaveGameToSlot(AMJPlayerCharacter* Player)
 				UMJCharacterAttributeSet* MJCAS = const_cast<UMJCharacterAttributeSet*>(MJASC->GetSet<UMJCharacterAttributeSet>());
 				if (MJCAS)
 				{
-					SaveGameData->GetAttributeSaveData() = FCharacterAttributeSaveData::FromAttributeSet(MJCAS);
+					//SaveGameData->GetAttributeSaveData() = FCharacterAttributeSaveData::FromAttributeSet(MJCAS);
 				}
 			}
 			

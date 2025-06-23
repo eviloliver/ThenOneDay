@@ -1,26 +1,22 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TG/MJDungeonGenerationSubSystem.h"
-
+#include "MJDungeonGenerationSubSystem.h"
 #include <functional>
-
-#include "MJGameInstanceTG.h"
 #include "ProjectMJ.h"
+#include "TG/MJGameInstanceTG.h"
+
 
 UMJDungeonGenerationSubSystem::UMJDungeonGenerationSubSystem()
 {
 	MaxNodeNum = 10;
 }
 
-void UMJDungeonGenerationSubSystem::SetSavedMapNodeNum(uint8 Input)
-{
-}
-
-
 bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 {
 	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetGameInstance());
+
+	check(MJGI);
 	
 	FVector2D StartPoint;
 	FVector2D EndPoint;
@@ -82,6 +78,8 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,ENodeType::Boss, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
 			DungeonGraph.BossNodeID = CurrentNotAssignedNodeNum;
+
+			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum,FString(TEXT("Boss"))));
 	
 			CurrentNotAssignedNodeNum++;
 			
@@ -93,6 +91,8 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 			
 			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,RandNum,ENodeType::Battle, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
+
+			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum,FString(TEXT("Battle"))));
 			
 			CurrentNotAssignedNodeNum++;
 		}
@@ -101,6 +101,9 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 			// Reward
 			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,ENodeType::Reward, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
+
+			
+			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum,FString(TEXT("Reward"))));
 	
 			CurrentNotAssignedNodeNum++;
 		}
@@ -126,6 +129,9 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,ENodeType::Boss, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
 			DungeonGraph.BossNodeID = CurrentNotAssignedNodeNum;
+
+			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum,FString(TEXT("Boss"))));
+	
 			CurrentNotAssignedNodeNum++;
 		}
 	} 
@@ -166,51 +172,52 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 
 	if (MJGI)
 	{
-		MJGI->SetSavedMapNodeNum(DungeonGraph.StartNodeID);
+		MJGI->GetPlayerSessionDataRef().CurrentDungeonMapNum = DungeonGraph.StartNodeID;
+		
 	}
 	
 #pragma region Debug
 	
-	for (int i = 0 ; i < CurrentNotAssignedNodeNum ; i++)
-	{
-		MJ_LOG(LogTG, Warning, TEXT("Node Num = %d,  Node Assigned Num = %d, NodeType = %s"), DungeonGraph.Nodes[i].NodeID,DungeonGraph.Nodes[i].AssignedMapID, *FDungeonNode::NodeTypeToString(DungeonGraph.Nodes[i].NodeType));
-	}
-	
-	
-	for (int i = 0 ; i < CurrentNotAssignedNodeNum ; i++)
-	{
-		const FDungeonNode& Node = DungeonGraph.Nodes[i];
-		bool bOutOfBounds =
-			Node.UICoordinate.X < 0.f || Node.UICoordinate.X > ViewportSize.X ||
-			Node.UICoordinate.Y < 0.f || Node.UICoordinate.Y > ViewportSize.Y;
-
-		if (bOutOfBounds)
-		{
-			MJ_LOG(LogTG, Error, TEXT(" OUT OF BOUNDS → Node ID: %d | Pos: X=%.1f, Y=%.1f (Viewport: %.1f x %.1f)"),
-				Node.NodeID,
-				Node.UICoordinate.X,
-				Node.UICoordinate.Y,
-				ViewportSize.X,
-				ViewportSize.Y);
-		}
-		else
-		{
-			MJ_LOG(LogTG, Log, TEXT("Node ID: %d | Pos: X=%.1f, Y=%.1f"),
-				Node.NodeID,
-				Node.UICoordinate.X,
-				Node.UICoordinate.Y);
-		}
-	}
-	for (int i = 0 ; i < CurrentNotAssignedNodeNum ; i++)
-	{
-		const FDungeonNode& Node = DungeonGraph.Nodes[i];
-	
-		MJ_LOG(LogTG, Warning, TEXT("Node ID: %d | Type: %s | Pos: X=%.1f, Y=%.1f"),
-			Node.NodeID,
-			*FDungeonNode::NodeTypeToString(Node.NodeType),
-			Node.UICoordinate.X,
-			Node.UICoordinate.Y);
-	}
+	// for (int i = 0 ; i < CurrentNotAssignedNodeNum ; i++)
+	// {
+	// 	MJ_LOG(LogTG, Warning, TEXT("Node Num = %d,  Node Assigned Num = %d, NodeType = %s"), DungeonGraph.Nodes[i].NodeID,DungeonGraph.Nodes[i].AssignedMapID, *FDungeonNode::NodeTypeToString(DungeonGraph.Nodes[i].NodeType));
+	// }
+	//
+	//
+	// for (int i = 0 ; i < CurrentNotAssignedNodeNum ; i++)
+	// {
+	// 	const FDungeonNode& Node = DungeonGraph.Nodes[i];
+	// 	bool bOutOfBounds =
+	// 		Node.UICoordinate.X < 0.f || Node.UICoordinate.X > ViewportSize.X ||
+	// 		Node.UICoordinate.Y < 0.f || Node.UICoordinate.Y > ViewportSize.Y;
+	//
+	// 	if (bOutOfBounds)
+	// 	{
+	// 		MJ_LOG(LogTG, Error, TEXT(" OUT OF BOUNDS → Node ID: %d | Pos: X=%.1f, Y=%.1f (Viewport: %.1f x %.1f)"),
+	// 			Node.NodeID,
+	// 			Node.UICoordinate.X,
+	// 			Node.UICoordinate.Y,
+	// 			ViewportSize.X,
+	// 			ViewportSize.Y);
+	// 	}
+	// 	else
+	// 	{
+	// 		MJ_LOG(LogTG, Log, TEXT("Node ID: %d | Pos: X=%.1f, Y=%.1f"),
+	// 			Node.NodeID,
+	// 			Node.UICoordinate.X,
+	// 			Node.UICoordinate.Y);
+	// 	}
+	// }
+	// for (int i = 0 ; i < CurrentNotAssignedNodeNum ; i++)
+	// {
+	// 	const FDungeonNode& Node = DungeonGraph.Nodes[i];
+	//
+	// 	MJ_LOG(LogTG, Warning, TEXT("Node ID: %d | Type: %s | Pos: X=%.1f, Y=%.1f"),
+	// 		Node.NodeID,
+	// 		*FDungeonNode::NodeTypeToString(Node.NodeType),
+	// 		Node.UICoordinate.X,
+	// 		Node.UICoordinate.Y);
+	// }
 #pragma endregion 
 	
 	ConnectNodesByMST(FVector2D::Distance(FVector2D(0.0f,0.0f), ViewportSize));
@@ -278,19 +285,19 @@ void UMJDungeonGenerationSubSystem::ConnectNodesByDistance(float MaxDistance, in
 	}
 
 	// for debug
-	for (const FDungeonNode& Node : DungeonGraph.Nodes)
-	{
-		FString ConnectedStr;
-		for (int32 ID : Node.ConnectedNodeIDs)
-		{
-			ConnectedStr += FString::Printf(TEXT("%d "), ID);
-		}
-
-		MJ_LOG(LogTG, Warning, TEXT("Node %d (%s) → [%s]"),
-			Node.NodeID,
-			*FDungeonNode::NodeTypeToString(Node.NodeType),
-			*ConnectedStr);
-	}
+	// for (const FDungeonNode& Node : DungeonGraph.Nodes)
+	// {
+	// 	FString ConnectedStr;
+	// 	for (int32 ID : Node.ConnectedNodeIDs)
+	// 	{
+	// 		ConnectedStr += FString::Printf(TEXT("%d "), ID);
+	// 	}
+	//
+	// 	MJ_LOG(LogTG, Warning, TEXT("Node %d (%s) → [%s]"),
+	// 		Node.NodeID,
+	// 		*FDungeonNode::NodeTypeToString(Node.NodeType),
+	// 		*ConnectedStr);
+	// }
 	
 }
 

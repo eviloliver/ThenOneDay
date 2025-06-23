@@ -6,7 +6,6 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "MJSaveGameSubsystem.generated.h"
 
-
 /**
  * Class Description: GameInstance Subsystem saves GameData
  * Author: Cha Tae Gwan
