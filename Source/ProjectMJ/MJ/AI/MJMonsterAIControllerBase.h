@@ -48,7 +48,7 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="AI|Perception")
 	TObjectPtr<UAISenseConfig_Sight> AISenseConfig_Sight;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="AI|Perception")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="AI|Perception")
 	FAISenseAffiliationFilter DetectionByAffiliation;
 	
 	// AI Affiliation

@@ -3,80 +3,94 @@
 
 #include "MJ/AI/MJMonsterAIControllerBase.h"
 #include "AIPerceptionInfo.h"
+#include "ProjectMJ.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "mj/Interface/MJCharacterAIInterface.h"
 
 AMJMonsterAIControllerBase::AMJMonsterAIControllerBase()
 {
 	/*
-	 * TODO
-	 * AIPerception 하드코딩 변경하기
+	 * How To: AIPerception
+	 * 감지할 감각을 AIPerception에 등록->BeginPlay()에서 한다.
+	 * 감지할 감각(Sight), AIPerception 생성은 생성자에서 해야 한다.
+	 * 캐릭터(감지대상)에도 PerceptionStimuli Source 부착 필요!
 	 */
-	// AIPerception
-	// Sense-Sight
 	AISenseConfig_Sight = CreateDefaultSubobject<UAISenseConfig_Sight>("AISenseConfig_Sight");
-	AISenseConfig_Sight->SightRadius = 1000.0f;
-	AISenseConfig_Sight->LoseSightRadius = 1500.0f;
-	AISenseConfig_Sight->PeripheralVisionAngleDegrees = 60.0f;
+	
+	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
+	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(
+		this, &AMJMonsterAIControllerBase::TargetPerceptionUpdated);
 
+}
+
+void AMJMonsterAIControllerBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	APawn* ControlledPawn = GetPawn();
+	if (nullptr == ControlledPawn)
+	{
+		UE_LOG(LogTemp, Log, TEXT("AIController: ControlledPawn is null."))
+	}
+	// interface를 통해 Sight에 관련된 데이터를 받아온다.
+	IMJCharacterAIInterface* AIPawn = Cast<IMJCharacterAIInterface>(ControlledPawn);
+	if (nullptr == AIPawn)
+	{
+		UE_LOG(LogTemp, Log, TEXT("AIController: AIPawn is null."));
+
+		AISenseConfig_Sight->SightRadius = 800.0f;
+		AISenseConfig_Sight->LoseSightRadius = 1000.0f;
+		AISenseConfig_Sight->PeripheralVisionAngleDegrees = 60.0f;
+	}
+	else
+	{
+		AISenseConfig_Sight->SightRadius = AIPawn->GetAISight_SightRadius();
+		AISenseConfig_Sight->LoseSightRadius = AIPawn->GetAISight_LoseSightRadius();
+		AISenseConfig_Sight->PeripheralVisionAngleDegrees = AIPawn->GetAISight_PeripheralVisionAngleDegrees();
+	}
+	
 	/*
 	 * How To: 적, 중립, 아군 감지 여부
-	 * TeamId를 부여한다.=>GetTeamAttitudeTowards에서 판단
-	 * 우선 적(플레이어)만 감지하게 함.
-	 * // 만약 대상별로 다르게 행동을하는게 필요하다면 TargetPerceptionUpdated에 추가 구현 필요할 것
+	 * TeamId로 판단=>GetTeamAttitudeTowards에서 판단
+	 * 적(플레이어)만 감지하는 상태.
 	 */
 	/*
 	 * TODO
-	 * 자손에서 Detect 설정
-	 */
-	// AISenseConfig_Sight->DetectionByAffiliation.bDetectEnemies = true;
-	// AISenseConfig_Sight->DetectionByAffiliation.bDetectNeutrals = false;
-	// AISenseConfig_Sight->DetectionByAffiliation.bDetectFriendlies = false;
-
-	// 에디터에서 설정한 거 확인용 (더 나은 방법이 있다면 알려주세요)
-	/*
-	 * TODO
-	 * 자손 클래스에서 업데이트 불가능... 고치기 => 함수로 빼기?
+	 * 자손 클래스에서 업데이트 불가능..., 플레이해야 반영된게 보인다(당연함. BeginPlay임)
+	 * 다른 방법 모색중...
 	 */
 	DetectionByAffiliation = AISenseConfig_Sight->DetectionByAffiliation;
 	DetectionByAffiliation.bDetectEnemies = true;
 	DetectionByAffiliation.bDetectNeutrals = false;
 	DetectionByAffiliation.bDetectFriendlies = false;
 	
-	/*
-	 * How To: AiPerception
-	 * 감지할 감각 등록
-	 * 캐릭터(감지대상)에도 PerceptionStimuli Source 부착 필요!
-	 */
-	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
+	// 감각 등록
 	AIPerceptionComponent->ConfigureSense(*AISenseConfig_Sight);
-	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(
-		this, &AMJMonsterAIControllerBase::TargetPerceptionUpdated);
-}
-
-void AMJMonsterAIControllerBase::BeginPlay()
-{
-	Super::BeginPlay();
 	
 	/*
 	 * How to: AIController의 TeamId 설정
 	 * AIController를 이용하고 있는 폰의 TeamId를 가져온다.
 	 */
-	APawn* ControlledPawn = GetPawn();
 	if (nullptr== ControlledPawn)
 	{
 		TeamId = 255;
 	}
-	IGenericTeamAgentInterface* AIPawn = Cast<IGenericTeamAgentInterface>(ControlledPawn);
-	if (nullptr == AIPawn)
+	else
 	{
-		TeamId = 255;
+		IGenericTeamAgentInterface* AITeamPawn = Cast<IGenericTeamAgentInterface>(ControlledPawn);
+		if (nullptr == AITeamPawn)
+		{
+			TeamId = 255;
+		}
+		else
+		{
+			TeamId = AITeamPawn->GetGenericTeamId();
+		}
 	}
-
-	TeamId = AIPawn->GetGenericTeamId();
 }
 
 void AMJMonsterAIControllerBase::RunAI()
