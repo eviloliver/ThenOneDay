@@ -5,6 +5,7 @@
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "MJ/Interface/MJCharacterAIInterface.h"
 
 UBTTask_MJTurnToTarget::UBTTask_MJTurnToTarget()
 {
@@ -27,11 +28,13 @@ EBTNodeResult::Type UBTTask_MJTurnToTarget::ExecuteTask(UBehaviorTreeComponent& 
 		return EBTNodeResult::Failed;
 	}
 
-	/*
-	 * TODO
-	 * 하드코딩 수정하기
-	 */
-	float TurnSpeed = 2.0f;
+	IMJCharacterAIInterface* AIPawn = Cast<IMJCharacterAIInterface>(ControlledPawn);
+	if (nullptr == AIPawn)
+	{
+		return EBTNodeResult::Failed;
+	}
+	
+	float TurnSpeed = AIPawn->GetAITurnSpeed();
 	FVector LookVector = TargetPawn->GetActorLocation() - ControlledPawn->GetActorLocation();
 	LookVector.Z = 0.0f;
 	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
