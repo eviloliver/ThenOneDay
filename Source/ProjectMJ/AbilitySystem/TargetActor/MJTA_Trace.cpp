@@ -16,11 +16,17 @@ AMJTA_Trace::AMJTA_Trace()
 void AMJTA_Trace::StartTargeting(UGameplayAbility* Ability)
 {
 	Super::StartTargeting(Ability);
+
+	SourceActor = Ability->GetCurrentActorInfo()->AvatarActor.Get();
 }
 
 void AMJTA_Trace::ConfirmTargetingAndContinue()
 {
-	Super::ConfirmTargetingAndContinue();
+	if (SourceActor)
+	{
+		FGameplayAbilityTargetDataHandle DataHandle = MakeTargetData();
+		TargetDataReadyDelegate.Broadcast(DataHandle);
+	}
 }
 
 FGameplayAbilityTargetDataHandle AMJTA_Trace::MakeTargetData() const
