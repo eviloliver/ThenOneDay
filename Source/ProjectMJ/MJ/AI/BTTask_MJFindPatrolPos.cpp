@@ -5,6 +5,7 @@
 #include "AIController.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "MJ/Interface/MJCharacterAIInterface.h"
 
 UBTTask_MJFindPatrolPos::UBTTask_MJFindPatrolPos()
 {
@@ -15,26 +16,29 @@ EBTNodeResult::Type UBTTask_MJFindPatrolPos::ExecuteTask(UBehaviorTreeComponent&
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 	
-	APawn* ControllingPawn = OwnerComp.GetAIOwner()->GetPawn();
-	if (nullptr == ControllingPawn)
+	APawn* ControlledPawn = OwnerComp.GetAIOwner()->GetPawn();
+	if (nullptr == ControlledPawn)
 	{
 		return EBTNodeResult::Failed;
 	}
 
-	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(ControllingPawn->GetWorld());
+	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(ControlledPawn->GetWorld());
 	if (nullptr == NavSystem)
 	{
 		return EBTNodeResult::Failed;
 	}
 
-	FVector Origin = OwnerComp.GetBlackboardComponent()->GetValueAsVector("HomePos");
-	/*
-	 * TODO
-	 * 하드코딩 수정하기
-	 */
-	float PatrolRadius = 800.0f;
+	IMJCharacterAIInterface* AIPawn = Cast<IMJCharacterAIInterface>(ControlledPawn);
+	if (nullptr == AIPawn)
+	{
+		return EBTNodeResult::Failed;
+	}
+	
+	float PatrolRadius = AIPawn->GetAIPatrolRadius();
 	FNavLocation NextPatrolPos;
 
+	FVector Origin = OwnerComp.GetBlackboardComponent()->GetValueAsVector("HomePos");
+	
 	if (NavSystem->GetRandomPointInNavigableRadius(Origin, PatrolRadius, NextPatrolPos))
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsVector("PatrolPos", NextPatrolPos.Location);
