@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MJDungeonStruct.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "TG/Struct/MJDungeonGraphStruct.h"
 #include "MJDungeonGenerationSubSystem.generated.h"
 
 /**
@@ -22,19 +22,14 @@ class PROJECTMJ_API UMJDungeonGenerationSubSystem : public UGameInstanceSubsyste
 public:
 	
 	UMJDungeonGenerationSubSystem();
-
 	
 	UFUNCTION(BlueprintCallable)
 	bool GenerateDungeonGraph();
-
-	UFUNCTION(BlueprintCallable)
-	void SetSavedMapNodeNum(uint8 Input);
-
 	
 	UFUNCTION(BlueprintCallable)
 	const FDungeonGraph& GetDungeonGraph() const { return DungeonGraph; }
 
-	UFUNCTION(BlueprintPure, Category="Dungeon")
+	UFUNCTION(BlueprintCallable, Category="Dungeon")
 	uint8 GetMaxNodeNum() const;
 	
 	UFUNCTION(BlueprintCallable, Category="Dungeon")
@@ -44,28 +39,28 @@ protected:
 	
 	// GeneratingDungeonSystem Section
 
-	UPROPERTY(BlueprintReadOnly )
+	UPROPERTY(BlueprintReadOnly)
 	FDungeonGraph DungeonGraph;
 	
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(BlueprintReadOnly)
 	uint8 MaxNodeNum;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	FDungeonNode MakeNewNode(uint8 NodeNum, uint8 AssignedMapID,  ENodeType NodeType, FVector2D UICoordinate);
 	
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void ConnectNodesByDistance(float MaxDistance, int MaxEdgePerNode);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void ConnectNodesByMST(float MaxDistance);
 
 	UFUNCTION(BlueprintCallable)
 	bool CheckHasRoute(uint8 CurrentNodeNum, uint8 DestNodeNum);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	FVector2D GetCubicBezier(float t, const FVector2D Point);
 	
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	FVector2D GetQuadBezier(float t, const FVector2D StartPoint, const FVector2D EndPoint, const FVector2D ControlPoint);
 
 	

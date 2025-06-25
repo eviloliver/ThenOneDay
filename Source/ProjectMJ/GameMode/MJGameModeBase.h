@@ -17,17 +17,18 @@ class PROJECTMJ_API AMJGameModeBase : public AGameModeBase
 public:
 	AMJGameModeBase();
 
-	
-
-
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UDataTable> MapNames;
 	
 	UFUNCTION(BlueprintCallable)
-	bool TravelToMapByNode(const FString MapName, const uint8 NodeNum);
+	virtual bool TravelToMapByNode(const FString MapName, const uint8 NodeNum);
 	
 	UFUNCTION(BlueprintCallable)
 	bool TravelToMap(const FString MapName);
+
+	virtual void GetSeamlessTravelActorList(bool bToTransition, TArray<AActor*>& ActorList) override;
+
+	virtual void PostSeamlessTravel() override;
 };

@@ -4,8 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "GameFramework/PlayerState.h"
+#include "TG/Struct/MJPlayerSessionDataStruct.h"
 #include "MJPlayerState.generated.h"
+
 
 /**
  * Class Description: Player의 ASC 정보를 담는 곳, AttributeSet도 여기서 가진다
@@ -24,8 +27,15 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	UMJCharacterAttributeSet* GetCharacterAttributeSet() const;
+
+	FMJPlayerSessionData& GetPlayerSessionData();
+
 protected:
 
+	virtual void CopyProperties(APlayerState* PlayerState) override;
+
+	
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TObjectPtr<class UMJAbilitySystemComponent> ASC;
 
@@ -34,5 +44,10 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<class UMJCharacterSkillAttributeSet> CharacterSkillAttributeSet;
+
+	UPROPERTY()
+	FMJPlayerSessionData PlayerSessionData;
+	
 };
+
 

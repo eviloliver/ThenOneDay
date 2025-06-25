@@ -1,9 +1,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MJDungeonStruct.generated.h"
+#include "MJDungeonGraphStruct.generated.h"
 
-UENUM(BlueprintType)
+UENUM()
 enum class ENodeType : uint8
 {
 	Battle UMETA(DisplayName = "Battle"),
@@ -16,19 +16,19 @@ struct FDungeonNode
 {
 	GENERATED_BODY()
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadOnly)
 	int32 NodeID;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadOnly)
 	int32 AssignedMapID;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadOnly)
 	ENodeType NodeType;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadOnly)
 	FVector2D UICoordinate;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadOnly)
 	TArray<int32> ConnectedNodeIDs;
 
 	static FString NodeTypeToString(ENodeType Type)
@@ -53,15 +53,15 @@ struct FDungeonGraph
 {
 	GENERATED_BODY()
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadOnly)
 	TArray<FDungeonNode> Nodes;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadOnly)
 	TArray<FVector2D> BezierPoints;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadOnly)
 	int32 StartNodeID = -1;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadOnly)
 	int32 BossNodeID = -1;
 };

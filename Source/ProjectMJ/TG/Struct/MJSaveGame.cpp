@@ -7,6 +7,7 @@
 
 UMJSaveGame::UMJSaveGame()
 {
+	
 }
 
 FCharacterAttributeSaveData& UMJSaveGame::GetAttributeSaveData()

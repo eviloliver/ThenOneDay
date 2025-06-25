@@ -3,8 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MJDungeonStruct.h"
 #include "Engine/GameInstance.h"
+#include "Struct/MJDungeonSessionDataStruct.h"
+#include "Struct/MJPlayerSessionDataStruct.h"
 #include "MJGameInstanceTG.generated.h"
 
 
@@ -28,32 +29,19 @@ public:
 	virtual void Init() override;
 	
 	TObjectPtr<UMJHttpDownloadManager> HttpDownloader;
-
-	// Getter 
 	
 	UFUNCTION(BlueprintCallable)
-	FVector GetSavedDummyPos();
+	FMJPlayerSessionData& GetPlayerSessionDataRef();
 
 	UFUNCTION(BlueprintCallable)
-	uint8 GetSavedMapNodeNum();
-	
-	
-	// Setter
-	
-	UFUNCTION(BlueprintCallable)
-	void SetSavedDummyPos(FVector Input);
-
-	UFUNCTION(BlueprintCallable)
-	void SetSavedMapNodeNum(uint8 Input);
-	
+	TArray<FMJDungeonSessionData>& GetDungeonSessionDataRef();
 
 protected:
-	
-	UPROPERTY(VisibleAnywhere)
-	FVector SavedDummyPos;
 
 	UPROPERTY(VisibleAnywhere)
-	uint8 SavedMapNodeNum;
-	
+	FMJPlayerSessionData PlayerSessionData;
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<FMJDungeonSessionData> DungeonSessionData;
 	
 };

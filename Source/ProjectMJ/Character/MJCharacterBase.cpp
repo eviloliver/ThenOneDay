@@ -2,6 +2,8 @@
 
 
 #include "Character/MJCharacterBase.h"
+
+#include "ProjectMJ.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "Player/MJPlayerState.h"
 
@@ -35,14 +37,23 @@ void AMJCharacterBase::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	AMJPlayerState* PS = GetPlayerState<AMJPlayerState>();
+	
 	if (PS)
 	{
-		ASC = CastChecked<UMJAbilitySystemComponent>(PS->GetAbilitySystemComponent());
-		ASC->InitAbilityActorInfo(PS, this);
+		ASC = Cast<UMJAbilitySystemComponent>(PS->GetAbilitySystemComponent());
+		if (ASC)
+		{
+			ASC->InitAbilityActorInfo(PS, this);
 		
-		ensureMsgf(!CharacterStartData.IsNull(), TEXT("Forgot to assign start data to %s"), *GetName());
+			MJ_LOG(LogTG, Warning,TEXT("Player Health %f"),GetAbilitySystemComponent()->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));
+
+		}
+		/// This line continues peaking so annotated - TaeGawn - 
+		//ensureMsgf(!CharacterStartData.IsNull(), TEXT("Forgot to assign start data to %s"), *GetName());
 	}
+
 }
+
 
 
 
