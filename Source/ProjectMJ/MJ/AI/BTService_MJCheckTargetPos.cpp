@@ -7,7 +7,7 @@
 UBTService_MJCheckTargetPos::UBTService_MJCheckTargetPos()
 {
 	NodeName = TEXT("CheckTargetPos");
-	Interval = 1.0f;
+	Interval = 0.5f;
 }
 
 void UBTService_MJCheckTargetPos::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
