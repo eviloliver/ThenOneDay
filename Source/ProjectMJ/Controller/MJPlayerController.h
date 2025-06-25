@@ -8,13 +8,17 @@
 #include "MJPlayerController.generated.h"
 
 class UDataAsset_InputConfig;
-/*
-*Class Description :
-*Author : Lee JuHyeon
-* Created Date : 2025_06_11
-* Last Modified By : (Last Modifier)
-* Last Modified Date : (Last Modified Date)
-* */
+class UInputAction;
+class UMJUIManagerSubsystem;
+
+/**
+ * Class Description:
+ * Author: Lee JuHyeon
+ * Created Date: ?
+ * Last Modified By: Lee Jisoo
+ * Last Modified Date: 2025.06.20(Delete Function Related to Dialogue)
+ */
+
 UCLASS()
 class PROJECTMJ_API AMJPlayerController : public APlayerController
 {
@@ -23,7 +27,7 @@ public:
 	AMJPlayerController();
 
 protected:
-	
+	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 	
 	virtual void PlayerTick(float DeltaTime)override;
@@ -45,9 +49,46 @@ private:
 	UDataAsset_InputConfig* InputConfigDataAsset;
 
 private:
-
 	FVector CachedDestination;
 
 	bool bIsTouch; // Is it a touch device
 	float FollowTime; // For how long it has been pressed
+
+
+	
+#pragma region DialoguePart
+private:
+	bool IsTriggered = false;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* ChangeIMCAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* NextDialogueAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* ShowBacklogAction;
+
+	UPROPERTY()
+	UMJUIManagerSubsystem* UIManager; 
+
+	// 이것들이 작동하면 아래 4개 함수는 지워도된다
+	void ChangeToIMCDialogue();
+	void ChangeToIMCDefault();
+	void ProceedDialogue();
+	
+	void ShowBacklog();
+
+	UFUNCTION()
+	void OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
+										int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
+										int32 OtherBodyIndex);
+
+	
+#pragma endregion
+	
 };

@@ -10,6 +10,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UMJPlayerCombatComponent;
 class UAIPerceptionStimuliSourceComponent;
+class USphereComponent;
 /**
  * Class Description:
  * Author: Lee JuHyeon
@@ -28,8 +29,11 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
-	virtual void PossessedBy(AController* NewController)override;
 
+
+
+
+	virtual void PossessedBy(AController* NewController)override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	// AI Perception
@@ -39,6 +43,24 @@ protected:
 private:
 
 #pragma region ComponentPart
+public:
+	FORCEINLINE UMJPlayerCombatComponent* GetPlayerCombatComponent() { return PlayerCombatComponent; }
+	
+
+#pragma region DialoguePart	
+protected:
+ 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly ,Category = "Trigger")
+ 	USphereComponent* DialogueTrigger;
+
+ 	UPROPERTY()
+ 	AActor* DialogueTarget;
+
+public:
+	void SetDialogueTarget(AActor* NewTarget) { DialogueTarget = NewTarget; }
+	
+	AActor* GetDialogueTarget() {return DialogueTarget;}
+	USphereComponent* GetDialogueTrigger() {return DialogueTrigger;}
+#pragma endregion
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="Camera",meta=(AllowPrivateAccess=true))
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
@@ -48,6 +70,4 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UMJPlayerCombatComponent>PlayerCombatComponent;
 #pragma endregion
-public:
-	FORCEINLINE UMJPlayerCombatComponent* GetPlayerCombatComponent() { return PlayerCombatComponent; }
 };

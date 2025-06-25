@@ -42,6 +42,9 @@ class PROJECTMJ_API UDataAsset_InputConfig : public UDataAsset
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UInputMappingContext>DefaultMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputMappingContext> DialogueMappingContext;
 	
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, meta=(TitleProperty=InputAction))
 	TArray<FMJInputActionConfig> NativeInputActions;

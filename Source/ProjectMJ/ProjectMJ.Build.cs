@@ -14,7 +14,8 @@ public class ProjectMJ : ModuleRules
         {
 	        "Core", "CoreUObject", "Engine", "InputCore", "UMG", "Niagara",
 	        "AIModule", "GameplayAbilities", "GameplayTags", "GameplayTasks",
-	        "NavigationSystem", "PhysicsCore", "Json", "JsonUtilities", "HTTP"
+	        "NavigationSystem", "PhysicsCore", "Json", "JsonUtilities", "HTTP",
+          "EnhancedInput"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

@@ -2,6 +2,7 @@
 
 
 #include "Character/MJPlayerCharacter.h"
+#include "Components/SphereComponent.h"
 #include "AbilitySystemComponent.h"
 #include "ProjectMJ.h"
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
@@ -62,6 +63,14 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 void AMJPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	DialogueTarget = nullptr;
+	
+	DialogueTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("DialogueTrigger"));
+	DialogueTrigger->SetupAttachment(RootComponent);
+	DialogueTrigger->InitSphereRadius(120.f);
+	DialogueTrigger->SetCollisionProfileName(TEXT("Trigger"));
+	DialogueTrigger->SetGenerateOverlapEvents(true);
+	DialogueTrigger->SetHiddenInGame(false);
 }
 
 void AMJPlayerCharacter::PossessedBy(AController* NewController)
@@ -88,7 +97,6 @@ void AMJPlayerCharacter::PossessedBy(AController* NewController)
 		}
 		MJ_LOG(LogTG, Log, TEXT("player loaded health : %f"),  GetAbilitySystemComponent()->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));
 	}
-	
 }
 
 void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -104,5 +112,4 @@ void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		}
 		MJ_LOG(LogTG,Log, TEXT("Character Attribute Saved"));
 	}
-
 }
