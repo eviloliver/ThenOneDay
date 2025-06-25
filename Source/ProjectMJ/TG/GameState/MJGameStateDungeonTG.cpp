@@ -40,14 +40,13 @@ void AMJGameStateDungeonTG::PostInitializeComponents()
 
 		for (auto iter : CurrentDungeonSessionData.SpawnInfos)
 		{
-			FActorSpawnParameters Params;
-			GetWorld()->SpawnActor<AActor>(iter.ActorClass.Get(),iter.Transform,Params);	
+			if (iter.ActorClass->ImplementsInterface(UMJInstancedActorInterface::StaticClass()))
+			{
+				FActorSpawnParameters Params;
+				GetWorld()->SpawnActor<AActor>(iter.ActorClass.Get(),iter.Transform,Params);	
+			}
 		}
-		
 	}
-
-	
-
 }
 
 void AMJGameStateDungeonTG::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -66,14 +65,17 @@ void AMJGameStateDungeonTG::SaveDungeonSessionDataToGameInstance()
 
 	if (MJGI)
 	{
-		for (TActorIterator<AMJDummyActorTG> It(GetWorld()); It ; ++It)
+		for (TActorIterator<AActor> Iter(GetWorld()); Iter ; ++Iter)
 		{
-			
-			AMJDummyActorTG* Actor = *It;
-			FMJDungeonActorInfo Info;
-			Info.ActorClass = Actor->GetClass();
-			Info.Transform = Actor->GetActorTransform();
-			CurrentDungeonSessionData.SpawnInfos.Add(Info);
+			if (Iter->Implements<UMJInstancedActorInterface>())
+			{
+				
+				AActor* Actor = *Iter;
+				FMJDungeonActorInfo Info;
+				Info.ActorClass = Actor->GetClass();
+				Info.Transform = Actor->GetActorTransform();
+				CurrentDungeonSessionData.SpawnInfos.Add(Info);	
+			}
 		}
 		
 		MJGI->GetDungeonSessionDataRef()[CurrentDungeonNodeNum] = CurrentDungeonSessionData;
