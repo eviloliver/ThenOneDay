@@ -7,8 +7,8 @@
 #include "MJGA_BasicMeleeAttack.generated.h"
 
 /**
- * Class Description: ÀÏ¹İÀûÀÎ ±ÙÁ¢ °ø°İ
- * Author: ½Åµ¿¹Î
+ * Class Description: ê¸°ë³¸ ê·¼ì ‘ ê³µê²©
+ * Author: ì‹ ë™ë¯¼
  * Created Date: 2025_06_24
  * Last Modified By: (Last Modifier)
  * Last Modified Date: (Last Modified Date)
