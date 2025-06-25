@@ -54,19 +54,21 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 		// RegisterWithPerceptionSystem(): bAutoRegisterAsSource == true 해줌
 		PerceptionStimuliSourceComponent->RegisterWithPerceptionSystem();
 	}
-}
 
-void AMJPlayerCharacter::BeginPlay()
-{
-	Super::BeginPlay();
 	DialogueTarget = nullptr;
-	
+
 	DialogueTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("DialogueTrigger"));
 	DialogueTrigger->SetupAttachment(RootComponent);
 	DialogueTrigger->InitSphereRadius(120.f);
 	DialogueTrigger->SetCollisionProfileName(TEXT("Trigger"));
 	DialogueTrigger->SetGenerateOverlapEvents(true);
 	DialogueTrigger->SetHiddenInGame(false);
+}
+
+void AMJPlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
 }
 
 void AMJPlayerCharacter::PossessedBy(AController* NewController)

@@ -15,6 +15,7 @@ void UMJUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	DialogueWidgetClass = LoadClass<UMJDialogueWidget>(
 			nullptr,
 			TEXT("/Game/Dialogue/Widget/BP_MJDialogueWidget.BP_MJDialogueWidget_C"));
+
 }
 
 void UMJUIManagerSubsystem::Deinitialize()
