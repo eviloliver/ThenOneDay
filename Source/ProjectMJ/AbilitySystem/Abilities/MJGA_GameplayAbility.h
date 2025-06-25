@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "MJGameplayAbility.generated.h"
+#include "MJGA_GameplayAbility.generated.h"
 
 UENUM(BlueprintType)
 enum class EMJAbilityActivationPolicy :uint8
@@ -20,7 +20,7 @@ enum class EMJAbilityActivationPolicy :uint8
  * Last Modified Date: (Last Modified Date)
  */
 UCLASS()
-class PROJECTMJ_API UMJGameplayAbility : public UGameplayAbility
+class PROJECTMJ_API UMJGA_GameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 	
@@ -29,6 +29,6 @@ protected:
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)override;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
-	EMJAbilityActivationPolicy AbilityActivationPolicy = EMJAbilityActivationPolicy::OnTriggered;
+	EMJAbilityActivationPolicy AbilityActivationPolicy;
 	
 };
