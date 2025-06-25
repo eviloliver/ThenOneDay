@@ -5,9 +5,12 @@
 #include "InputAction.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "AbilitySystemComponent.h"
 #include "DataAsset/DataAsset_InputConfig.h"
 #include "Component/Input/MJInputComponent.h"
+#include "Character/MJPlayerCharacter.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "MJGamePlayTags.h"
 #include "Dialogue/MJDialogueComponent.h"
 #include "Components/SphereComponent.h"
@@ -65,6 +68,7 @@ void AMJPlayerController::SetupInputComponent()
 	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Touch, ETriggerEvent::Completed, this, &ThisClass::OnTouchReleased);
 	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Touch, ETriggerEvent::Canceled, this, &ThisClass::OnTouchReleased);
 
+	ProjectMJInputComponent->BindAbilityInputAction(InputConfigDataAsset, this, &AMJPlayerController::Input_AbilityInputPressed, &AMJPlayerController::Input_AbilityInputReleased);
 	//Dialogue Input
 	ProjectMJInputComponent->BindAction(ChangeIMCAction, ETriggerEvent::Triggered, this, &ThisClass::ChangeToIMCDialogue);
 	ProjectMJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
@@ -234,3 +238,21 @@ void AMJPlayerController::OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped
 }
 
 
+
+void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
+{
+	AMJPlayerCharacter* ControlledPawn = Cast<AMJPlayerCharacter>(GetPawn());
+	if (ControlledPawn)
+	{
+		if (UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(ControlledPawn->GetAbilitySystemComponent()))
+		{
+			MJASC->OnAbilityInputPressed(InInputTag);
+		}
+	}
+	
+}
+
+void AMJPlayerController::Input_AbilityInputReleased(FGameplayTag InInputTag)
+{
+
+}

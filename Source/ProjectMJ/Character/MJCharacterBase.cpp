@@ -21,6 +21,15 @@ UAbilitySystemComponent* AMJCharacterBase::GetAbilitySystemComponent() const
 	return ASC;
 }
 
+void AMJCharacterBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// TeamId 설정 - 적/중립/아군 구별용
+	TeamId = FGenericTeamId(static_cast<uint8>(ID));
+	UE_LOG(LogTemp, Log, TEXT("Selected Team Enum: %d"), TeamId.GetId());
+}
+
 void AMJCharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);

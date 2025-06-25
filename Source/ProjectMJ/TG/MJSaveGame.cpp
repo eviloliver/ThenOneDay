@@ -3,7 +3,7 @@
 
 #include "MJSaveGame.h"
 
-#include "AbilitySystem/MJCharacterAttributeSet.h"
+#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 
 UMJSaveGame::UMJSaveGame()
 {

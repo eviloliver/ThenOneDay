@@ -14,3 +14,8 @@ UInputAction* UDataAsset_InputConfig::FindNativeInputActionByTag(const FGameplay
     }
     return nullptr;
 }
+
+bool FMJInputActionConfig::IsVaild() const
+{
+    return InputTag.IsValid() && InputAction;
+}

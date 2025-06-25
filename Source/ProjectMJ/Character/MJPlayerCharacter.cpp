@@ -5,7 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "AbilitySystemComponent.h"
 #include "ProjectMJ.h"
-#include "AbilitySystem/MJCharacterAttributeSet.h"
+#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -13,6 +13,9 @@
 #include "TG/MJSaveGameSubsystem.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "DataAsset/DataAsset_StartDataBase.h"
+#include "Component/MJPlayerCombatComponent.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
 
 class UMJSaveGameSubsystem;
 
@@ -43,6 +46,23 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = 400.0;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.0;
 
+	PlayerCombatComponent = CreateDefaultSubobject<UMJPlayerCombatComponent>(TEXT("PlayerCombatComponent"));
+
+	// AI Perception-캐릭터를 StimuliSource로 등록(AI가 감지)
+	PerceptionStimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("AIPerceptionStimuliSourceComponent"));
+	if (nullptr!= PerceptionStimuliSourceComponent)
+	{
+		// Sight source 등록
+		PerceptionStimuliSourceComponent->RegisterForSense(UAISense_Sight::StaticClass());
+
+		// RegisterWithPerceptionSystem(): bAutoRegisterAsSource == true 해줌
+		PerceptionStimuliSourceComponent->RegisterWithPerceptionSystem();
+	}
+}
+
+void AMJPlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
 	DialogueTarget = nullptr;
 	
 	DialogueTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("DialogueTrigger"));
@@ -65,7 +85,6 @@ void AMJPlayerCharacter::PossessedBy(AController* NewController)
 	}
 	// 로딩 데이터 있을 시 받아와서 AttributeSet에 적용
 	// 없을 시엔 무시하고 기본 AttributeSet 으로 진행됩니다.
-
 	
 	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetWorld()->GetGameInstance());
 

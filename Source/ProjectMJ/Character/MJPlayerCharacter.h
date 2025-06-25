@@ -8,13 +8,15 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class UMJPlayerCombatComponent;
+class UAIPerceptionStimuliSourceComponent;
 class USphereComponent;
 /**
  * Class Description:
  * Author: Lee JuHyeon
  * Created Date: 2025_06_11
- * Last Modified By: Lee Jisoo
- * Last Modified Date: Delete CameraBoom Sockect, 2025.06.13(Delete Dialogue Input)
+ * Last Modified By: Add Combat Component 
+ * Last Modified Date: 2025_06_18
  */
 UCLASS()
 class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase
@@ -25,18 +27,24 @@ public:
 	AMJPlayerCharacter();
 
 protected:
+	virtual void BeginPlay() override;
+	
+
+
+
+
 	virtual void PossessedBy(AController* NewController)override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	// AI Perception
+	UPROPERTY()
+	TObjectPtr<UAIPerceptionStimuliSourceComponent> PerceptionStimuliSourceComponent;
+	
 private:
 
 #pragma region ComponentPart
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="Camera",meta=(AllowPrivateAccess=true))
-	TObjectPtr<USpringArmComponent> CameraBoom;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = true))
-	TObjectPtr<UCameraComponent> FollowCamera;
-#pragma endregion
+public:
+	FORCEINLINE UMJPlayerCombatComponent* GetPlayerCombatComponent() { return PlayerCombatComponent; }
 	
 
 #pragma region DialoguePart	
@@ -52,5 +60,14 @@ public:
 	
 	AActor* GetDialogueTarget() {return DialogueTarget;}
 	USphereComponent* GetDialogueTrigger() {return DialogueTrigger;}
+#pragma endregion
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="Camera",meta=(AllowPrivateAccess=true))
+	TObjectPtr<USpringArmComponent> CameraBoom;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UCameraComponent> FollowCamera;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UMJPlayerCombatComponent>PlayerCombatComponent;
 #pragma endregion
 };

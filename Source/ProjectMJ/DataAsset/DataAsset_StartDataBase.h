@@ -1,12 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "PlayerType/MJPlayerStructType.h"
 #include "DataAsset_StartDataBase.generated.h"
 
-class UMJGameplayAbility;
+class UMJGA_GameplayAbility;
 class UMJAbilitySystemComponent;
 /**
  * Class Description: Character Stat Data
@@ -25,10 +26,10 @@ public:
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Stat")
-	TArray<TSubclassOf<UMJGameplayAbility>>ActivateOnGivenAbility;
+	TArray<TSubclassOf<UMJGA_GameplayAbility>>ActivateOnGivenAbility;
 
 	UPROPERTY(EditDefaultsOnly, Category="Stat")
-	TArray<TSubclassOf<UMJGameplayAbility>>ReactiveAbilities;
+	TArray<TSubclassOf<UMJGA_GameplayAbility>>ReactiveAbilities;
 
-	void GrantAbilities(const TArray<TSubclassOf<UMJGameplayAbility>>& InAbilitesToGive, UMJAbilitySystemComponent* InASCToGive, int32 ApplyLevel = 1);
+	void GrantAbilities(const TArray<TSubclassOf<UMJGA_GameplayAbility>>& InAbilitesToGive, UMJAbilitySystemComponent* InASCToGive, int32 ApplyLevel = 1);
 };
