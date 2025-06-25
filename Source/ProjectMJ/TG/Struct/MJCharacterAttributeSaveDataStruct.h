@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystem/MJCharacterAttributeSet.h"
+#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "MJCharacterAttributeSaveDataStruct.generated.h"
 
 USTRUCT(BlueprintType)

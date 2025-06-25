@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
-#include "../AbilitySystem/MJCharacterAttributeSet.h"
+#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "GameFramework/PlayerState.h"
 #include "TG/Struct/MJPlayerSessionDataStruct.h"
 #include "MJPlayerState.generated.h"
