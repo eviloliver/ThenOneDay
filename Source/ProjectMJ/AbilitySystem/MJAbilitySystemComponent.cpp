@@ -2,7 +2,7 @@
 
 
 #include "AbilitySystem/MJAbilitySystemComponent.h"
-#include "AbilitySystem/Abilities/MJGameplayAbility.h"
+#include "AbilitySystem/Abilities/MJGA_GameplayAbility.h"
 
 void UMJAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InInputTag)
 {

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystem/Abilities/MJGameplayAbility.h"
+#include "AbilitySystem/Abilities/MJGA_GameplayAbility.h"
 #include "MJPlayerGameplayAbility.generated.h"
 
 
@@ -18,7 +18,7 @@ class UMJPlayerCombatComponent;
  * Last Modified Date: 2025-06_20
  */
 UCLASS()
-class PROJECTMJ_API UMJPlayerGameplayAbility : public UMJGameplayAbility
+class PROJECTMJ_API UMJPlayerGameplayAbility : public UMJGA_GameplayAbility
 {
 	GENERATED_BODY()
 

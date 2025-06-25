@@ -2,7 +2,7 @@
 
 
 #include "PlayerType/MJPlayerStructType.h"
-#include "AbilitySystem/Abilities/MJGameplayAbility.h"
+#include "AbilitySystem/Abilities/MJGA_GameplayAbility.h"
 
 bool FPlayerAbilitySet::IsValid() const
 {

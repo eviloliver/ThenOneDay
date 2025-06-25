@@ -6,7 +6,7 @@
 #include "MJPlayerStructType.generated.h"
 
 class UMJPlayerLinkAnimLayer;
-class UMJGameplayAbility;
+class UMJGA_GameplayAbility;
 class UInputMappingContext;
 
 /**
@@ -28,7 +28,7 @@ public:
 	FGameplayTag InputTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UMJGameplayAbility>AbilityToGrant;
+	TSubclassOf<UMJGA_GameplayAbility>AbilityToGrant;
 
 	bool IsValid() const;
 };

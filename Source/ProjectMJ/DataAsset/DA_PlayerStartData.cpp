@@ -2,7 +2,7 @@
 
 
 #include "DataAsset/DA_PlayerStartData.h"
-#include "AbilitySystem/Abilities/MJGameplayAbility.h"
+#include "AbilitySystem/Abilities/MJGA_GameplayAbility.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 
 
