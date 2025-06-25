@@ -6,7 +6,13 @@
 #include "Components/ActorComponent.h"
 #include "MJExtensionComponent.generated.h"
 
-
+/**
+* Class Description: Find Pawn in all actors
+ * Author: Lee JuHyeon
+ * Created Date: 2025_06_19
+ * Last Modified By: Lee JuHyeon
+ * Last Modified Date: Add Find Pawn(Template)
+*/
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTMJ_API UMJExtensionComponent : public UActorComponent
 {

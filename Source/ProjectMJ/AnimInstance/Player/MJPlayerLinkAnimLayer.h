@@ -8,7 +8,11 @@
 
 class UMJPlayerAnimInstance;
 /**
- * 
+ * Class Description: Using GameplayTag change Anime for WeaponType
+ * Author: Lee JuHyeon
+ * Created Date: 2025_06_21
+ * Last Modified By: Lee JuHyeon
+ * Last Modified Date: Add Get Func
  */
 UCLASS()
 class PROJECTMJ_API UMJPlayerLinkAnimLayer : public UMJAnimInstanceBase

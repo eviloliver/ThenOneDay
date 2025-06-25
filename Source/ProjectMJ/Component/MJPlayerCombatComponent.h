@@ -10,7 +10,11 @@
 
 class AMJPlayerWeapon;
 /**
- * 
+ * Class Description: Find Weapon by Tag
+ * Author: Lee JuHyeon
+ * Created Date: 2025_06_19
+ * Last Modified By: Lee JuHyeon
+ * Last Modified Date: 
  */
 UCLASS()
 class PROJECTMJ_API UMJPlayerCombatComponent : public UMJCombatComponent

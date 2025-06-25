@@ -28,7 +28,11 @@ public:
 };
 
 /**
- * 
+ * Class Description: Config_Data
+ * Author: Lee JuHyeon
+ * Created Date: 2025_06_14
+ * Last Modified By: (Last Modifier)
+ * Last Modified Date: (Last Modified Date)
  */
 UCLASS()
 class PROJECTMJ_API UDataAsset_InputConfig : public UDataAsset

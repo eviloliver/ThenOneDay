@@ -12,10 +12,7 @@ AMJWeaponBase::AMJWeaponBase()
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
 	SetRootComponent(WeaponMesh);
 
-	WeaponCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("WeaponCollision"));
-	WeaponCollision->SetupAttachment(GetRootComponent());
-	WeaponCollision->InitBoxExtent(FVector(20.0f));
-	WeaponCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 }
 
 

@@ -8,7 +8,11 @@
 #include "MJInputComponent.generated.h"
 
 /**
- * 
+ * Class Description: Input related components
+ * Author: Lee JuHyeon
+ * Created Date: 2025_06_19
+ * Last Modified By: Lee JuHyeon
+ * Last Modified Date: Add BInd Action Input Func
  */
 UCLASS()
 class PROJECTMJ_API UMJInputComponent : public UEnhancedInputComponent

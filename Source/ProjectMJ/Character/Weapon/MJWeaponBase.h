@@ -11,8 +11,8 @@ class UBoxComponent;
  * Class Description: WeaponData Base
  * Author: Lee JuHyeon
  * Created Date: 2025_06_18
- * Last Modified By:Create WeaponData 
- * Last Modified Date: 2025_06_18
+ * Last Modified By:Lee Ju Hyeon
+ * Last Modified Date: Remove Collision
 */
 UCLASS()
 class PROJECTMJ_API AMJWeaponBase : public AActor
@@ -28,10 +28,5 @@ protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Mesh")
 	TObjectPtr<UStaticMeshComponent>WeaponMesh;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
-	TObjectPtr <UBoxComponent> WeaponCollision;
-
-public:
-	FORCEINLINE UBoxComponent* GetWeaponCollision() { return WeaponCollision; }
 
 };

@@ -9,7 +9,11 @@
 
 class AMJWeaponBase;
 /**
- * 
+ * Class Description: PlayerBattle relate Class
+ * Author: Lee JuHyeon
+ * Created Date: 2025_06_19
+ * Last Modified By: Lee JuHyeon
+ * Last Modified Date: Add Using Func from BP 
  */
 UCLASS()
 class PROJECTMJ_API UMJCombatComponent : public UMJExtensionComponent
