@@ -9,6 +9,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UMJPlayerCombatComponent;
+class UAIPerceptionStimuliSourceComponent;
 /**
  * Class Description:
  * Author: Lee JuHyeon
@@ -26,12 +27,15 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
-
+	
 	virtual void PossessedBy(AController* NewController)override;
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	// AI Perception
+	UPROPERTY()
+	TObjectPtr<UAIPerceptionStimuliSourceComponent> PerceptionStimuliSourceComponent;
+	
 private:
 
 #pragma region ComponentPart

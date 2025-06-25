@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "MJGameplayAbility.generated.h"
+#include "MJGA_GameplayAbility.generated.h"
 
 class UMJCombatComponent;
 class UMJAbilitySystemComponent;
@@ -23,7 +23,7 @@ enum class EMJAbilityActivationPolicy :uint8
  * Last Modified Date: 2025_06_18
  */
 UCLASS()
-class PROJECTMJ_API UMJGameplayAbility : public UGameplayAbility
+class PROJECTMJ_API UMJGA_GameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 	

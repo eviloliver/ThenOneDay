@@ -2,17 +2,21 @@
 
 
 #include "Character/MJPlayerCharacter.h"
-
 #include "AbilitySystemComponent.h"
 #include "ProjectMJ.h"
-#include "AbilitySystem/MJCharacterAttributeSet.h"
+#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TG/MJGameInstanceTG.h"
+#include "TG/MJSaveGameSubsystem.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "DataAsset/DataAsset_StartDataBase.h"
 #include "Component/MJPlayerCombatComponent.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
+
+class UMJSaveGameSubsystem;
 
 AMJPlayerCharacter::AMJPlayerCharacter()
 {
@@ -43,6 +47,16 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 
 	PlayerCombatComponent = CreateDefaultSubobject<UMJPlayerCombatComponent>(TEXT("PlayerCombatComponent"));
 
+	// AI Perception-캐릭터를 StimuliSource로 등록(AI가 감지)
+	PerceptionStimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("AIPerceptionStimuliSourceComponent"));
+	if (nullptr!= PerceptionStimuliSourceComponent)
+	{
+		// Sight source 등록
+		PerceptionStimuliSourceComponent->RegisterForSense(UAISense_Sight::StaticClass());
+
+		// RegisterWithPerceptionSystem(): bAutoRegisterAsSource == true 해줌
+		PerceptionStimuliSourceComponent->RegisterWithPerceptionSystem();
+	}
 }
 
 void AMJPlayerCharacter::BeginPlay()
@@ -62,13 +76,16 @@ void AMJPlayerCharacter::PossessedBy(AController* NewController)
 	}
 	// 로딩 데이터 있을 시 받아와서 AttributeSet에 적용
 	// 없을 시엔 무시하고 기본 AttributeSet 으로 진행됩니다.
-
 	
 	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetWorld()->GetGameInstance());
+
 	if (MJGI)
 	{
-		MJGI->LoadSaveGame(this);
-
+		UMJSaveGameSubsystem* MJSaveGameSubsystem = MJGI->GetSubsystem<UMJSaveGameSubsystem>();
+		if (MJSaveGameSubsystem)
+		{
+			MJSaveGameSubsystem->LoadSaveGame(this);
+		}
 		MJ_LOG(LogTG, Log, TEXT("player loaded health : %f"),  GetAbilitySystemComponent()->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));
 	}
 	
@@ -78,9 +95,13 @@ void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 	
-	if (UMJGameInstanceTG* GI = Cast<UMJGameInstanceTG>(GetGameInstance()))
+	if (UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetGameInstance()))
 	{
-		GI->SaveGameToSlot(this);
+		UMJSaveGameSubsystem* MJSaveGameSubsystem = MJGI->GetSubsystem<UMJSaveGameSubsystem>();
+		if (MJSaveGameSubsystem)
+		{
+			MJSaveGameSubsystem->SaveGameToSlot(this);
+		}
 		MJ_LOG(LogTG,Log, TEXT("Character Attribute Saved"));
 	}
 

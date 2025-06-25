@@ -32,10 +32,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetDummyPos(FVector Input);
 
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentNodeNum(uint8 InputNodeNum);
+
 protected:
 
 	UPROPERTY()
 	FVector DummyPos;
+
+	UPROPERTY(BlueprintReadOnly, meta =( AllowPrivateAccess = "true"))
+	uint8 CurrentNodeNum;
 
 	
 };

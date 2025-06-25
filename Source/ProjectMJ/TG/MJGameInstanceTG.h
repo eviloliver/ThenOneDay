@@ -3,9 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MJDungeonStruct.h"
 #include "Engine/GameInstance.h"
 #include "MJGameInstanceTG.generated.h"
 
+
+class AMJPlayerCharacter;
 class UMJHttpDownloadManager;
 class UMJSaveGame;
 /**
@@ -23,40 +26,34 @@ public:
 	UMJGameInstanceTG();
 
 	virtual void Init() override;
-
+	
 	TObjectPtr<UMJHttpDownloadManager> HttpDownloader;
 
-	UFUNCTION(BlueprintCallable)
-	UMJSaveGame* GetSaveGameData();
-
-	UFUNCTION(BlueprintCallable)
-	void CreateSaveGame();
-	
-	UFUNCTION(BlueprintCallable)
-	void LoadSaveGame(AMJPlayerCharacter* Player);
-
-	UFUNCTION(BlueprintCallable)
-	void SaveGameToSlot(AMJPlayerCharacter* Player);
-
-	virtual void Shutdown() override;
+	// Getter 
 	
 	UFUNCTION(BlueprintCallable)
 	FVector GetSavedDummyPos();
 
 	UFUNCTION(BlueprintCallable)
-	void SetSavedDummyPos(FVector Input);
+	uint8 GetSavedMapNodeNum();
 	
+	
+	// Setter
+	
+	UFUNCTION(BlueprintCallable)
+	void SetSavedDummyPos(FVector Input);
+
+	UFUNCTION(BlueprintCallable)
+	void SetSavedMapNodeNum(uint8 Input);
+	
+
 protected:
-
-
+	
 	UPROPERTY(VisibleAnywhere)
 	FVector SavedDummyPos;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UMJSaveGame> SaveGameData;
-
+	uint8 SavedMapNodeNum;
 	
-	const FString SaveSlotName = TEXT("DefaultSaveGameSlot");
-	const int32 UserIndex = 0;
 	
 };
