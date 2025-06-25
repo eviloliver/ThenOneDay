@@ -24,12 +24,24 @@ float AMJMonsterCharacter::GetAITurnSpeed()
 	return 2.0f;
 }
 
-float AMJMonsterCharacter::GetAIAttackRange()
+float AMJMonsterCharacter::GetAIMaximumAttackRange()
 {
+	// Minjin: 원거리 공격(근거리 몬스터의 경우 중거리 공격으로 활용 가능할 듯)
 	/*
-	 * TODO
-	 * 우선 하드코딩. 스탯 기반으로 바꾸기
-	 */
+	* TODO
+	* 우선 하드코딩. 스탯 기반으로 바꾸기
+	*/
+	//return Stat->GetTotalStat().AttackRange + Stat->GetAttackRadius()*2;
+	return 500.0f;
+}
+
+float AMJMonsterCharacter::GetAIMinimumAttackRange()
+{
+	// Minjin: 근거리 공격
+	/*
+	* TODO
+	* 우선 하드코딩. 스탯 기반으로 바꾸기
+	*/
 	//return Stat->GetTotalStat().AttackRange + Stat->GetAttackRadius()*2;
 	return 200.0f;
 }

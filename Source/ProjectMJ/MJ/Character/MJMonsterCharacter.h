@@ -26,7 +26,8 @@ public:
 protected:
 	virtual float GetAIPatrolRadius() override;
 	virtual float GetAITurnSpeed() override;
-	virtual float GetAIAttackRange() override;
+	virtual float GetAIMaximumAttackRange() override;
+	virtual float GetAIMinimumAttackRange() override;
 	virtual float GetAISight_SightRadius() override;
 	virtual float GetAISight_LoseSightRadius() override;
 	virtual float GetAISight_PeripheralVisionAngleDegrees() override;
