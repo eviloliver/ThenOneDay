@@ -27,10 +27,10 @@ public:
 
 
 public:
-	UPROPERTY()
+	UPROPERTY(VisibleDefaultsOnly,BlueprintReadOnly,Category="AnimData|LocomotionData")
 	TObjectPtr<AMJPlayerCharacter> OwningCharacter;
 
-	UPROPERTY()
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	TObjectPtr<UCharacterMovementComponent> OwningCharacterMovementComponent;
 
 

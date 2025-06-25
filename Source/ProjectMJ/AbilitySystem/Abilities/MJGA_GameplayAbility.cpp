@@ -3,6 +3,8 @@
 
 #include "AbilitySystem/Abilities/MJGA_GameplayAbility.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
+#include "Component/MJCombatComponent.h"
+#include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "MJGA_GameplayAbility.h"
 
 void UMJGA_GameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
@@ -28,4 +30,15 @@ void UMJGA_GameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 			ActorInfo->AbilitySystemComponent->ClearAbility(Handle);
 		}
 	}
+}
+
+UMJCombatComponent* UMJGA_GameplayAbility::GetPawnCombatComponentFromActorInfo() const
+{
+	return GetAvatarActorFromActorInfo()->FindComponentByClass<UMJCombatComponent>();
+}
+
+UMJAbilitySystemComponent* UMJGA_GameplayAbility::GetAbilitySysteamComponent() const
+{
+	return Cast< UMJAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent);
+	
 }

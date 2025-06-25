@@ -8,13 +8,14 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class UMJPlayerCombatComponent;
 class UAIPerceptionStimuliSourceComponent;
 /**
  * Class Description:
  * Author: Lee JuHyeon
  * Created Date: 2025_06_11
- * Last Modified By: Cha Tae Gwan
- * Last Modified Date: add GameInstance SubSystem Logic
+ * Last Modified By: Add Combat Component 
+ * Last Modified Date: 2025_06_18
  */
 UCLASS()
 class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase
@@ -43,5 +44,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UCameraComponent> FollowCamera;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UMJPlayerCombatComponent>PlayerCombatComponent;
 #pragma endregion
+public:
+	FORCEINLINE UMJPlayerCombatComponent* GetPlayerCombatComponent() { return PlayerCombatComponent; }
 };

@@ -3,9 +3,12 @@
 
 #include "Controller/MJPlayerController.h"
 #include "EnhancedInputSubsystems.h"
+#include "AbilitySystemComponent.h"
 #include "DataAsset/DataAsset_InputConfig.h"
 #include "Component/Input/MJInputComponent.h"
+#include "Character/MJPlayerCharacter.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "MJGamePlayTags.h"
 
 AMJPlayerController::AMJPlayerController()
@@ -37,7 +40,7 @@ void AMJPlayerController::SetupInputComponent()
 	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Touch, ETriggerEvent::Completed, this, &ThisClass::OnTouchReleased);
 	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Touch, ETriggerEvent::Canceled, this, &ThisClass::OnTouchReleased);
 
-
+	ProjectMJInputComponent->BindAbilityInputAction(InputConfigDataAsset, this, &AMJPlayerController::Input_AbilityInputPressed, &AMJPlayerController::Input_AbilityInputReleased);
 }
 
 void AMJPlayerController::PlayerTick(float DeltaTime)
@@ -123,4 +126,22 @@ void AMJPlayerController::MoveToMouseCurser()
 	{
 		SetNewDestination(Hit.ImpactPoint);
 	}
+}
+
+void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
+{
+	AMJPlayerCharacter* ControlledPawn = Cast<AMJPlayerCharacter>(GetPawn());
+	if (ControlledPawn)
+	{
+		if (UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(ControlledPawn->GetAbilitySystemComponent()))
+		{
+			MJASC->OnAbilityInputPressed(InInputTag);
+		}
+	}
+	
+}
+
+void AMJPlayerController::Input_AbilityInputReleased(FGameplayTag InInputTag)
+{
+
 }

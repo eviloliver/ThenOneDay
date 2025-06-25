@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-
+#include "GameplayTagContainer.h"
 #include "MJPlayerController.generated.h"
 
 class UDataAsset_InputConfig;
@@ -36,6 +36,9 @@ protected:
 
 	void SetNewDestination(const FVector DestLocation);
 	void MoveToMouseCurser();
+
+	void Input_AbilityInputPressed(FGameplayTag InInputTag);
+	void Input_AbilityInputReleased(FGameplayTag InInputTag);
 #pragma endregion 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
