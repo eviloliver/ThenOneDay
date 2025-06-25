@@ -21,10 +21,18 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UInputAction> InputAction;
+
+	bool IsVaild()const;
+
+	
 };
 
 /**
- * 
+ * Class Description: Config_Data
+ * Author: Lee JuHyeon
+ * Created Date: 2025_06_14
+ * Last Modified By: (Last Modifier)
+ * Last Modified Date: (Last Modified Date)
  */
 UCLASS()
 class PROJECTMJ_API UDataAsset_InputConfig : public UDataAsset
@@ -34,9 +42,16 @@ class PROJECTMJ_API UDataAsset_InputConfig : public UDataAsset
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UInputMappingContext>DefaultMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UInputMappingContext> DialogueMappingContext;
 	
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, meta=(TitleProperty=InputAction))
 	TArray<FMJInputActionConfig> NativeInputActions;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (TitleProperty = InputAction))
+	TArray<FMJInputActionConfig>AbilityInputAction;
+
 
 	UInputAction* FindNativeInputActionByTag(const FGameplayTag& InInputTag) const;
 };

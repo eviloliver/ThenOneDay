@@ -4,7 +4,8 @@
 #include "Player/MJPlayerState.h"
 #include "ProjectMJ.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
-#include "AbilitySystem/MJCharacterAttributeSet.h"
+#include "AbilitySystem//Attributes/MJCharacterAttributeSet.h"
+#include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
 
 AMJPlayerState::AMJPlayerState()
 {
@@ -12,6 +13,7 @@ AMJPlayerState::AMJPlayerState()
 	CharacterAttributeSet = CreateDefaultSubobject<UMJCharacterAttributeSet>(TEXT("CharacterAttributeSet"));
 	MJ_LOG(LogTG,Log, TEXT("Ptr : %p"),this);
 	
+	CharacterSkillAttributeSet = CreateDefaultSubobject<UMJCharacterSkillAttributeSet>(TEXT("CharacterSkillAttributeSet"));
 }
 
 

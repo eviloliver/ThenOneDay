@@ -2,6 +2,9 @@
 
 
 #include "MJSaveGame.h"
+
+#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
+
 UMJSaveGame::UMJSaveGame()
 {
 	

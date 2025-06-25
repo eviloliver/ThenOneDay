@@ -2,14 +2,19 @@
 
 
 #include "Character/MJPlayerCharacter.h"
+#include "Components/SphereComponent.h"
 #include "AbilitySystemComponent.h"
 #include "ProjectMJ.h"
+#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/MJCharacterAttributeSet.h"
 #include "DataAsset/DataAsset_StartDataBase.h"
+#include "Component/MJPlayerCombatComponent.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
 
 class UMJSaveGameSubsystem;
 
@@ -40,12 +45,31 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = 400.0;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.0;
 
+	PlayerCombatComponent = CreateDefaultSubobject<UMJPlayerCombatComponent>(TEXT("PlayerCombatComponent"));
+
+	// AI Perception-캐릭터를 StimuliSource로 등록(AI가 감지)
+	PerceptionStimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("AIPerceptionStimuliSourceComponent"));
+	if (nullptr!= PerceptionStimuliSourceComponent)
+	{
+		// Sight source 등록
+		PerceptionStimuliSourceComponent->RegisterForSense(UAISense_Sight::StaticClass());
+
+		// RegisterWithPerceptionSystem(): bAutoRegisterAsSource == true 해줌
+		PerceptionStimuliSourceComponent->RegisterWithPerceptionSystem();
+	}
 }
 
 void AMJPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	DialogueTarget = nullptr;
 	
+	DialogueTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("DialogueTrigger"));
+	DialogueTrigger->SetupAttachment(RootComponent);
+	DialogueTrigger->InitSphereRadius(120.f);
+	DialogueTrigger->SetCollisionProfileName(TEXT("Trigger"));
+	DialogueTrigger->SetGenerateOverlapEvents(true);
+	DialogueTrigger->SetHiddenInGame(false);
 }
 
 void AMJPlayerCharacter::PossessedBy(AController* NewController)

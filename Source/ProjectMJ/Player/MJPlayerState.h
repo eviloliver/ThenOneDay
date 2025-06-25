@@ -11,11 +11,11 @@
 
 
 /**
- * Class Description: PlayerState 
- * Author: Cha Tae Gwan
- * Created Date: 2025-06-23
- * Last Modified By: Cha Tae Gwan
- * Last Modified Date: 2025-06-23
+ * Class Description: Player의 ASC 정보를 담는 곳, AttributeSet도 여기서 가진다
+ * Author: 이주현
+ * Created Date: 미상
+ * Last Modified By: 신동민
+ * Last Modified Date: 2025-05-20
  */
 UCLASS()
 class PROJECTMJ_API AMJPlayerState : public APlayerState, public IAbilitySystemInterface
@@ -41,6 +41,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<class UMJCharacterAttributeSet> CharacterAttributeSet;
+
+	UPROPERTY()
+	TObjectPtr<class UMJCharacterSkillAttributeSet> CharacterSkillAttributeSet;
 
 	UPROPERTY()
 	FMJPlayerSessionData PlayerSessionData;
