@@ -294,6 +294,7 @@ void AMJPlayerController::Input_InstantSkillReleased(FGameplayTag InInputTag)
 
 void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
 {
+	MJ_LOG(LogMJ, Warning, TEXT("Input Pressed: %s"), *InInputTag.ToString())
 	AMJPlayerCharacter* ControlledPawn = Cast<AMJPlayerCharacter>(GetPawn());
 	if (ControlledPawn)
 	{
@@ -301,6 +302,7 @@ void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
 		{
 			
 			MJASC->OnAbilityInputPressed(InInputTag);
+
 		}
 	}
 	
