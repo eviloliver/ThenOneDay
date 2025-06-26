@@ -14,9 +14,9 @@ class UMJUIManagerSubsystem;
 /**
  * Class Description:
  * Author: Lee JuHyeon
- * Created Date: Create Controller
- * Last Modified By: Lee JuHyeon
- * Last Modified Date: Change Input And Move Actor beHind
+ * Created Date: ?
+ * Last Modified By: Lee Jisoo
+ * Last Modified Date: 2025.06.25(BeginPlay에 ShowHUD 추가)
  */
 
 UCLASS()
