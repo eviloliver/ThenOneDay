@@ -12,6 +12,10 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	// RVO
 	GetCharacterMovement()->bUseRVOAvoidance = true;
 	GetCharacterMovement()->AvoidanceConsiderationRadius = 100.0f;
+
+	// Minjin: 캐릭터의 회전을 부드럽게 해줌
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	bUseControllerRotationYaw = false;
 }
 
 float AMJMonsterCharacter::GetAIPatrolRadius()
