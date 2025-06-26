@@ -61,13 +61,15 @@ void AMJPlayerController::SetupInputComponent()
 
 	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Click, ETriggerEvent::Started, this, &ThisClass::OnTouchStart);
 	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Click, ETriggerEvent::Completed, this, &ThisClass::OnTouchReleased);
-	
+
+
 	ProjectMJInputComponent->BindAbilityInputAction(InputConfigDataAsset, this, &AMJPlayerController::Input_AbilityInputPressed, &AMJPlayerController::Input_AbilityInputReleased);
 	
 	//Dialogue Input
 	ProjectMJInputComponent->BindAction(ChangeIMCAction, ETriggerEvent::Triggered, this, &ThisClass::ChangeToIMCDialogue);
 	ProjectMJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
 	ProjectMJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
+
 }
 void AMJPlayerController::PlayerTick(float DeltaTime)
 {
@@ -268,6 +270,26 @@ void AMJPlayerController::OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped
 	}
 }
 
+void AMJPlayerController::Input_InstantSkillPressed(FGameplayTag InInputTag)
+{
+	AMJPlayerCharacter* MJCharacter = Cast<AMJPlayerCharacter>(GetPawn());
+	if (!MJCharacter)
+	{
+		return;
+	}
+	UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(MJCharacter->GetAbilitySystemComponent());
+	if (!MJASC)
+	{
+		return;
+	}
+
+	MJASC->OnAbilityInputPressed(InInputTag);
+}
+
+void AMJPlayerController::Input_InstantSkillReleased(FGameplayTag InInputTag)
+{
+
+}
 
 
 void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
