@@ -15,6 +15,7 @@
 #include "Dialogue/MJDialogueComponent.h"
 #include "Components/SphereComponent.h"
 #include "UI/MJUIManagerSubsystem.h"
+#include "Player/MJPlayerState.h"
 #include "ProjectMJ.h"
 #include "Character/MJPlayerCharacter.h"
 #include "Compression/lz4.h"
@@ -44,6 +45,12 @@ void AMJPlayerController::BeginPlay()
 	{
 		MJChar->GetDialogueTrigger()->OnComponentBeginOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueIn);
 		MJChar->GetDialogueTrigger()->OnComponentEndOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueOut);
+	}
+
+	AMJPlayerState* State = GetPlayerState<AMJPlayerState>();
+	if (State)
+	{
+		UIManager->ShowHUD(State);
 	}
 }
 

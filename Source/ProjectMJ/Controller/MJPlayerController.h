@@ -16,7 +16,7 @@ class UMJUIManagerSubsystem;
  * Author: Lee JuHyeon
  * Created Date: ?
  * Last Modified By: Lee Jisoo
- * Last Modified Date: 2025.06.20(Delete Function Related to Dialogue)
+ * Last Modified Date: 2025.06.25(BeginPlay에 ShowHUD 추가)
  */
 
 UCLASS()
