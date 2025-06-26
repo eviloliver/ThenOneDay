@@ -69,6 +69,7 @@ void AMJPlayerController::SetupInputComponent()
 	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Touch, ETriggerEvent::Canceled, this, &ThisClass::OnTouchReleased);
 
 	ProjectMJInputComponent->BindAbilityInputAction(InputConfigDataAsset, this, &AMJPlayerController::Input_AbilityInputPressed, &AMJPlayerController::Input_AbilityInputReleased);
+	
 	//Dialogue Input
 	ProjectMJInputComponent->BindAction(ChangeIMCAction, ETriggerEvent::Triggered, this, &ThisClass::ChangeToIMCDialogue);
 	ProjectMJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
@@ -246,6 +247,7 @@ void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
 	{
 		if (UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(ControlledPawn->GetAbilitySystemComponent()))
 		{
+			
 			MJASC->OnAbilityInputPressed(InInputTag);
 		}
 	}
@@ -254,5 +256,13 @@ void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
 
 void AMJPlayerController::Input_AbilityInputReleased(FGameplayTag InInputTag)
 {
+	AMJPlayerCharacter* ControlledPawn = Cast<AMJPlayerCharacter>(GetPawn());
+	if (ControlledPawn)
+	{
+		if (UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(ControlledPawn->GetAbilitySystemComponent()))
+		{
 
+			MJASC->OnAbilityInputReleased(InInputTag);
+		}
+	}
 }

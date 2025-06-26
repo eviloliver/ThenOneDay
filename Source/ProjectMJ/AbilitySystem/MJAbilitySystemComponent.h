@@ -22,6 +22,11 @@ class PROJECTMJ_API UMJAbilitySystemComponent : public UAbilitySystemComponent
 
 	// What for ? 
 public:
+
+	virtual void AbilitySpecInputPressed(FGameplayAbilitySpec& Spec) override;
+
+	virtual void AbilitySpecInputReleased(FGameplayAbilitySpec& Spec) override;
+
 	void OnAbilityInputPressed(const FGameplayTag& InInputTag);
 
 	void OnAbilityInputReleased(const FGameplayTag& InInputTag);

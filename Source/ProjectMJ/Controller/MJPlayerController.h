@@ -88,7 +88,7 @@ public:
 	void OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 										int32 OtherBodyIndex);
 
-	
+		
 #pragma endregion
 	
 };
