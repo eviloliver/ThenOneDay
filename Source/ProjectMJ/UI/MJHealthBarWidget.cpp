@@ -7,8 +7,7 @@
 #include "Components/ProgressBar.h"
 
 
-void UMJHealthBarWidget::BindToAttributes(class UMJAbilitySystemComponent* ASC,
-                                         class UMJCharacterAttributeSet* AttributeSet)
+void UMJHealthBarWidget::BindToAttributes(UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet)
 {
 	if (!ASC || !AttributeSet)
 	{
