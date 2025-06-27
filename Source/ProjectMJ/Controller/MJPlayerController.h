@@ -32,29 +32,30 @@ protected:
 	
 	virtual void PlayerTick(float DeltaTime)override;
 #pragma region Inputs
-	void OnInputStarted();
-	void OnSetDestinationTriggered();
-	void OnSetDestinationReleased();
-	void OnTouchTriggered();
+	void StopMove();
+	void HoldingMove();
+	void OnTouchStart();
 	void OnTouchReleased();
-
-	void SetNewDestination(const FVector DestLocation);
-	void MoveToMouseCurser();
 
 	void Input_AbilityInputPressed(FGameplayTag InInputTag);
 	void Input_AbilityInputReleased(FGameplayTag InInputTag);
+	
 #pragma endregion 
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
 	UDataAsset_InputConfig* InputConfigDataAsset;
 
-private:
 	FVector CachedDestination;
 
 	bool bIsTouch; // Is it a touch device
 	float FollowTime; // For how long it has been pressed
 
+	bool bIsHolding;
+	bool bIspressed;
 
+	float HoldThresHold = 0.2f;
+	float PressTimed = 0.0f;
 	
 #pragma region DialoguePart
 private:

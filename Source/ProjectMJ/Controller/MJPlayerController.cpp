@@ -16,7 +16,8 @@
 #include "Components/SphereComponent.h"
 #include "UI/MJUIManagerSubsystem.h"
 #include "ProjectMJ.h"
-#include "Character/MJPlayerCharacter.h"
+#include "Navigation/PathFollowingComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Compression/lz4.h"
 
 
@@ -58,16 +59,9 @@ void AMJPlayerController::SetupInputComponent()
 	
 	UMJInputComponent* ProjectMJInputComponent = CastChecked< UMJInputComponent>(InputComponent);
 
-	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Click, ETriggerEvent::Started, this, &ThisClass::OnInputStarted);
-	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Click, ETriggerEvent::Triggered, this, &ThisClass::OnSetDestinationTriggered);
-	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Click, ETriggerEvent::Completed, this, &ThisClass::OnSetDestinationReleased);
-	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Click, ETriggerEvent::Canceled, this, &ThisClass::OnSetDestinationReleased);
-
-	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Touch, ETriggerEvent::Started, this, &ThisClass::OnInputStarted);
-	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Touch, ETriggerEvent::Triggered, this, &ThisClass::OnTouchTriggered);
-	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Touch, ETriggerEvent::Completed, this, &ThisClass::OnTouchReleased);
-	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Touch, ETriggerEvent::Canceled, this, &ThisClass::OnTouchReleased);
-
+	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Click, ETriggerEvent::Started, this, &ThisClass::OnTouchStart);
+	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Click, ETriggerEvent::Completed, this, &ThisClass::OnTouchReleased);
+	
 	ProjectMJInputComponent->BindAbilityInputAction(InputConfigDataAsset, this, &AMJPlayerController::Input_AbilityInputPressed, &AMJPlayerController::Input_AbilityInputReleased);
 	
 	//Dialogue Input
@@ -78,86 +72,76 @@ void AMJPlayerController::SetupInputComponent()
 void AMJPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
-	if (bIsTouch)
+	if (bIspressed && !bIsHolding)
 	{
-		MoveToMouseCurser();
-	}
-}
-
-void AMJPlayerController::OnInputStarted()
-{
-	StopMovement();
-}
-
-void AMJPlayerController::OnSetDestinationTriggered()
-{
-	FollowTime += GetWorld()->GetDeltaSeconds();
-
-	// We look for the location in the world where the player has pressed the input
-	FHitResult Hit;
-	bool bHitSuccessful = false;
-	if (bIsTouch)
-	{
-		
-	}
-	else
-	{
-		bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
-	}
-
-	// If we hit a surface, cache the location
-	if (bHitSuccessful)
-	{
-		CachedDestination = Hit.Location;
-	}
-
-	// Move towards mouse pointer or touch
-	APawn* ControlledPawn = GetPawn();
-	if (ControlledPawn != nullptr)
-	{
-		FVector WorldDirection = (CachedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal();
-		ControlledPawn->AddMovementInput(WorldDirection, 1.0, false);
-	}
-}
-
-void AMJPlayerController::OnSetDestinationReleased()
-{
-	FollowTime = 0.f;
-}
-
-void AMJPlayerController::OnTouchTriggered()
-{
-	bIsTouch = true;
-}
-
-void AMJPlayerController::OnTouchReleased()
-{
-	bIsTouch = false;
-}
-
-void AMJPlayerController::SetNewDestination(const FVector DestLocation)
-{
-	APawn* ControlledPawn = GetPawn();
-	if (ControlledPawn)
-	{
-		float const Distance = FVector::Dist(DestLocation, ControlledPawn->GetActorLocation());
-
-		if (Distance > 30.0f)
+		PressTimed += DeltaTime;
+		if (PressTimed >= HoldThresHold)
 		{
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, DestLocation);
+			bIsHolding = true;
+			StopMove();
+		}
+	}
+	if (bIsHolding)
+	{
+		HoldingMove();
+	}
+}
+
+void AMJPlayerController::StopMove()
+{
+		StopMovement();	
+}
+
+
+void AMJPlayerController::HoldingMove()
+{
+	//FollowTime = 0.f;
+	FHitResult Hit;
+
+	if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
+	{
+		FVector MoveDir = Hit.ImpactPoint - GetPawn()->GetActorLocation();
+		MoveDir.Z = 0;
+		MoveDir.Normalize();
+
+		if (!MoveDir.IsNearlyZero())
+		{
+			GetPawn()->AddMovementInput(MoveDir, 1.0f);
 		}
 	}
 }
 
-void AMJPlayerController::MoveToMouseCurser()
+void AMJPlayerController::OnTouchStart()
 {
-	FHitResult Hit;
+	//bIsTouch = true;
+	bIspressed = true;
+	bIsHolding = false;
+	PressTimed = 0.0f;
+}
 
-	GetHitResultUnderCursor(ECC_Visibility, false, Hit);
-	if (Hit.bBlockingHit)
+void AMJPlayerController::OnTouchReleased()
+{
+	//bIsTouch = false;
+
+	if (!bIsHolding)
 	{
-		SetNewDestination(Hit.ImpactPoint);
+		FHitResult Hit;
+		
+		if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
+		{
+			CachedDestination = Hit.Location;
+
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
+		}
 	}
+	else
+	{
+		StopMove();
+	}
+
+	bIspressed = false;
+	bIsHolding = false;
+	PressTimed = 0.0f;
 }
 
 void AMJPlayerController::ChangeToIMCDialogue()
