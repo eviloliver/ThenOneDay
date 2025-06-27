@@ -5,6 +5,7 @@
 #include "MJHealthBarWidget.h"
 #include "MJManaBarWidget.h"
 #include "MJExperienceWidget.h"
+#include "MJStatWidget.h"
 
 void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet)
 {
@@ -21,5 +22,10 @@ void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJC
 	if (ExpBar)
 	{
 		ExpBar->BindToAttributes(ASC,AttributeSet);
+	}
+
+	if (StatPanel)
+	{
+		StatPanel->BindToAttribute(ASC,AttributeSet);
 	}
 }

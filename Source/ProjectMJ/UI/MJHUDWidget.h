@@ -7,7 +7,7 @@
 #include "MJHUDWidget.generated.h"
 
 /**
-* Class Description: HUD
+ * Class Description: HUD
  * Author: 이지수
  * Created Date: 2025.06.26
  * Last Modified By: 
@@ -17,6 +17,8 @@
 class UMJHealthBarWidget;
 class UMJManaBarWidget;
 class UMJExperienceWidget;
+class UMJStatWidget;
+
 UCLASS()
 class PROJECTMJ_API UMJHUDWidget : public UUserWidget
 {
@@ -30,8 +32,11 @@ private:
 	UMJManaBarWidget* ManaBar;
 
 	UPROPERTY(meta = (BindWidget))
-	UMJManaBarWidget* ExpBar;
+	UMJExperienceWidget* ExpBar;
 
+	UPROPERTY(meta = (BindWidget))
+	UMJStatWidget* StatPanel;
+	
 public:
 	void BindAtrributesToChildren(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet);
 };
