@@ -48,23 +48,25 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	// Minjin: 원거리 범위에 속할 경우
 	bool IsRange = DistanceToTarget <= AIPawn->GetAIMaximumAttackRange()
 		&& DistanceToTarget > AIPawn->GetAIMinimumAttackRange();
+	// Minjin: 근거리 범위에 속할 경우
+	bool IsMelee = DistanceToTarget <= AIPawn->GetAIMinimumAttackRange();
+	
 	if (IsRange)
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool("MaximumAttackRange", true);
 		OwnerComp.GetBlackboardComponent()->ClearValue("MinimumAttackRange");
-		return;
 	}
-
-	// Minjin: 근거리 범위에 속할 경우
-	bool IsMelee = DistanceToTarget <= AIPawn->GetAIMinimumAttackRange();
-	if (IsMelee)
+	else if (IsMelee)
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool("MinimumAttackRange", true);
 		OwnerComp.GetBlackboardComponent()->ClearValue("MaximumAttackRange");
-		return;
 	}
-
-	// Minjin: 아무 범위에도 안 속할 경우: 키 값 클리어
-	OwnerComp.GetBlackboardComponent()->ClearValue("MinimumAttackRange");
-	OwnerComp.GetBlackboardComponent()->ClearValue("MaximumAttackRange");
+	else
+	{
+		// Minjin: 아무 범위에도 안 속할 경우: 키 값 클리어
+		OwnerComp.GetBlackboardComponent()->ClearValue("MinimumAttackRange");
+		OwnerComp.GetBlackboardComponent()->ClearValue("MaximumAttackRange");
+	}
+	
+	return;
 }
