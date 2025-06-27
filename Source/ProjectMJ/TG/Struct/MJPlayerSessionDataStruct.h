@@ -1,6 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MJCharacterAttributeSaveDataStruct.h"
+#include "MJCharacterSkillAttributeSaveData.h"
 #include "MJPlayerSessionDataStruct.generated.h"
 
 UENUM(BlueprintType)
@@ -19,6 +21,12 @@ struct FMJPlayerSessionData
 
 	UPROPERTY(BlueprintReadOnly)
 	EMJGameplayContext GameplayContext;
+
+	UPROPERTY(BlueprintReadOnly)
+	FMJCharacterAttributeSaveData CharacterAttribute;
+
+	UPROPERTY(BlueprintReadOnly)
+	FMJCharacterSkillAttributeSaveData CharacterSkillAttribute;
 	
 	UPROPERTY(BlueprintReadOnly)
 	uint8 CurrentDungeonMapNum;
