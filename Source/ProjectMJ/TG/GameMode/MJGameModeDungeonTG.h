@@ -24,6 +24,10 @@ public:
 
 protected:
 
+	virtual void BeginPlay() override;
+
+	
+	virtual bool TravelToMapByNode(const FString MapName, const uint8 NodeNum) override;
 	
 
 };

@@ -22,24 +22,27 @@ class PROJECTMJ_API AMJGameStateDungeonTG : public AGameStateBase
 public:
 	AMJGameStateDungeonTG();
 
-	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
+	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 
 	UFUNCTION(BlueprintCallable)
 	void SetDungeonSessionData(FMJDungeonSessionData& DungeonSessionData);
-
+	
 	UFUNCTION(BlueprintCallable)
-	void SaveDungeonSessionDataToGameInstance();
+	void SaveToInstancedDungeonSessionData(uint8 SaveToNum);
+
+	UFUNCTION()
+	void LoadFromInstancedDungeonSessionData(uint8 LoadFromNum);
 
 protected:
 
 	UPROPERTY(BlueprintReadOnly)
-	FMJDungeonSessionData CurrentDungeonSessionData;
+	FMJDungeonSessionData LoadedDungeonSessionData;
 
 	UPROPERTY(BlueprintReadOnly)
-	uint8 CurrentDungeonNodeNum;
+	uint8 LoadedDungeonNodeNum;
 	
 		
 

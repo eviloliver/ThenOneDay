@@ -4,49 +4,27 @@
 #include "MJGameStateDungeonTG.h"
 
 #include "EngineUtils.h"
-#include "Kismet/GameplayStatics.h"
-#include "Player/MJPlayerState.h"
 #include "TG/MJGameInstanceTG.h"
 #include "TG/Actor/MJDummyActorTG.h"
 
 
 AMJGameStateDungeonTG::AMJGameStateDungeonTG()
 {
-	CurrentDungeonSessionData = FMJDungeonSessionData();
-	CurrentDungeonNodeNum = 255;
-}
-
-void AMJGameStateDungeonTG::BeginPlay()
-{
-	Super::BeginPlay();
+	LoadedDungeonSessionData = FMJDungeonSessionData();
+	LoadedDungeonNodeNum = 255;
 }
 
 void AMJGameStateDungeonTG::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	
-	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
 
-	if (MJGI)
-	{
-		AMJPlayerState* MJPS = Cast<AMJPlayerState>(UGameplayStatics::GetPlayerState(this,0));
 
-		if (MJPS)
-		{
-			CurrentDungeonNodeNum = MJPS->GetPlayerSessionData().CurrentDungeonMapNum;
-		}
-		
-		SetDungeonSessionData(MJGI->GetDungeonSessionDataRef()[CurrentDungeonNodeNum]);
+}
 
-		for (auto iter : CurrentDungeonSessionData.SpawnInfos)
-		{
-			if (iter.ActorClass->ImplementsInterface(UMJInstancedActorInterface::StaticClass()))
-			{
-				FActorSpawnParameters Params;
-				GetWorld()->SpawnActor<AActor>(iter.ActorClass.Get(),iter.Transform,Params);	
-			}
-		}
-	}
+void AMJGameStateDungeonTG::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void AMJGameStateDungeonTG::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -56,28 +34,55 @@ void AMJGameStateDungeonTG::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AMJGameStateDungeonTG::SetDungeonSessionData(FMJDungeonSessionData& DungeonSessionData)
 {
-	CurrentDungeonSessionData = DungeonSessionData;
+	LoadedDungeonSessionData = DungeonSessionData;
 }
 
-void AMJGameStateDungeonTG::SaveDungeonSessionDataToGameInstance()
+void AMJGameStateDungeonTG::SaveToInstancedDungeonSessionData(uint8 SaveToNum)
 {
 	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
 
-	if (MJGI)
+	FMJDungeonSessionData NewDungeonSessionData;
+	if (MJGI && !MJGI->bIsDungeonGameStateDirty) 
 	{
 		for (TActorIterator<AActor> Iter(GetWorld()); Iter ; ++Iter)
 		{
 			if (Iter->Implements<UMJInstancedActorInterface>())
 			{
+
+					AActor* Actor = *Iter;
+					FMJDungeonActorInfo Info;
+					Info.ActorClass = Actor->GetClass();
+					Info.Transform = Actor->GetActorTransform();
+					NewDungeonSessionData.SpawnInfos.Add(Info);	
 				
-				AActor* Actor = *Iter;
-				FMJDungeonActorInfo Info;
-				Info.ActorClass = Actor->GetClass();
-				Info.Transform = Actor->GetActorTransform();
-				CurrentDungeonSessionData.SpawnInfos.Add(Info);	
 			}
 		}
 		
-		MJGI->GetDungeonSessionDataRef()[CurrentDungeonNodeNum] = CurrentDungeonSessionData;
+
+
+		MJGI->GetDungeonSessionDataRef()[SaveToNum] = NewDungeonSessionData;
+		MJGI->bIsDungeonGameStateDirty = true;
 	} 
+}
+
+void AMJGameStateDungeonTG::LoadFromInstancedDungeonSessionData(uint8 LoadFromNum)
+{
+	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
+
+	if (MJGI)
+	{
+		
+		SetDungeonSessionData(MJGI->GetDungeonSessionDataRef()[LoadFromNum]);
+
+		for (auto iter : LoadedDungeonSessionData.SpawnInfos)
+		{
+			if (iter.ActorClass->ImplementsInterface(UMJInstancedActorInterface::StaticClass()))
+			{
+				iter.ActorClass.LoadSynchronous();
+				UClass* LoadedClass = iter.ActorClass.Get();
+				FActorSpawnParameters Params;
+				GetWorld()->SpawnActor<AActor>(LoadedClass,iter.Transform,Params);	
+			}
+		}
+	}
 }
