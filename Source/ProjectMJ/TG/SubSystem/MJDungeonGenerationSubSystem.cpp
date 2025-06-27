@@ -12,6 +12,12 @@ UMJDungeonGenerationSubSystem::UMJDungeonGenerationSubSystem()
 	MaxNodeNum = 10;
 }
 
+void UMJDungeonGenerationSubSystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+	GenerateDungeonGraph();
+}
+
 bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 {
 	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetGameInstance());

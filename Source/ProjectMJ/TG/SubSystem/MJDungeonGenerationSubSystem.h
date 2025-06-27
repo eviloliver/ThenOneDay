@@ -22,6 +22,8 @@ class PROJECTMJ_API UMJDungeonGenerationSubSystem : public UGameInstanceSubsyste
 public:
 	
 	UMJDungeonGenerationSubSystem();
+
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	
 	UFUNCTION(BlueprintCallable)
 	bool GenerateDungeonGraph();

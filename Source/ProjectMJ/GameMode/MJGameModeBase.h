@@ -19,16 +19,13 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UDataTable> MapNames;
+	virtual void BeginPlay() override;
 	
 	UFUNCTION(BlueprintCallable)
 	virtual bool TravelToMapByNode(const FString MapName, const uint8 NodeNum);
 	
 	UFUNCTION(BlueprintCallable)
 	bool TravelToMap(const FString MapName);
+	
 
-	virtual void GetSeamlessTravelActorList(bool bToTransition, TArray<AActor*>& ActorList) override;
-
-	virtual void PostSeamlessTravel() override;
 };

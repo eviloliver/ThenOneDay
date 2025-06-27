@@ -29,6 +29,10 @@ public:
 	virtual void Init() override;
 	
 	TObjectPtr<UMJHttpDownloadManager> HttpDownloader;
+
+	bool bIsPlayerStateDirty = false;
+	bool bIsDungeonGameStateDirty = false;
+	
 	
 	UFUNCTION(BlueprintCallable)
 	FMJPlayerSessionData& GetPlayerSessionDataRef();

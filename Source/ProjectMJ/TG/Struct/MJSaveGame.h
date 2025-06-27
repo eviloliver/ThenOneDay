@@ -23,7 +23,7 @@ class PROJECTMJ_API UMJSaveGame : public USaveGame
 public:
 	UMJSaveGame();
 
-	FCharacterAttributeSaveData& GetAttributeSaveData();
+	FMJCharacterAttributeSaveData& GetAttributeSaveData();
 	
 protected:
 
@@ -31,7 +31,7 @@ protected:
 	FString PlayerName;
 	
 	UPROPERTY(BlueprintReadOnly, SaveGame)
-	FCharacterAttributeSaveData AttributeSaveData;
+	FMJCharacterAttributeSaveData AttributeSaveData;
 	
 
 	
