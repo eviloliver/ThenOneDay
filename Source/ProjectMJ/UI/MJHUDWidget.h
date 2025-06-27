@@ -38,5 +38,9 @@ private:
 	UMJStatWidget* StatPanel;
 	
 public:
+	UFUNCTION()
+	virtual void NativeConstruct() override;
+	
 	void BindAtrributesToChildren(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet);
+	void ShowStatPanel();
 };

@@ -80,7 +80,10 @@ void AMJPlayerController::SetupInputComponent()
 	ProjectMJInputComponent->BindAction(ChangeIMCAction, ETriggerEvent::Triggered, this, &ThisClass::ChangeToIMCDialogue);
 	ProjectMJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
 	ProjectMJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
+
+	ProjectMJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowStatPanel);
 }
+
 void AMJPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
@@ -219,6 +222,11 @@ void AMJPlayerController::ProceedDialogue()
 void AMJPlayerController::ShowBacklog()
 {
 	UIManager->ShowBacklog();
+}
+
+void AMJPlayerController::ShowStatPanel()
+{
+	UIManager->ShowStatPanel();
 }
 
 void AMJPlayerController::OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,

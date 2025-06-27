@@ -118,4 +118,9 @@ void UMJUIManagerSubsystem::ShowBacklog()
 	DialogueWidget->ShowBacklog();
 }
 
+void UMJUIManagerSubsystem::ShowStatPanel()
+{
+	HUDWidget->ShowStatPanel();
+}
+
 
