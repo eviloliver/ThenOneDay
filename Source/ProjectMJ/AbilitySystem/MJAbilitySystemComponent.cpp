@@ -41,7 +41,7 @@ void UMJAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InInpu
 		if (!AbilitySpec.DynamicAbilityTags.HasTagExact(InInputTag))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Found match via AbilityTags: %s"), *InInputTag.ToString());
-			TryActivateAbility(Spec.Handle);
+			TryActivateAbility(AbilitySpec.Handle);
 			break;
 		}
 		AbilitySpecInputPressed(AbilitySpec);

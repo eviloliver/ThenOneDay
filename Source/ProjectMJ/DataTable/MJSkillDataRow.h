@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
+#include "GameplayTagContainer.h"
 #include "MJSkillDataRow.generated.h"
 
 UENUM(BlueprintType)
@@ -15,13 +16,13 @@ enum class ERequiredWeapon : uint8
 	Anything UMETA(DisplayName = "Anything", ToolTip = "Anything"),
 };
 
-UENUM()
+UENUM(BlueprintType)
 enum class ESkillType : uint8
 {
 	None UMETA(Hidden),
 	Instant UMETA(DisplayName = "Instant", ToolTip = "Instantly Action Skill"),
 	Charge UMETA(DisplayName = "Charge", ToolTip = "Charging Action Skill"),
-	Passive UMETA(DisplayName = "Passibe", ToolTip = "Passive Skill"),
+	Passive UMETA(DisplayName = "Passive", ToolTip = "Passive Skill"),
 };
 
 UENUM(BlueprintType)
@@ -65,5 +66,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftObjectPtr<UCurveTable> SkillLevelDataTable;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTag DefaultSkillTag;
 };
 	
