@@ -20,5 +20,9 @@ void UBTService_MJCheckTargetPos::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 	 * 감각을 바탕으로 업데이트하면 좋을 것 같음.
 	 */
 	AActor* Target = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject("Target"));
+	if (Target==nullptr)
+	{
+		return;
+	}
 	OwnerComp.GetBlackboardComponent()->SetValueAsVector("LastKnownPos", Target->GetTargetLocation());
 }
