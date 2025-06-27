@@ -6,6 +6,14 @@
 #include "GameplayTagContainer.h"
 #include "MJSkillDataRow.generated.h"
 
+/**
+ * Class Description: DataTable Base
+ * Author: 신동민
+ * Created Date: 2025_06_27
+ * Last Modified By:
+ * Last Modified Date:
+ */
+
 UENUM(BlueprintType)
 enum class ERequiredWeapon : uint8
 {
@@ -42,8 +50,9 @@ struct FMJSkillDataRow : public FTableRowBase
 	GENERATED_BODY()
 
 public:
+	// Dongmin: RowName으로 이걸 가져다 쓸거다
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName SkillID;
+	FGameplayTag DefaultSkillTag;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText SkillName;
@@ -66,7 +75,4 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftObjectPtr<UCurveTable> SkillLevelDataTable;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FGameplayTag DefaultSkillTag;
 };
-	

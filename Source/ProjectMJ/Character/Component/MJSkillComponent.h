@@ -20,14 +20,6 @@
  * Last Modified Date:
  */
 
-UENUM(BlueprintType)
-enum class ESlotType : uint8
-{
-	None UMETA(Hidden),
-	Instant UMETA(DisplayName = "Instant", ToolTip = "Instantly Action Skill"),
-	Charge UMETA(DisplayName = "Charge", ToolTip = "Charging Action Skill"),
-	Passive UMETA(DisplayName = "Passive", ToolTip = "Passive Skill"),
-};
 
 USTRUCT(BlueprintType)
 struct FSkillData
@@ -43,33 +35,35 @@ struct FSkillData
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag SkillTypeTag;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FGameplayTagContainer SkillStateTags;
 };
 
 UCLASS( ClassGroup=(Skill), meta=(BlueprintSpawnableComponent) )
 class PROJECTMJ_API UMJSkillComponent : public UActorComponent
 {
-	GENERATED_BODY()
+	GENERATED_BODY() 
 
 public:	
 	// Sets default values for this component's properties
 	UMJSkillComponent();
 
+	virtual void BeginPlay() override;
+
 public:
 	void LearnSkill(const FGameplayTag& NewSkill);
 	
-	void EquipSkill(const FGameplayTag& EquippingSkill, ESlotType ActivateSlot);
+	void EquipSkill(const FGameplayTag& EquippingSkill);
 
 	void UnequipSkill(const FGameplayTag& UnequippingSkill);
 
-	void ActivateSkill(ESlotType ActivateSlot);
+	void ActivateSkill(const FGameplayTag& EquippedSlotSkill);
+
+	// TODO: GiveAbilityToASC() 구현
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FSkillData> OwnedSkillMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
-	TMap<ESlotType, FSkillData> EquippedSkillMap;
+	TMap<FGameplayTag, FGameplayTag> EquippedSkillMap;
 
 };
