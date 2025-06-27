@@ -59,7 +59,7 @@ private:
 	float HoldThresHold = 0.2f;
 	float PressTimed = 0.0f;
 	
-#pragma region DialoguePart
+#pragma region UIPart
 private:
 	bool IsTriggered = false;
 
@@ -73,16 +73,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* ShowBacklogAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* ShowStatPanelAction;
+
 	UPROPERTY()
 	UMJUIManagerSubsystem* UIManager; 
-
-	// 이것들이 작동하면 아래 4개 함수는 지워도된다
+	
 	void ChangeToIMCDialogue();
 	void ChangeToIMCDefault();
 	void ProceedDialogue();
 	
 	void ShowBacklog();
-
+	void ShowStatPanel();
+	
 	UFUNCTION()
 	void OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 										int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

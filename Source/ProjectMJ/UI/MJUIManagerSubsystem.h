@@ -41,7 +41,8 @@ public:
 	//BackLog Section
 	void ShowBacklog();
 
-
+	// StatPanel Section
+	void ShowStatPanel();
 
 protected:
 	UPROPERTY()

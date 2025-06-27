@@ -7,6 +7,15 @@
 #include "MJExperienceWidget.h"
 #include "MJStatWidget.h"
 
+void UMJHUDWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+	if (StatPanel)
+	{
+		StatPanel->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
 void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet)
 {
 	if (HealthBar)
@@ -27,5 +36,17 @@ void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJC
 	if (StatPanel)
 	{
 		StatPanel->BindToAttribute(ASC,AttributeSet);
+	}
+}
+
+void UMJHUDWidget::ShowStatPanel()
+{
+	if (StatPanel->GetVisibility() == ESlateVisibility::Visible)
+	{
+		StatPanel->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else if (StatPanel->GetVisibility() == ESlateVisibility::Hidden)
+	{
+		StatPanel->SetVisibility(ESlateVisibility::Visible);
 	}
 }
