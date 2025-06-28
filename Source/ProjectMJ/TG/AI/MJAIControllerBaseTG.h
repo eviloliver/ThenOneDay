@@ -9,7 +9,11 @@
 class UBehaviorTreeComponent;
 struct FAIStimulus;
 /**
- * 
+ * Class Description: AIControellerBase class 
+ * Author: Cha Tae Gwan
+ * Created Date: 2025-06-28
+ * Last Modified By: Cha Tae Gwan
+ * Last Modified Date: 2025-06-28
  */
 UCLASS()
 class PROJECTMJ_API AMJAIControllerBaseTG : public AAIController
