@@ -1,4 +1,4 @@
-
+Ôªø
 #pragma once
 
 #include "CoreMinimal.h"
@@ -8,11 +8,13 @@
 
 /**
  * Class Description: DataTable Base
- * Author: Ω≈µøπŒ
+ * Author: Ïã†ÎèôÎØº
  * Created Date: 2025_06_27
  * Last Modified By:
  * Last Modified Date:
  */
+
+class UGameplayAbility;
 
 UENUM(BlueprintType)
 enum class ERequiredWeapon : uint8
@@ -50,7 +52,7 @@ struct FMJSkillDataRow : public FTableRowBase
 	GENERATED_BODY()
 
 public:
-	// Dongmin: RowName¿∏∑Œ ¿Ã∞… ∞°¡Æ¥Ÿ æµ∞≈¥Ÿ
+	// Dongmin: RowNameÏùÑ ÌÉúÍ∑∏ÏôÄ Í∞ôÍ≤å Ìï† Î™©Ï†Å
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag DefaultSkillTag;
 
@@ -69,8 +71,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ESkillTargetType SkillTargetType;
 
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSoftObjectPtr<UAnimMontage> ActionAnimMontage;*/
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UAnimMontage> ActionAnimMontage;
+	TSubclassOf<UGameplayAbility> SkillAbilityClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftObjectPtr<UCurveTable> SkillLevelDataTable;

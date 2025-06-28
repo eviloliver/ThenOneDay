@@ -7,8 +7,8 @@
 #include "MJGameInstanceDM.generated.h"
 
 /**
-  * Class Description: ³ª¸¸ÀÇ ÀÛÀº °ÔÀÓ ÀÎ½ºÅÏ½º
- * Author: ½Åµ¿¹Î
+  * Class Description: ë‚˜ë§Œì˜ ì‘ì€ ê²Œì„ ì¸ìŠ¤í„´ìŠ¤
+ * Author: ì‹ ë™ë¯¼
  * Created Date: 2025_06_27
  * Last Modified By:
  * Last Modified Date:

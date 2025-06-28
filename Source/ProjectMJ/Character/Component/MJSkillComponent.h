@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "GameplayTagContainer.h"
 #include "DataTable/MJSkillDataRow.h"
+#include "GameplayAbilitySpec.h"
 #include "MJSkillComponent.generated.h"
 
 /**
@@ -57,8 +58,9 @@ public:
 
 	void ActivateSkill(const FGameplayTag& EquippedSlotSkill);
 
-	// TODO: GiveAbilityToASC() 구현
+	void GiveAbilityToASC(const FGameplayTag& AddSkill);
 
+	void RemoveAbility(const FGameplayTag& RemoveSkill);
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FSkillData> OwnedSkillMap;
@@ -66,4 +68,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FGameplayTag> EquippedSkillMap;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+	TMap<FGameplayTag, FGameplayAbilitySpecHandle> GivenAbilityHandles;
 };
