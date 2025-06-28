@@ -122,13 +122,57 @@ void AMJPlayerController::OnTouchStart()
 void AMJPlayerController::OnTouchReleased()
 {
 	//bIsTouch = false;
+	const float TraceOffsetZ = 10.0f;
+	const float TraceDepthZ = 1000.0;
+
 
 	if (!bIsHolding)
 	{
 		FHitResult Hit;
 		
+		FVector WorldOrigin, WorldDirection;
+
 		if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
 		{
+			if (DeprojectMousePositionToWorld(WorldOrigin, WorldDirection))
+			{
+				FVector TraceStart = WorldOrigin;
+				FVector TraceEnd = TraceStart + WorldDirection * 10000.0f;
+
+				TArray<FHitResult> HitResults;
+				FCollisionQueryParams TraceParams;
+				TraceParams.AddIgnoredActor(GetPawn()); 
+				
+				bool bHit = GetWorld()->LineTraceMultiByChannel(
+					HitResults,
+					TraceStart,
+					TraceEnd,
+					ECC_Visibility,
+					TraceParams
+				);
+				DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.5f);
+				for (const FHitResult& Hits : HitResults)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("%d"), HitResults.Num());
+					AActor* HitActor = Hits.GetActor();
+					if (!HitActor)
+					{
+						continue;
+					}
+			
+					if (HitActor->ActorHasTag("BlockClick"))
+					{
+						continue;
+					}
+				
+					if (HitActor->ActorHasTag("Ground") || Hits.Component->GetCollisionObjectType() == ECC_WorldStatic)
+					{
+						UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, Hits.ImpactPoint);
+						break;
+					}
+				}
+			}
+
 			CachedDestination = Hit.Location;
 
 			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
@@ -143,6 +187,8 @@ void AMJPlayerController::OnTouchReleased()
 	bIsHolding = false;
 	PressTimed = 0.0f;
 }
+
+
 
 void AMJPlayerController::ChangeToIMCDialogue()
 {

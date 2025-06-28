@@ -31,11 +31,13 @@ protected:
 	virtual void SetupInputComponent() override;
 	
 	virtual void PlayerTick(float DeltaTime)override;
-#pragma region Inputs
+#pragma region move and Input
 	void StopMove();
 	void HoldingMove();
 	void OnTouchStart();
 	void OnTouchReleased();
+	
+
 
 	void Input_AbilityInputPressed(FGameplayTag InInputTag);
 	void Input_AbilityInputReleased(FGameplayTag InInputTag);
