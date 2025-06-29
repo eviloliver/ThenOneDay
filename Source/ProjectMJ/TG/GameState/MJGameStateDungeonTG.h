@@ -16,7 +16,7 @@
  * Last Modified Date: 2025-06-13
  */
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FMJAIBossOnHealthChangedSignature, float, Delta, float, OldHealth, float, NewHealth);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnHealthChangedSignature, float, Delta);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnSpawnedSignature, float, Health);
 
 UCLASS()
@@ -47,7 +47,7 @@ public:
 	FMJAIBossOnSpawnedSignature OnAIBossSpawned;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void PublishOnBossHealthChanged(float Delta, float OldHealth, float NewHealth) override;
+	virtual void PublishOnBossHealthChanged(float Delta) override;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void PublishOnBossSpawned(float Health) override;

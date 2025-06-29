@@ -85,10 +85,10 @@ void AMJGameStateDungeonTG::LoadFromInstancedDungeonSessionData(uint8 LoadFromNu
 	}
 }
 
-void AMJGameStateDungeonTG::PublishOnBossHealthChanged(float Delta, float OldHealth, float NewHealth)
+void AMJGameStateDungeonTG::PublishOnBossHealthChanged(float Delta)
 {
 	
-	OnAIBossHealthChanged.Broadcast(Delta, OldHealth, NewHealth);
+	OnAIBossHealthChanged.Broadcast(Delta);
 }
 
 void AMJGameStateDungeonTG::PublishOnBossSpawned(float Health)
