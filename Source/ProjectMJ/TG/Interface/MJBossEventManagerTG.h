@@ -13,8 +13,12 @@ class UMJBossEventManagerTG : public UInterface
 	GENERATED_BODY()
 };
 
-/**
- * 
+/*
+ * Class Description: Interface which Handle Event
+ * Author: Cha Tae Gwan
+ * Created Date: 2025-06-30
+ * Last Modified By: Cha Tae Gwan
+ * Last Modified Date: 2025-06-30
  */
 class PROJECTMJ_API IMJBossEventManagerTG
 {
@@ -22,7 +26,7 @@ class PROJECTMJ_API IMJBossEventManagerTG
 
 public:
 
-	virtual void PublishOnBossHealthChanged(float Delta, float OldHealth, float NewHealth) = 0;
+	virtual void PublishOnBossHealthChanged(float Delta) = 0;
 
 	virtual void PublishOnBossSpawned(float Health) = 0;
 
