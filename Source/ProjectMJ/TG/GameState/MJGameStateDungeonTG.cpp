@@ -18,8 +18,6 @@ void AMJGameStateDungeonTG::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	
-
-
 }
 
 void AMJGameStateDungeonTG::BeginPlay()
@@ -85,4 +83,15 @@ void AMJGameStateDungeonTG::LoadFromInstancedDungeonSessionData(uint8 LoadFromNu
 			}
 		}
 	}
+}
+
+void AMJGameStateDungeonTG::PublishOnBossHealthChanged(float Delta, float OldHealth, float NewHealth)
+{
+	
+	OnAIBossHealthChanged.Broadcast(Delta, OldHealth, NewHealth);
+}
+
+void AMJGameStateDungeonTG::PublishOnBossSpawned(float Health)
+{
+	OnAIBossSpawned.Broadcast(Health);
 }
