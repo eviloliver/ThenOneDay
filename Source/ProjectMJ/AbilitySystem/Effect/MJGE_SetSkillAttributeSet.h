@@ -8,7 +8,7 @@
 
 /**
  * Class Description: Attribute Setter Using GameplayEffect
- * Author: ½Åµ¿¹Î
+ * Author: ì‹ ë™ë¯¼
  * Created Date: 2025_06_29
  * Last Modified By:
  * Last Modified Date:

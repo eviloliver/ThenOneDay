@@ -61,12 +61,20 @@ public:
 	void GiveAbilityToASC(const FGameplayTag& AddSkill);
 
 	void RemoveAbility(const FGameplayTag& RemoveSkill);
+
+	void ActivateSkillByInputTag(const FGameplayTag& InputTag);
+
+	FGameplayTag ConvertInputTagToTypeTag(const FGameplayTag& InputTag);
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FSkillData> OwnedSkillMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FGameplayTag> EquippedSkillMap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+	TMap<FGameplayTag, FGameplayTag> InputTagToSkillTagMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FGameplayAbilitySpecHandle> GivenAbilityHandles;

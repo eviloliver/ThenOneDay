@@ -44,7 +44,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
 	TObjectPtr<UMJAbilitySystemComponent> ASC;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS|Skill")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gas")
 	TObjectPtr<UMJSkillComponent> SkillComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS")

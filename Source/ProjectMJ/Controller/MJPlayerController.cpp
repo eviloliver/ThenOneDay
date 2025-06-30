@@ -18,6 +18,8 @@
 #include "ProjectMJ.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Character/MJPlayerCharacter.h"
+#include "Character/Component/MJSkillComponent.h"
 #include "Compression/lz4.h"
 
 
@@ -282,9 +284,13 @@ void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
 		{
 			
 			MJASC->OnAbilityInputPressed(InInputTag);
-
+			if (UMJSkillComponent* SkillComponent = ControlledPawn->FindComponentByClass<UMJSkillComponent>())
+			{
+				SkillComponent->ActivateSkillByInputTag(InInputTag);
+			}
 		}
 	}
+
 	
 }
 
