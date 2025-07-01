@@ -9,7 +9,8 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
 #include "AbilitySystem/Effect/MJGE_SetSkillAttributeSet.h"
-#include "DM/MJGameInstanceDM.h"
+//#include "DM/MJGameInstanceDM.h"
+#include "TG/MJGameInstanceTG.h"
 
 // Sets default values for this component's properties
 UMJSkillComponent::UMJSkillComponent()
@@ -61,7 +62,7 @@ void UMJSkillComponent::LearnSkill(const FGameplayTag& NewSkill)
 	}
 	else
 	{
-		UMJGameInstanceDM* GI = GetWorld()->GetGameInstance<UMJGameInstanceDM>();
+		UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
 		if (!GI || !GI->SkillDataTable)
 		{
 			return;
@@ -155,7 +156,7 @@ void UMJSkillComponent::ActivateSkill(const FGameplayTag& EquippedSlotSkill)
 		return;
 	}
 
-	UMJGameInstanceDM* GI = GetWorld()->GetGameInstance<UMJGameInstanceDM>();
+	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
 	if (!GI || !GI->SkillDataTable)
 	{
 		MJ_LOG(LogMJ, Log, TEXT("not exist GI or SkillDataTable"));
@@ -233,7 +234,7 @@ void UMJSkillComponent::GiveAbilityToASC(const FGameplayTag& UpdateSkill)
 		return;
 	}
 
-	UMJGameInstanceDM* GI = GetWorld()->GetGameInstance<UMJGameInstanceDM>();
+	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
 	if (!GI || !GI->SkillDataTable)
 	{
 		MJ_LOG(LogMJ, Log, TEXT("not exist GI or SkillDataTable"));
