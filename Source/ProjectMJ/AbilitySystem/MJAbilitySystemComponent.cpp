@@ -4,6 +4,8 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/Abilities/MJGA_GameplayAbility.h"
 
+
+//This is a function that detects key presses in GAS. 
 void UMJAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& Spec)
 {
 	Super::AbilitySpecInputPressed(Spec);
@@ -15,7 +17,7 @@ void UMJAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& Sp
 	}
 
 }
-
+//This is a function that detects key Release in GAS.
 void UMJAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& Spec)
 {
 	Super::AbilitySpecInputReleased(Spec);

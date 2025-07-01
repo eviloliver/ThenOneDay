@@ -14,9 +14,9 @@ class UMJUIManagerSubsystem;
 /**
  * Class Description:
  * Author: Lee JuHyeon
- * Created Date: ?
- * Last Modified By: Lee Jisoo
- * Last Modified Date: 2025.06.20(Delete Function Related to Dialogue)
+ * Created Date: Create Controller
+ * Last Modified By: MOve Change
+ * Last Modified Date: Change Input And Move Actor beHind
  */
 
 UCLASS()

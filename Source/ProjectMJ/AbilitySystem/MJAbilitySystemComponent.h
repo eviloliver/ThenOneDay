@@ -12,8 +12,8 @@ class AMJPlayerCharacter;
  * Class Description:
  * Author: Lee JuHyeon
  * Created Date: 2025_06_12
- * Last Modified By:Add RemoveAbilityFunc
- * Last Modified Date: 2025_06_23
+ * Last Modified By:Add holding Key
+ * Last Modified Date: Character Hold Key HelpFunc 
  */
 UCLASS()
 class PROJECTMJ_API UMJAbilitySystemComponent : public UAbilitySystemComponent
