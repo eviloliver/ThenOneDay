@@ -28,9 +28,8 @@ protected:
 	virtual float GetAITurnSpeed() override;
 	virtual float GetAIMaximumAttackRange() override;
 	virtual float GetAIMinimumAttackRange() override;
-	virtual float GetAISight_SightRadius() override;
-	virtual float GetAISight_LoseSightRadius() override;
-	virtual float GetAISight_PeripheralVisionAngleDegrees() override;
 
 	virtual void AttackByAI() override;
+	virtual void MeleeAttackByAI() override;
+	virtual void RangeAttackByAI() override;
 };
