@@ -74,7 +74,7 @@ public:
 	UInputAction* ShowStatPanelAction;
 
 	UPROPERTY()
-	UMJUIManagerSubsystem* UIManager; 
+	UMJUIManagerSubsystem* UIManager;
 	
 	void ChangeToIMCDialogue();
 	void ChangeToIMCDefault();
@@ -82,6 +82,7 @@ public:
 	
 	void ShowBacklog();
 	void ShowStatPanel();
+	void ShowInventory();
 	
 	UFUNCTION()
 	void OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
@@ -91,6 +92,9 @@ public:
 	void OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 										int32 OtherBodyIndex);
 
+	UFUNCTION()
+	void OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
+										int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
 #pragma endregion
 	

@@ -9,6 +9,7 @@
 #include "Player/MJPlayerState.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "UObject/ConstructorHelpers.h"
+#include "MJInventoryWidget.h"
 
 void UMJUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -22,6 +23,10 @@ void UMJUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	HUDWidgetClass = LoadClass<UMJHUDWidget>(
 		nullptr,
 		TEXT("/Game/UI/WBP/HUD/WBP_HUD.WBP_HUD_C"));
+
+	InventoryWidgetClass = LoadClass<UMJInventoryWidget>(
+		nullptr,
+		TEXT("/Game/UI/WBP/HUD/Inventory/WBP_InventoryWidget.WBP_InventoryWidget_C"));
 }
 
 void UMJUIManagerSubsystem::Deinitialize()
@@ -77,7 +82,6 @@ void UMJUIManagerSubsystem::NextDialogue(UMJDialogueComponent* DialogueComp)
 		DialogueComp->NextDialogue(); // 인덱스 +1
 		
 		SetDialogue(DialogueComp); // +1된 row를 가져와 타이핑 >> 순서 중요
-		
 
 		if (DialogueComp->IsDialogueEnd())
 		{
@@ -121,6 +125,17 @@ void UMJUIManagerSubsystem::ShowBacklog()
 void UMJUIManagerSubsystem::ShowStatPanel()
 {
 	HUDWidget->ShowStatPanel();
+}
+
+void UMJUIManagerSubsystem::ShowInventory()
+{
+	if (!InventoryWidget)
+	{
+		InventoryWidget = CreateWidget<UMJInventoryWidget>(GetWorld(), InventoryWidgetClass);
+		
+		//InventoryWidget->InventoryRef = Char->FindComponentByClass<UMJInventoryComponent>();
+		InventoryWidget->AddToViewport();
+	}
 }
 
 

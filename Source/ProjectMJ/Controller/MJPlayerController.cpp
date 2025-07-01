@@ -16,9 +16,8 @@
 #include "Components/SphereComponent.h"
 #include "UI/MJUIManagerSubsystem.h"
 #include "Player/MJPlayerState.h"
-#include "ProjectMJ.h"
-#include "Character/MJPlayerCharacter.h"
-#include "Compression/lz4.h"
+#include "UI/MJInventoryComponent.h"
+#include "Item/MJItemBase.h"
 
 
 AMJPlayerController::AMJPlayerController()
@@ -45,6 +44,7 @@ void AMJPlayerController::BeginPlay()
 	{
 		MJChar->GetDialogueTrigger()->OnComponentBeginOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueIn);
 		MJChar->GetDialogueTrigger()->OnComponentEndOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueOut);
+		MJChar->GetDialogueTrigger()->OnComponentBeginOverlap.AddDynamic(this,&ThisClass::OnTriggeredItemIn);
 	}
 
 	AMJPlayerState* State = GetPlayerState<AMJPlayerState>();
@@ -81,7 +81,7 @@ void AMJPlayerController::SetupInputComponent()
 	ProjectMJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
 	ProjectMJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
 
-	ProjectMJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowStatPanel);
+	ProjectMJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowInventory);
 }
 
 void AMJPlayerController::PlayerTick(float DeltaTime)
@@ -229,6 +229,12 @@ void AMJPlayerController::ShowStatPanel()
 	UIManager->ShowStatPanel();
 }
 
+void AMJPlayerController::ShowInventory()
+{
+	UE_LOG(LogTemp, Log, TEXT("OnTriggerrrrr"));
+	UIManager->ShowInventory();
+}
+
 void AMJPlayerController::OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
                                                 int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -252,7 +258,20 @@ void AMJPlayerController::OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped
 	}
 }
 
-
+void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AActor* Other,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	AMJItemBase* Item = Cast<AMJItemBase>(Other);
+	UMJInventoryComponent* InventoryComp = Cast<UMJInventoryComponent>(GetWorld());
+	 if (InventoryComp)
+	 {
+	 	InventoryComp->SetItemData(Item->GetItemData(), Item->GetItemIndex(),UIManager->GetInventoryWidget());
+	 }
+	 else
+	 {
+	 	UE_LOG(LogTemp, Error, TEXT("인벤 컴포넌트가 없대"));
+	 }
+}
 
 void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
 {
