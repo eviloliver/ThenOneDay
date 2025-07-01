@@ -9,6 +9,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AISenseConfig_Damage.h"
 #include "mj/Interface/MJCharacterAIInterface.h"
 
 AMJMonsterAIControllerBase::AMJMonsterAIControllerBase()
@@ -19,7 +20,8 @@ AMJMonsterAIControllerBase::AMJMonsterAIControllerBase()
 	 * 감지할 감각(Sight), AIPerception 생성은 생성자에서 해야 한다.
 	 * 캐릭터(감지대상)에도 PerceptionStimuli Source 부착 필요!
 	 */
-	AISenseConfig_Sight = CreateDefaultSubobject<UAISenseConfig_Sight>("AISenseConfig_Sight");
+	// AISenseConfig_Sight = CreateDefaultSubobject<UAISenseConfig_Sight>("AISenseConfig_Sight");
+	// AISenseConfig_Damage = CreateDefaultSubobject<UAISenseConfig_Damage>("AISenseConfig_Damage");
 	
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(
@@ -36,40 +38,6 @@ void AMJMonsterAIControllerBase::BeginPlay()
 	{
 		UE_LOG(LogTemp, Log, TEXT("AIController: ControlledPawn is null."))
 	}
-	// interface를 통해 Sight에 관련된 데이터를 받아온다.
-	IMJCharacterAIInterface* AIPawn = Cast<IMJCharacterAIInterface>(ControlledPawn);
-	if (nullptr == AIPawn)
-	{
-		UE_LOG(LogTemp, Log, TEXT("AIController: AIPawn is null."));
-
-		AISenseConfig_Sight->SightRadius = 800.0f;
-		AISenseConfig_Sight->LoseSightRadius = 1000.0f;
-		AISenseConfig_Sight->PeripheralVisionAngleDegrees = 60.0f;
-	}
-	else
-	{
-		AISenseConfig_Sight->SightRadius = AIPawn->GetAISight_SightRadius();
-		AISenseConfig_Sight->LoseSightRadius = AIPawn->GetAISight_LoseSightRadius();
-		AISenseConfig_Sight->PeripheralVisionAngleDegrees = AIPawn->GetAISight_PeripheralVisionAngleDegrees();
-	}
-	
-	/*
-	 * How To: 적, 중립, 아군 감지 여부
-	 * TeamId로 판단=>GetTeamAttitudeTowards에서 판단
-	 * 적(플레이어)만 감지하는 상태.
-	 */
-	/*
-	 * TODO
-	 * 자손 클래스에서 업데이트 불가능..., 플레이해야 반영된게 보인다(당연함. BeginPlay임)
-	 * 다른 방법 모색중...
-	 */
-	DetectionByAffiliation = AISenseConfig_Sight->DetectionByAffiliation;
-	DetectionByAffiliation.bDetectEnemies = true;
-	DetectionByAffiliation.bDetectNeutrals = false;
-	DetectionByAffiliation.bDetectFriendlies = false;
-	
-	// 감각 등록
-	AIPerceptionComponent->ConfigureSense(*AISenseConfig_Sight);
 	
 	/*
 	 * How to: AIController의 TeamId 설정
@@ -91,6 +59,8 @@ void AMJMonsterAIControllerBase::BeginPlay()
 			TeamId = AITeamPawn->GetGenericTeamId();
 		}
 	}
+
+	//UAIPerceptionSystem::GetCurrent(GetWorld())->UpdateListener(*AIPerceptionComponent);
 }
 
 void AMJMonsterAIControllerBase::RunAI()
@@ -134,20 +104,40 @@ void AMJMonsterAIControllerBase::TargetPerceptionUpdated(AActor* Actor, FAIStimu
 	{
 		return;
 	}
-
-	// Stimulus.Type.Name으로 어떤 감각인지 얻을 수 있다. ex. Stimulus.Type.Name == "Sight" ->시야
+	
+	// Minjin: Stimulus.Type으로 감각가져오기 - ex. Stimulus.Type == UAISense::GetSenseID<UAISense_Sight>()
+	// Minjin: Stimulus.Type.Name은 FName인데 이름이 Default__AISense_Sight 이런 식임
 	// Stimulus.StimulusLocation으로 위치를 받아올 수 있다.
 	
 	if (Stimulus.WasSuccessfullySensed())
 	{
-		UE_LOG(LogTemp, Log, TEXT("Detect"));
+		/*
+		 * Minjin
+		 * TODO
+		 * 모든 감각에 대한 함수 만들고 자식에서 오버라이드해서 구현하기(현재는 시야, 데미지만 추가)
+		 */
 		Blackboard->SetValueAsObject("Target", Actor);
-		Blackboard->SetValueAsBool("IsTargetVisible", true);
+		
+		if(Stimulus.Type == UAISense::GetSenseID<UAISense_Sight>())
+		{
+			HandleSight_Detected(Actor, Stimulus);
+		}
+		else if (Stimulus.Type == UAISense::GetSenseID<UAISense_Damage>())
+		{
+			HandleDamage_Detected(Actor, Stimulus);
+		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("UnDetect"));
-		Blackboard->ClearValue("IsTargetVisible");
+		if(Stimulus.Type == UAISense::GetSenseID<UAISense_Sight>())
+		{
+			HandleSight_Lost(Actor, Stimulus);
+		}
+		else if (Stimulus.Type == UAISense::GetSenseID<UAISense_Damage>())
+		{
+			HandleDamage_Lost(Actor, Stimulus);
+		}
+		
 	}		
 }
 
@@ -205,4 +195,27 @@ ETeamAttitude::Type AMJMonsterAIControllerBase::GetTeamAttitudeTowards(const AAc
 	{
 		return Result;	
 	}
+}
+
+void AMJMonsterAIControllerBase::HandleSight_Detected(AActor* Actor, FAIStimulus Stimulus)
+{
+	UE_LOG(LogMJ, Log, TEXT("시야로 감지"));
+	Blackboard->SetValueAsBool("IsTargetVisible", true);
+}
+
+void AMJMonsterAIControllerBase::HandleDamage_Detected(AActor* Actor, FAIStimulus Stimulus)
+{
+	UE_LOG(LogMJ, Log, TEXT("데미지로 감지"));
+	GetBlackboardComponent()->SetValueAsVector("DamagePos", Stimulus.StimulusLocation);
+}
+
+void AMJMonsterAIControllerBase::HandleSight_Lost(AActor* Actor, FAIStimulus Stimulus)
+{
+	UE_LOG(LogTemp, Log, TEXT("UnDetect"));
+	GetBlackboardComponent()->SetValueAsVector("LastKnownPos", Stimulus.StimulusLocation);
+	Blackboard->ClearValue("IsTargetVisible");
+}
+
+void AMJMonsterAIControllerBase::HandleDamage_Lost(AActor* Actor, FAIStimulus Stimulus)
+{
 }
