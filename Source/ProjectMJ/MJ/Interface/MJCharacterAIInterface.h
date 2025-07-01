@@ -30,9 +30,8 @@ public:
 	virtual float GetAITurnSpeed() = 0;
 	virtual float GetAIMaximumAttackRange() = 0;
 	virtual float GetAIMinimumAttackRange() = 0;
-	virtual float GetAISight_SightRadius() = 0;
-	virtual float GetAISight_LoseSightRadius() = 0;
-	virtual float GetAISight_PeripheralVisionAngleDegrees() = 0;
 
 	virtual void AttackByAI() = 0;
+	virtual void MeleeAttackByAI() = 0;
+	virtual void RangeAttackByAI() = 0;
 };
