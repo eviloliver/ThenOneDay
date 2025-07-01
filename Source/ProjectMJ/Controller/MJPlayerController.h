@@ -93,5 +93,8 @@ public:
 
 		
 #pragma endregion
-	
+
+	// Active Ability
+	void Input_InstantSkillPressed(FGameplayTag InInputTag);
+	void Input_InstantSkillReleased(FGameplayTag InInputTag);
 };

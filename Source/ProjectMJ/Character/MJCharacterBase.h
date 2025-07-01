@@ -10,6 +10,7 @@
 #include "MJCharacterBase.generated.h"
 
 class UMJAbilitySystemComponent;
+class UMJSkillComponent;
 class UMJAttributeSet;
 class UDataAsset_StartDataBase;
 /**
@@ -42,6 +43,9 @@ protected:
 	virtual void PossessedBy(AController* NewController)override;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
 	TObjectPtr<UMJAbilitySystemComponent> ASC;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gas")
+	TObjectPtr<UMJSkillComponent> SkillComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS")
 	TSoftObjectPtr<UDataAsset_StartDataBase>CharacterStartData;

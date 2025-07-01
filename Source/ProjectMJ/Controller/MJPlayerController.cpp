@@ -18,6 +18,8 @@
 #include "ProjectMJ.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Character/MJPlayerCharacter.h"
+#include "Character/Component/MJSkillComponent.h"
 #include "Compression/lz4.h"
 
 
@@ -61,13 +63,15 @@ void AMJPlayerController::SetupInputComponent()
 
 	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Click, ETriggerEvent::Started, this, &ThisClass::OnTouchStart);
 	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Click, ETriggerEvent::Completed, this, &ThisClass::OnTouchReleased);
-	
+
+
 	ProjectMJInputComponent->BindAbilityInputAction(InputConfigDataAsset, this, &AMJPlayerController::Input_AbilityInputPressed, &AMJPlayerController::Input_AbilityInputReleased);
-	
+
 	//Dialogue Input
 	ProjectMJInputComponent->BindAction(ChangeIMCAction, ETriggerEvent::Triggered, this, &ThisClass::ChangeToIMCDialogue);
 	ProjectMJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
 	ProjectMJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
+
 }
 void AMJPlayerController::PlayerTick(float DeltaTime)
 {
@@ -272,6 +276,7 @@ void AMJPlayerController::OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped
 
 void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
 {
+	MJ_LOG(LogMJ, Warning, TEXT("Input Pressed: %s"), *InInputTag.ToString())
 	AMJPlayerCharacter* ControlledPawn = Cast<AMJPlayerCharacter>(GetPawn());
 	if (ControlledPawn)
 	{
@@ -279,8 +284,13 @@ void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
 		{
 			
 			MJASC->OnAbilityInputPressed(InInputTag);
+			if (UMJSkillComponent* SkillComponent = ControlledPawn->FindComponentByClass<UMJSkillComponent>())
+			{
+				SkillComponent->ActivateSkillByInputTag(InInputTag);
+			}
 		}
 	}
+
 	
 }
 

@@ -51,7 +51,7 @@ FGameplayAbilityTargetDataHandle AMJTA_Trace::MakeTargetData() const
 	const float AttackRange = SkillAttributeSet->GetSkillRange();
 	const float AttackRadius = SkillAttributeSet->GetSkillRadius();
 
-	FCollisionQueryParams Params(SCENE_QUERY_STAT(UABTA_Trace), false, Character);
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(UMJTA_Trace), false, Character);
 	const FVector Forward = Character->GetActorForwardVector();
 	const FVector Start = Character->GetActorLocation() + Forward * Character->GetCapsuleComponent()->GetScaledCapsuleRadius();
 	const FVector End = Start + Forward * AttackRange;
