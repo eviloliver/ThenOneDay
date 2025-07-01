@@ -24,10 +24,10 @@ void UMJAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& S
 {
 	Super::AbilitySpecInputReleased(Spec);
 
-	TArray<UGameplayAbility*> Instances = Spec.GetAbilityInstances();
-	const FGameplayAbilityActivationInfo& ActivationInfo = Instances.Last()->GetCurrentActivationInfoRef();
-	FPredictionKey OriginalPredictionKey = ActivationInfo.GetActivationPredictionKey();
-	InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, OriginalPredictionKey);
+	//TArray<UGameplayAbility*> Instances = Spec.GetAbilityInstances();
+	//const FGameplayAbilityActivationInfo& ActivationInfo = Instances.Last()->GetCurrentActivationInfoRef();
+	//FPredictionKey OriginalPredictionKey = ActivationInfo.GetActivationPredictionKey();
+	//InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, OriginalPredictionKey);
 
 }
 
@@ -50,7 +50,7 @@ void UMJAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InInpu
 	//	AbilitySpecInputPressed(AbilitySpec);
 	//	TryActivateAbility(AbilitySpec.Handle);
 	//}
-
+	//
 	//for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	//{
 	//	if (!AbilitySpec.DynamicAbilityTags.HasTagExact(InInputTag))

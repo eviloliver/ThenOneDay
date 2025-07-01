@@ -12,6 +12,7 @@
 class AMJPlayerCharacter;
 class UMJHttpDownloadManager;
 class UMJSaveGame;
+class UDataTable;
 /**
  * Class Description: 게임 시작부터 종료까지 유지될 GameInstance
  * Author: 차태관
