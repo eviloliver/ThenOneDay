@@ -39,7 +39,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	TArray<FMJDungeonSessionData>& GetDungeonSessionDataRef();
-
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UDataTable> SkillDataTable;
 protected:
 
 	UPROPERTY(VisibleAnywhere)
