@@ -35,6 +35,7 @@ void UMJAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InInpu
 	{
 		return;
 	}
+
 	for ( FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
 		if (!AbilitySpec.DynamicAbilityTags.HasTagExact(InInputTag))
@@ -48,6 +49,11 @@ void UMJAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InInpu
 
 void UMJAbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& InInputTag)
 {
+	if (!InInputTag.IsValid())
+	{
+		return;
+	}
+
 	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
 		if (!AbilitySpec.DynamicAbilityTags.HasTagExact(InInputTag))
