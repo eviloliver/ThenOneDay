@@ -3,29 +3,25 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/MJCharacterBase.h"
-#include "MJ/Interface/MJCharacterAIInterface.h"
-#include "MJMonsterCharacter.generated.h"
+#include "MJ/Character/MJMonsterCharacter.h"
+#include "MJRangedMonsterCharacter.generated.h"
 
 /**
- * Class Description: AICharacter
+ * Class Description: 원거리 몬스터
  * Author: Kim Minjin
- * Created Date: 2025.06.21.
+ * Created Date: 2025.06.29.
  * Last Modified By: (Last Modifier)
  * Last Modified Date: (Last Modified Date)
  */
 UCLASS()
-class PROJECTMJ_API AMJMonsterCharacter : public AMJCharacterBase, public IMJCharacterAIInterface
+class PROJECTMJ_API AMJRangedMonsterCharacter : public AMJMonsterCharacter
 {
 	GENERATED_BODY()
 
 public:
-	AMJMonsterCharacter();
+	AMJRangedMonsterCharacter();
 
-	// Interface
 protected:
-	virtual float GetAIPatrolRadius() override;
-	virtual float GetAITurnSpeed() override;
 	virtual float GetAIMaximumAttackRange() override;
 	virtual float GetAIMinimumAttackRange() override;
 

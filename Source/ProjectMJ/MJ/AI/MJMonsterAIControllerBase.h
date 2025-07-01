@@ -11,6 +11,7 @@
 class UBehaviorTree;
 class UAIPerceptionComponent;
 class UAISenseConfig_Sight;
+class UAISenseConfig_Damage;
 /**
  * Class Description: MonsterAIControllerBase: Perception-Sight,Affiliation 포함
  * Author: Kim Minjin
@@ -38,22 +39,30 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
 	// AI Perception
+
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAIPerceptionComponent> AIPerceptionComponent;
 	
 	UFUNCTION(BlueprintCallable)
 	void TargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
-	
-	// Sight
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="AI|Perception")
-	TObjectPtr<UAISenseConfig_Sight> AISenseConfig_Sight;
 
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="AI|Perception")
-	FAISenseAffiliationFilter DetectionByAffiliation;
-	
 	// AI Affiliation
 	FGenericTeamId TeamId;
 	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
+
+	// Minjin: Handle AI Sense
+	// 자식 클래스에서 오버라이드해서 각 감각별로 다른 처리 진행
+	UFUNCTION()
+	virtual void HandleSight_Detected(AActor* Actor, FAIStimulus Stimulus);
+
+	UFUNCTION()
+	virtual void HandleDamage_Detected(AActor* Actor, FAIStimulus Stimulus);
+
+	UFUNCTION()
+	virtual void HandleSight_Lost(AActor* Actor, FAIStimulus Stimulus);
+	
+	UFUNCTION()
+	virtual void HandleDamage_Lost(AActor* Actor, FAIStimulus Stimulus);
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="AI|BehaviorTree")

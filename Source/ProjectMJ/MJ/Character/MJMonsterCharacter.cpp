@@ -50,21 +50,6 @@ float AMJMonsterCharacter::GetAIMinimumAttackRange()
 	return 200.0f;
 }
 
-float AMJMonsterCharacter::GetAISight_SightRadius()
-{
-	return 800.0f;
-}
-
-float AMJMonsterCharacter::GetAISight_LoseSightRadius()
-{
-	return 1000.0f;
-}
-
-float AMJMonsterCharacter::GetAISight_PeripheralVisionAngleDegrees()
-{
-	return 60.0f;
-}
-
 void AMJMonsterCharacter::AttackByAI()
 {
 	/*
@@ -72,4 +57,24 @@ void AMJMonsterCharacter::AttackByAI()
 	 * 공격
 	 */
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("Attack"));
+}
+
+void AMJMonsterCharacter::MeleeAttackByAI()
+{
+	/*
+	 * Minjin
+	 * TODO
+	 * 근거리 공격
+	 */
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("MeleeAttack"));
+}
+
+void AMJMonsterCharacter::RangeAttackByAI()
+{
+	/*
+ * Minjin
+ * TODO
+ * 원거리 공격
+ */
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("RangeAttack"));
 }
