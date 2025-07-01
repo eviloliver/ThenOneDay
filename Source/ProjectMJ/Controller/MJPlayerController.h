@@ -14,9 +14,9 @@ class UMJUIManagerSubsystem;
 /**
  * Class Description:
  * Author: Lee JuHyeon
- * Created Date: ?
- * Last Modified By: Lee Jisoo
- * Last Modified Date: 2025.06.20(Delete Function Related to Dialogue)
+ * Created Date: Create Controller
+ * Last Modified By: Lee JuHyeon
+ * Last Modified Date: Change Input And Move Actor beHind
  */
 
 UCLASS()
@@ -31,30 +31,33 @@ protected:
 	virtual void SetupInputComponent() override;
 	
 	virtual void PlayerTick(float DeltaTime)override;
-#pragma region Inputs
-	void OnInputStarted();
-	void OnSetDestinationTriggered();
-	void OnSetDestinationReleased();
-	void OnTouchTriggered();
+#pragma region move and Input
+	void StopMove();
+	void HoldingMove();
+	void OnTouchStart();
 	void OnTouchReleased();
+	
 
-	void SetNewDestination(const FVector DestLocation);
-	void MoveToMouseCurser();
 
 	void Input_AbilityInputPressed(FGameplayTag InInputTag);
 	void Input_AbilityInputReleased(FGameplayTag InInputTag);
+	
 #pragma endregion 
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
 	UDataAsset_InputConfig* InputConfigDataAsset;
 
-private:
 	FVector CachedDestination;
 
 	bool bIsTouch; // Is it a touch device
 	float FollowTime; // For how long it has been pressed
 
+	bool bIsHolding;
+	bool bIspressed;
 
+	float HoldThresHold = 0.2f;
+	float PressTimed = 0.0f;
 	
 #pragma region DialoguePart
 private:
@@ -88,7 +91,7 @@ public:
 	void OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 										int32 OtherBodyIndex);
 
-	
+		
 #pragma endregion
 	
 };
