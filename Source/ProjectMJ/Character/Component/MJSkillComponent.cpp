@@ -163,10 +163,16 @@ void UMJSkillComponent::ActivateSkill(const FGameplayTag& EquippedSlotSkill)
 	}
 
 	const FMJSkillDataRow* DataRow = GI->SkillDataTable->FindRow<FMJSkillDataRow>(EquippedSlotSkill.GetTagName(), TEXT("ActivateSkill"));
-	UCurveTable* CurveTable = DataRow->SkillLevelDataTable.LoadSynchronous();
-	if (!DataRow || !CurveTable)
+	if (!DataRow)
 	{
-		MJ_LOG(LogMJ, Log, TEXT("not exist DataRow or SkillLevelDataTable"));
+		MJ_LOG(LogMJ, Log, TEXT("not exist DataRow"));
+		return;
+	}
+
+	UCurveTable* CurveTable = DataRow->SkillLevelDataTable.LoadSynchronous();
+	if (!CurveTable)
+	{
+		MJ_LOG(LogMJ, Log, TEXT("not exist SkillLevelDataTable"));
 		return;
 	}
 
