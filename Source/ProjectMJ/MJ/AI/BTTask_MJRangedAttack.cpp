@@ -1,16 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MJ/AI/BTTask_MJAttack.h"
+#include "MJ/AI/BTTask_MJRangedAttack.h"
+
 #include "AIController.h"
-#include "BehaviorTree/BlackboardComponent.h"
 #include "MJ/Interface/MJCharacterAIInterface.h"
 
-UBTTask_MJAttack::UBTTask_MJAttack()
+UBTTask_MJRangedAttack::UBTTask_MJRangedAttack()
 {
+	NodeName = TEXT("RangedAttack");
 }
 
-EBTNodeResult::Type UBTTask_MJAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_MJRangedAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
@@ -26,7 +27,7 @@ EBTNodeResult::Type UBTTask_MJAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		return EBTNodeResult::Failed;
 	}
 
-	AIPawn->AttackByAI();
+	AIPawn->RangeAttackByAI();
 	/*
 	 * TODO
 	 * 공격이 다 끝난 후에 완료 처리해야 한다.
