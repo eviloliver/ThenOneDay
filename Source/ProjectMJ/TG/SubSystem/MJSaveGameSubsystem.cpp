@@ -3,15 +3,34 @@
 
 #include "MJSaveGameSubsystem.h"
 
+#include "MoviePlayer.h"
 #include "ProjectMJ.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
+#include "Blueprint/UserWidget.h"
 #include "Character/MJPlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "TG/Struct/MJSaveGame.h"
 
 UMJSaveGameSubsystem::UMJSaveGameSubsystem()
 {
+	
+	static ConstructorHelpers::FClassFinder<UUserWidget> LoadingScreenRef(TEXT("/Game/TG/WBP_LoadingScreen.WBP_LoadingScreen_C"));
+	if (LoadingScreenRef.Succeeded())
+	{
+		LoadingScreen = LoadingScreenRef.Class;
+	}
+}
+
+void UMJSaveGameSubsystem::Initialize(FSubsystemCollectionBase& Collection)
+{
+	Super::Initialize(Collection);
+
+	
+	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UMJSaveGameSubsystem::BeginLoadingScreen);
+	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UMJSaveGameSubsystem::EndLoadingScreen);
+
+	
 }
 
 void UMJSaveGameSubsystem::CreateSaveGame()
@@ -87,6 +106,26 @@ void UMJSaveGameSubsystem::SaveGameToSlot(AMJPlayerCharacter* Player)
 		
 	}
 }
+
+
+void UMJSaveGameSubsystem::BeginLoadingScreen(const FString& MapName)
+{
+	
+	FLoadingScreenAttributes LoadingScreenAttr;
+
+	UUserWidget* Buffer = CreateWidget<UUserWidget>(GetGameInstance(), LoadingScreen);
+		
+	LoadingScreenAttr.WidgetLoadingScreen = Buffer->TakeWidget();
+	LoadingScreenAttr.bAutoCompleteWhenLoadingCompletes = false;
+	LoadingScreenAttr.MinimumLoadingScreenDisplayTime = 2.0f;
+ 
+	GetMoviePlayer()->SetupLoadingScreen(LoadingScreenAttr);
+}
+
+void UMJSaveGameSubsystem::EndLoadingScreen(UWorld* InLoadedWorld)
+{
+}
+
 
 UMJSaveGame* UMJSaveGameSubsystem::GetSaveGameData()
 {

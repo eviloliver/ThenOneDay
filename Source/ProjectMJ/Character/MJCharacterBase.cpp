@@ -5,6 +5,9 @@
 
 #include "ProjectMJ.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
+#include "Component/MJSkillComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Physics/MJCollision.h"
 #include "Player/MJPlayerState.h"
 
 // Sets default values
@@ -16,6 +19,11 @@ AMJCharacterBase::AMJCharacterBase()
 	PrimaryActorTick.bStartWithTickEnabled = false;
 	GetMesh()->bReceivesDecals = false;
 	ASC = nullptr;
+		
+	SkillComponent = CreateDefaultSubobject<UMJSkillComponent>(TEXT("SkillComponent"));
+
+	// Capsule Component Collision Profile
+	GetCapsuleComponent()->SetCollisionProfileName(CPROFILE_MJCAPSULE);
 }
 
 UAbilitySystemComponent* AMJCharacterBase::GetAbilitySystemComponent() const

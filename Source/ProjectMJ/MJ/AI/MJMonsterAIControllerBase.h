@@ -39,12 +39,13 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
 	// AI Perception
-	UPROPERTY(EditAnywhere)
+
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAIPerceptionComponent> AIPerceptionComponent;
 	
-	UFUNCTION()
-	virtual void TargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
-	
+	UFUNCTION(BlueprintCallable)
+	void TargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+
 	// AI Affiliation
 	FGenericTeamId TeamId;
 	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
@@ -66,4 +67,6 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="AI|BehaviorTree")
 	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	
 };

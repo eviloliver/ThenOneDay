@@ -10,7 +10,7 @@ UMJSaveGame::UMJSaveGame()
 	
 }
 
-FCharacterAttributeSaveData& UMJSaveGame::GetAttributeSaveData()
+FMJCharacterAttributeSaveData& UMJSaveGame::GetAttributeSaveData()
 {
 	return AttributeSaveData;
 }

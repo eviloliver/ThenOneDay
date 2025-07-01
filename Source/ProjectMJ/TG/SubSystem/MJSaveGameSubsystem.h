@@ -22,6 +22,8 @@ public:
 
 	UMJSaveGameSubsystem();
 
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+
 	UFUNCTION(BlueprintCallable)
 	UMJSaveGame* GetSaveGameData();
 
@@ -39,6 +41,17 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SaveGameToSlot(AMJPlayerCharacter* Player);
+
+
+	// Loading Screen Section
+	
+	UFUNCTION()
+	virtual void BeginLoadingScreen(const FString& MapName);
+	UFUNCTION()
+	virtual void EndLoadingScreen(UWorld* InLoadedWorld);
+
+	UPROPERTY(VisibleAnywhere)
+	TSubclassOf<UUserWidget> LoadingScreen;
 	
 protected:
 	

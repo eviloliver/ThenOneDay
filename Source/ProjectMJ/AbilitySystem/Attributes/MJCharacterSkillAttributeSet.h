@@ -30,73 +30,73 @@ public:
 
 	// Level
 	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, SkillLevel)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxSkillLevel)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxSkillLevel)
 
-		// Cost
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, CostStamina)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCostStamina)
+	// Cost
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, CostStamina)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCostStamina)
 
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, CostMana)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCostMana)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, CostMana)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCostMana)
 
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, CostFocus)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCostFocus)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, CostFocus)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCostFocus)
 
-		// Damage / Scaling
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, BaseDamage)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxBaseDamage)
+	// Damage / Scaling
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, BaseDamage)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxBaseDamage)
 
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, Healing)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxHealing)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, Healing)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxHealing)
 
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, LifeSteal)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxLifeSteal)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, LifeSteal)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxLifeSteal)
 
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, AttackDamageScaling)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxAttackDamageScaling)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, AttackDamageScaling)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxAttackDamageScaling)
 
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, AbilityPowerScaling)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxAbilityPowerScaling)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, AbilityPowerScaling)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxAbilityPowerScaling)
 
-		// Range
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, SkillRadius)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxSkillRadius)
+	// Range
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, SkillRadius)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxSkillRadius)
 
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, SkillRange)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxSkillRange)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, SkillRange)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxSkillRange)
 
-		// Time
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, Cooldown)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCooldown)
+	// Time
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, Cooldown)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCooldown)
 
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, SkillAttackRate)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxSkillAttackRate)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, SkillAttackRate)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxSkillAttackRate)
 
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, CastTime)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCastTime)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, CastTime)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCastTime)
 
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, PreDelay)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxPreDelay)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, PreDelay)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxPreDelay)
 
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, PostDelay)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxPostDelay)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, PostDelay)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxPostDelay)
 
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, EffectDuration)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxEffectDuration)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, EffectDuration)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxEffectDuration)
 
-		// Status effect
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, StatusEffectChance)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxStatusEffectChance)
+	// Status effect
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, StatusEffectChance)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxStatusEffectChance)
 
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, StatusEffectDuration)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxStatusEffectDuration)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, StatusEffectDuration)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxStatusEffectDuration)
 
-		// Projectile
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, ProjectileSpeed)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxProjectileSpeed)
+	// Projectile
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, ProjectileSpeed)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxProjectileSpeed)
 
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, ProjectileCount)
-		ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxProjectileCount)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, ProjectileCount)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxProjectileCount)
 
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;

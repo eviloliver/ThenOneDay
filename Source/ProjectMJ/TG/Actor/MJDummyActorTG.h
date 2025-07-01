@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TG/Interface/MJInstancedActorInterface.h"
 #include "MJDummyActorTG.generated.h"
 /**
  * Class Description: 맵 간 이동 시 액터 복원 확인을 위한 더미 액터
@@ -11,9 +12,11 @@
  * Created Date: 2025-06-13
  * Last Modified By: 차태관
  * Last Modified Date: 2025-06-13
+ * Last Modified By: 차태관
+ * Last Modified Date: 2025-06-25
  */
 UCLASS()
-class PROJECTMJ_API AMJDummyActorTG : public AActor
+class PROJECTMJ_API AMJDummyActorTG : public AActor, public IMJInstancedActorInterface
 {
 	GENERATED_BODY()
 	
@@ -28,7 +31,6 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void PostInitializeComponents() override;
-	void ApplySavedPosition();
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 
