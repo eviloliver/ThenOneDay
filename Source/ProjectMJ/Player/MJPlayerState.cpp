@@ -6,6 +6,8 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem//Attributes/MJCharacterAttributeSet.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
+#include "Kismet/GameplayStatics.h"
+#include "TG/MJGameInstanceTG.h"
 
 AMJPlayerState::AMJPlayerState()
 {
@@ -27,28 +29,25 @@ UMJCharacterAttributeSet* AMJPlayerState::GetCharacterAttributeSet() const
 	return CharacterAttributeSet;
 }
 
-FMJPlayerSessionData& AMJPlayerState::GetPlayerSessionData()
+FMJPlayerSessionData& AMJPlayerState::GetPlayerSessionDataRef()
 {
 	return PlayerSessionData;
 }
 
-void AMJPlayerState::CopyProperties(APlayerState* PlayerState)
+void AMJPlayerState::SaveToInstancedPlayerSessionData()
 {
-	Super::CopyProperties(PlayerState);
-
-	AMJPlayerState* MJPS = Cast<AMJPlayerState>(PlayerState);
+	PlayerSessionData.CharacterAttribute = *CharacterAttributeSet;
+	PlayerSessionData.CharacterSkillAttribute = *CharacterSkillAttributeSet;
+	GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef() = PlayerSessionData;
 	
-	if (MJPS)
-	{
-		
-		MJPS->ASC->SetNumericAttributeBase(UMJCharacterAttributeSet::GetHealthAttribute(),ASC->GetSet<UMJCharacterAttributeSet>()->GetHealth());
-		MJPS->PlayerSessionData = PlayerSessionData;
+	MJ_LOG(LogTG,Warning, TEXT("PlayerState Copied!!"));
 
-		// TODO CharacterAttribute 프로퍼티 옮겨담기
-		
-		MJ_LOG(LogTG,Warning, TEXT("PlayerState Pointer Copied!!"));
-		MJ_LOG(LogTG,Warning, TEXT("PlayerSessionData.DungeonNodeNum = %d"), MJPS->PlayerSessionData.CurrentDungeonMapNum);
-	}
-
-	
 }
+
+void AMJPlayerState::LoadFromInstancedPlayerSessionData()
+{
+	PlayerSessionData = GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef();
+	PlayerSessionData.CharacterAttribute.ApplyToAttributeSet(*CharacterAttributeSet);
+	PlayerSessionData.CharacterSkillAttribute.ApplyToAttributeSet(*CharacterSkillAttributeSet);
+}
+

@@ -29,12 +29,16 @@ public:
 
 	UMJCharacterAttributeSet* GetCharacterAttributeSet() const;
 
-	FMJPlayerSessionData& GetPlayerSessionData();
+	FMJPlayerSessionData& GetPlayerSessionDataRef();
 
+	UFUNCTION()
+	void SaveToInstancedPlayerSessionData();
+
+	UFUNCTION()
+	void LoadFromInstancedPlayerSessionData();
+
+	
 protected:
-
-	virtual void CopyProperties(APlayerState* PlayerState) override;
-
 	
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TObjectPtr<class UMJAbilitySystemComponent> ASC;

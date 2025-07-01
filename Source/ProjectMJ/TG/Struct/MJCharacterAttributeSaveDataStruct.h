@@ -1,11 +1,11 @@
-#pragma once
+ #pragma once
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "MJCharacterAttributeSaveDataStruct.generated.h"
 
 USTRUCT(BlueprintType)
-struct FCharacterAttributeSaveData
+struct FMJCharacterAttributeSaveData
 {
 	GENERATED_BODY()
 
@@ -144,7 +144,7 @@ struct FCharacterAttributeSaveData
 	float Damage;
 
 	// AttributeSet으로부터 값을 받아 저장
-	FCharacterAttributeSaveData& operator=(const UMJCharacterAttributeSet& AttributeSet);
+	FMJCharacterAttributeSaveData& operator=(const UMJCharacterAttributeSet& AttributeSet);
 
 	// AttributeSet에 값을 덮어쓰기
 	void ApplyToAttributeSet(UMJCharacterAttributeSet& AttributeSet) const;

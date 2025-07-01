@@ -21,7 +21,6 @@ void AMJDummyActorTG::BeginPlay()
 	Super::BeginPlay();
 
 	
-	ApplySavedPosition();
 	
 }
 
@@ -32,10 +31,6 @@ void AMJDummyActorTG::PostInitializeComponents()
 
 }
 
-void AMJDummyActorTG::ApplySavedPosition()
-{
-
-}
 
 void AMJDummyActorTG::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {

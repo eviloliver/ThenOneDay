@@ -38,10 +38,10 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
 	// AI Perception
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAIPerceptionComponent> AIPerceptionComponent;
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void TargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 	
 	// Sight
@@ -58,4 +58,6 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="AI|BehaviorTree")
 	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	
 };
