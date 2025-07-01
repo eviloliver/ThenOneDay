@@ -48,16 +48,18 @@ public:
 	// Inventory Section
 	void ShowInventory();
 
-	UMJInventoryWidget* GetInventoryWidget() {return InventoryWidget;};
+	//UMJInventoryWidget* GetInventoryWidget() {return InventoryWidget;};
+	UMJHUDWidget* GetHUDWidget() {return HUDWidget;};
+	
 protected:
 	UPROPERTY()
 	UMJDialogueWidget* DialogueWidget;
 	TSubclassOf<class UMJDialogueWidget> DialogueWidgetClass;
-
+	bool bIsDialogueActive;
+	
 	UMJHUDWidget* HUDWidget;
 	TSubclassOf<class UMJHUDWidget> HUDWidgetClass;
-	bool bIsDialogueActive;
 
-	UMJInventoryWidget* InventoryWidget;
-	TSubclassOf<class UMJInventoryWidget> InventoryWidgetClass;
+	//UMJInventoryWidget* InventoryWidget;
+	//TSubclassOf<class UMJInventoryWidget> InventoryWidgetClass;
 };

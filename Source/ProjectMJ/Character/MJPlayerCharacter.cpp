@@ -12,6 +12,7 @@
 #include "Component/MJPlayerCombatComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
+#include "UI/Inventory/MJInventoryComponent.h"
 
 class UMJSaveGameSubsystem;
 
@@ -63,6 +64,8 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	DialogueTrigger->SetCollisionProfileName(TEXT("Trigger"));
 	DialogueTrigger->SetGenerateOverlapEvents(true);
 	DialogueTrigger->SetHiddenInGame(false);
+
+	InventoryComponent = CreateDefaultSubobject<UMJInventoryComponent>(TEXT("InventoryComponent"));
 }
 
 void AMJPlayerCharacter::BeginPlay()

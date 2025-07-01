@@ -43,6 +43,10 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UDataTable> SkillDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TObjectPtr<UDataTable> ItemDataTable;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere)

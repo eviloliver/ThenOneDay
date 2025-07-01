@@ -4,8 +4,8 @@
 #include "Engine/DataTable.h"
 #include "InventoryItemData.generated.h"
 
-USTRUCT(BlueprintType)
-struct FInventoryItemData : public FTableRowBase
+USTRUCT(BlueprintType) 
+struct FInventoryItemData : public FTableRowBase // 안바뀌는값
 {
 	GENERATED_BODY()
 	
@@ -13,7 +13,7 @@ struct FInventoryItemData : public FTableRowBase
 	FText ItemID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UTexture2D* Icon = nullptr;
+	UTexture2D* Icon; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText Description;

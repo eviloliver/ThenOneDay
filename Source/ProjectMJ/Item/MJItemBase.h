@@ -15,13 +15,8 @@ class PROJECTMJ_API AMJItemBase : public AActor
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
-	UDataTable* ItemDataTable;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
-	int32 ItemIndex; // 각각의 아이템에 넘버를 지정해두고 이걸로 지정하면 될 거 같음
+	FName ItemName; // 각각의 아이템에 넘버를 지정해두고 이걸로 지정하면 될 거 같음
 
 public:
-	
-	UDataTable* GetItemData(){return ItemDataTable;}
-	int32 GetItemIndex() {return ItemIndex;}
+	FName GetItemName() {return ItemName;}
 };

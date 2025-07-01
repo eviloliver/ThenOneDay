@@ -9,7 +9,7 @@
 #include "Player/MJPlayerState.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "UObject/ConstructorHelpers.h"
-#include "MJInventoryWidget.h"
+#include "Inventory/MJInventoryWidget.h"
 
 void UMJUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -23,10 +23,6 @@ void UMJUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	HUDWidgetClass = LoadClass<UMJHUDWidget>(
 		nullptr,
 		TEXT("/Game/UI/WBP/HUD/WBP_HUD.WBP_HUD_C"));
-
-	InventoryWidgetClass = LoadClass<UMJInventoryWidget>(
-		nullptr,
-		TEXT("/Game/UI/WBP/HUD/Inventory/WBP_InventoryWidget.WBP_InventoryWidget_C"));
 }
 
 void UMJUIManagerSubsystem::Deinitialize()
@@ -129,13 +125,5 @@ void UMJUIManagerSubsystem::ShowStatPanel()
 
 void UMJUIManagerSubsystem::ShowInventory()
 {
-	if (!InventoryWidget)
-	{
-		InventoryWidget = CreateWidget<UMJInventoryWidget>(GetWorld(), InventoryWidgetClass);
-		
-		//InventoryWidget->InventoryRef = Char->FindComponentByClass<UMJInventoryComponent>();
-		InventoryWidget->AddToViewport();
-	}
+	HUDWidget->ShowInventory();
 }
-
-

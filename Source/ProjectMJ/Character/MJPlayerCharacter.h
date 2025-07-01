@@ -11,6 +11,8 @@ class UCameraComponent;
 class UMJPlayerCombatComponent;
 class UAIPerceptionStimuliSourceComponent;
 class USphereComponent;
+class UMJInventoryComponent;
+
 /**
  * Class Description:
  * Author: Lee JuHyeon
@@ -55,11 +57,16 @@ protected:
  	UPROPERTY()
  	AActor* DialogueTarget;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+	UMJInventoryComponent* InventoryComponent;
+
 public:
 	void SetDialogueTarget(AActor* NewTarget) { DialogueTarget = NewTarget; }
 	
 	AActor* GetDialogueTarget() {return DialogueTarget;}
 	USphereComponent* GetDialogueTrigger() {return DialogueTrigger;}
+	UMJInventoryComponent* GetInventoryComponent() {return InventoryComponent;}
+	
 #pragma endregion
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="Camera",meta=(AllowPrivateAccess=true))
 	TObjectPtr<USpringArmComponent> CameraBoom;

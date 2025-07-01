@@ -18,6 +18,7 @@ class UMJHealthBarWidget;
 class UMJManaBarWidget;
 class UMJExperienceWidget;
 class UMJStatWidget;
+class UMJInventoryWidget;
 
 UCLASS()
 class PROJECTMJ_API UMJHUDWidget : public UUserWidget
@@ -36,6 +37,9 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UMJStatWidget* StatPanel;
+
+	UPROPERTY(meta = (BindWidget))
+	UMJInventoryWidget* Inventory;
 	
 public:
 	UFUNCTION()
@@ -43,4 +47,8 @@ public:
 	
 	void BindAtrributesToChildren(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet);
 	void ShowStatPanel();
+	void ShowInventory();
+
+	UMJInventoryWidget* GetInventoryWidget() {return Inventory;};
+	
 };

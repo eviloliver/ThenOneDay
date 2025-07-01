@@ -3,15 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MJInventorySlot.h"
 #include "Blueprint/UserWidget.h"
 #include "MJInventoryWidget.generated.h"
 
 /**
  * 
  */
-class UTextBlock;
-class UImage;
-
 UCLASS()
 class PROJECTMJ_API UMJInventoryWidget : public UUserWidget
 {
@@ -19,15 +17,18 @@ class PROJECTMJ_API UMJInventoryWidget : public UUserWidget
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	UImage* image;
-
+	class UGridPanel* GridPanel;
+	
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* text;
+	TArray<UMJInventorySlot*> InventorySlots;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Inventory)
+	TSubclassOf<UMJInventorySlot> InventorySlotClass;
+	
+	int32 SlotIndex;
 public:
-	void SetImage();
-	void SetText(FText text);
-
-	UImage* GetImage() {return image;};
-	UTextBlock* GetText() {return text;};
+	virtual void NativeConstruct() override;
+	
+	TArray<UMJInventorySlot*> GetInventorySlot() {return InventorySlots;}
+	
 };

@@ -22,8 +22,9 @@
 #include "Character/MJPlayerCharacter.h"
 #include "Character/Component/MJSkillComponent.h"
 #include "Compression/lz4.h"
-#include "UI/MJInventoryComponent.h"
+#include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
+#include "UI/Inventory/MJInventoryWidget.h"
 
 
 AMJPlayerController::AMJPlayerController()
@@ -41,9 +42,9 @@ void AMJPlayerController::BeginPlay()
 
 	UIManager =	GetGameInstance()->GetSubsystem<UMJUIManagerSubsystem>();
 	ensure(UIManager);
-	// ?–¸ë¦¬ì–¼ ?—”ì§„ì˜ ì´ˆê¸°?™” ?ˆœ?„œ : GameInstance > GameMode > Actor
-	// ê·¸ëŸ¬ë¯?ë¡? GetSubsystem ?‹œ nullptr ?„ ë°˜í™˜?•  ?¼??? ?—†ì§?ë§?, !
-	// ?˜¹?‹œ ëª¨ë?? ?ƒ?™©(ëª¨ë“ˆ ?ˆ„?½, ?´?ƒ?•œ ?˜¸ì¶? ????´ë°?, ë¹„ë™ê¸? ë¡œì§ ì¤? ? ‘ê·? ?“±)?— ???ë¹„í•˜?—¬ ensure() ?˜?Š” UE_LOG ì°ê¸°
+	// ?ï¿½ï¿½ë¦¬ì–¼ ?ï¿½ï¿½ì§„ì˜ ì´ˆê¸°?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ : GameInstance > GameMode > Actor
+	// ê·¸ëŸ¬ï¿½?ï¿½? GetSubsystem ?ï¿½ï¿½ nullptr ?ï¿½ï¿½ ë°˜í™˜?ï¿½ï¿½ ?ï¿½ï¿½??? ?ï¿½ï¿½ï¿½?ï¿½?, !
+	// ?ï¿½ï¿½?ï¿½ï¿½ ëª¨ï¿½?? ?ï¿½ï¿½?ï¿½ï¿½(ëª¨ë“ˆ ?ï¿½ï¿½?ï¿½ï¿½, ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ï¿½? ????ï¿½ï¿½ï¿½?, ë¹„ë™ï¿½? ë¡œì§ ï¿½? ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½)?ï¿½ï¿½ ???ë¹„í•˜?ï¿½ï¿½ ensure() ?ï¿½ï¿½?ï¿½ï¿½ UE_LOG ì°ê¸°
 	
 	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
 	if (MJChar)
@@ -227,7 +228,7 @@ void AMJPlayerController::ChangeToIMCDialogue()
 	}
 }
 
-void AMJPlayerController::ChangeToIMCDefault() // showDialogue ë§ˆì??ë§‰ì— ?“¤?–´ê°??•¼ ?•¨
+void AMJPlayerController::ChangeToIMCDefault() // showDialogue ë§ˆï¿½??ë§‰ì— ?ï¿½ï¿½?ï¿½ï¿½ï¿½??ï¿½ï¿½ ?ï¿½ï¿½
 {
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -249,7 +250,7 @@ void AMJPlayerController::ProceedDialogue()
 
 		UIManager->NextDialogue(DialogueComp);
 		
-		if (DialogueComp->IsDialogueEnd()) // ë§ˆì??ë§? ????‚¬?¼ë©? imc ? „?™˜
+		if (DialogueComp->IsDialogueEnd()) // ë§ˆï¿½??ï¿½? ????ï¿½ï¿½?ï¿½ï¿½ï¿½? imc ?ï¿½ï¿½?ï¿½ï¿½
 		{
 			ChangeToIMCDefault();
 		}
@@ -299,14 +300,16 @@ void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AAc
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AMJItemBase* Item = Cast<AMJItemBase>(Other);
-	UMJInventoryComponent* InventoryComp = Cast<UMJInventoryComponent>(GetWorld());
+	if (!Item) return;
+	
+	AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
+	if (!MyChar) return;
+	UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
+	
 	 if (InventoryComp)
 	 {
-	 	InventoryComp->SetItemData(Item->GetItemData(), Item->GetItemIndex(),UIManager->GetInventoryWidget());
-	 }
-	 else
-	 {
-	 	UE_LOG(LogTemp, Error, TEXT("?¸ë²? ì»´í¬?„Œ?Š¸ê°? ?—†???"));
+	 	InventoryComp->SetItemDataToWidget(Item->GetItemName());
+	 	Item->Destroy();
 	 }
 }
 
