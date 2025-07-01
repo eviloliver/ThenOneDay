@@ -68,6 +68,4 @@ EBTNodeResult::Type UBTTask_MJKeepDistanceWhileMoveTo::ExecuteTask(UBehaviorTree
 	OwnerController->StopMovement();
 
 	return EBTNodeResult::Succeeded;
-	
-	return Super::ExecuteTask(OwnerComp, NodeMemory);
 }
