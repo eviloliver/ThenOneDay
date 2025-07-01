@@ -23,7 +23,8 @@ void UMJStatWidget::BindToAttribute(UMJAbilitySystemComponent* ASC, UMJCharacter
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxAttackDamageAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxAbilityPowerAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxLevelAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
-
+	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxMovementSpeedAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
+	
 	UpdateStat(FOnAttributeChangeData{});
 }
 
@@ -48,5 +49,10 @@ void UMJStatWidget::UpdateStat(const FOnAttributeChangeData& Data) // settext
 	if (StatSpellPower)
 	{
 		StatSpellPower->SetText(FText::FromString(FString::SanitizeFloat(SpellPower)));
+	}
+
+	if (StatSpeed)
+	{
+		StatSpeed->SetText(FText::FromString(FString::SanitizeFloat(Speed)));
 	}
 }

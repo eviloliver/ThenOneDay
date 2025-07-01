@@ -22,6 +22,8 @@
 #include "Character/MJPlayerCharacter.h"
 #include "Character/Component/MJSkillComponent.h"
 #include "Compression/lz4.h"
+#include "UI/MJInventoryComponent.h"
+#include "Item/MJItemBase.h"
 
 
 AMJPlayerController::AMJPlayerController()
@@ -39,15 +41,16 @@ void AMJPlayerController::BeginPlay()
 
 	UIManager =	GetGameInstance()->GetSubsystem<UMJUIManagerSubsystem>();
 	ensure(UIManager);
-	// ì–¸ë¦¬ì–¼ ì—”ì§„ì˜ ì´ˆê¸°í™” ìˆœì„œ : GameInstance > GameMode > Actor
-	// ê·¸ëŸ¬ë¯€ë¡œ GetSubsystem ì‹œ nullptr ì„ ë°˜í™˜í•  ì¼ì€ ì—†ì§€ë§Œ, !
-	// í˜¹ì‹œ ëª¨ë¥¼ ìƒí™©(ëª¨ë“ˆ ëˆ„ë½, ì´ìƒí•œ í˜¸ì¶œ íƒ€ì´ë°, ë¹„ë™ê¸° ë¡œì§ ì¤‘ ì ‘ê·¼ ë“±)ì— ëŒ€ë¹„í•˜ì—¬ ensure() ë˜ëŠ” UE_LOG ì°ê¸°
+	// ?–¸ë¦¬ì–¼ ?—”ì§„ì˜ ì´ˆê¸°?™” ?ˆœ?„œ : GameInstance > GameMode > Actor
+	// ê·¸ëŸ¬ë¯?ë¡? GetSubsystem ?‹œ nullptr ?„ ë°˜í™˜?•  ?¼??? ?—†ì§?ë§?, !
+	// ?˜¹?‹œ ëª¨ë?? ?ƒ?™©(ëª¨ë“ˆ ?ˆ„?½, ?´?ƒ?•œ ?˜¸ì¶? ????´ë°?, ë¹„ë™ê¸? ë¡œì§ ì¤? ? ‘ê·? ?“±)?— ???ë¹„í•˜?—¬ ensure() ?˜?Š” UE_LOG ì°ê¸°
 	
 	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
 	if (MJChar)
 	{
 		MJChar->GetDialogueTrigger()->OnComponentBeginOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueIn);
 		MJChar->GetDialogueTrigger()->OnComponentEndOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueOut);
+		MJChar->GetDialogueTrigger()->OnComponentBeginOverlap.AddDynamic(this,&ThisClass::OnTriggeredItemIn);
 	}
 
 	AMJPlayerState* State = GetPlayerState<AMJPlayerState>();
@@ -79,7 +82,7 @@ void AMJPlayerController::SetupInputComponent()
 	ProjectMJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
 	ProjectMJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
 
-	ProjectMJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowStatPanel);
+	ProjectMJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowInventory);
 }
 
 void AMJPlayerController::PlayerTick(float DeltaTime)
@@ -224,7 +227,7 @@ void AMJPlayerController::ChangeToIMCDialogue()
 	}
 }
 
-void AMJPlayerController::ChangeToIMCDefault() // showDialogue ë§ˆì§€ë§‰ì— ë“¤ì–´ê°€ì•¼ í•¨
+void AMJPlayerController::ChangeToIMCDefault() // showDialogue ë§ˆì??ë§‰ì— ?“¤?–´ê°??•¼ ?•¨
 {
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -246,7 +249,7 @@ void AMJPlayerController::ProceedDialogue()
 
 		UIManager->NextDialogue(DialogueComp);
 		
-		if (DialogueComp->IsDialogueEnd()) // ë§ˆì§€ë§‰ ëŒ€ì‚¬ë¼ë©´ imc ì „í™˜
+		if (DialogueComp->IsDialogueEnd()) // ë§ˆì??ë§? ????‚¬?¼ë©? imc ? „?™˜
 		{
 			ChangeToIMCDefault();
 		}
@@ -261,6 +264,12 @@ void AMJPlayerController::ShowBacklog()
 void AMJPlayerController::ShowStatPanel()
 {
 	UIManager->ShowStatPanel();
+}
+
+void AMJPlayerController::ShowInventory()
+{
+	UE_LOG(LogTemp, Log, TEXT("OnTriggerrrrr"));
+	UIManager->ShowInventory();
 }
 
 void AMJPlayerController::OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
@@ -286,7 +295,20 @@ void AMJPlayerController::OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped
 	}
 }
 
-
+void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AActor* Other,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	AMJItemBase* Item = Cast<AMJItemBase>(Other);
+	UMJInventoryComponent* InventoryComp = Cast<UMJInventoryComponent>(GetWorld());
+	 if (InventoryComp)
+	 {
+	 	InventoryComp->SetItemData(Item->GetItemData(), Item->GetItemIndex(),UIManager->GetInventoryWidget());
+	 }
+	 else
+	 {
+	 	UE_LOG(LogTemp, Error, TEXT("?¸ë²? ì»´í¬?„Œ?Š¸ê°? ?—†???"));
+	 }
+}
 
 void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
 {

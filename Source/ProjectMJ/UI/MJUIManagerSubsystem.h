@@ -18,6 +18,7 @@ class UMJDialogueWidget;
 class UMJBacklogWidget;
 class UMJDialogueComponent;
 class UMJHUDWidget;
+class UMJInventoryWidget;
 
 UCLASS()
 class PROJECTMJ_API UMJUIManagerSubsystem : public UGameInstanceSubsystem
@@ -44,6 +45,10 @@ public:
 	// StatPanel Section
 	void ShowStatPanel();
 
+	// Inventory Section
+	void ShowInventory();
+
+	UMJInventoryWidget* GetInventoryWidget() {return InventoryWidget;};
 protected:
 	UPROPERTY()
 	UMJDialogueWidget* DialogueWidget;
@@ -52,4 +57,7 @@ protected:
 	UMJHUDWidget* HUDWidget;
 	TSubclassOf<class UMJHUDWidget> HUDWidgetClass;
 	bool bIsDialogueActive;
+
+	UMJInventoryWidget* InventoryWidget;
+	TSubclassOf<class UMJInventoryWidget> InventoryWidgetClass;
 };
