@@ -15,11 +15,11 @@ void UMJHUDWidget::NativeConstruct()
 	{
 		StatPanel->SetVisibility(ESlateVisibility::Hidden);
 	}
+
 	if (Inventory)
 	{
 		Inventory->SetVisibility(ESlateVisibility::Hidden);
 	}
-	
 }
 
 void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet)

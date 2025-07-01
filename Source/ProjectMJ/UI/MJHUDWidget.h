@@ -40,6 +40,7 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UMJInventoryWidget* Inventory;
+
 	
 public:
 	UFUNCTION()
@@ -51,4 +52,5 @@ public:
 
 	UMJInventoryWidget* GetInventoryWidget() {return Inventory;};
 	
+
 };

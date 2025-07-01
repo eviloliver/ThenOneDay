@@ -228,7 +228,7 @@ void AMJPlayerController::ChangeToIMCDialogue()
 	}
 }
 
-void AMJPlayerController::ChangeToIMCDefault() // showDialogue 마�??막에 ?��?���??�� ?��
+void AMJPlayerController::ChangeToIMCDefault() 
 {
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -250,7 +250,7 @@ void AMJPlayerController::ProceedDialogue()
 
 		UIManager->NextDialogue(DialogueComp);
 		
-		if (DialogueComp->IsDialogueEnd()) // 마�??�? ????��?���? imc ?��?��
+		if (DialogueComp->IsDialogueEnd()) 
 		{
 			ChangeToIMCDefault();
 		}
@@ -328,9 +328,7 @@ void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
 				SkillComponent->ActivateSkillByInputTag(InInputTag);
 			}
 		}
-	}
-
-	
+	}	
 }
 
 void AMJPlayerController::Input_AbilityInputReleased(FGameplayTag InInputTag)

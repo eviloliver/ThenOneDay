@@ -11,6 +11,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Inventory/MJInventoryWidget.h"
 
+
 void UMJUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
