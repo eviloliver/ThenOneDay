@@ -7,9 +7,9 @@
 #include "MJGA_ChargeSkill.generated.h"
 
 /**
- * Class Description: ÇÃ·¹ÀÌ¾îÀÇ ½ºÅ³À» Instant, Charging, Passive·Î ±¸ºĞ
- * Charge´Â ¿ìÅ¬¸¯À» ±æ°Ô ´­·¶´Ù ¶® À»¶§ ¹ßµ¿ÇÏ´Â ½ºÅ³
- * Author: ½Åµ¿¹Î
+ * Class Description: í”Œë ˆì´ì–´ì˜ ìŠ¤í‚¬ì„ Instant, Charging, Passiveë¡œ êµ¬ë¶„
+ * ChargeëŠ” ìš°í´ë¦­ì„ ê¸¸ê²Œ ëˆŒë €ë‹¤ ë•  ì„ë•Œ ë°œë™í•˜ëŠ” ìŠ¤í‚¬
+ * Author: ì‹ ë™ë¯¼
  * Created Date: 2025_06_24
  * Last Modified By: (Last Modifier)
  * Last Modified Date: (Last Modified Date)

@@ -7,9 +7,9 @@
 #include "MJGA_InstantSkill.generated.h"
 
 /**
- * Class Description: ÇÃ·¹ÀÌ¾îÀÇ ½ºÅ³À» Instant, Charging, Passive·Î ±¸ºĞ
- * Instant´Â ¿ìÅ¬¸¯ µş±ï¿¡ ¸ÅÄªÇÏ´Â ½ºÅ³ + ±âº» °ø°İ
- * Author: ½Åµ¿¹Î
+ * Class Description: í”Œë ˆì´ì–´ì˜ ìŠ¤í‚¬ì„ Instant, Charging, Passiveë¡œ êµ¬ë¶„
+ * InstantëŠ” ìš°í´ë¦­ ë”¸ê¹ì— ë§¤ì¹­í•˜ëŠ” ìŠ¤í‚¬ + ê¸°ë³¸ ê³µê²©
+ * Author: ì‹ ë™ë¯¼
  * Created Date: 2025_06_24
  * Last Modified By: (Last Modifier)
  * Last Modified Date: (Last Modified Date)
