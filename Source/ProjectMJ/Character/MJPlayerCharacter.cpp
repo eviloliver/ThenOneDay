@@ -12,6 +12,7 @@
 #include "Component/MJPlayerCombatComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
+#include "Component/MJFadeObjectComponent.h"
 
 class UMJSaveGameSubsystem;
 
@@ -43,7 +44,7 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.0;
 
 	PlayerCombatComponent = CreateDefaultSubobject<UMJPlayerCombatComponent>(TEXT("PlayerCombatComponent"));
-
+	FadeComponent = CreateDefaultSubobject<UMJFadeObjectComponent>(TEXT("FadeComponent"));
 	// AI Perception-캐릭터를 StimuliSource로 등록(AI가 감지)
 	PerceptionStimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("AIPerceptionStimuliSourceComponent"));
 	if (nullptr!= PerceptionStimuliSourceComponent)

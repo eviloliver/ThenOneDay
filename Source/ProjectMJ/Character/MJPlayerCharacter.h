@@ -11,6 +11,7 @@ class UCameraComponent;
 class UMJPlayerCombatComponent;
 class UAIPerceptionStimuliSourceComponent;
 class USphereComponent;
+class UMJFadeObjectComponent;
 /**
  * Class Description:
  * Author: Lee JuHyeon
@@ -69,5 +70,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UMJPlayerCombatComponent>PlayerCombatComponent;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Fade", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UMJFadeObjectComponent>FadeComponent;
 #pragma endregion
 };
