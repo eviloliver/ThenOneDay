@@ -59,6 +59,12 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	uint8 LoadedDungeonNodeNum;
+
+	UPROPERTY(BlueprintReadOnly)
+	TArray<AActor*> StaticSpawnPointActors; 
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> DummyActorBPClass;
 	
 		
 
