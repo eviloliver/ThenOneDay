@@ -29,6 +29,12 @@ AMJProjectileBase::AMJProjectileBase()
 void AMJProjectileBase::InitProjectileParams(const FMJSkillProjectileParams& InParams)
 {
 	ProjectileParams = InParams;
+
+	if (ProjectileParams.ProjectileSpeed > 0.0f)
+	{
+		ProjectileMovement->InitialSpeed = ProjectileParams.ProjectileSpeed;
+		ProjectileMovement->MaxSpeed = ProjectileParams.ProjectileSpeed;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -37,11 +43,7 @@ void AMJProjectileBase::BeginPlay()
 	Super::BeginPlay();
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AMJProjectileBase::OnSphereOverlap);
 
-	if (ProjectileParams.ProjectileSpeed > 0.0f)
-	{
-		ProjectileMovement->InitialSpeed = ProjectileParams.ProjectileSpeed;
-		ProjectileMovement->MaxSpeed = ProjectileParams.ProjectileSpeed;
-	}
+
 }
 
 void AMJProjectileBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
