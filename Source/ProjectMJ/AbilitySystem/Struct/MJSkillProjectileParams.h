@@ -64,6 +64,6 @@ struct FMJSkillProjectileParams
 
 	// Effects
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TArray<TSubclassOf<UGameplayEffect>> DamageGameplayEffectClass = nullptr;
+    TArray<TSubclassOf<UGameplayEffect>> GameplayEffects;
 
 };

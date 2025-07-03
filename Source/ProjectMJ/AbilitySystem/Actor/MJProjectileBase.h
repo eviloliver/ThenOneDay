@@ -3,11 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystem/Struct/MJSkillProjectileParams.h"
 #include "GameFramework/Actor.h"
 #include "MJProjectileBase.generated.h"
 
-class USphereComponent;
+/**
+ * Class Description: Projectile Actor
+ * Author: 신동민
+ * Created Date: 2025.07.03
+ * Last Modified By:
+ * Last Modified Date:
+ */
+
 class UProjectileMovementComponent;
+class USphereComponent;
+class UNiagaraSystem;
+class USoundBase;
 
 UCLASS()
 class PROJECTMJ_API AMJProjectileBase : public AActor
@@ -16,20 +27,30 @@ class PROJECTMJ_API AMJProjectileBase : public AActor
 	
 public:	
 	AMJProjectileBase();
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+
+	UPROPERTY(BlueprintReadWrite)
+	FMJSkillProjectileParams ProjectileParams;
+
+	void InitProjectileParams(const FMJSkillProjectileParams& InParams);
 
 protected:
 	virtual void BeginPlay() override;
 
-public:
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+	UFUNCTION()
+	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	// UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
-
-protected:
-
+private:
 	UPROPERTY()
 	TObjectPtr<USphereComponent> Sphere;
 
+	UPROPERTY(EditAnywhere, Category = "VFX")
+	TObjectPtr<UNiagaraSystem> HitVFX;
 
+	UPROPERTY(EditAnywhere, Category = "SFX")
+	TObjectPtr<USoundBase> HitSFX;
+
+	// float LifeSpan;
 };
