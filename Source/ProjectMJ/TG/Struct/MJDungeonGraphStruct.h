@@ -3,12 +3,20 @@
 #include "CoreMinimal.h"
 #include "MJDungeonGraphStruct.generated.h"
 
-UENUM()
+UENUM(BlueprintType)
 enum class ENodeType : uint8
 {
 	Battle UMETA(DisplayName = "Battle"),
 	Reward UMETA(DisplayName = "Reward"),
 	Boss UMETA(DisplayName = "Boss")
+};
+
+UENUM(BlueprintType)
+enum class EAISpawnType : uint8
+{
+	Static UMETA(DisplayName = "Static"),
+	RandomPoints UMETA(DisplayName = "RandomPoints"),
+	Wave UMETA(DisplayName = "Wave")
 };
 
 USTRUCT(BlueprintType)
@@ -26,6 +34,9 @@ struct FDungeonNode
 	ENodeType NodeType;
 
 	UPROPERTY(BlueprintReadOnly)
+	EAISpawnType AISpawnType;
+
+	UPROPERTY(BlueprintReadOnly)
 	FVector2D UICoordinate;
 
 	UPROPERTY(BlueprintReadOnly)
@@ -41,6 +52,21 @@ struct FDungeonNode
 			return TEXT("Reward");
 		case ENodeType::Boss:
 			return TEXT("Boss");
+		default:
+			return TEXT("Unknown");
+		}
+	}
+
+	static FString AISpawnTypeToString(EAISpawnType Type)
+	{
+		switch (Type)
+		{
+		case EAISpawnType::Static:
+			return TEXT("Static");
+		case EAISpawnType::Wave:
+			return TEXT("Wave");
+		case EAISpawnType::RandomPoints:
+			return TEXT("RandomPoints");
 		default:
 			return TEXT("Unknown");
 		}

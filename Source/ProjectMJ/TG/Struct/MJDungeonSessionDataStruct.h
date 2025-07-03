@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MJDungeonGraphStruct.h"
 #include "MJDungeonSessionDataStruct.generated.h"
 
 UENUM(BlueprintType)
@@ -29,15 +30,17 @@ struct FMJDungeonSessionData
 {
 	GENERATED_BODY()
 	
-	FMJDungeonSessionData(EMJDungeonContext InContext, uint8 InNodeNum, const FString& InMapName)
+	FMJDungeonSessionData(EMJDungeonContext InContext, uint8 InNodeNum, EAISpawnType InAISpawnType, const FString& InMapName)
 	: DungeonContext(InContext)
 	, DungeonNodeNum(InNodeNum)
+	, AISpawnType(InAISpawnType)
 	, MapName(InMapName)
 	{}
 	
 	FMJDungeonSessionData()
 		: DungeonContext(EMJDungeonContext::InActive)
 		, DungeonNodeNum(0)
+		, AISpawnType(EAISpawnType::Static)
 		, MapName(TEXT(""))
 	{}
 
@@ -46,6 +49,9 @@ struct FMJDungeonSessionData
 	
 	UPROPERTY(BlueprintReadOnly)
 	uint8 DungeonNodeNum;
+
+	UPROPERTY(BlueprintReadOnly)
+	EAISpawnType AISpawnType;
 
 	UPROPERTY(BlueprintReadOnly)
 	FString MapName;

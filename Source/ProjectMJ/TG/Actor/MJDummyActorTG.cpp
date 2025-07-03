@@ -13,7 +13,6 @@ AMJDummyActorTG::AMJDummyActorTG()
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(RootComponent);
 
-	SetActorLocation(FVector(970.f, 250.f, -450.f));
 }
 
 void AMJDummyActorTG::BeginPlay()

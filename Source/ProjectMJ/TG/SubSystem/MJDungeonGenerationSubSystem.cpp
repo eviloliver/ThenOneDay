@@ -81,11 +81,11 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 		{
 			// Boss
 			
-			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,ENodeType::Boss, CandidatePoint);
+			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,ENodeType::Boss, EAISpawnType::Static, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
 			DungeonGraph.BossNodeID = CurrentNotAssignedNodeNum;
 
-			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum,FString(TEXT("Boss"))));
+			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, EAISpawnType::Static, FString(TEXT("Boss"))));
 	
 			CurrentNotAssignedNodeNum++;
 			
@@ -94,22 +94,30 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 		{	
 			// Battle 1~5 Map Assign 
 			float RandNum = FMath::RandRange(1,5);
+
+			EAISpawnType AISpawnType = EAISpawnType::Static;
+			float RandNumAISpawn = FMath::RandRange(1,4);
+
+			if (RandNumAISpawn == 1)
+			{
+				AISpawnType = EAISpawnType::Wave;
+			}
 			
-			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,RandNum,ENodeType::Battle, CandidatePoint);
+			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,RandNum,ENodeType::Battle, AISpawnType, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
 
-			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum,FString(TEXT("Battle"))));
+			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, AISpawnType, FString(TEXT("Battle"))));
 			
 			CurrentNotAssignedNodeNum++;
 		}
 		else if (Prob >= 80.f && Prob < 90.f)
 		{
 			// Reward
-			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,ENodeType::Reward, CandidatePoint);
+			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,ENodeType::Reward, EAISpawnType::Static, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
 
 			
-			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum,FString(TEXT("Reward"))));
+			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, EAISpawnType::Static, FString(TEXT("Reward"))));
 	
 			CurrentNotAssignedNodeNum++;
 		}
@@ -132,11 +140,11 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 				continue;
 			}
 			
-			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,ENodeType::Boss, CandidatePoint);
+			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,ENodeType::Boss, EAISpawnType::Static, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
 			DungeonGraph.BossNodeID = CurrentNotAssignedNodeNum;
 
-			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum,FString(TEXT("Boss"))));
+			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, EAISpawnType::Static,  FString(TEXT("Boss"))));
 	
 			CurrentNotAssignedNodeNum++;
 		}
@@ -233,16 +241,17 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 	return true;
 }
 
-FDungeonNode UMJDungeonGenerationSubSystem::MakeNewNode(uint8 NodeNum, uint8 AssignedMapID, ENodeType NodeType, FVector2D UICoordinate)
+FDungeonNode UMJDungeonGenerationSubSystem::MakeNewNode(uint8 NodeNum, uint8 AssignedMapID, ENodeType NodeType,EAISpawnType AISpawnType, FVector2D UICoordinate)
 {
-	FDungeonNode BuffNode;
+	FDungeonNode NewNode;
 
-	BuffNode.NodeID = NodeNum;
-	BuffNode.AssignedMapID = AssignedMapID;
-	BuffNode.NodeType = NodeType;
-	BuffNode.UICoordinate = UICoordinate;
+	NewNode.NodeID = NodeNum;
+	NewNode.AssignedMapID = AssignedMapID;
+	NewNode.NodeType = NodeType;
+	NewNode.AISpawnType = AISpawnType;
+	NewNode.UICoordinate = UICoordinate;
 	
-	return BuffNode;
+	return NewNode;
 }
 
 void UMJDungeonGenerationSubSystem::ConnectNodesByDistance(float MaxDistance, int MaxEdgePerNode)
@@ -313,7 +322,6 @@ void UMJDungeonGenerationSubSystem::ConnectNodesByMST(float MaxDistance)
 
 	if ( NodeCount <= 1 ) return;
 	
-	// make tuple for candidateEdges
 	TArray<TTuple<uint8, uint8, float>> AllCandidateEdges;
 	for (int i = 0 ; i< NodeCount ; i++)
 	{
@@ -327,13 +335,11 @@ void UMJDungeonGenerationSubSystem::ConnectNodesByMST(float MaxDistance)
 		}
 	}
 	
-	// 2. sort by ascend
 	AllCandidateEdges.Sort([](const TTuple<uint8, uint8, float>& A, const TTuple<uint8, uint8, float>& B)
 	{
 		return A.Get<2>() < B.Get<2>();
 	});
 	
-	// 3. create Parent Array for union find & lamda functions
 	TArray<int16> Parent;
 	Parent.Init(-1,NodeCount);
 
@@ -354,7 +360,6 @@ void UMJDungeonGenerationSubSystem::ConnectNodesByMST(float MaxDistance)
 		return true;
 	};
 	
-	// 4. choose edge based on union find
 	for (const auto& iter : AllCandidateEdges)
 	{
 		uint8 NodeA = iter.Get<0>();
@@ -366,7 +371,6 @@ void UMJDungeonGenerationSubSystem::ConnectNodesByMST(float MaxDistance)
 			DungeonGraph.Nodes[NodeB].ConnectedNodeIDs.Add(NodeA);
 		}
 	}
-	// 5. All the nodes and edges are visualized in UMG Widget
 }
 
 bool UMJDungeonGenerationSubSystem::CheckHasRoute(uint8 CurrentNodeNum, uint8 DestNodeNum)
