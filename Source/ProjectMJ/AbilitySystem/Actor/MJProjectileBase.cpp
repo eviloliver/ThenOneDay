@@ -35,6 +35,10 @@ void AMJProjectileBase::InitProjectileParams(const FMJSkillProjectileParams& InP
 		ProjectileMovement->InitialSpeed = ProjectileParams.ProjectileSpeed;
 		ProjectileMovement->MaxSpeed = ProjectileParams.ProjectileSpeed;
 	}
+	if (ProjectileParams.SkillRadius > 0.0f)
+	{
+		Sphere->SetSphereRadius(ProjectileParams.SkillRadius);
+	}
 }
 
 // Called when the game starts or when spawned
