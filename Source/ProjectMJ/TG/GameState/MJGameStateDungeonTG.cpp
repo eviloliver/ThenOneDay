@@ -37,55 +37,54 @@ void AMJGameStateDungeonTG::BeginPlay()
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("AISpawnType is %s"), *FDungeonNode::AISpawnTypeToString(LoadedDungeonSessionData.AISpawnType)));
 
 
-	//GetWorldTimerManager().SetTimer(WaveAISpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnAI, 3.0f);
 
-	GetWorldTimerManager().SetTimer(WaveAISpawnConditionCheckTimerHandle, this, &AMJGameStateDungeonTG::CheckSpawnAICondition,  2.0f, true);
-
-	if (LoadedWaveDataTable)
-	{
-		FName Name = *FString::Printf(TEXT("Wave%d"),CurrentWaveNum);
-		FMJWaveDataRow* RowPtr = LoadedWaveDataTable->FindRow<FMJWaveDataRow>(Name, TEXT(""));
-
-		if (RowPtr)
-		{
-			LoadedWaveDataRow.EnemyCount = RowPtr->EnemyCount;
-			LoadedWaveDataRow.EnemyPool = RowPtr->EnemyPool;
-			LoadedWaveDataRow.WaveNum = RowPtr->WaveNum;
-		}
-		
-	}
 	
-	// if (LoadedDungeonSessionData.AISpawnType == EAISpawnType::Static)
-	// {
-	// 	UGameplayStatics::GetAllActorsOfClass(GetWorld(),AMJDungeonAISpawnPointActor::StaticClass(),StaticSpawnPointActors);
-	//
-	// 	for (auto& Iter : StaticSpawnPointActors)
-	// 	{
-	// 		FVector IterSpawnPoint = Iter->GetActorLocation();
-	//
-	// 		FNavLocation ResultLocation;
-	//
-	// 		UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
-	//
-	// 		if (NavSys)
-	// 		{
-	// 			for (int i = 0 ; i < 10 ; ++i)
-	// 			{
-	// 				bool bIsFound = NavSys->GetRandomPointInNavigableRadius(IterSpawnPoint, 1000.f,ResultLocation);
-	// 				if (bIsFound)
-	// 				{
-	// 					FActorSpawnParameters Params;
-	// 					GetWorld()->SpawnActor<AMJDummyActorTG>(DummyActorBPClass,ResultLocation,FRotator(),Params);
-	// 				}
-	// 			}
-	// 		}
-	// 	
-	// 	}
-	// }
-	// else if (LoadedDungeonSessionData.AISpawnType == EAISpawnType::Wave)
-	// {
-	// 
-	// }
+	
+	if (LoadedDungeonSessionData.AISpawnType == EAISpawnType::Static)
+	{
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(),AMJDungeonAISpawnPointActor::StaticClass(),StaticSpawnPointActors);
+	
+		for (auto& Iter : StaticSpawnPointActors)
+		{
+			FVector IterSpawnPoint = Iter->GetActorLocation();
+	
+			FNavLocation ResultLocation;
+	
+			UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+	
+			if (NavSys)
+			{
+				for (int i = 0 ; i < 10 ; ++i)
+				{
+					bool bIsFound = NavSys->GetRandomPointInNavigableRadius(IterSpawnPoint, 1000.f,ResultLocation);
+					if (bIsFound)
+					{
+						FActorSpawnParameters Params;
+						GetWorld()->SpawnActor<AMJDummyActorTG>(DummyActorBPClass,ResultLocation,FRotator(),Params);
+					}
+				}
+			}
+		
+		}
+	}
+	else if (LoadedDungeonSessionData.AISpawnType == EAISpawnType::Wave)
+	{
+		GetWorldTimerManager().SetTimer(WaveAISpawnConditionCheckTimerHandle, this, &AMJGameStateDungeonTG::CheckSpawnAICondition,  2.0f, true);
+
+		if (LoadedWaveDataTable)
+		{
+			FName Name = *FString::Printf(TEXT("Wave%d"),CurrentWaveNum);
+			FMJWaveDataRow* RowPtr = LoadedWaveDataTable->FindRow<FMJWaveDataRow>(Name, TEXT(""));
+
+			if (RowPtr)
+			{
+				LoadedWaveDataRow.EnemyCount = RowPtr->EnemyCount;
+				LoadedWaveDataRow.EnemyPool = RowPtr->EnemyPool;
+				LoadedWaveDataRow.WaveNum = RowPtr->WaveNum;
+			}
+		
+		}
+	}
 	
 	
 }
@@ -160,8 +159,9 @@ void AMJGameStateDungeonTG::SaveToInstancedDungeonSessionData(uint8 SaveToNum)
 {
 	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
 
-	FMJDungeonSessionData NewDungeonSessionData;
-	if (MJGI && !MJGI->bIsDungeonGameStateDirty) 
+	FMJDungeonSessionData NewDungeonSessionData = LoadedDungeonSessionData;
+
+	if (MJGI) 
 	{
 		for (TActorIterator<AActor> Iter(GetWorld()); Iter ; ++Iter)
 		{
@@ -174,9 +174,8 @@ void AMJGameStateDungeonTG::SaveToInstancedDungeonSessionData(uint8 SaveToNum)
 					NewDungeonSessionData.SpawnInfos.Add(Info);	
 			}
 		}
-
+		
 		MJGI->GetDungeonSessionDataRef()[SaveToNum] = NewDungeonSessionData;
-		MJGI->bIsDungeonGameStateDirty = true;
 	} 
 }
 
@@ -188,7 +187,7 @@ void AMJGameStateDungeonTG::LoadFromInstancedDungeonSessionData(uint8 LoadFromNu
 	{
 		
 		SetDungeonSessionData(MJGI->GetDungeonSessionDataRef()[LoadFromNum]);
-
+ 
 		for (auto iter : LoadedDungeonSessionData.SpawnInfos)
 		{
 			if (iter.ActorClass->ImplementsInterface(UMJInstancedActorInterface::StaticClass()))
