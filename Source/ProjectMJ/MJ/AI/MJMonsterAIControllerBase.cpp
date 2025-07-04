@@ -10,41 +10,35 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Damage.h"
-#include "mj/Interface/MJCharacterAIInterface.h"
+#include "Perception/AISense_Hearing.h"
 
 AMJMonsterAIControllerBase::AMJMonsterAIControllerBase()
 {
 	/*
+	 * Minjin
 	 * How To: AIPerception
-	 * 감지할 감각을 AIPerception에 등록->BeginPlay()에서 한다.
-	 * 감지할 감각(Sight), AIPerception 생성은 생성자에서 해야 한다.
-	 * 캐릭터(감지대상)에도 PerceptionStimuli Source 부착 필요!
+	 * 감지할 감각을 AIPerception에 등록->에디터에서 진행
+	 * 캐릭터(감지대상)에도 PerceptionStimuli Source 부착 필요!->감지되는 감각을 명시적으로 표시하기 위한 과정인듯
 	 */
-	// AISenseConfig_Sight = CreateDefaultSubobject<UAISenseConfig_Sight>("AISenseConfig_Sight");
-	// AISenseConfig_Damage = CreateDefaultSubobject<UAISenseConfig_Damage>("AISenseConfig_Damage");
-	
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(
 		this, &AMJMonsterAIControllerBase::TargetPerceptionUpdated);
 
 }
-
+ 
 void AMJMonsterAIControllerBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	APawn* ControlledPawn = GetPawn();
-	if (nullptr == ControlledPawn)
-	{
-		UE_LOG(LogTemp, Log, TEXT("AIController: ControlledPawn is null."))
-	}
 	
 	/*
 	 * How to: AIController의 TeamId 설정
 	 * AIController를 이용하고 있는 폰의 TeamId를 가져온다.
 	 */
-	if (nullptr== ControlledPawn)
+	
+	APawn* ControlledPawn = GetPawn();
+	if (nullptr == ControlledPawn)
 	{
+		UE_LOG(LogTemp, Log, TEXT("AIController: ControlledPawn is null."))
 		TeamId = 255;
 	}
 	else
@@ -60,7 +54,7 @@ void AMJMonsterAIControllerBase::BeginPlay()
 		}
 	}
 
-	//UAIPerceptionSystem::GetCurrent(GetWorld())->UpdateListener(*AIPerceptionComponent);
+	UAIPerceptionSystem::GetCurrent(GetWorld())->UpdateListener(*AIPerceptionComponent);
 }
 
 void AMJMonsterAIControllerBase::RunAI()
@@ -113,11 +107,9 @@ void AMJMonsterAIControllerBase::TargetPerceptionUpdated(AActor* Actor, FAIStimu
 	{
 		/*
 		 * Minjin
-		 * TODO
-		 * 모든 감각에 대한 함수 만들고 자식에서 오버라이드해서 구현하기(현재는 시야, 데미지만 추가)
+		 * How to: 감지된 감각을 각각 처리->오버라이드해서 사용
 		 */
-		Blackboard->SetValueAsObject("Target", Actor);
-		
+		// Minjin: 감지한 첫 순간
 		if(Stimulus.Type == UAISense::GetSenseID<UAISense_Sight>())
 		{
 			HandleSight_Detected(Actor, Stimulus);
@@ -126,9 +118,14 @@ void AMJMonsterAIControllerBase::TargetPerceptionUpdated(AActor* Actor, FAIStimu
 		{
 			HandleDamage_Detected(Actor, Stimulus);
 		}
+		else if(Stimulus.Type == UAISense::GetSenseID<UAISense_Hearing>())
+		{
+			HandleHearing_Detected(Actor, Stimulus);
+		}
 	}
 	else
 	{
+		// Minjin: 감지 실패한 첫 순간
 		if(Stimulus.Type == UAISense::GetSenseID<UAISense_Sight>())
 		{
 			HandleSight_Lost(Actor, Stimulus);
@@ -137,7 +134,10 @@ void AMJMonsterAIControllerBase::TargetPerceptionUpdated(AActor* Actor, FAIStimu
 		{
 			HandleDamage_Lost(Actor, Stimulus);
 		}
-		
+		else if(Stimulus.Type == UAISense::GetSenseID<UAISense_Hearing>())
+		{
+			HandleHearing_Lost(Actor, Stimulus);
+		}
 	}		
 }
 
@@ -146,17 +146,18 @@ ETeamAttitude::Type AMJMonsterAIControllerBase::GetTeamAttitudeTowards(const AAc
 	ETeamAttitude::Type Result = Super::GetTeamAttitudeTowards(Other);
 
 	/*
-	 * How TO: TeamId 비교해서 플레이어, NPC, 몬스터로 나눈다.
+	 * Minjin
+	 * How TO: TeamId 비교해서 플레이어, NPC, 몬스터로 나눈다.-에디터에서 ID를 설정(캐릭터)
 	 */
 
 	const APawn* OtherPawn = Cast<APawn>(&Other);
-	if (nullptr==OtherPawn)
+	if (OtherPawn == nullptr)
 	{
 		return ETeamAttitude::Neutral;
 	}
 
 	const IGenericTeamAgentInterface* OtherCharacter = Cast<IGenericTeamAgentInterface> (&Other);
-	if (nullptr== OtherCharacter)
+	if (OtherCharacter == nullptr)
 	{
 		return ETeamAttitude::Neutral;
 	}
@@ -199,6 +200,7 @@ ETeamAttitude::Type AMJMonsterAIControllerBase::GetTeamAttitudeTowards(const AAc
 
 void AMJMonsterAIControllerBase::HandleSight_Detected(AActor* Actor, FAIStimulus Stimulus)
 {
+	Blackboard->SetValueAsObject("Target", Actor);
 	UE_LOG(LogMJ, Log, TEXT("시야로 감지"));
 	Blackboard->SetValueAsBool("IsTargetVisible", true);
 }
@@ -207,6 +209,14 @@ void AMJMonsterAIControllerBase::HandleDamage_Detected(AActor* Actor, FAIStimulu
 {
 	UE_LOG(LogMJ, Log, TEXT("데미지로 감지"));
 	GetBlackboardComponent()->SetValueAsVector("DamagePos", Stimulus.StimulusLocation);
+}
+
+void AMJMonsterAIControllerBase::HandleHearing_Detected(AActor* Actor, FAIStimulus Stimulus)
+{
+}
+
+void AMJMonsterAIControllerBase::HandleHearing_Lost(AActor* Actor, FAIStimulus Stimulus)
+{
 }
 
 void AMJMonsterAIControllerBase::HandleSight_Lost(AActor* Actor, FAIStimulus Stimulus)

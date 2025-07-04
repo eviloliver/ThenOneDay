@@ -15,10 +15,4 @@ AMJMeleeMonsterAIController::AMJMeleeMonsterAIController()
 void AMJMeleeMonsterAIController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// 이러면 설정이 바뀌긴 함
-	// DetectionByAffiliation.bDetectEnemies = true;
-	// DetectionByAffiliation.bDetectNeutrals = true;
-	// DetectionByAffiliation.bDetectFriendlies = false;
-	// AIPerceptionComponent->ConfigureSense(*AISenseConfig_Sight);
 }
