@@ -256,6 +256,8 @@ void UMJSkillComponent::GiveAbilityToASC(const FGameplayTag& UpdateSkill)
 
 		FGameplayAbilitySpec AbilitySpec(DataRow->SkillAbilityClass, SkillLevel, INDEX_NONE, OwnerCharacter);
 
+		// AbilitySpec.DynamicAbilityTags.AddTag(DataRow->AssetTagDataByLevel.Find());
+
 		FGameplayAbilitySpecHandle Handle = MJASC->GiveAbility(AbilitySpec);
 		GivenAbilityHandles.Add(UpdateSkill, Handle);
 	}

@@ -7,11 +7,10 @@
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
 #include "AbilitySystem/Actor/MJProjectileBase.h"
 #include "Character/MJCharacterBase.h"
-#include "ProjectMJ.h"
 
 UMJGA_BaseProjectile::UMJGA_BaseProjectile()
 {
-    MJ_LOG(LogMJ, Log, TEXT("14"));
+    MJ_LOG(LogMJ, Log, TEXT("1"));
 
 }
 
@@ -20,7 +19,6 @@ void UMJGA_BaseProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Hand
                                            const FGameplayEventData* TriggerEventData)
 {
 
-    MJ_LOG(LogMJ, Log, TEXT("21"));
 
  	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
     AMJCharacterBase* OwnerCharacter = Cast<AMJCharacterBase>(GetAvatarActorFromActorInfo());
@@ -42,6 +40,35 @@ void UMJGA_BaseProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Hand
     {
         EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
         return;
+    }
+
+
+
+    const FGameplayAbilitySpec* CurrentAbilitySpec = GetCurrentAbilitySpec();
+    if (!CurrentAbilitySpec)
+    {
+        EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+        return;
+    }
+
+    FGameplayTag ProjectileTagToSpawn;
+    for (const FGameplayTag& Tag: CurrentAbilitySpec->DynamicAbilityTags)
+    {
+	    if(Tag.ToString().StartsWith(TEXT("Projectile.")))
+	    {
+            ProjectileTagToSpawn = Tag;
+            break;
+	    }
+    }
+
+    if (ProjectileTagToSpawn.IsValid())
+    {
+	    
+    }
+    else
+    {
+        EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+    	return;
     }
 
      FMJSkillProjectileParams ProjectileParams;
