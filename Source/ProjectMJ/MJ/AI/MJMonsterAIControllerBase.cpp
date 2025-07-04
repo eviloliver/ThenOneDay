@@ -4,9 +4,8 @@
 #include "MJ/AI/MJMonsterAIControllerBase.h"
 #include "AIPerceptionInfo.h"
 #include "ProjectMJ.h"
-#include "BehaviorTree/BehaviorTree.h"
-#include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Damage.h"
@@ -21,6 +20,8 @@ AMJMonsterAIControllerBase::AMJMonsterAIControllerBase()
 	 * 캐릭터(감지대상)에도 PerceptionStimuli Source 부착 필요!->감지되는 감각을 명시적으로 표시하기 위한 과정인듯
 	 */
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
+	BehaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTreeComponent"));
+	
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(
 		this, &AMJMonsterAIControllerBase::TargetPerceptionUpdated);
 
@@ -59,37 +60,30 @@ void AMJMonsterAIControllerBase::BeginPlay()
 
 void AMJMonsterAIControllerBase::RunAI()
 {
-	UBlackboardData* BBAsset = BehaviorTree->GetBlackboardAsset();
-	UBlackboardComponent* BlackboardPtr = Blackboard.Get();
-	
-	if (UseBlackboard(BBAsset, BlackboardPtr))
-	{
-		// 시작 위치 값 설정
-		Blackboard->SetValueAsVector("HomePos", GetPawn()->GetActorLocation());
-		
-		bool RunResult = RunBehaviorTree(BehaviorTree);
-		ensure(RunResult);
-	}
+	/*
+	 * Minjin
+	 * How To: BehaviorTree 작동-RunBehaviorTree
+	 * 블랙보드 초기화, StartTree
+	 * StartLogic()에서 DefaultBehaviorTreeAsset(에디터에서 설정)을 시작에셋으로 설정해준다.
+	 */
+	BehaviorTreeComponent->StartLogic();
+	RunBehaviorTree(BehaviorTreeComponent->GetCurrentTree());;
 }
 
 void AMJMonsterAIControllerBase::StopAI()
 {
 	/*
 	 * TODO
-	 * Character가 죽을 때 호출해야 됨
+	 * Character가 죽을 때 호출해야 됨?
 	 */
-	UBehaviorTreeComponent* BTComponent = Cast<UBehaviorTreeComponent>(BrainComponent);
-	if (BTComponent)
-	{
-		BTComponent->StopTree();
-	}
+	BehaviorTreeComponent->StopTree();
 }
 
 void AMJMonsterAIControllerBase::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	RunAI();
+	 RunAI();
 }
 
 void AMJMonsterAIControllerBase::TargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)

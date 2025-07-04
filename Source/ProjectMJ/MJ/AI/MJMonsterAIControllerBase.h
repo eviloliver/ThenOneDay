@@ -7,7 +7,7 @@
 //#include "Perception/AIPerceptionComponent.h"
 #include "MJMonsterAIControllerBase.generated.h"
 
-class UBehaviorTree;
+class UBehaviorTreeComponent;
 class UAIPerceptionComponent;
 
 /**
@@ -36,6 +36,10 @@ public:
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
+	// Minjin: BehaviorTree Component
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="AI|BehaviorTree")
+	TObjectPtr<UBehaviorTreeComponent> BehaviorTreeComponent;
+	
 	// AI Perception
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAIPerceptionComponent> AIPerceptionComponent;
