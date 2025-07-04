@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
 #include "TG/Interface/MJBossEventManagerTG.h"
+#include "TG/Struct/MJDataTable_Wave.h"
 #include "TG/Struct/MJDungeonSessionDataStruct.h"
 #include "MJGameStateDungeonTG.generated.h"
 
@@ -16,6 +17,7 @@
  * Last Modified Date: 2025-06-13
  */
 
+class UEnvQuery;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnHealthChangedSignature, float, Delta);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnSpawnedSignature, float, Health);
 
@@ -40,6 +42,25 @@ public:
 	UFUNCTION()
 	void LoadFromInstancedDungeonSessionData(uint8 LoadFromNum);
 
+	UPROPERTY()
+	FTimerHandle WaveAISpawnTimerHandle;
+
+	UPROPERTY()
+	FTimerHandle WaveAISpawnConditionCheckTimerHandle;
+	
+	
+	
+	UFUNCTION(BlueprintCallable)
+	void SpawnAI();
+	
+	UFUNCTION(BlueprintCallable)
+	void CheckSpawnAICondition();
+	
+
+	UFUNCTION(BlueprintCallable)
+	TSubclassOf<AActor> GetActorFromPool();
+
+	
 	UPROPERTY(BlueprintAssignable)
 	FMJAIBossOnHealthChangedSignature OnAIBossHealthChanged;
 
@@ -65,7 +86,30 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AActor> DummyActorBPClass;
+
+	// Wave Section
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UEnvQuery> EQSQuery;
 	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UDataTable> LoadedWaveDataTable;
+
+	UPROPERTY(BlueprintReadOnly)
+	FMJWaveDataRow LoadedWaveDataRow;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 CurrentWaveNum;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 SpawnAIMaxNum;
+
+	UPROPERTY(BlueprintReadWrite)
+	int32 CurrSpawnedAINum;
+	
+	// For Test
+	UPROPERTY(BlueprintReadWrite)
+	TArray<AActor*> SpawnedActorRefs;
 		
 
 

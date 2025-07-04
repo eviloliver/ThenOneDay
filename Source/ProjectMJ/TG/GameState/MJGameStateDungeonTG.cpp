@@ -6,6 +6,7 @@
 #include "EngineUtils.h"
 #include "NavigationSystem.h"
 #include "Character/MJPlayerCharacter.h"
+#include "EnvironmentQuery/EnvQueryManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "TG/MJGameInstanceTG.h"
 #include "TG/Actor/MJDummyActorTG.h"
@@ -16,19 +17,17 @@ AMJGameStateDungeonTG::AMJGameStateDungeonTG()
 {
 	LoadedDungeonSessionData = FMJDungeonSessionData();
 	LoadedDungeonNodeNum = 255;
+	
+	CurrentWaveNum = 1;
+	SpawnAIMaxNum = 5;
+	CurrSpawnedAINum = 0;
 
-	static ConstructorHelpers::FClassFinder<AMJDummyActorTG> Actor(TEXT("/Game/TG/Actor/BP_DummyActor_TG.BP_DummyActor_TG_C"));
-	if (Actor.Succeeded())
-	{
-		DummyActorBPClass = Actor.Class;
-	}
+	
 }
 
 void AMJGameStateDungeonTG::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
-	
 	
 }
 
@@ -37,39 +36,114 @@ void AMJGameStateDungeonTG::BeginPlay()
 	Super::BeginPlay();
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("AISpawnType is %s"), *FDungeonNode::AISpawnTypeToString(LoadedDungeonSessionData.AISpawnType)));
 
-	// Case Static
 
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(),AMJDungeonAISpawnPointActor::StaticClass(),StaticSpawnPointActors);
-	
-	for (auto& Iter : StaticSpawnPointActors)
+	//GetWorldTimerManager().SetTimer(WaveAISpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnAI, 3.0f);
+
+	GetWorldTimerManager().SetTimer(WaveAISpawnConditionCheckTimerHandle, this, &AMJGameStateDungeonTG::CheckSpawnAICondition,  2.0f, true);
+
+	if (LoadedWaveDataTable)
 	{
-		FVector IterSpawnPoint = Iter->GetActorLocation();
+		FName Name = *FString::Printf(TEXT("Wave%d"),CurrentWaveNum);
+		FMJWaveDataRow* RowPtr = LoadedWaveDataTable->FindRow<FMJWaveDataRow>(Name, TEXT(""));
 
-		FNavLocation ResultLocation;
-
-		UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
-
-		if (NavSys)
+		if (RowPtr)
 		{
-			for (int i = 0 ; i < 10 ; ++i)
-			{
-				bool bIsFound = NavSys->GetRandomPointInNavigableRadius(IterSpawnPoint, 1000.f,ResultLocation);
-				if (bIsFound)
-				{
-					FActorSpawnParameters Params;
-					GetWorld()->SpawnActor<AMJDummyActorTG>(DummyActorBPClass,ResultLocation,FRotator(),Params);
-				}
-			}
+			LoadedWaveDataRow.EnemyCount = RowPtr->EnemyCount;
+			LoadedWaveDataRow.EnemyPool = RowPtr->EnemyPool;
+			LoadedWaveDataRow.WaveNum = RowPtr->WaveNum;
 		}
 		
 	}
+	
+	// if (LoadedDungeonSessionData.AISpawnType == EAISpawnType::Static)
+	// {
+	// 	UGameplayStatics::GetAllActorsOfClass(GetWorld(),AMJDungeonAISpawnPointActor::StaticClass(),StaticSpawnPointActors);
+	//
+	// 	for (auto& Iter : StaticSpawnPointActors)
+	// 	{
+	// 		FVector IterSpawnPoint = Iter->GetActorLocation();
+	//
+	// 		FNavLocation ResultLocation;
+	//
+	// 		UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+	//
+	// 		if (NavSys)
+	// 		{
+	// 			for (int i = 0 ; i < 10 ; ++i)
+	// 			{
+	// 				bool bIsFound = NavSys->GetRandomPointInNavigableRadius(IterSpawnPoint, 1000.f,ResultLocation);
+	// 				if (bIsFound)
+	// 				{
+	// 					FActorSpawnParameters Params;
+	// 					GetWorld()->SpawnActor<AMJDummyActorTG>(DummyActorBPClass,ResultLocation,FRotator(),Params);
+	// 				}
+	// 			}
+	// 		}
+	// 	
+	// 	}
+	// }
+	// else if (LoadedDungeonSessionData.AISpawnType == EAISpawnType::Wave)
+	// {
+	// 
+	// }
+	
+	
+}
+void AMJGameStateDungeonTG::SpawnAI()
+{
+	
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(this,0);
+	if (Player)
+	{
+		FEnvQueryRequest Request(EQSQuery, Player);
+		
+		Request.Execute(EEnvQueryRunMode::AllMatching, FQueryFinishedSignature::CreateLambda([this, Player](TSharedPtr<FEnvQueryResult> Result)
+				   {
+					   if (Result->IsSuccessful())
+					   {
 
-	// Case Wave
+					   		TArray<FVector> AllLocations;
 
+						   	AllLocations.Reserve(Result->Items.Num());
 	
+					   		Result->GetAllAsLocations(AllLocations);
+
+					   		int i = 0;
+					   		while (CurrSpawnedAINum < SpawnAIMaxNum)
+					   		{
+					   			SpawnedActorRefs.Add(GetWorld()->SpawnActor<AActor>(GetActorFromPool(), AllLocations[i],FRotator()));
+
+					   			CurrSpawnedAINum++;
+					   			i++;
+					   		}
+					   }
+				   }));
+	}
+}
+
+void AMJGameStateDungeonTG::CheckSpawnAICondition()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Magenta, FString::Printf(TEXT("Check AISpawn Coniditon Call")));
 	
+	if (CurrSpawnedAINum < SpawnAIMaxNum)
+	{
+		SpawnAI();
+	}
+}
+
+TSubclassOf<AActor> AMJGameStateDungeonTG::GetActorFromPool()
+{
+	TArray<TSubclassOf<AActor>> Keys;
+	LoadedWaveDataRow.EnemyPool.GetKeys(Keys);
+
+	if (Keys.Num() == 0)
+	{
+		return nullptr;
+	}
 	
+	const int32 RandomIndex = FMath::RandRange(0,Keys.Num() - 1);
 	
+	return Keys[RandomIndex];
 }
 
 void AMJGameStateDungeonTG::EndPlay(const EEndPlayReason::Type EndPlayReason)
