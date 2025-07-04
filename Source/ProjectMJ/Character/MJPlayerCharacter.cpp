@@ -12,6 +12,8 @@
 #include "Component/MJPlayerCombatComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
+#include "Perception/AISense_Damage.h"
+#include "Perception/AISense_Hearing.h"
 
 class UMJSaveGameSubsystem;
 
@@ -44,13 +46,15 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 
 	PlayerCombatComponent = CreateDefaultSubobject<UMJPlayerCombatComponent>(TEXT("PlayerCombatComponent"));
 
-	// AI Perception-캐릭터를 StimuliSource로 등록(AI가 감지)
+	// Minjin: AI Perception-캐릭터를 StimuliSource로 등록(AI가 감지)
 	PerceptionStimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("AIPerceptionStimuliSourceComponent"));
 	if (nullptr!= PerceptionStimuliSourceComponent)
 	{
-		// Sight source 등록
+		// Sight, Damage, Hearing source 등록(명시적으로 나타내기 위함)
 		PerceptionStimuliSourceComponent->RegisterForSense(UAISense_Sight::StaticClass());
-
+		PerceptionStimuliSourceComponent->RegisterForSense(UAISense_Damage::StaticClass());
+		PerceptionStimuliSourceComponent->RegisterForSense(UAISense_Hearing::StaticClass());
+		
 		// RegisterWithPerceptionSystem(): bAutoRegisterAsSource == true 해줌
 		PerceptionStimuliSourceComponent->RegisterWithPerceptionSystem();
 	}

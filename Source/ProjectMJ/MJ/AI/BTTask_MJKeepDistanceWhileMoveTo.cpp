@@ -65,7 +65,7 @@ EBTNodeResult::Type UBTTask_MJKeepDistanceWhileMoveTo::ExecuteTask(UBehaviorTree
 	}
 
 	// Minjin: Min~Max 범위에 있을 경우->제자리
-	OwnerController->StopMovement();
+	// OwnerController->StopMovement();
 
 	return EBTNodeResult::Succeeded;
 }

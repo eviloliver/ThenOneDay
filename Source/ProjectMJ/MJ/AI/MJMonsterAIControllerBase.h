@@ -4,14 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "Perception/AIPerceptionComponent.h"
-#include "Perception/AISenseConfig_Sight.h"
+//#include "Perception/AIPerceptionComponent.h"
 #include "MJMonsterAIControllerBase.generated.h"
 
-class UBehaviorTree;
+class UBehaviorTreeComponent;
 class UAIPerceptionComponent;
-class UAISenseConfig_Sight;
-class UAISenseConfig_Damage;
+
 /**
  * Class Description: MonsterAIControllerBase: Perception-Sight,Affiliation 포함
  * Author: Kim Minjin
@@ -38,8 +36,11 @@ public:
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
+	// Minjin: BehaviorTree Component
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="AI|BehaviorTree")
+	TObjectPtr<UBehaviorTreeComponent> BehaviorTreeComponent;
+	
 	// AI Perception
-
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAIPerceptionComponent> AIPerceptionComponent;
 	
@@ -48,6 +49,7 @@ protected:
 
 	// AI Affiliation
 	FGenericTeamId TeamId;
+	
 	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
 	// Minjin: Handle AI Sense
@@ -59,14 +61,14 @@ protected:
 	virtual void HandleDamage_Detected(AActor* Actor, FAIStimulus Stimulus);
 
 	UFUNCTION()
+	virtual void HandleHearing_Detected(AActor* Actor, FAIStimulus Stimulus);
+	
+	UFUNCTION()
 	virtual void HandleSight_Lost(AActor* Actor, FAIStimulus Stimulus);
 	
 	UFUNCTION()
 	virtual void HandleDamage_Lost(AActor* Actor, FAIStimulus Stimulus);
-	
-protected:
-	UPROPERTY(EditDefaultsOnly, Category="AI|BehaviorTree")
-	TObjectPtr<UBehaviorTree> BehaviorTree;
 
-	
+	UFUNCTION()
+	virtual void HandleHearing_Lost(AActor* Actor, FAIStimulus Stimulus);
 };
