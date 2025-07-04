@@ -15,7 +15,7 @@
 UMJSaveGameSubsystem::UMJSaveGameSubsystem()
 {
 	
-	static ConstructorHelpers::FClassFinder<UUserWidget> LoadingScreenRef(TEXT("/Game/TG/WBP_LoadingScreen.WBP_LoadingScreen_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> LoadingScreenRef(TEXT("/Game/TG/MapTestWBP/WBP_LoadingScreen.WBP_LoadingScreen_C"));
 	if (LoadingScreenRef.Succeeded())
 	{
 		LoadingScreen = LoadingScreenRef.Class;
