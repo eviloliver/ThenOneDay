@@ -14,7 +14,9 @@
  * Last Modified Date:
  */
 
+class AMJProjectileBase;
 class UGameplayAbility;
+class UCurveTable;
 
 UENUM(BlueprintType)
 enum class ERequiredWeapon : uint8
@@ -43,8 +45,25 @@ enum class ESkillTargetType : uint8
 	Area    UMETA(DisplayName = "AoE", ToolTip = "Area of Effect"),
 };
 
-class UAnimMontage;
-class UCurveTable;
+USTRUCT(BlueprintType)
+struct FSkillAssetDataByLevel
+{
+	GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int32 MinimumLevel = 1;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Animation"))
+    FGameplayTag AnimationTag;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Projectile"))
+    FGameplayTag ProjectileTag;
+
+	// Dongmin
+	// TODO: 이펙트 관련 + 위에 있는 투사체 관련한 내용이 이걸로 바뀔 가능성이 있기도 함
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "VFX"))
+	// FGameplayTag VFXTag;
+};
 
 USTRUCT(BlueprintType)
 struct FMJSkillDataRow : public FTableRowBase
@@ -71,13 +90,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ESkillTargetType SkillTargetType;
 
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UAnimMontage> ActionAnimMontage;*/
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UGameplayAbility> SkillAbilityClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftObjectPtr<UCurveTable> SkillLevelDataTable;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FSkillAssetDataByLevel> AssetTagDataByLevel;
 };
