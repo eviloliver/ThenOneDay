@@ -2,10 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
-#include "InventoryItemData.generated.h"
+#include "ItemDataRow.generated.h"
 
 USTRUCT(BlueprintType) 
-struct FInventoryItemData : public FTableRowBase // 안바뀌는값
+struct FItemDataRow : public FTableRowBase // 안바뀌는값 // 아이템 고유 정보
 {
 	GENERATED_BODY()
 	

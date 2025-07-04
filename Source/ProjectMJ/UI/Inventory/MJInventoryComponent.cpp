@@ -2,7 +2,7 @@
 
 
 #include "UI/Inventory/MJInventoryComponent.h"
-#include "InventoryItemData.h"
+#include "ItemDataRow.h"
 #include "MJInventorySlot.h"
 #include "MJInventoryWidget.h"
 #include "TG/MJGameInstanceTG.h"
@@ -11,10 +11,41 @@
 
 UMJInventoryComponent::UMJInventoryComponent()
 {
-
 }
 
-void UMJInventoryComponent::SetItemDataToWidget(FName ItemName)
+void UMJInventoryComponent::PickUpItem(FName ItemName) 
+{
+	if (ItemInInventory.Contains(ItemName)) // 인벤토리 내에 ItemName을 가진 아이템이 있다면 개수만 늘리고 같은 칸에 들어가야 함
+	{
+		ItemInInventory[ItemName].ItemCount++; 
+	}
+	else // 인벤에 없는 템이라면 
+	{
+		FInventoryItemData NewItem;
+		NewItem.ItemName = ItemName;
+		NewItem.ItemCount = 1;
+		if ( ItemInInventory.Num() == 0)
+		{
+			NewItem.Position = 0;
+		}
+		else
+		{
+			NewItem.Position = ItemInInventory.Num();
+		}
+		ItemInInventory.Add(ItemName,NewItem); // 구조체에 위정보를 가진 새로운 아이템 추가
+	}
+	
+	// 추가된 아이템 정보를 위젯으로 업데이트
+	UpdateSlot(ItemName);
+}
+
+void UMJInventoryComponent::DropItem(FName ItemName)
+{
+	// 티맵의 아이템을 지워야 하지 않을까
+	ItemInInventory.Remove(ItemName); // 나중에 전체가 아니라 일부만 버리고 싶게 할 때는 입력받은 숫자만큼 카운트만 줄이기??
+}
+
+void UMJInventoryComponent::UpdateSlot(FName ItemName)
 {
 	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
 	if (!GI || !GI->ItemDataTable)
@@ -39,42 +70,19 @@ void UMJInventoryComponent::SetItemDataToWidget(FName ItemName)
 	{
 		return;
 	}
-	
 	for (int i = 0; i < InventorySlot.Num(); i++)
 	{
 		if (!InventorySlot[i])
 		{
 			return;
 		}
-		
-		if (InventorySlot[i]->GetItemTexture() == nullptr)
-		{			
-			UE_LOG(LogTemp,Error,TEXT("인벤이 비어있다~"));
-			InventorySlot[i]->SetText(GI->ItemDataTable->FindRow<FInventoryItemData>(ItemName,TEXT("Inventory"))->ItemID);
-			InventorySlot[i]->SetImage(GI->ItemDataTable->FindRow<FInventoryItemData>(ItemName,TEXT("Inventory"))->Icon);
-			// 아이템을 주웟을때 tmap에다가 정보를 넣어....
-			return;
-		}
-	}			
-}
-
-void UMJInventoryComponent::PickUpItem(FName ItemName) // 
-{
-	if (ItemInInventory.Contains(ItemName))
-	{
-		ItemInInventory[ItemName].ItemCount++;
 	}
-	else
-	{
-		FItemData NewItem;
-		NewItem.ItemName = ItemName;
-		NewItem.ItemCount = 1;
-		//안겹치게 아이템 위치 정해주는 코드
-		ItemInInventory.Add(ItemName,NewItem);
-	}
-}
-
-void UMJInventoryComponent::DropItem(FName ItemName)
-{
 	
+	InventorySlot[ItemInInventory[ItemName].Position]->SetInventoryItemData(ItemInInventory[ItemName]);
+	InventorySlot[ItemInInventory[ItemName].Position]->SetItemData(*GI->ItemDataTable->FindRow<FItemDataRow>(ItemName,TEXT("Inventory")));
+	
+	InventorySlot[ItemInInventory[ItemName].Position]->SetItemCount(ItemInInventory[ItemName].ItemCount);
+	InventorySlot[ItemInInventory[ItemName].Position]->SetText(GI->ItemDataTable->FindRow<FItemDataRow>(ItemName,TEXT("Inventory"))->ItemID);
+	InventorySlot[ItemInInventory[ItemName].Position]->SetImage(GI->ItemDataTable->FindRow<FItemDataRow>(ItemName,TEXT("Inventory"))->Icon);
+	InventorySlot[ItemInInventory[ItemName].Position]->SetItemInInventory(ItemInInventory);
 }

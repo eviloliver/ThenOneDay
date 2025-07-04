@@ -26,4 +26,9 @@ void UMJInventoryWidget::NativeConstruct()
 			InventorySlots.Add(NewSlot);
 		}
 	}
+	for (int i = 0; i < InventorySlots.Num(); i++)
+	{
+		InventorySlots[i]->SlotPosition = i;
+	}
+
 }

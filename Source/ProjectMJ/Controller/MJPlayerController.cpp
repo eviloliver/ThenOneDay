@@ -308,7 +308,8 @@ void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AAc
 	
 	 if (InventoryComp)
 	 {
-	 	InventoryComp->SetItemDataToWidget(Item->GetItemName());
+	 	InventoryComp->PickUpItem(Item->GetItemName());
+	 	//InventoryComp->SetItemDataToWidget(Item->GetItemName());
 	 	Item->Destroy();
 	 }
 }
