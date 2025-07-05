@@ -4,12 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TG/Interface/MJAIEventManager.h"
 #include "TG/Interface/MJInstancedActorInterface.h"
 #include "MJDummyObjectTG.generated.h"
 
 UCLASS()
-class PROJECTMJ_API AMJDummyObjectTG : public AActor, public IMJInstancedActorInterface, public IMJAIEventManager
+class PROJECTMJ_API AMJDummyObjectTG : public AActor, public IMJInstancedActorInterface
 {
 	GENERATED_BODY()
 	

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Character/MJCharacterBase.h"
-#include "TG/Interface/MJAIEventManager.h"
 #include "MJAIBossCharacterTG.generated.h"
 
 /**

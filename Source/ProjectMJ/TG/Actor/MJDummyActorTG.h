@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "TG/Interface/MJAIEventManager.h"
 #include "TG/Interface/MJInstancedActorInterface.h"
 #include "MJDummyActorTG.generated.h"
 /**
