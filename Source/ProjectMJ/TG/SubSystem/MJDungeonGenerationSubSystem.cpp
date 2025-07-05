@@ -81,11 +81,11 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 		{
 			// Boss
 			
-			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,ENodeType::Boss, EAISpawnType::Static, CandidatePoint);
+			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,ENodeType::Boss, EMJAISpawnType::Static, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
 			DungeonGraph.BossNodeID = CurrentNotAssignedNodeNum;
 
-			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, EAISpawnType::Static, FString(TEXT("Boss"))));
+			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, EMJAISpawnType::Static, FString(TEXT("Boss"))));
 	
 			CurrentNotAssignedNodeNum++;
 			
@@ -95,12 +95,12 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 			// Battle 1~5 Map Assign 
 			float RandNum = FMath::RandRange(1,5);
 
-			EAISpawnType AISpawnType = EAISpawnType::Static;
+			EMJAISpawnType AISpawnType = EMJAISpawnType::Static;
 			float RandNumAISpawn = FMath::RandRange(1,4);
 
 			if (RandNumAISpawn == 1)
 			{
-				AISpawnType = EAISpawnType::Wave;
+				AISpawnType = EMJAISpawnType::Wave;
 			}
 			
 			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,RandNum,ENodeType::Battle, AISpawnType, CandidatePoint);
@@ -113,11 +113,11 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 		else if (Prob >= 80.f && Prob < 90.f)
 		{
 			// Reward
-			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,ENodeType::Reward, EAISpawnType::Static, CandidatePoint);
+			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,ENodeType::Reward, EMJAISpawnType::Static, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
 
 			
-			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, EAISpawnType::Static, FString(TEXT("Reward"))));
+			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, EMJAISpawnType::Static, FString(TEXT("Reward"))));
 	
 			CurrentNotAssignedNodeNum++;
 		}
@@ -140,11 +140,11 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 				continue;
 			}
 			
-			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,ENodeType::Boss, EAISpawnType::Static, CandidatePoint);
+			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,ENodeType::Boss, EMJAISpawnType::Static, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
 			DungeonGraph.BossNodeID = CurrentNotAssignedNodeNum;
 
-			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, EAISpawnType::Static,  FString(TEXT("Boss"))));
+			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, EMJAISpawnType::Static,  FString(TEXT("Boss"))));
 	
 			CurrentNotAssignedNodeNum++;
 		}
@@ -241,7 +241,7 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 	return true;
 }
 
-FDungeonNode UMJDungeonGenerationSubSystem::MakeNewNode(uint8 NodeNum, uint8 AssignedMapID, ENodeType NodeType,EAISpawnType AISpawnType, FVector2D UICoordinate)
+FDungeonNode UMJDungeonGenerationSubSystem::MakeNewNode(uint8 NodeNum, uint8 AssignedMapID, ENodeType NodeType,EMJAISpawnType AISpawnType, FVector2D UICoordinate)
 {
 	FDungeonNode NewNode;
 

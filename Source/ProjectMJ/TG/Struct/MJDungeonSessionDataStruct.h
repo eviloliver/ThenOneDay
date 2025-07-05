@@ -30,7 +30,7 @@ struct FMJDungeonSessionData
 {
 	GENERATED_BODY()
 	
-	FMJDungeonSessionData(EMJDungeonContext InContext, uint8 InNodeNum, EAISpawnType InAISpawnType, const FString& InMapName)
+	FMJDungeonSessionData(EMJDungeonContext InContext, uint8 InNodeNum, EMJAISpawnType InAISpawnType, const FString& InMapName)
 	: DungeonContext(InContext)
 	, DungeonNodeNum(InNodeNum)
 	, AISpawnType(InAISpawnType)
@@ -40,7 +40,7 @@ struct FMJDungeonSessionData
 	FMJDungeonSessionData()
 		: DungeonContext(EMJDungeonContext::InActive)
 		, DungeonNodeNum(0)
-		, AISpawnType(EAISpawnType::Static)
+		, AISpawnType(EMJAISpawnType::Static)
 		, MapName(TEXT(""))
 	{}
 
@@ -51,7 +51,7 @@ struct FMJDungeonSessionData
 	uint8 DungeonNodeNum;
 
 	UPROPERTY(BlueprintReadOnly)
-	EAISpawnType AISpawnType;
+	EMJAISpawnType AISpawnType;
 
 	UPROPERTY(BlueprintReadOnly)
 	FString MapName;

@@ -43,18 +43,21 @@ public:
 	void LoadFromInstancedDungeonSessionData(uint8 LoadFromNum);
 
 	UPROPERTY()
-	FTimerHandle WaveAISpawnTimerHandle;
+	FTimerHandle StaticAIEndCheckTimerHandle;
 
 	UPROPERTY()
 	FTimerHandle WaveAISpawnConditionCheckTimerHandle;
 	
-	
+
+	UFUNCTION(BlueprintCallable)
+	bool GetWaveDataRowByIndex(int32 InputWaveRowNum);
 	
 	UFUNCTION(BlueprintCallable)
 	void SpawnAI();
 	
 	UFUNCTION(BlueprintCallable)
 	void CheckSpawnAICondition();
+
 	
 
 	UFUNCTION(BlueprintCallable)
@@ -105,7 +108,7 @@ protected:
 	int32 SpawnAIMaxNum;
 
 	UPROPERTY(BlueprintReadWrite)
-	int32 CurrSpawnedAINum;
+	int32 CurrentSpawnedAINum;
 	
 	// For Test
 	UPROPERTY(BlueprintReadWrite)

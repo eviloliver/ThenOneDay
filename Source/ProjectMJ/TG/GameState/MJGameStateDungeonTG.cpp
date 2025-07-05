@@ -20,7 +20,7 @@ AMJGameStateDungeonTG::AMJGameStateDungeonTG()
 	
 	CurrentWaveNum = 1;
 	SpawnAIMaxNum = 5;
-	CurrSpawnedAINum = 0;
+	CurrentSpawnedAINum = 0;
 
 	
 }
@@ -38,69 +38,94 @@ void AMJGameStateDungeonTG::BeginPlay()
 
 
 
-	
-	
-	if (LoadedDungeonSessionData.AISpawnType == EAISpawnType::Static)
+	if (LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::InActive)
 	{
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(),AMJDungeonAISpawnPointActor::StaticClass(),StaticSpawnPointActors);
-	
-		for (auto& Iter : StaticSpawnPointActors)
+		if (LoadedDungeonSessionData.AISpawnType == EMJAISpawnType::Static)
 		{
-			FVector IterSpawnPoint = Iter->GetActorLocation();
-	
-			FNavLocation ResultLocation;
-	
-			UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
-	
-			if (NavSys)
+			UGameplayStatics::GetAllActorsOfClass(GetWorld(),AMJDungeonAISpawnPointActor::StaticClass(),StaticSpawnPointActors);
+			
+			for (auto& Iter : StaticSpawnPointActors)
 			{
-				for (int i = 0 ; i < 10 ; ++i)
+				FVector IterSpawnPoint = Iter->GetActorLocation();
+	
+				FNavLocation ResultLocation;
+	
+				UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+	
+				if (NavSys)
 				{
-					bool bIsFound = NavSys->GetRandomPointInNavigableRadius(IterSpawnPoint, 1000.f,ResultLocation);
-					if (bIsFound)
+					for (int i = 0 ; i < 10 ; ++i)
 					{
-						FActorSpawnParameters Params;
-						GetWorld()->SpawnActor<AMJDummyActorTG>(DummyActorBPClass,ResultLocation,FRotator(),Params);
+						bool bIsFound = NavSys->GetRandomPointInNavigableRadius(IterSpawnPoint, 1000.f,ResultLocation);
+						if (bIsFound)
+						{
+							FActorSpawnParameters Params;
+							AActor* NewAIActor = GetWorld()->SpawnActor<AMJDummyActorTG>(DummyActorBPClass,ResultLocation,FRotator(),Params);
+							if (NewAIActor)
+							{
+
+								SpawnedActorRefs.Add(NewAIActor);
+								++CurrentSpawnedAINum;
+							}
+						}
 					}
 				}
-			}
-		
-		}
-	}
-	else if (LoadedDungeonSessionData.AISpawnType == EAISpawnType::Wave)
-	{
-		GetWorldTimerManager().SetTimer(WaveAISpawnConditionCheckTimerHandle, this, &AMJGameStateDungeonTG::CheckSpawnAICondition,  2.0f, true);
 
-		if (LoadedWaveDataTable)
+				GetWorldTimerManager().SetTimer(StaticAIEndCheckTimerHandle, this, &AMJGameStateDungeonTG::CheckSpawnAICondition,  2.0f, true);
+
+		
+			}
+		}
+		else if (LoadedDungeonSessionData.AISpawnType == EMJAISpawnType::Wave)
 		{
-			FName Name = *FString::Printf(TEXT("Wave%d"),CurrentWaveNum);
-			FMJWaveDataRow* RowPtr = LoadedWaveDataTable->FindRow<FMJWaveDataRow>(Name, TEXT(""));
+			GetWorldTimerManager().SetTimer(WaveAISpawnConditionCheckTimerHandle, this, &AMJGameStateDungeonTG::CheckSpawnAICondition,  2.0f, true);
 
-			if (RowPtr)
+			if (LoadedWaveDataTable)
 			{
-				LoadedWaveDataRow.EnemyCount = RowPtr->EnemyCount;
-				LoadedWaveDataRow.EnemyPool = RowPtr->EnemyPool;
-				LoadedWaveDataRow.WaveNum = RowPtr->WaveNum;
+				GetWaveDataRowByIndex(CurrentWaveNum);
 			}
-		
 		}
+
+		LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Activated;
 	}
 	
-	
+
 }
+
+bool AMJGameStateDungeonTG::GetWaveDataRowByIndex(int32 InputWaveRowNum)
+{
+	// Hard coded wave name for now
+	FName Name = *FString::Printf(TEXT("Wave%d"), InputWaveRowNum);
+	FMJWaveDataRow* RowPtr = LoadedWaveDataTable->FindRow<FMJWaveDataRow>(Name, TEXT("FindRow is Failed"));
+	
+	if (RowPtr)
+	{
+		LoadedWaveDataRow.EnemyCount = RowPtr->EnemyCount;
+		LoadedWaveDataRow.EnemyPool = RowPtr->EnemyPool;
+		LoadedWaveDataRow.WaveNum = RowPtr->WaveNum;
+
+		return true;
+	}
+	return false;
+}
+
 void AMJGameStateDungeonTG::SpawnAI()
 {
+	if (LoadedDungeonSessionData.DungeonContext != EMJDungeonContext::Activated)
+	{
+		return;
+	}
 	
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(this,0);
 	if (Player)
 	{
 		FEnvQueryRequest Request(EQSQuery, Player);
-		
+
+		// Async Call Lamda func
 		Request.Execute(EEnvQueryRunMode::AllMatching, FQueryFinishedSignature::CreateLambda([this, Player](TSharedPtr<FEnvQueryResult> Result)
 				   {
 					   if (Result->IsSuccessful())
 					   {
-
 					   		TArray<FVector> AllLocations;
 
 						   	AllLocations.Reserve(Result->Items.Num());
@@ -108,12 +133,21 @@ void AMJGameStateDungeonTG::SpawnAI()
 					   		Result->GetAllAsLocations(AllLocations);
 
 					   		int i = 0;
-					   		while (CurrSpawnedAINum < SpawnAIMaxNum)
+					   		while (CurrentSpawnedAINum < SpawnAIMaxNum)
 					   		{
-					   			SpawnedActorRefs.Add(GetWorld()->SpawnActor<AActor>(GetActorFromPool(), AllLocations[i],FRotator()));
 
-					   			CurrSpawnedAINum++;
-					   			i++;
+					   			AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(GetActorFromPool(), AllLocations[i],FRotator());
+					   			if (NewAIActor)
+					   			{
+					   				SpawnedActorRefs.Add(NewAIActor);
+									   ++CurrentSpawnedAINum;
+									   --LoadedWaveDataRow.EnemyCount;
+									   ++i;
+					   			}
+					   			else
+					   			{
+					   				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("AISpawn Failed!!")));
+					   			}
 					   		}
 					   }
 				   }));
@@ -122,11 +156,31 @@ void AMJGameStateDungeonTG::SpawnAI()
 
 void AMJGameStateDungeonTG::CheckSpawnAICondition()
 {
+	if (LoadedDungeonSessionData.DungeonContext != EMJDungeonContext::Activated)
+	{
+		return;
+	}
+	
 	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Magenta, FString::Printf(TEXT("Check AISpawn Coniditon Call")));
 	
-	if (CurrSpawnedAINum < SpawnAIMaxNum)
+	if (CurrentSpawnedAINum < SpawnAIMaxNum)
 	{
-		SpawnAI();
+		if (LoadedWaveDataRow.EnemyCount <= 0)
+		{
+			bool GetNextWave = GetWaveDataRowByIndex(++CurrentWaveNum);
+
+			if (!GetNextWave)
+			{
+				GetWorldTimerManager().ClearTimer(WaveAISpawnConditionCheckTimerHandle);
+				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("Wave is end. Set Dungeon Context to Cleared")));
+
+				LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
+			}
+		}
+		else
+		{
+			SpawnAI();
+		}
 	}
 }
 

@@ -12,7 +12,7 @@ enum class ENodeType : uint8
 };
 
 UENUM(BlueprintType)
-enum class EAISpawnType : uint8
+enum class EMJAISpawnType : uint8
 {
 	Static UMETA(DisplayName = "Static"),
 	RandomPoints UMETA(DisplayName = "RandomPoints"),
@@ -34,7 +34,7 @@ struct FDungeonNode
 	ENodeType NodeType;
 
 	UPROPERTY(BlueprintReadOnly)
-	EAISpawnType AISpawnType;
+	EMJAISpawnType AISpawnType;
 
 	UPROPERTY(BlueprintReadOnly)
 	FVector2D UICoordinate;
@@ -57,15 +57,15 @@ struct FDungeonNode
 		}
 	}
 
-	static FString AISpawnTypeToString(EAISpawnType Type)
+	static FString AISpawnTypeToString(EMJAISpawnType Type)
 	{
 		switch (Type)
 		{
-		case EAISpawnType::Static:
+		case EMJAISpawnType::Static:
 			return TEXT("Static");
-		case EAISpawnType::Wave:
+		case EMJAISpawnType::Wave:
 			return TEXT("Wave");
-		case EAISpawnType::RandomPoints:
+		case EMJAISpawnType::RandomPoints:
 			return TEXT("RandomPoints");
 		default:
 			return TEXT("Unknown");
