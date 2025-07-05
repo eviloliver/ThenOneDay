@@ -16,8 +16,8 @@ class UMJFadeObjectComponent;
  * Class Description:
  * Author: Lee JuHyeon
  * Created Date: 2025_06_11
- * Last Modified By: Add Combat Component 
- * Last Modified Date: 2025_06_18
+ * Last Modified By: Lee JuHyeon
+ * Last Modified Date: 2025_07_02
  */
 UCLASS()
 class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase
@@ -71,7 +71,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UMJPlayerCombatComponent>PlayerCombatComponent;
 
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Fade", meta = (AllowPrivateAccess = true))
-	TObjectPtr<UMJFadeObjectComponent>FadeComponent;
+	//FadeActor System Part
+	/*UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Fade", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UMJFadeObjectComponent>FadeComponent;*/
 #pragma endregion
 };
