@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "TG/Interface/MJAIEventManager.h"
 #include "TG/Interface/MJInstancedActorInterface.h"
 #include "MJDummyObjectTG.generated.h"
 
 UCLASS()
-class PROJECTMJ_API AMJDummyObjectTG : public AActor, public IMJInstancedActorInterface
+class PROJECTMJ_API AMJDummyObjectTG : public AActor, public IMJInstancedActorInterface, public IMJAIEventManager
 {
 	GENERATED_BODY()
 	
@@ -19,6 +20,7 @@ protected:
 
 
 	virtual void PostInitializeComponents() override;
+	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 };

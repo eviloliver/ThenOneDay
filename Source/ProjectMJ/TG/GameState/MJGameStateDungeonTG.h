@@ -20,6 +20,7 @@
 class UEnvQuery;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnHealthChangedSignature, float, Delta);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnSpawnedSignature, float, Health);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIOnDestroyedSignature);
 
 UCLASS()
 class PROJECTMJ_API AMJGameStateDungeonTG : public AGameStateBase, public IMJBossEventManagerTG
@@ -57,12 +58,17 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void CheckSpawnAICondition();
-
 	
-
 	UFUNCTION(BlueprintCallable)
 	TSubclassOf<AActor> GetActorFromPool();
 
+	UPROPERTY(BlueprintAssignable)
+	FMJAIOnDestroyedSignature OnAIDestroyed;
+
+	UFUNCTION(BlueprintCallable)
+	void OnAIDestroy(AActor* DestroyedActor);
+
+	
 	
 	UPROPERTY(BlueprintAssignable)
 	FMJAIBossOnHealthChangedSignature OnAIBossHealthChanged;

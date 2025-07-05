@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/MJCharacterBase.h"
+#include "TG/Interface/MJAIEventManager.h"
 #include "MJAIBossCharacterTG.generated.h"
 
 /**
@@ -22,6 +23,8 @@ public:
 	AMJAIBossCharacterTG();
 
 protected:
+
+	virtual void BeginPlay() override;
 	
 	
 };

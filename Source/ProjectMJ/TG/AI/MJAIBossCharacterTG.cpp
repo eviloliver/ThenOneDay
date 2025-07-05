@@ -7,3 +7,10 @@ AMJAIBossCharacterTG::AMJAIBossCharacterTG()
 {
 
 }
+
+void AMJAIBossCharacterTG::BeginPlay()
+{
+	Super::BeginPlay();
+
+
+}

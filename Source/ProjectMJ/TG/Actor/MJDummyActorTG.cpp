@@ -3,10 +3,6 @@
 
 #include "MJDummyActorTG.h"
 
-#include "ProjectMJ.h"
-#include "Kismet/GameplayStatics.h"
-#include "TG/GameState/MJGameStateDungeonTG.h"
-
 AMJDummyActorTG::AMJDummyActorTG()
 {
  	

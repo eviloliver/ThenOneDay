@@ -35,9 +35,7 @@ void AMJGameStateDungeonTG::BeginPlay()
 {
 	Super::BeginPlay();
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("AISpawnType is %s"), *FDungeonNode::AISpawnTypeToString(LoadedDungeonSessionData.AISpawnType)));
-
-
-
+	
 	if (LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::InActive)
 	{
 		if (LoadedDungeonSessionData.AISpawnType == EMJAISpawnType::Static)
@@ -63,7 +61,8 @@ void AMJGameStateDungeonTG::BeginPlay()
 							AActor* NewAIActor = GetWorld()->SpawnActor<AMJDummyActorTG>(DummyActorBPClass,ResultLocation,FRotator(),Params);
 							if (NewAIActor)
 							{
-
+								
+								NewAIActor->OnDestroyed.AddDynamic(this, &AMJGameStateDungeonTG::OnAIDestroy);
 								SpawnedActorRefs.Add(NewAIActor);
 								++CurrentSpawnedAINum;
 							}
@@ -71,7 +70,7 @@ void AMJGameStateDungeonTG::BeginPlay()
 					}
 				}
 
-				GetWorldTimerManager().SetTimer(StaticAIEndCheckTimerHandle, this, &AMJGameStateDungeonTG::CheckSpawnAICondition,  2.0f, true);
+				//GetWorldTimerManager().SetTimer(StaticAIEndCheckTimerHandle, this, &AMJGameStateDungeonTG::CheckSpawnAICondition,  2.0f, true);
 
 		
 			}
@@ -139,6 +138,8 @@ void AMJGameStateDungeonTG::SpawnAI()
 					   			AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(GetActorFromPool(), AllLocations[i],FRotator());
 					   			if (NewAIActor)
 					   			{
+					   				
+					   				NewAIActor->OnDestroyed.AddDynamic(this, &AMJGameStateDungeonTG::OnAIDestroy);
 					   				SpawnedActorRefs.Add(NewAIActor);
 									   ++CurrentSpawnedAINum;
 									   --LoadedWaveDataRow.EnemyCount;
@@ -168,7 +169,7 @@ void AMJGameStateDungeonTG::CheckSpawnAICondition()
 		if (LoadedWaveDataRow.EnemyCount <= 0)
 		{
 			bool GetNextWave = GetWaveDataRowByIndex(++CurrentWaveNum);
-
+			
 			if (!GetNextWave)
 			{
 				GetWorldTimerManager().ClearTimer(WaveAISpawnConditionCheckTimerHandle);
@@ -181,6 +182,21 @@ void AMJGameStateDungeonTG::CheckSpawnAICondition()
 		{
 			SpawnAI();
 		}
+	}
+}
+
+void AMJGameStateDungeonTG::OnAIDestroy(AActor* DestroyedActor)
+{
+	if (DestroyedActor->IsPendingKillPending())
+	{
+		--CurrentSpawnedAINum;
+
+		if (LoadedDungeonSessionData.AISpawnType == EMJAISpawnType::Static &&
+			LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::Activated &&
+			CurrentSpawnedAINum <= 0)
+		{
+			LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
+		}		
 	}
 }
 
@@ -198,6 +214,8 @@ TSubclassOf<AActor> AMJGameStateDungeonTG::GetActorFromPool()
 	
 	return Keys[RandomIndex];
 }
+
+
 
 void AMJGameStateDungeonTG::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
@@ -239,7 +257,6 @@ void AMJGameStateDungeonTG::LoadFromInstancedDungeonSessionData(uint8 LoadFromNu
 
 	if (MJGI)
 	{
-		
 		SetDungeonSessionData(MJGI->GetDungeonSessionDataRef()[LoadFromNum]);
  
 		for (auto iter : LoadedDungeonSessionData.SpawnInfos)
