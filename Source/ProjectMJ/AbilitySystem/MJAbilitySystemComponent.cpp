@@ -38,48 +38,6 @@ void UMJAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InInpu
 		return;
 	}
 
-
-	//for ( FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
-	//{
-	//	if (!AbilitySpec.DynamicAbilityTags.HasTagExact(InInputTag))
-	//	{
-	//		UE_LOG(LogTemp, Warning, TEXT("Found match via AbilityTags: %s"), *InInputTag.ToString());
-	//		TryActivateAbility(AbilitySpec.Handle);
-	//		break;
-	//	}
-	//	AbilitySpecInputPressed(AbilitySpec);
-	//	TryActivateAbility(AbilitySpec.Handle);
-	//}
-	//
-	//for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
-	//{
-	//	if (!AbilitySpec.DynamicAbilityTags.HasTagExact(InInputTag))
-	//	{
-	//		continue;
-	//	}
-	//	TryActivateAbility(AbilitySpec.Handle);
-	//}
-
-
-	//for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
-	//{
-	//	const FString SpecName = Spec.Ability ? Spec.Ability->GetName() : TEXT("None");
-	//	UE_LOG(LogTemp, Warning, TEXT("Checking Spec: %s"), *SpecName);
-
-	//	if (Spec.DynamicAbilityTags.HasTagExact(InInputTag))
-	//	{
-	//		UE_LOG(LogTemp, Warning, TEXT("Found match via DynamicTag: %s"), *InInputTag.ToString());
-	//		TryActivateAbility(Spec.Handle);
-	//		break;
-	//	}
-	//	else if (Spec.Ability && Spec.Ability->AbilityTags.HasTagExact(InInputTag))
-	//	{
-	//		UE_LOG(LogTemp, Warning, TEXT("Found match via AbilityTags: %s"), *InInputTag.ToString());
-	//		TryActivateAbility(Spec.Handle);
-	//		break;
-	//	}
-	//}
-
 }
 
 void UMJAbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& InInputTag)

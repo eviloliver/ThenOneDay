@@ -61,7 +61,7 @@ struct FSkillAssetDataByLevel
 
 	// Dongmin
 	// TODO: 이펙트 관련 + 위에 있는 투사체 관련한 내용이 이걸로 바뀔 가능성이 있기도 함
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "VFX"))
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "GameplayCue"))
 	// FGameplayTag VFXTag;
 };
 
