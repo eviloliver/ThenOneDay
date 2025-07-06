@@ -25,6 +25,7 @@ class PROJECTMJ_API UMJProjectileDataAsset : public UDataAsset
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile", meta = (Categories = "Projectile"))
 	TMap<FGameplayTag, TSubclassOf<AMJProjectileBase>> ProjectileMap;
 
+public:
 	TSubclassOf<AMJProjectileBase> FindProjectileClassForTag(const FGameplayTag& Tag) const;
 
 };

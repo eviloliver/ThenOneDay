@@ -15,6 +15,7 @@
  * Last Modified Date:
  */
 
+class UMJProjectileDataAsset;
 class AMJProjectileBase;
 
 UCLASS()
@@ -30,10 +31,13 @@ protected:
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
-	TSubclassOf<AMJProjectileBase> ProjectileClass;
+	//UPROPERTY(EditDefaultsOnly, Category = "Projectile")
+	//TSubclassOf<AMJProjectileBase> ProjectileClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile");
 	TArray<TSubclassOf<UGameplayEffect>> GameplayEffectClasses;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
+	TObjectPtr<UMJProjectileDataAsset> ProjectileDataAsset;
 
 };

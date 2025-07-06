@@ -35,6 +35,7 @@ void UMJSkillComponent::BeginPlay()
 	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.Catastrophe")));
 	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.Catastrophe")));
 
+	// LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.Catastrophe")));
 	// TODO:일반 공격 슬롯 만들어야 함
 	// 일반 공격 태그를 따로 만들어야 하나?
 
@@ -52,7 +53,9 @@ void UMJSkillComponent::LearnSkill(const FGameplayTag& NewSkill)
 		{
 			++OwnedSkillMap[NewSkill].Level;
 			// 장착중인 스킬이 레벨업 하면 GiveAbility 새로 해줘야함
-			if (EquippedSkillMap.Contains(NewSkill))
+			FGameplayTag SkillTypeTag = OwnedSkillMap[NewSkill].SkillTypeTag;
+
+			if (EquippedSkillMap.Contains(SkillTypeTag))
 			{
 				GiveAbilityToASC(NewSkill);
 			}
@@ -257,15 +260,19 @@ void UMJSkillComponent::GiveAbilityToASC(const FGameplayTag& UpdateSkill)
 	RemoveAbility(UpdateSkill);
 
 	int32 SkillLevel = OwnedSkillMap[UpdateSkill].Level;
+	MJ_LOG(LogMJ, Warning, TEXT("for %d"), SkillLevel);
 
 	FGameplayAbilitySpec AbilitySpec(DataRow->SkillAbilityClass, SkillLevel, INDEX_NONE, OwnerCharacter);
 
 	const FSkillAssetDataByLevel* FoundAssetData = nullptr;
+
 	for (int32 i = DataRow->AssetTagDataByLevel.Num() - 1; i >= 0; --i)
 	{
 		const FSkillAssetDataByLevel& AssetData = DataRow->AssetTagDataByLevel[i];
 		if (SkillLevel >= AssetData.MinimumLevel)
 		{
+			MJ_LOG(LogMJ, Warning, TEXT("%d"), DataRow->AssetTagDataByLevel.Num());
+
 			FoundAssetData = &AssetData;
 			break;
 		}
@@ -273,15 +280,17 @@ void UMJSkillComponent::GiveAbilityToASC(const FGameplayTag& UpdateSkill)
 
 	if (FoundAssetData)
 	{
+		// Dongmin: 이거도 투사체 처럼 바꿀까 고민
 		if (FoundAssetData->AnimationTag.IsValid())
 		{
 			AbilitySpec.DynamicAbilityTags.AddTag(FoundAssetData->AnimationTag);
 		}
 
-		if (FoundAssetData->ProjectileTag.IsValid())
+		if (OwnedSkillMap.Contains(UpdateSkill))
 		{
-			AbilitySpec.DynamicAbilityTags.AddTag(FoundAssetData->ProjectileTag);
+			OwnedSkillMap[UpdateSkill].ProjectileTag = FoundAssetData->ProjectileTag;
 		}
+
 	}
 	else
 	{

@@ -25,6 +25,7 @@ class PROJECTMJ_API UMJAnimMontageDataAsset : public UDataAsset
 	UPROPERTY(EditDefaultsOnly, Category = "AnimMontage", meta = (Categories = "Animation"))
 	TMap<FGameplayTag, TObjectPtr<UAnimMontage>> AnimMontageMap;
 
+public:
 	TObjectPtr<UAnimMontage> FindAnimMontageForTag(const FGameplayTag& Tag) const;
 
 };

@@ -36,6 +36,8 @@ struct FSkillData
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag SkillTypeTag;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTag ProjectileTag;
 };
 
 UCLASS( ClassGroup=(Skill), meta=(BlueprintSpawnableComponent) )
@@ -65,6 +67,9 @@ public:
 	void ActivateSkillByInputTag(const FGameplayTag& InputTag);
 
 	FGameplayTag ConvertInputTagToTypeTag(const FGameplayTag& InputTag);
+
+	// Getter
+	TMap<FGameplayTag, FSkillData> GetOwnedSkillMap() const { return OwnedSkillMap; };
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")

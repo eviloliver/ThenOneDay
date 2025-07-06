@@ -3,10 +3,13 @@
 
 #include "AbilitySystem/Abilities/MJGA_BaseProjectile.h"
 
+#include "MJGA_InstantSkill.h"
 #include "ProjectMJ.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
 #include "AbilitySystem/Actor/MJProjectileBase.h"
 #include "Character/MJCharacterBase.h"
+#include "Character/Component/MJSkillComponent.h"
+#include "DataAsset/MJProjectileDataAsset.h"
 
 UMJGA_BaseProjectile::UMJGA_BaseProjectile()
 {
@@ -42,8 +45,6 @@ void UMJGA_BaseProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Hand
         return;
     }
 
-
-
     const FGameplayAbilitySpec* CurrentAbilitySpec = GetCurrentAbilitySpec();
     if (!CurrentAbilitySpec)
     {
@@ -51,55 +52,69 @@ void UMJGA_BaseProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Hand
         return;
     }
 
-    FGameplayTag ProjectileTagToSpawn;
-    for (const FGameplayTag& Tag: CurrentAbilitySpec->DynamicAbilityTags)
-    {
-	    if(Tag.ToString().StartsWith(TEXT("Projectile.")))
-	    {
-            ProjectileTagToSpawn = Tag;
-            break;
-	    }
-    }
+    // Dongmin: 이동훈 팀장님이 추천해주신거
+    UMJSkillComponent* SkillComponent = OwnerCharacter ? OwnerCharacter->FindComponentByClass<UMJSkillComponent>() : nullptr;
 
-    if (ProjectileTagToSpawn.IsValid())
+    FGameplayTag ActionAbilityTag;
+    for (const FGameplayAbilitySpec& Spec : SourceASC->GetActivatableAbilities())
     {
-	    
+        // Dongmin: 어빌리티의 첫 번째 태그를 기본 태그로
+        if (Spec.IsActive() && Spec.Ability && Spec.Ability->IsA<UMJGA_InstantSkill>())
+        {
+	        if (Spec.Ability->AbilityTags.Num() > 0)
+	        {
+                ActionAbilityTag = Spec.Ability->AbilityTags.GetByIndex(0);
+                break;
+	        }
+        }
+
     }
-    else
+    if (!ActionAbilityTag.IsValid() || !SkillComponent->GetOwnedSkillMap().Contains(ActionAbilityTag))
     {
         EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
-    	return;
+        return;
+    }
+    
+    const FGameplayTag& ProjectileTagToSpawn = SkillComponent->GetOwnedSkillMap()[ActionAbilityTag].ProjectileTag;
+    if (!ProjectileTagToSpawn.IsValid())
+    {
+        EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+        return;
     }
 
-     FMJSkillProjectileParams ProjectileParams;
-     ProjectileParams.SourceASC = SourceASC;
-     ProjectileParams.GameplayEffects = GameplayEffectClasses;
-     ProjectileParams.BaseDamage = SkillAttributeSet->GetBaseDamage();
-     ProjectileParams.AttackDamageScaling = SkillAttributeSet->GetAttackDamageScaling();
-     ProjectileParams.AbilityPowerScaling = SkillAttributeSet->GetAbilityPowerScaling();
-     ProjectileParams.LifeSteal = SkillAttributeSet->GetLifeSteal();
-     ProjectileParams.SkillRadius = SkillAttributeSet->GetSkillRadius();
-     ProjectileParams.SkillRange = SkillAttributeSet->GetSkillRange();
-     ProjectileParams.StatusEffectChance = SkillAttributeSet->GetStatusEffectChance();
-     ProjectileParams.StatusEffectDuration = SkillAttributeSet->GetStatusEffectDuration();
-     ProjectileParams.ProjectileSpeed = SkillAttributeSet->GetProjectileSpeed();
-     ProjectileParams.ProjectileCount = SkillAttributeSet->GetProjectileCount();
- 
-    if (ProjectileClass)
+    TSubclassOf<AMJProjectileBase> ProjectileClass = ProjectileDataAsset->FindProjectileClassForTag(ProjectileTagToSpawn);
+    if (!ProjectileClass)
     {
+        EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+        return;
+    }
 
-    	FRotator SpawnRotator = OwnerCharacter->GetActorRotation();
+    FMJSkillProjectileParams ProjectileParams;
+    ProjectileParams.SourceASC = SourceASC;
+    ProjectileParams.GameplayEffects = GameplayEffectClasses;
+    ProjectileParams.BaseDamage = SkillAttributeSet->GetBaseDamage();
+    ProjectileParams.AttackDamageScaling = SkillAttributeSet->GetAttackDamageScaling();
+    ProjectileParams.AbilityPowerScaling = SkillAttributeSet->GetAbilityPowerScaling();
+    ProjectileParams.LifeSteal = SkillAttributeSet->GetLifeSteal();
+    ProjectileParams.SkillRadius = SkillAttributeSet->GetSkillRadius();
+    ProjectileParams.SkillRange = SkillAttributeSet->GetSkillRange();
+    ProjectileParams.StatusEffectChance = SkillAttributeSet->GetStatusEffectChance();
+    ProjectileParams.StatusEffectDuration = SkillAttributeSet->GetStatusEffectDuration();
+    ProjectileParams.ProjectileSpeed = SkillAttributeSet->GetProjectileSpeed();
+    ProjectileParams.ProjectileCount = SkillAttributeSet->GetProjectileCount();
 
-    	// TODO: 무기의 소켓, Weapon's Socket
-        FVector SpawnLocation = OwnerCharacter->GetActorLocation() + OwnerCharacter->GetActorForwardVector() * 100.0f;
-    	AMJProjectileBase* Projectile = GetWorld()->SpawnActorDeferred<AMJProjectileBase>(ProjectileClass, FTransform(SpawnRotator,SpawnLocation), GetOwningActorFromActorInfo(), OwnerCharacter, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
- 
-    	if (Projectile)
-    	{
-    		Projectile->InitProjectileParams(ProjectileParams);
-            Projectile->FinishSpawning(FTransform(SpawnRotator, SpawnLocation));
-    	}
-    }    
+	FRotator SpawnRotator = OwnerCharacter->GetActorRotation();
+
+	// TODO: 무기의 소켓, Weapon's Socket
+
+	FVector SpawnLocation = OwnerCharacter->GetActorLocation() + OwnerCharacter->GetActorForwardVector() * 100.0f;
+	AMJProjectileBase* Projectile = GetWorld()->SpawnActorDeferred<AMJProjectileBase>(ProjectileClass, FTransform(SpawnRotator,SpawnLocation), GetOwningActorFromActorInfo(), OwnerCharacter, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	if (Projectile)
+    {
+		Projectile->InitProjectileParams(ProjectileParams);
+		Projectile->FinishSpawning(FTransform(SpawnRotator, SpawnLocation));
+    }
     EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
-    
+    MJ_LOG(LogMJ, Log, TEXT("10"));
+
 }
