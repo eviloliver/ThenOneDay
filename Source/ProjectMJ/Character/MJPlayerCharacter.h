@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Character/MJCharacterBase.h"
+#include "UI/Inventory/MJInventoryComponent.h"
+#include "UI/Inventory/MJInventoryInterface.h"
 #include "MJPlayerCharacter.generated.h"
 
 class USpringArmComponent;
@@ -21,7 +23,7 @@ class UMJInventoryComponent;
  * Last Modified Date: 2025_06_18
  */
 UCLASS()
-class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase
+class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase, public IMJInventoryInterface
 {
 	GENERATED_BODY()
 	

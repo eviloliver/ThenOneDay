@@ -26,8 +26,12 @@ protected:
 	TSubclassOf<UMJInventorySlot> InventorySlotClass;
 	
 	int32 SlotIndex;
+	bool bIsOccupied;
 public:
 	virtual void NativeConstruct() override;
+
+	bool GetIsOccupied(){return bIsOccupied;}
+	void SetIsOccupied(bool b){bIsOccupied = b;}
 	
 	TArray<UMJInventorySlot*> GetInventorySlot() {return InventorySlots;}
 	

@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "MJInventoryComponent.h"
 #include "ItemDataRow.h"
-#include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
+#include "Blueprint/UserWidget.h"
 #include "MJInventorySlot.generated.h"
 
 /**
@@ -17,6 +17,7 @@
  * Last Modified Date: 
  */
 
+class UBorder;
 class UTextBlock;
 class UImage;
 class UMJDragWidget;
@@ -28,6 +29,9 @@ class PROJECTMJ_API UMJInventorySlot : public UUserWidget
 
 protected:
 	UPROPERTY(meta = (BindWidget))
+	UBorder* Border;
+	
+	UPROPERTY(meta = (BindWidget))
 	UImage* Image;
 
 	UPROPERTY(meta = (BindWidget))
@@ -38,22 +42,26 @@ protected:
 		
 	UTexture2D* Texture;
 
+	// visual
+	FLinearColor DefaultBorderColor;
+	FLinearColor ClickedBorderColor;
+	
 	// for drag&drop
 	FInventoryItemData InventoryData;
 	FItemDataRow ItemData;
-	TMap<FName,FInventoryItemData> ItemInInventory;
+
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TSubclassOf<UMJDragWidget> DragWidgetClass;
-	
-	
+
 public:
 	int32 SlotPosition;
+	bool bIsOccupied = false;
 	virtual void NativeConstruct() override;
 	
 	void SetImage(UTexture2D* ItemTexture);
 	void SetText(FText text);
 	void SetItemCount(int count) {ItemCount->SetText(FText::AsNumber(count));};
-	void SetItemInInventory(TMap<FName,FInventoryItemData> map){ItemInInventory = map;}
+	void SetIsOccupied(bool b) {bIsOccupied = b;}
 	
 	void SetInventoryItemData(FInventoryItemData data){InventoryData = data;}
 	void SetItemData(FItemDataRow data){ItemData = data;}
@@ -61,10 +69,14 @@ public:
 	UImage* GetImage() {return Image;}
 	UTextBlock* GetText() {return Text;}
 	UTexture2D* GetItemTexture() {return Texture;}
-
+	int32 GetSlotPosition() {return SlotPosition;}
+	
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 	virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation) override;
 	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
+	virtual void NativeOnDragEnter(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
+	virtual void NativeOnDragLeave(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 
+	void UpdateBorderColor();
 };
 	

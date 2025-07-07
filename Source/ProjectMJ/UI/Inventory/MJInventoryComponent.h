@@ -22,17 +22,16 @@ struct FInventoryItemData // 변할 수 있는 데이터값 // 인벤토리 아�
 	FName ItemName;
 	
 	UPROPERTY()
-	int32 ItemCount;
+	int32 ItemCount = 0;
 
 	UPROPERTY()
-	int32 Position;
+	int32 Position = -1;
 
 	bool IsEmpty() const
 	{
 		return ItemCount == 0;
 	}
 };
-
 
 class UMJInventorySlot;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -42,11 +41,13 @@ class PROJECTMJ_API UMJInventoryComponent : public UActorComponent
 
 	UMJInventoryComponent();
 
-public:	
+public:
+	int32 Position;
 	void PickUpItem(FName ItemName);
 	void DropItem(FName ItemName);
-	//void ChangeItemPosition(변수고민해라 >> 아마 어떤아이템인지(fname), 개수);
 	void UpdateSlot(FName ItemName);
+
+	void SetPosition(FName ItemName, int32 NewPosition) {ItemInInventory[ItemName].Position = NewPosition;};
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Inventory")
 	TMap<FName,FInventoryItemData> ItemInInventory; // 내가 가지고 있는 아이템의 정보 맵

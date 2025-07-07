@@ -24,6 +24,7 @@
 #include "Compression/lz4.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
+#include "UI/MJHUDWidget.h"
 #include "UI/Inventory/MJInventoryWidget.h"
 
 
@@ -304,12 +305,11 @@ void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AAc
 	
 	AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
 	if (!MyChar) return;
-	UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
 	
+	UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
 	 if (InventoryComp)
 	 {
 	 	InventoryComp->PickUpItem(Item->GetItemName());
-	 	//InventoryComp->SetItemDataToWidget(Item->GetItemName());
 	 	Item->Destroy();
 	 }
 }
