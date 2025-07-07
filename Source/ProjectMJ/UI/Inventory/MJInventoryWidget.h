@@ -27,6 +27,10 @@ protected:
 	
 	int32 SlotIndex;
 	bool bIsOccupied;
+
+	// 아래 숫자 조절로 인벤토리 칸 조절 가능함
+	int32 Row = 6;
+	int32 Col = 7;
 public:
 	virtual void NativeConstruct() override;
 

@@ -15,14 +15,26 @@ void UMJInventoryWidget::NativeConstruct()
 	{
 		return;
 	}
+	// 격자 비율 맞추기
+	GridPanel->SetColumnFill(0, 1.0f);
+	GridPanel->SetRowFill(0, 1.0f);
 
-	// 격자 생성
-	for (int Row = 0; Row < 4; ++Row)
+	for (int i = 1; i < Row; ++i)
 	{
-		for (int Col = 0; Col < 4; ++Col)
+		for (int j = 1; j < Col; ++j)
+		{
+			GridPanel->SetRowFill(i, 1.0f);
+			GridPanel->SetColumnFill(j, 1.0f);
+		}
+	}
+	
+	// 격자 생성
+	for (int i = 0; i < Row; ++i)
+	{
+		for (int j = 0; j < Col; ++j)
 		{
 			UMJInventorySlot* NewSlot = CreateWidget<UMJInventorySlot>(this, InventorySlotClass);
-			GridPanel->AddChildToGrid(NewSlot, Row, Col);
+			GridPanel->AddChildToGrid(NewSlot, i, j);
 			InventorySlots.Add(NewSlot);
 		}
 	}

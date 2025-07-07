@@ -28,7 +28,6 @@ void UMJInventorySlot::SetImage(UTexture2D* ItemTexture)
 		FSlateBrush Brush;
 		Brush.SetResourceObject(ItemTexture);
 		Image->SetBrush(Brush);
-		Image->SetBrushSize({200,200}); // 텍스처 사이즈 조절용 // 더 이상 사용되지 않는다면서 왜 적용은 되는거 같을까
 		Image->SetOpacity(1.0); // 이미지 들어가기전에 자꾸 인벤배경색(반투명)을 가려서 에디터에서 0으로 해놓은거 먹으면 밝혀주는 용도
 	}
 	if (!ItemTexture)
@@ -51,7 +50,10 @@ FReply UMJInventorySlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, co
 	{
 		if (InMouseEvent.GetEffectingButton() == EKeys::LeftMouseButton)
         {
-			Border->SetBrushColor(ClickedBorderColor);
+			if (Border)
+			{
+				Border->SetBrushColor(ClickedBorderColor);
+			}
         	UE_LOG(LogTemp, Log, TEXT("드래그 감지 시작 슬롯: %d, 아이템: %s, 아이템 : %s"), InventoryData.Position, *InventoryData.ItemName.ToString(), *ItemData.ItemID.ToString());
 			return FReply::Handled().DetectDrag(TakeWidget(), EKeys::LeftMouseButton);
         }
@@ -59,8 +61,17 @@ FReply UMJInventorySlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, co
 	return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 }
 
+FReply UMJInventorySlot::NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	if (Border)
+	{
+		Border->SetBrushColor(DefaultBorderColor);
+	}
+	return Super::NativeOnMouseButtonUp(InGeometry, InMouseEvent);
+}
+
 void UMJInventorySlot::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent,
-	UDragDropOperation*& OutOperation) // Jisoo : 드래그 시 작동하는 함수
+                                            UDragDropOperation*& OutOperation) // Jisoo : 드래그 시 작동하는 함수
 {
 	UMJInventoryDragDropOperation* DragOperation = NewObject<UMJInventoryDragDropOperation>();
     DragOperation->SourceSlot = this;
