@@ -43,11 +43,19 @@ public:
 	UFUNCTION()
 	void LoadFromInstancedDungeonSessionData(uint8 LoadFromNum);
 
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> PortalActor;
+	
 	UPROPERTY()
-	FTimerHandle StaticAIEndCheckTimerHandle;
+	FTimerHandle EndPortalSpawnTimerHandle;
+
+	UFUNCTION()
+	void SpawnEndPortal();
+	
 
 	UPROPERTY()
-	FTimerHandle WaveAISpawnConditionCheckTimerHandle;
+	FTimerHandle WaveAISpawn_ConditionCheckTimerHandle;
 	
 
 	UFUNCTION(BlueprintCallable)
@@ -99,7 +107,7 @@ protected:
 	// Wave Section
 
 	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UEnvQuery> EQSQuery;
+	TObjectPtr<UEnvQuery> EQSQuery_WaveRandomSpawn;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UDataTable> LoadedWaveDataTable;

@@ -5,6 +5,7 @@
 
 #include "EngineUtils.h"
 #include "NavigationSystem.h"
+#include "ProjectMJ.h"
 #include "Character/MJPlayerCharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "Kismet/GameplayStatics.h"
@@ -34,6 +35,8 @@ void AMJGameStateDungeonTG::PostInitializeComponents()
 void AMJGameStateDungeonTG::BeginPlay()
 {
 	Super::BeginPlay();
+	MJ_SLOG(4.0f,FColor::Black,TEXT("Test : CurrentWaveNum : %d"),CurrentWaveNum);
+	
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("AISpawnType is %s"), *FDungeonNode::AISpawnTypeToString(LoadedDungeonSessionData.AISpawnType)));
 	
 	if (LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::InActive)
@@ -77,7 +80,7 @@ void AMJGameStateDungeonTG::BeginPlay()
 		}
 		else if (LoadedDungeonSessionData.AISpawnType == EMJAISpawnType::Wave)
 		{
-			GetWorldTimerManager().SetTimer(WaveAISpawnConditionCheckTimerHandle, this, &AMJGameStateDungeonTG::CheckSpawnAICondition,  2.0f, true);
+			GetWorldTimerManager().SetTimer(WaveAISpawn_ConditionCheckTimerHandle, this, &AMJGameStateDungeonTG::CheckSpawnAICondition,  2.0f, true);
 
 			if (LoadedWaveDataTable)
 			{
@@ -118,7 +121,7 @@ void AMJGameStateDungeonTG::SpawnAI()
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(this,0);
 	if (Player)
 	{
-		FEnvQueryRequest Request(EQSQuery, Player);
+		FEnvQueryRequest Request(EQSQuery_WaveRandomSpawn, Player);
 
 		// Async Call Lamda func
 		Request.Execute(EEnvQueryRunMode::AllMatching, FQueryFinishedSignature::CreateLambda([this, Player](TSharedPtr<FEnvQueryResult> Result)
@@ -172,10 +175,13 @@ void AMJGameStateDungeonTG::CheckSpawnAICondition()
 			
 			if (!GetNextWave)
 			{
-				GetWorldTimerManager().ClearTimer(WaveAISpawnConditionCheckTimerHandle);
+				GetWorldTimerManager().ClearTimer(WaveAISpawn_ConditionCheckTimerHandle);
 				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("Wave is end. Set Dungeon Context to Cleared")));
 
 				LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
+				//GetWorldTimerManager().SetTimer(WaveAISpawn_ConditionCheckTimerHandle, this, &AMJGameStateDungeonTG::CheckSpawnAICondition,  2.0f, true);
+
+				
 			}
 		}
 		else
@@ -196,6 +202,8 @@ void AMJGameStateDungeonTG::OnAIDestroy(AActor* DestroyedActor)
 			CurrentSpawnedAINum <= 0)
 		{
 			LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
+			
+			GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
 		}		
 	}
 }
@@ -215,6 +223,41 @@ TSubclassOf<AActor> AMJGameStateDungeonTG::GetActorFromPool()
 	return Keys[RandomIndex];
 }
 
+void AMJGameStateDungeonTG::SpawnEndPortal()
+{
+	if (LoadedDungeonSessionData.DungeonContext != EMJDungeonContext::Cleared)
+	{
+		return;
+	}
+
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(this,0);
+	if (Player)
+	{
+		FEnvQueryRequest Request(EQSQuery_WaveRandomSpawn, Player);
+
+		Request.Execute(EEnvQueryRunMode::AllMatching, FQueryFinishedSignature::CreateLambda([this, Player](TSharedPtr<FEnvQueryResult> Result)
+		{
+			if (Result->IsSuccessful())
+			{
+				FVector Location;
+				
+				Location = Result->GetItemAsLocation(0);
+
+				FActorSpawnParameters Params;
+				AActor* Portal = GetWorld()->SpawnActor<AActor>(PortalActor,Location,FRotator(),Params);
+				if (Portal)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("PortalActor is Successfully Spawned")));
+
+				}
+			}
+		}));
+		
+	}
+	
+
+	
+}
 
 
 void AMJGameStateDungeonTG::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -271,6 +314,7 @@ void AMJGameStateDungeonTG::LoadFromInstancedDungeonSessionData(uint8 LoadFromNu
 		}
 	}
 }
+
 
 void AMJGameStateDungeonTG::PublishOnBossHealthChanged(float Delta)
 {
