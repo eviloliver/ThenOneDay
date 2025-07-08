@@ -1,26 +1,23 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "GameplayTagContainer.h"
-#include "DataTable/MJSkillDataRow.h"
 #include "GameplayAbilitySpec.h"
-#include "MJSkillComponent.generated.h"
+
+#include "MJSkillComponentBase.generated.h"
 
 /**
- * Class Description: 스킬 컴포넌트
- * 역할
- * - 보유 스킬을 가질 수 있고, 장착 할 수 있음
- * - 
- * -
+ * Class Description: 스킬 컴포넌트 베이스
+ * - 플레이어와 AI가 사용하는 공통 스킬 컴포넌트
+ * - *더 구체적으로 분류한다면, AI가 스킬을 여러개 사용 + 장착을 안 하는 개념으로 더 추상화 가능*
  * Author: 신동민
- * Created Date: 2025_06_27
+ * Created Date: 2025.07.08
  * Last Modified By:
  * Last Modified Date:
  */
-
 
 USTRUCT(BlueprintType)
 struct FSkillData
@@ -41,45 +38,35 @@ struct FSkillData
 };
 
 UCLASS( ClassGroup=(Skill), meta=(BlueprintSpawnableComponent) )
-class PROJECTMJ_API UMJSkillComponent : public UActorComponent
+class PROJECTMJ_API UMJSkillComponentBase : public UActorComponent
 {
-	GENERATED_BODY() 
+	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
-	UMJSkillComponent();
-
-	virtual void BeginPlay() override;
-
-public:
-	void LearnSkill(const FGameplayTag& NewSkill);
+	UMJSkillComponentBase();
 	
-	void EquipSkill(const FGameplayTag& EquippingSkill);
+	virtual void LearnSkill(const FGameplayTag& SkillTag);
 
-	void UnequipSkill(const FGameplayTag& UnequippingSkill);
+	virtual void EquipSkill(const FGameplayTag& SkillTag);
 
-	void ActivateSkill(const FGameplayTag& EquippedSlotSkill);
+	virtual void UnequipSkill(const FGameplayTag& SkillTag);
 
-	void GiveAbilityToASC(const FGameplayTag& AddSkill);
+	virtual void ActivateSkill(const FGameplayTag& SkillTag);
 
-	void RemoveAbility(const FGameplayTag& RemoveSkill);
+	void GiveAbilityToASC(const FGameplayTag& SkillTag);
 
-	void ActivateSkillByInputTag(const FGameplayTag& InputTag);
-
-	FGameplayTag ConvertInputTagToTypeTag(const FGameplayTag& InputTag);
+	void RemoveAbility(const FGameplayTag& SkillTag);
 
 	// Getter
 	TMap<FGameplayTag, FSkillData> GetOwnedSkillMap() const { return OwnedSkillMap; };
 
-protected:
+
+protected:	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FSkillData> OwnedSkillMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FGameplayTag> EquippedSkillMap;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
-	TMap<FGameplayTag, FGameplayTag> InputTagToSkillTagMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FGameplayAbilitySpecHandle> GivenAbilityHandles;

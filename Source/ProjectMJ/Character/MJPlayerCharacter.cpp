@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Character/MJPlayerCharacter.h"
@@ -10,6 +10,7 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "DataAsset/DataAsset_StartDataBase.h"
 #include "Component/MJPlayerCombatComponent.h"
+#include "Component/MJPlayerSkillComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
 #include "Perception/AISense_Damage.h"
@@ -67,6 +68,9 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	DialogueTrigger->SetCollisionProfileName(TEXT("Trigger"));
 	DialogueTrigger->SetGenerateOverlapEvents(true);
 	DialogueTrigger->SetHiddenInGame(false);
+
+	// Skill Component
+	SkillComponent = CreateDefaultSubobject<UMJPlayerSkillComponent>(TEXT("SkillComponent"));
 }
 
 void AMJPlayerCharacter::BeginPlay()

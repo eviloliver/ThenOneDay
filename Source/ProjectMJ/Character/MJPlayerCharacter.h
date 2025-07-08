@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -6,6 +6,7 @@
 #include "Character/MJCharacterBase.h"
 #include "MJPlayerCharacter.generated.h"
 
+class UMJPlayerSkillComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UMJPlayerCombatComponent;
@@ -15,8 +16,11 @@ class USphereComponent;
  * Class Description:
  * Author: Lee JuHyeon
  * Created Date: 2025_06_11
- * Last Modified By: Add Combat Component 
- * Last Modified Date: 2025_06_18
+ * Modified By: Add Combat Component 
+ * Modified Date: 2025_06_18
+ * Modified By: 신동민
+ * Modified Date: 2025.07.08
+ * Modified Description: Add SkillComponent
  */
 UCLASS()
 class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase
@@ -28,11 +32,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	
-
-
-
-
 	virtual void PossessedBy(AController* NewController)override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
@@ -70,4 +69,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UMJPlayerCombatComponent>PlayerCombatComponent;
 #pragma endregion
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gas")
+	TObjectPtr<UMJPlayerSkillComponent> SkillComponent;
+
 };

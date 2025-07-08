@@ -8,12 +8,11 @@
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
 #include "AbilitySystem/Actor/MJProjectileBase.h"
 #include "Character/MJCharacterBase.h"
-#include "Character/Component/MJSkillComponent.h"
+#include "Character/Component/MJSkillComponentBase.h"
 #include "DataAsset/MJProjectileDataAsset.h"
 
 UMJGA_BaseProjectile::UMJGA_BaseProjectile()
 {
-    MJ_LOG(LogMJ, Log, TEXT("1"));
 
 }
 
@@ -52,8 +51,15 @@ void UMJGA_BaseProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Hand
         return;
     }
 
-    // Dongmin: 이동훈 팀장님이 추천해주신거
-    UMJSkillComponent* SkillComponent = OwnerCharacter ? OwnerCharacter->FindComponentByClass<UMJSkillComponent>() : nullptr;
+    // Dongmin: 이동훈 팀장님이 추천해주신거? -> 없으면 그냥 크래쉬 터트리기였나 + 이거 하려면 위에 OwnerCharacter 검사까지 안해버려야 했던거 같음
+    // UMJSkillComponent* SkillComponent = OwnerCharacter ? OwnerCharacter->FindComponentByClass<UMJSkillComponent>() : nullptr;
+
+    UMJSkillComponentBase* SkillComponent = OwnerCharacter->FindComponentByClass<UMJSkillComponentBase>();
+    if (!SkillComponent)
+    {
+        EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+        return;
+    }
 
     FGameplayTag ActionAbilityTag;
     for (const FGameplayAbilitySpec& Spec : SourceASC->GetActivatableAbilities())

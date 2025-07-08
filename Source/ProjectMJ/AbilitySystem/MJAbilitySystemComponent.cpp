@@ -4,7 +4,7 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/Abilities/MJGA_GameplayAbility.h"
 #include "Character/MJPlayerCharacter.h"
-#include "Character/Component/MJSkillComponent.h"
+// #include "Character/Component/MJSkillComponentBase.h"
 
 
 //This is a function that detects key presses in GAS. 
