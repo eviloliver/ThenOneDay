@@ -38,6 +38,8 @@ public:
 
 	void InitProjectileParams(const FMJSkillProjectileParams& InParams);
 
+	void ApplyGameplayEffects(UAbilitySystemComponent* TargetASC, const FHitResult& HitResult);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -57,5 +59,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "SFX")
 	TObjectPtr<USoundBase> HitSFX;
 
+	// Must TODO:
 	// float LifeSpan;
 };

@@ -10,6 +10,7 @@
 #include "Physics/MJCollision.h"
 #include "GameplayTagContainer.h"
 #include "NiagaraComponent.h"
+#include "DataWrappers/ChaosVDQueryDataWrappers.h"
 
 
 AMJProjectileBase::AMJProjectileBase()
@@ -47,37 +48,9 @@ void AMJProjectileBase::InitProjectileParams(const FMJSkillProjectileParams& InP
 	}
 }
 
-// Called when the game starts or when spawned
-void AMJProjectileBase::BeginPlay()
+void AMJProjectileBase::ApplyGameplayEffects(UAbilitySystemComponent* Target, const FHitResult& HitResult)
 {
-	Super::BeginPlay();
-	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AMJProjectileBase::OnSphereOverlap);
-
-
-}
-
-void AMJProjectileBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (!OtherActor || !ProjectileParams.SourceASC)
-	{
-		return;
-	}
-
-	if (OtherActor == ProjectileParams.SourceASC->GetAvatarActor())
-	{
-		// 콜리전 프로파일에 설정해줬지만 그래도 걸어두기
-		// I've set it up in the collisions profile, but I'm still dealing with exceptions
-		return;
-	}
-
-	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
-	if (!TargetASC)
-	{
-		return;
-	}
-
-	ProjectileParams.TargetASC = TargetASC;
+	ProjectileParams.TargetASC = Target;
 
 	// 이펙트 하나여야 하는데
 	for (const TSubclassOf<UGameplayEffect> EffectClass : ProjectileParams.GameplayEffects)
@@ -103,19 +76,54 @@ void AMJProjectileBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent
 			if (HitGameplayCueTag.IsValid())
 			{
 				FGameplayEffectContextHandle CueContextHandle = UAbilitySystemBlueprintLibrary::GetEffectContext(SpecHandle);
-				CueContextHandle.AddHitResult(SweepResult);
+				CueContextHandle.AddHitResult(HitResult);
+
 				FGameplayCueParameters CueParams;
 				CueParams.EffectContext = CueContextHandle;
 
-				TargetASC->ExecuteGameplayCue(HitGameplayCueTag, CueParams);
+				Target->ExecuteGameplayCue(HitGameplayCueTag, CueParams);
 			}
 		}
 	}
-	if (HitSFX)
-	{
-		// TODO: Execute Sound
+}
 
+void AMJProjectileBase::BeginPlay()
+{
+	Super::BeginPlay();
+	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AMJProjectileBase::OnSphereOverlap);
+
+}
+
+void AMJProjectileBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (!OtherActor || !ProjectileParams.SourceASC)
+	{
+		return;
 	}
+
+	if (OtherActor == ProjectileParams.SourceASC->GetAvatarActor())
+	{
+		// 콜리전 프로파일에 설정해줬지만 그래도 걸어두기
+		// I've set it up in the collisions profile, but I'm still dealing with exceptions
+		return;
+	}
+
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
+	if (!TargetASC)
+	{
+		return;
+	}
+
+	FVector EffectLocation = SweepResult.ImpactPoint;
+	if (EffectLocation.IsNearlyZero())
+	{
+		EffectLocation = GetActorLocation(); // or TargetActor->GetActorLocation()
+	}
+
+	ApplyGameplayEffects(TargetASC, SweepResult);
+
+	// HandleProjectileDestroy();
 
 	// TODO: 나중에 통과하는 투사체인지 결정
 	// TODO: 투사체 갯수는 생성하는 쪽에서 결정할 거 같긴 한데 이거 어떻게 하면 좋을지
