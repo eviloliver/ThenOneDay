@@ -228,7 +228,17 @@ void AMJGameStateDungeonTG::OnAIDestroy(AActor* DestroyedActor)
 			LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
 			
 			GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
-		}		
+		}
+		else if (LoadedDungeonSessionData.AISpawnType == EMJAISpawnType::Wave &&
+			LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::Activated &&
+			CurrentSpawnedAINum <= 0
+			)
+		{
+			
+				//LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
+				GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
+			
+		}
 	}
 }
 
