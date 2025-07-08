@@ -25,7 +25,7 @@ bool UMJGC_ProjectileHit::OnExecute_Implementation(AActor* MyTarget, const FGame
 
 	if (HitResult)
 	{
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(MyTarget, NiagaraSystem, HitResult->ImpactPoint, FRotator::ZeroRotator, FVector(Scale), true, true, ENCPoolMethod::AutoRelease);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(MyTarget, NiagaraSystem, HitResult->GetActor()->GetActorLocation(), FRotator::ZeroRotator, FVector(Scale), true, true, ENCPoolMethod::AutoRelease);
 	}
 	else
 	{
