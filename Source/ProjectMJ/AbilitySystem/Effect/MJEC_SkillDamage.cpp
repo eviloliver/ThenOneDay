@@ -75,16 +75,16 @@ void UMJEC_SkillDamage::Execute_Implementation(const FGameplayEffectCustomExecut
     ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalDamageDef, EvaluationParameters, CriticalDamage);
 
 
-     MJ_LOG(LogMJ, Warning, TEXT("EC: OwningSpec address: %p"), &Spec); // <-- Spec의 주소
+    MJ_LOG(LogMJ, Warning, TEXT("EC: OwningSpec address: %p"), &Spec);
 
     float BaseDamage = 0.0f;
-    Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.BaseDamage")), true, BaseDamage);
-    MJ_LOG(LogMJ, Warning, TEXT("EC: BaseDamage from Spec: %f"), BaseDamage);
+    BaseDamage = Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.BaseDamage")), true, BaseDamage);
+  
     float AttackDamageScaling = 0.0f;
-    Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AttackDamageScaling")), true, AttackDamageScaling);
+    AttackDamageScaling = Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AttackDamageScaling")), true, AttackDamageScaling);
 
     float AbilityPowerScaling = 0.0f;
-    Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AbilityPowerScaling")), true, AbilityPowerScaling);
+    AbilityPowerScaling = Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AbilityPowerScaling")), true, AbilityPowerScaling);
 
     float FinalDamage = BaseDamage + (AttackDamageScaling * SourceAttackDamage) + (AbilityPowerScaling * SourceAbilityPower);
 
