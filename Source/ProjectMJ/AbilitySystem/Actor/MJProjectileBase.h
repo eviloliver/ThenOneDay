@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Struct/MJSkillProjectileParams.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/Actor.h"
 #include "MJProjectileBase.generated.h"
 
@@ -46,8 +47,8 @@ private:
 	UPROPERTY()
 	TObjectPtr<USphereComponent> Sphere;
 
-	UPROPERTY(EditAnywhere, Category = "VFX")
-	TObjectPtr<UNiagaraSystem> HitVFX;
+	UPROPERTY(EditDefaultsOnly, Category = "Projectile|GameplayCue", meta = (Categories = "GameplayCue"))
+	FGameplayTag HitGameplayCueTag;
 
 	UPROPERTY(EditAnywhere, Category = "SFX")
 	TObjectPtr<USoundBase> HitSFX;

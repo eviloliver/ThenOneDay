@@ -93,13 +93,17 @@ void AMJProjectileBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent
 
 				ProjectileParams.SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), ProjectileParams.TargetASC);
 			}
+
+			if (HitGameplayCueTag.IsValid())
+			{
+				FGameplayEffectContextHandle CueContextHandle = UAbilitySystemBlueprintLibrary::GetEffectContext(SpecHandle);
+				CueContextHandle.AddHitResult(SweepResult);
+				FGameplayCueParameters CueParams;
+				CueParams.EffectContext = CueContextHandle;
+
+				TargetASC->ExecuteGameplayCue(HitGameplayCueTag, CueParams);
+			}
 		}
-	}
-
-	if (HitVFX)
-	{
-		// TODO: Execute Gameplay Cue
-
 	}
 	if (HitSFX)
 	{

@@ -75,8 +75,6 @@ void UMJEC_SkillDamage::Execute_Implementation(const FGameplayEffectCustomExecut
     ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalDamageDef, EvaluationParameters, CriticalDamage);
 
 
-    MJ_LOG(LogMJ, Warning, TEXT("EC: OwningSpec address: %p"), &Spec);
-
     float BaseDamage = 0.0f;
     BaseDamage = Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.BaseDamage")), true, BaseDamage);
   

@@ -47,17 +47,19 @@ void UMJGA_MeleeAttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTarg
 		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
 		if (EffectSpecHandle.IsValid())
 		{
-			MJ_LOG(LogMJ, Warning, TEXT("GA: EffectSpecHandle.Data (before set) address: %p"), EffectSpecHandle.Data.Get());
 
 			EffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.BaseDamage")), SourceCharacterSkillAttributeSet->GetBaseDamage());
 			EffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AttackDamageScaling")), SourceCharacterSkillAttributeSet->GetAttackDamageScaling());
 			EffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AbilityPowerScaling")), SourceCharacterSkillAttributeSet->GetAbilityPowerScaling());
-			MJ_LOG(LogMJ, Warning, TEXT("GA: BaseDamage after setting on SpecHandle.Data: %f"), EffectSpecHandle.Data->GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.BaseDamage")), false));
-			MJ_LOG(LogMJ, Warning, TEXT("GA: EffectSpecHandle.Data (after set) address: %p"), EffectSpecHandle.Data.Get());
-			MJ_LOG(LogMJ,Warning, TEXT("%f %f %f"), SourceCharacterSkillAttributeSet->GetBaseDamage(), SourceCharacterSkillAttributeSet->GetAttackDamageScaling(), SourceCharacterSkillAttributeSet->GetAbilityPowerScaling())
+			
 			ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle, TargetDataHandle);
 
-			// TODO : GameplayCue
+			FGameplayEffectContextHandle CueContextHandle = UAbilitySystemBlueprintLibrary::GetEffectContext(EffectSpecHandle);
+			CueContextHandle.AddHitResult(HitResult);
+			FGameplayCueParameters CueParams;
+			CueParams.EffectContext = CueContextHandle;
+
+			TargetASC->ExecuteGameplayCue(GameplayCueTag, CueParams);
 		}
 	}
 	else if (UAbilitySystemBlueprintLibrary::TargetDataHasActor(TargetDataHandle, 0))
