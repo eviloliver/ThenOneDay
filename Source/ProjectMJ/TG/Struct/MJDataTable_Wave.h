@@ -18,7 +18,6 @@ struct FMJWaveDataRow : public  FTableRowBase
 {
 	GENERATED_BODY()
 
-
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	uint8 WaveNum;	
 
@@ -27,7 +26,4 @@ struct FMJWaveDataRow : public  FTableRowBase
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TMap<TSubclassOf<AActor>, int32> EnemyPool;
-
-	
-	
 };

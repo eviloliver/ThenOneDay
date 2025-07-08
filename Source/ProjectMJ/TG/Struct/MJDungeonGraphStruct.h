@@ -4,7 +4,7 @@
 #include "MJDungeonGraphStruct.generated.h"
 
 UENUM(BlueprintType)
-enum class ENodeType : uint8
+enum class EMJNodeType : uint8
 {
 	Battle UMETA(DisplayName = "Battle"),
 	Reward UMETA(DisplayName = "Reward"),
@@ -31,7 +31,7 @@ struct FDungeonNode
 	int32 AssignedMapID;
 
 	UPROPERTY(BlueprintReadOnly)
-	ENodeType NodeType;
+	EMJNodeType NodeType;
 
 	UPROPERTY(BlueprintReadOnly)
 	EMJAISpawnType AISpawnType;
@@ -42,15 +42,15 @@ struct FDungeonNode
 	UPROPERTY(BlueprintReadOnly)
 	TArray<int32> ConnectedNodeIDs;
 
-	static FString NodeTypeToString(ENodeType Type)
+	static FString NodeTypeToString(EMJNodeType Type)
 	{
 		switch (Type)
 		{
-		case ENodeType::Battle:
+		case EMJNodeType::Battle:
 			return TEXT("Battle");
-		case ENodeType::Reward:
+		case EMJNodeType::Reward:
 			return TEXT("Reward");
-		case ENodeType::Boss:
+		case EMJNodeType::Boss:
 			return TEXT("Boss");
 		default:
 			return TEXT("Unknown");

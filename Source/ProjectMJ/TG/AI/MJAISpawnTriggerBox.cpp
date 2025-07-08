@@ -47,6 +47,5 @@ void AMJAISpawnTriggerBox::OnQueryFininshed(TSharedPtr<FEnvQueryResult> Result)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Cyan,TEXT("Spawner Destroyed"));
 	}
-	
 }
 

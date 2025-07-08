@@ -48,7 +48,7 @@ protected:
 	uint8 MaxNodeNum;
 
 	UFUNCTION()
-	FDungeonNode MakeNewNode(uint8 NodeNum, uint8 AssignedMapID,  ENodeType NodeType, EMJAISpawnType AISpawnType, FVector2D UICoordinate);
+	FDungeonNode MakeNewNode(uint8 NodeNum, uint8 AssignedMapID,  EMJNodeType NodeType, EMJAISpawnType AISpawnType, FVector2D UICoordinate);
 	
 	UFUNCTION()
 	void ConnectNodesByDistance(float MaxDistance, int MaxEdgePerNode);

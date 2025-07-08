@@ -6,7 +6,6 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem//Attributes/MJCharacterAttributeSet.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
-#include "Kismet/GameplayStatics.h"
 #include "TG/MJGameInstanceTG.h"
 
 AMJPlayerState::AMJPlayerState()
