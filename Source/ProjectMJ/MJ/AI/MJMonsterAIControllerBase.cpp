@@ -24,7 +24,7 @@ AMJMonsterAIControllerBase::AMJMonsterAIControllerBase()
 	
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(
 		this, &AMJMonsterAIControllerBase::TargetPerceptionUpdated);
-
+	
 }
  
 void AMJMonsterAIControllerBase::BeginPlay()
@@ -88,7 +88,7 @@ void AMJMonsterAIControllerBase::OnPossess(APawn* InPawn)
 
 void AMJMonsterAIControllerBase::TargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
-	if (nullptr==Actor)
+	if (Actor == nullptr)
 	{
 		return;
 	}
@@ -202,7 +202,8 @@ void AMJMonsterAIControllerBase::HandleSight_Detected(AActor* Actor, FAIStimulus
 void AMJMonsterAIControllerBase::HandleDamage_Detected(AActor* Actor, FAIStimulus Stimulus)
 {
 	UE_LOG(LogMJ, Log, TEXT("데미지로 감지"));
-	GetBlackboardComponent()->SetValueAsVector("DamagePos", Stimulus.StimulusLocation);
+	
+	Blackboard->SetValueAsVector("DamagePos", Stimulus.StimulusLocation);		
 }
 
 void AMJMonsterAIControllerBase::HandleHearing_Detected(AActor* Actor, FAIStimulus Stimulus)
@@ -215,11 +216,14 @@ void AMJMonsterAIControllerBase::HandleHearing_Lost(AActor* Actor, FAIStimulus S
 
 void AMJMonsterAIControllerBase::HandleSight_Lost(AActor* Actor, FAIStimulus Stimulus)
 {
-	UE_LOG(LogTemp, Log, TEXT("UnDetect"));
-	GetBlackboardComponent()->SetValueAsVector("LastKnownPos", Stimulus.StimulusLocation);
+	UE_LOG(LogTemp, Log, TEXT("시야 감지 해제"));
+	Blackboard->SetValueAsVector("LastKnownPos", Stimulus.StimulusLocation);
 	Blackboard->ClearValue("IsTargetVisible");
 }
 
 void AMJMonsterAIControllerBase::HandleDamage_Lost(AActor* Actor, FAIStimulus Stimulus)
 {
+	UE_LOG(LogMJ, Log, TEXT("데미지 감지 해제"));
+	
+	Blackboard->ClearValue("DamagePos");
 }
