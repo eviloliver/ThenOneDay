@@ -16,6 +16,7 @@
  * Last Modified Date:
  */
 
+class UNiagaraComponent;
 class UProjectileMovementComponent;
 class USphereComponent;
 class UNiagaraSystem;
@@ -47,8 +48,11 @@ private:
 	UPROPERTY()
 	TObjectPtr<USphereComponent> Sphere;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Projectile|GameplayCue", meta = (Categories = "GameplayCue"))
+	UPROPERTY(EditDefaultsOnly, Category = "Projectile", meta = (Categories = "GameplayCue"))
 	FGameplayTag HitGameplayCueTag;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UNiagaraComponent> NiagaraComponent;
 
 	UPROPERTY(EditAnywhere, Category = "SFX")
 	TObjectPtr<USoundBase> HitSFX;

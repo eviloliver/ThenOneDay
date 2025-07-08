@@ -9,6 +9,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Physics/MJCollision.h"
 #include "GameplayTagContainer.h"
+#include "NiagaraComponent.h"
 
 
 AMJProjectileBase::AMJProjectileBase()
@@ -24,6 +25,11 @@ AMJProjectileBase::AMJProjectileBase()
 	// Movement Section
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
 	ProjectileMovement->ProjectileGravityScale = 0.0f;
+
+	// Niagara Section
+	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>("NiagaraComponent");
+	NiagaraComponent->SetupAttachment(RootComponent);
+
 }
 
 void AMJProjectileBase::InitProjectileParams(const FMJSkillProjectileParams& InParams)
@@ -113,6 +119,7 @@ void AMJProjectileBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent
 
 	// TODO: 나중에 통과하는 투사체인지 결정
 	// TODO: 투사체 갯수는 생성하는 쪽에서 결정할 거 같긴 한데 이거 어떻게 하면 좋을지
+	// 벽이나 다른 곳에 닿으면 사라지게? 아니면 그냥 시간 지나면 사라지게
 
 	// Destroyed();
 }
