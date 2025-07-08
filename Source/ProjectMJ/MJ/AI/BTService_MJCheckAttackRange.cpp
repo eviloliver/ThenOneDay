@@ -40,8 +40,9 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 		return;
 	}
 
-	OwnerComp.GetBlackboardComponent()->ClearValue("MinimumAttackRange");
-
+	DrawDebugSphere(GetWorld(), ControlledPawn->GetActorLocation(), AIPawn->GetAIMaximumAttackRange(), 16, FColor::Emerald, false, 0.2f);
+	DrawDebugSphere(GetWorld(), ControlledPawn->GetActorLocation(), AIPawn->GetAIMinimumAttackRange(), 16, FColor::Magenta, false, 0.2f);
+	
 	float DistanceTo = FVector::Distance(Target->GetActorLocation(), ControlledPawn->GetActorLocation());
 	float DistanceToTarget = ControlledPawn->GetDistanceTo(Target);
 
