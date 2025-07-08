@@ -36,18 +36,18 @@ void AMJPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// UIManager =	GetGameInstance()->GetSubsystem<UMJUIManagerSubsystem>();
-	// ensure(UIManager);
-	// // 언리얼 엔진의 초기화 순서 : GameInstance > GameMode > Actor
-	// // 그러므로 GetSubsystem 시 nullptr 을 반환할 일은 없지만, !
-	// // 혹시 모를 상황(모듈 누락, 이상한 호출 타이밍, 비동기 로직 중 접근 등)에 대비하여 ensure() 또는 UE_LOG 찍기
-	//
-	// AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
-	// if (MJChar)
-	// {
-	// 	MJChar->GetDialogueTrigger()->OnComponentBeginOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueIn);
-	// 	MJChar->GetDialogueTrigger()->OnComponentEndOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueOut);
-	// }
+	UIManager =	GetGameInstance()->GetSubsystem<UMJUIManagerSubsystem>();
+	ensure(UIManager);
+	// 언리얼 엔진의 초기화 순서 : GameInstance > GameMode > Actor
+	// 그러므로 GetSubsystem 시 nullptr 을 반환할 일은 없지만, !
+	// 혹시 모를 상황(모듈 누락, 이상한 호출 타이밍, 비동기 로직 중 접근 등)에 대비하여 ensure() 또는 UE_LOG 찍기
+	
+	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
+	if (MJChar)
+	{
+		MJChar->GetDialogueTrigger()->OnComponentBeginOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueIn);
+		MJChar->GetDialogueTrigger()->OnComponentEndOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueOut);
+	}
 }
 
 void AMJPlayerController::SetupInputComponent()
