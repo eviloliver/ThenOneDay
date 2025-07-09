@@ -16,6 +16,10 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	// Minjin: 캐릭터의 회전을 부드럽게 해줌
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	bUseControllerRotationYaw = false;
+
+	// Minjin: 캐릭터는 미리 맵에 스폰되어 있다. 안 보이게 설정
+	// SetActorEnableCollision(false);
+	// AActor::SetActorHiddenInGame(true);
 }
 
 float AMJMonsterCharacter::GetAIPatrolRadius()

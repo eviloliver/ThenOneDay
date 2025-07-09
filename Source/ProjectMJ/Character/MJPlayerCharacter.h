@@ -6,6 +6,7 @@
 #include "Character/MJCharacterBase.h"
 #include "MJPlayerCharacter.generated.h"
 
+class UMJPlayerSkillComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UMJPlayerCombatComponent;
@@ -16,8 +17,9 @@ class UMJFadeObjectComponent;
  * Class Description:
  * Author: Lee JuHyeon
  * Created Date: 2025_06_11
- * Last Modified By: Lee JuHyeon
- * Last Modified Date: 2025_07_02
+ * Modified By: 신동민
+ * Modified Date: 2025.07.08
+ * Modified Description: Add SkillComponent
  */
 UCLASS()
 class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase
@@ -29,11 +31,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	
-
-
-
-
 	virtual void PossessedBy(AController* NewController)override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
@@ -75,4 +72,8 @@ public:
 	/*UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Fade", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UMJFadeObjectComponent>FadeComponent;*/
 #pragma endregion
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gas")
+	TObjectPtr<UMJPlayerSkillComponent> SkillComponent;
+
 };

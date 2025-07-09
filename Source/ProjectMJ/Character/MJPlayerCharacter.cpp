@@ -10,9 +10,12 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "DataAsset/DataAsset_StartDataBase.h"
 #include "Component/MJPlayerCombatComponent.h"
+#include "Component/MJPlayerSkillComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
 #include "Component/MJFadeObjectComponent.h"
+#include "Perception/AISense_Damage.h"
+#include "Perception/AISense_Hearing.h"
 
 class UMJSaveGameSubsystem;
 
@@ -44,15 +47,19 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.0;
 
 	PlayerCombatComponent = CreateDefaultSubobject<UMJPlayerCombatComponent>(TEXT("PlayerCombatComponent"));
+
 	//Add FadeComponent
 	//FadeComponent = CreateDefaultSubobject<UMJFadeObjectComponent>(TEXT("FadeComponent"));
-	//AI Perception-캐릭터를 StimuliSource로 등록(AI가 감지)
+	// Minjin: AI Perception-캐릭터를 StimuliSource로 등록(AI가 감지)
+	
 	PerceptionStimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("AIPerceptionStimuliSourceComponent"));
 	if (nullptr!= PerceptionStimuliSourceComponent)
 	{
-		// Sight source 등록
+		// Sight, Damage, Hearing source 등록(명시적으로 나타내기 위함)
 		PerceptionStimuliSourceComponent->RegisterForSense(UAISense_Sight::StaticClass());
-
+		PerceptionStimuliSourceComponent->RegisterForSense(UAISense_Damage::StaticClass());
+		PerceptionStimuliSourceComponent->RegisterForSense(UAISense_Hearing::StaticClass());
+		
 		// RegisterWithPerceptionSystem(): bAutoRegisterAsSource == true 해줌
 		PerceptionStimuliSourceComponent->RegisterWithPerceptionSystem();
 	}
@@ -65,6 +72,9 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	DialogueTrigger->SetCollisionProfileName(TEXT("Trigger"));
 	DialogueTrigger->SetGenerateOverlapEvents(true);
 	DialogueTrigger->SetHiddenInGame(false);
+
+	// Skill Component
+	SkillComponent = CreateDefaultSubobject<UMJPlayerSkillComponent>(TEXT("SkillComponent"));
 }
 
 void AMJPlayerCharacter::BeginPlay()

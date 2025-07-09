@@ -22,6 +22,8 @@ public:
 	AMJAIBossCharacterTG();
 
 protected:
+
+	virtual void BeginPlay() override;
 	
 	
 };

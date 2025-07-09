@@ -3,12 +3,20 @@
 #include "CoreMinimal.h"
 #include "MJDungeonGraphStruct.generated.h"
 
-UENUM()
-enum class ENodeType : uint8
+UENUM(BlueprintType)
+enum class EMJNodeType : uint8
 {
 	Battle UMETA(DisplayName = "Battle"),
 	Reward UMETA(DisplayName = "Reward"),
 	Boss UMETA(DisplayName = "Boss")
+};
+
+UENUM(BlueprintType)
+enum class EMJAISpawnType : uint8
+{
+	Static UMETA(DisplayName = "Static"),
+	RandomPoints UMETA(DisplayName = "RandomPoints"),
+	Wave UMETA(DisplayName = "Wave")
 };
 
 USTRUCT(BlueprintType)
@@ -23,7 +31,10 @@ struct FDungeonNode
 	int32 AssignedMapID;
 
 	UPROPERTY(BlueprintReadOnly)
-	ENodeType NodeType;
+	EMJNodeType NodeType;
+
+	UPROPERTY(BlueprintReadOnly)
+	EMJAISpawnType AISpawnType;
 
 	UPROPERTY(BlueprintReadOnly)
 	FVector2D UICoordinate;
@@ -31,16 +42,31 @@ struct FDungeonNode
 	UPROPERTY(BlueprintReadOnly)
 	TArray<int32> ConnectedNodeIDs;
 
-	static FString NodeTypeToString(ENodeType Type)
+	static FString NodeTypeToString(EMJNodeType Type)
 	{
 		switch (Type)
 		{
-		case ENodeType::Battle:
+		case EMJNodeType::Battle:
 			return TEXT("Battle");
-		case ENodeType::Reward:
+		case EMJNodeType::Reward:
 			return TEXT("Reward");
-		case ENodeType::Boss:
+		case EMJNodeType::Boss:
 			return TEXT("Boss");
+		default:
+			return TEXT("Unknown");
+		}
+	}
+
+	static FString AISpawnTypeToString(EMJAISpawnType Type)
+	{
+		switch (Type)
+		{
+		case EMJAISpawnType::Static:
+			return TEXT("Static");
+		case EMJAISpawnType::Wave:
+			return TEXT("Wave");
+		case EMJAISpawnType::RandomPoints:
+			return TEXT("RandomPoints");
 		default:
 			return TEXT("Unknown");
 		}

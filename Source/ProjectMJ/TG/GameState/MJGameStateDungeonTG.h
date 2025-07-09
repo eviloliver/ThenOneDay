@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
 #include "TG/Interface/MJBossEventManagerTG.h"
+#include "TG/Struct/MJDataTable_Wave.h"
 #include "TG/Struct/MJDungeonSessionDataStruct.h"
 #include "MJGameStateDungeonTG.generated.h"
 
@@ -16,8 +17,10 @@
  * Last Modified Date: 2025-06-13
  */
 
+class UEnvQuery;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnHealthChangedSignature, float, Delta);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnSpawnedSignature, float, Health);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIOnDestroyedSignature);
 
 UCLASS()
 class PROJECTMJ_API AMJGameStateDungeonTG : public AGameStateBase, public IMJBossEventManagerTG
@@ -25,14 +28,16 @@ class PROJECTMJ_API AMJGameStateDungeonTG : public AGameStateBase, public IMJBos
 	GENERATED_BODY()
 	
 public:
+	// Initialize Section
+
 	AMJGameStateDungeonTG();
 
-	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	UFUNCTION(BlueprintCallable)
 	void SetDungeonSessionData(FMJDungeonSessionData& DungeonSessionData);
+
+	// Called at Gamemode
 	
 	UFUNCTION(BlueprintCallable)
 	void SaveToInstancedDungeonSessionData(uint8 SaveToNum);
@@ -40,6 +45,95 @@ public:
 	UFUNCTION()
 	void LoadFromInstancedDungeonSessionData(uint8 LoadFromNum);
 
+	
+protected:
+	// Initialize Section
+	UFUNCTION()
+	void Initialize_BattleNode();
+
+	UFUNCTION()
+	void Initialize_BossNode();
+
+	UFUNCTION()
+	void Initialize_RewardNode();
+	
+	// AI Spawn Section
+	
+	UFUNCTION(BlueprintCallable)
+	bool GetWaveDataRowByIndex(int32 InputWaveRowNum);
+	
+	UFUNCTION(BlueprintCallable)
+	void CheckSpawnAICondition();
+	
+	UFUNCTION(BlueprintCallable)
+	void SpawnAI();
+	
+	UFUNCTION(BlueprintCallable)
+	TSubclassOf<AActor> GetActorFromPool();
+	
+	UFUNCTION(BlueprintCallable)
+	void OnAIDestroy(AActor* DestroyedActor);
+
+	UFUNCTION()
+	void SpawnEndPortal();
+	
+	
+	// Dungeon Session Section
+	
+	UPROPERTY(BlueprintReadOnly)
+	FMJDungeonSessionData LoadedDungeonSessionData;
+
+	UPROPERTY(BlueprintReadOnly)
+	uint8 LoadedDungeonNodeNum;
+
+	// Static AISpawn Section
+	
+	UPROPERTY(BlueprintReadOnly)
+	TArray<AActor*> StaticSpawnPointActors; 
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> DummyActorBPClass;
+
+	// Wave Section
+	
+	UPROPERTY()
+	FTimerHandle WaveAISpawn_ConditionCheckTimerHandle;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UEnvQuery> EQSQuery_WaveRandomSpawn;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UDataTable> LoadedWaveDataTable;
+
+	UPROPERTY(BlueprintReadOnly)
+	FMJWaveDataRow LoadedWaveDataRow;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 CurrentWaveNum;
+
+	// AI Spawn Condition Section
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 SpawnAIMaxNum;
+
+	UPROPERTY(BlueprintReadWrite)
+	int32 CurrentSpawnedAINum;
+	
+	UPROPERTY(BlueprintReadWrite)
+	TArray<AActor*> SpawnedActorRefs;
+	
+	UPROPERTY(BlueprintAssignable)
+	FMJAIOnDestroyedSignature OnAIDestroyed;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> PortalActor;
+	
+	UPROPERTY()
+	FTimerHandle EndPortalSpawnTimerHandle;
+
+
+	// Miscellaneous
+	
 	UPROPERTY(BlueprintAssignable)
 	FMJAIBossOnHealthChangedSignature OnAIBossHealthChanged;
 
@@ -51,17 +145,5 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void PublishOnBossSpawned(float Health) override;
-	
-protected:
-	
-	UPROPERTY(BlueprintReadOnly)
-	FMJDungeonSessionData LoadedDungeonSessionData;
-
-	UPROPERTY(BlueprintReadOnly)
-	uint8 LoadedDungeonNodeNum;
-	
-		
-
-
 	
 };
