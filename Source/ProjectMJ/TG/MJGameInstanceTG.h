@@ -9,6 +9,8 @@
 #include "MJGameInstanceTG.generated.h"
 
 
+class UMJAnimMontageDataAsset;
+class UMJProjectileDataAsset;
 class AMJPlayerCharacter;
 class UMJHttpDownloadManager;
 class UMJSaveGame;
@@ -19,6 +21,9 @@ class UDataTable;
  * Created Date: 2025-06-11
  * Last Modified By: 차태관
  * Last Modified Date: 2025-06-11
+ * Modified Date: 2025.07.04
+ * Modified By: 신동민
+ * Modified Description: 전역에서 접근할 DataAsset 생성
  */
 UCLASS()
 class PROJECTMJ_API UMJGameInstanceTG : public UGameInstance
@@ -42,6 +47,13 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UDataTable> SkillDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UMJProjectileDataAsset> ProjectileDataAsset;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UMJAnimMontageDataAsset> AnimMontageDataAsset;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere)
