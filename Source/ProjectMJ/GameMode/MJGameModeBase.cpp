@@ -15,15 +15,6 @@ AMJGameModeBase::AMJGameModeBase()
 
 }
 
-void AMJGameModeBase::BeginPlay()
-{
-	Super::BeginPlay();
-	
-	
-	
-}
-
-
 bool AMJGameModeBase::TravelToMap(const FString MapName)
 {
 	bool bAbsolute = false;

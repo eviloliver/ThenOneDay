@@ -18,8 +18,6 @@ public:
 	AMJGameModeBase();
 
 protected:
-
-	virtual void BeginPlay() override;
 	
 	UFUNCTION(BlueprintCallable)
 	virtual bool TravelToMapByNode(const FString MapName, const uint8 NodeNum);

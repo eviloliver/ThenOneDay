@@ -36,8 +36,8 @@ EBTNodeResult::Type UBTTask_MJFindPatrolPos::ExecuteTask(UBehaviorTreeComponent&
 	
 	float PatrolRadius = AIPawn->GetAIPatrolRadius();
 	FNavLocation NextPatrolPos;
-
-	FVector Origin = OwnerComp.GetBlackboardComponent()->GetValueAsVector("HomePos");
+	
+	FVector Origin = ControlledPawn->GetActorLocation();
 	
 	if (NavSystem->GetRandomPointInNavigableRadius(Origin, PatrolRadius, NextPatrolPos))
 	{

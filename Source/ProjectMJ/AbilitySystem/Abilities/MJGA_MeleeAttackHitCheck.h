@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Abilities/MJGA_GameplayAbility.h"
+#include "GameplayTagContainer.h"
 #include "MJGA_MeleeAttackHitCheck.generated.h"
 
 /**
@@ -47,4 +48,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TSubclassOf<AMJTA_Trace> TargetActorClass;
 
+	UPROPERTY(EditAnywhere, Category = "GameplayCue" , meta = (Categories = "GameplayCue"))
+	FGameplayTag GameplayCueTag;
 };
