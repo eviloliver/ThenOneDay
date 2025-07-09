@@ -75,7 +75,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* ShowStatPanelAction;
-
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* ShowInventoryAction;
+	
 	UPROPERTY()
 	UMJUIManagerSubsystem* UIManager;
 	
