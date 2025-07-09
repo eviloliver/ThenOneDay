@@ -208,10 +208,16 @@ void AMJMonsterAIControllerBase::HandleDamage_Detected(AActor* Actor, FAIStimulu
 
 void AMJMonsterAIControllerBase::HandleHearing_Detected(AActor* Actor, FAIStimulus Stimulus)
 {
+	UE_LOG(LogMJ, Log, TEXT("소리로 감지"));
+	
+	Blackboard->SetValueAsVector("HearingPos", Stimulus.StimulusLocation);
 }
 
 void AMJMonsterAIControllerBase::HandleHearing_Lost(AActor* Actor, FAIStimulus Stimulus)
 {
+	UE_LOG(LogMJ, Log, TEXT("소리감지 해제"));
+	
+	Blackboard->ClearValue("HearingPos");
 }
 
 void AMJMonsterAIControllerBase::HandleSight_Lost(AActor* Actor, FAIStimulus Stimulus)
