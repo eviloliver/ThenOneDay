@@ -11,6 +11,7 @@
 #include "TG/MJGameInstanceTG.h"
 #include "TG/Actor/MJDummyActorTG.h"
 #include "TG/Actor/MJDungeonAISpawnPointActor.h"
+#include "TG/AI/MJAIBossCharacterTG.h"
 #include "TG/SubSystem/MJDungeonGenerationSubSystem.h"
 
 
@@ -59,7 +60,7 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 		{
 			UGameplayStatics::GetAllActorsOfClass(GetWorld(),AMJDungeonAISpawnPointActor::StaticClass(),StaticSpawnPointActors);
 
-			// @fixme : use WaveData for now
+			// @fixme : using WaveData for now
 			GetWaveDataRowByIndex(1);
 
 			
@@ -111,7 +112,18 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 
 void AMJGameStateDungeonTG::Initialize_BossNode()
 {
-	
+	if (LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::InActive)
+	{
+		AMJAIBossCharacterTG* AIBoss = Cast<AMJAIBossCharacterTG>(UGameplayStatics::GetActorOfClass(GetWorld(),AMJAIBossCharacterTG::StaticClass()));
+		if (AIBoss)
+		{
+			AIBoss->OnDestroyed.AddDynamic(this ,&AMJGameStateDungeonTG::OnAIDestroy);
+			SpawnedActorRefs.Add(AIBoss);
+			CurrentSpawnedAINum++;
+		}
+		
+		LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Activated;
+	}
 }
 
 void AMJGameStateDungeonTG::Initialize_RewardNode()
@@ -224,23 +236,44 @@ void AMJGameStateDungeonTG::OnAIDestroy(AActor* DestroyedActor)
 	{
 		--CurrentSpawnedAINum;
 
-		if (LoadedDungeonSessionData.AISpawnType == EMJAISpawnType::Static &&
-			LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::Activated &&
-			CurrentSpawnedAINum <= 0)
+		UMJDungeonGenerationSubSystem* GS = GetGameInstance()->GetSubsystem<UMJDungeonGenerationSubSystem>();
+		check(GS);
+		if (GS)
 		{
-			LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
+			EMJNodeType CurrentNodeType = GS->GetDungeonGraph().Nodes[LoadedDungeonSessionData.DungeonNodeNum].NodeType;
+
+			EMJAISpawnType CurrentAISpawnType = LoadedDungeonSessionData.AISpawnType;
+			bool bIsActivatedMap = (LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::Activated);
+			bool bIsAllEnemyDied = CurrentSpawnedAINum <= 0;
 			
-			GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
-		}
-		else if (LoadedDungeonSessionData.AISpawnType == EMJAISpawnType::Wave &&
-			LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::Activated &&
-			CurrentSpawnedAINum <= 0
-			)
-		{
+			if (CurrentNodeType == EMJNodeType::Battle)
+			{
+				if (CurrentAISpawnType == EMJAISpawnType::Static && bIsActivatedMap && bIsAllEnemyDied)
+				{
+					LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
 			
-				//LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
-				GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
-			
+					GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
+				}
+				else if (CurrentAISpawnType == EMJAISpawnType::Wave && bIsActivatedMap && bIsAllEnemyDied )
+				{
+					//LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
+					GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
+				}
+				
+			}
+			else if (CurrentNodeType == EMJNodeType::Boss)
+			{
+				if (CurrentAISpawnType == EMJAISpawnType::Static && bIsActivatedMap && bIsAllEnemyDied)
+				{
+					LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
+
+					GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
+				}
+			}
+			else if (CurrentNodeType == EMJNodeType::Reward)
+			{
+				
+			}
 		}
 	}
 }
