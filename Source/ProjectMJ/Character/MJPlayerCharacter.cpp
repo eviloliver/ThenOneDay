@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Character/MJPlayerCharacter.h"
@@ -13,6 +13,7 @@
 #include "Component/MJPlayerSkillComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
+#include "Component/MJFadeObjectComponent.h"
 #include "Perception/AISense_Damage.h"
 #include "Perception/AISense_Hearing.h"
 
@@ -47,7 +48,10 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 
 	PlayerCombatComponent = CreateDefaultSubobject<UMJPlayerCombatComponent>(TEXT("PlayerCombatComponent"));
 
+	//Add FadeComponent
+	//FadeComponent = CreateDefaultSubobject<UMJFadeObjectComponent>(TEXT("FadeComponent"));
 	// Minjin: AI Perception-캐릭터를 StimuliSource로 등록(AI가 감지)
+	
 	PerceptionStimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("AIPerceptionStimuliSourceComponent"));
 	if (nullptr!= PerceptionStimuliSourceComponent)
 	{

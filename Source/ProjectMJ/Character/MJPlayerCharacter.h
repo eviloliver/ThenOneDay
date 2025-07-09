@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -12,12 +12,11 @@ class UCameraComponent;
 class UMJPlayerCombatComponent;
 class UAIPerceptionStimuliSourceComponent;
 class USphereComponent;
+class UMJFadeObjectComponent;
 /**
  * Class Description:
  * Author: Lee JuHyeon
  * Created Date: 2025_06_11
- * Modified By: Add Combat Component 
- * Modified Date: 2025_06_18
  * Modified By: 신동민
  * Modified Date: 2025.07.08
  * Modified Description: Add SkillComponent
@@ -68,6 +67,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UMJPlayerCombatComponent>PlayerCombatComponent;
+
+	//FadeActor System Part
+	/*UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,Category="Fade", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UMJFadeObjectComponent>FadeComponent;*/
 #pragma endregion
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gas")
