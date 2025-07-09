@@ -34,7 +34,6 @@ void AMJAIControllerBaseTG::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	RunBehaviorTree(BehaviorTreeComponent->GetCurrentTree());
 }
 
 void AMJAIControllerBaseTG::TargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)

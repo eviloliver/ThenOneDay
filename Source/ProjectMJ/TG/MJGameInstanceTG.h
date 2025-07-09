@@ -32,7 +32,6 @@ public:
 	TObjectPtr<UMJHttpDownloadManager> HttpDownloader;
 
 	bool bIsPlayerStateDirty = false;
-	bool bIsDungeonGameStateDirty = false;
 	
 	
 	UFUNCTION(BlueprintCallable)

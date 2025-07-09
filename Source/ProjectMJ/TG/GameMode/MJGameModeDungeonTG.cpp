@@ -30,7 +30,7 @@ void AMJGameModeDungeonTG::BeginPlay()
 	}
 	
 	AMJGameStateDungeonTG* MJGS = GetGameState<AMJGameStateDungeonTG>();
-	if (MJGS && GetGameInstance<UMJGameInstanceTG>()->bIsDungeonGameStateDirty)
+	if (MJGS)
 	{
 		MJGS->LoadFromInstancedDungeonSessionData(MJPS->GetPlayerSessionDataRef().CurrentDungeonMapNum);
 	}
