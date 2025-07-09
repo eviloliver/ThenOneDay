@@ -58,6 +58,10 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 		if (LoadedDungeonSessionData.AISpawnType == EMJAISpawnType::Static)
 		{
 			UGameplayStatics::GetAllActorsOfClass(GetWorld(),AMJDungeonAISpawnPointActor::StaticClass(),StaticSpawnPointActors);
+
+			// @fixme : use WaveData for now
+			GetWaveDataRowByIndex(1);
+
 			
 			for (auto& Iter : StaticSpawnPointActors)
 			{
@@ -66,20 +70,19 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 				FNavLocation ResultLocation;
 	
 				UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
-	
+				
 				if (NavSys)
 				{
-					// hard coded for now
+					// @fixme : hard coded for now
 					for (int i = 0 ; i < 10 ; ++i)
 					{
 						bool bIsFound = NavSys->GetRandomPointInNavigableRadius(IterSpawnPoint, 1000.f,ResultLocation);
 						if (bIsFound)
 						{
 							FActorSpawnParameters Params;
-							AActor* NewAIActor = GetWorld()->SpawnActor<AMJDummyActorTG>(DummyActorBPClass,ResultLocation,FRotator(),Params);
+							AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(GetActorFromPool(),ResultLocation,FRotator(),Params);
 							if (NewAIActor)
 							{
-								
 								NewAIActor->OnDestroyed.AddDynamic(this, &AMJGameStateDungeonTG::OnAIDestroy);
 								SpawnedActorRefs.Add(NewAIActor);
 								++CurrentSpawnedAINum;
