@@ -11,6 +11,7 @@ void UMJDragWidget::SetDragImage(UTexture2D* ItemTexture)
 		{
 			FSlateBrush Brush;
 			Brush.SetResourceObject(ItemTexture);
+			Brush.ImageSize = FVector2D(80,80);
 			DragImage->SetBrush(Brush);
 		}
 	}

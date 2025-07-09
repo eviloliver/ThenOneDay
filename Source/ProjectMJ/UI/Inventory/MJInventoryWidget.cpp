@@ -15,7 +15,8 @@ void UMJInventoryWidget::NativeConstruct()
 	{
 		return;
 	}
-	// 격자 비율 맞추기
+	
+	// 격자 비율 조정 (안하면 격자 크기 다 다름)
 	GridPanel->SetColumnFill(0, 1.0f);
 	GridPanel->SetRowFill(0, 1.0f);
 
@@ -27,8 +28,9 @@ void UMJInventoryWidget::NativeConstruct()
 			GridPanel->SetColumnFill(j, 1.0f);
 		}
 	}
+	//
 	
-	// 격자 생성
+	// 격자 Row * Col개 만큼 생성 후 슬롯 배치
 	for (int i = 0; i < Row; ++i)
 	{
 		for (int j = 0; j < Col; ++j)
@@ -41,6 +43,9 @@ void UMJInventoryWidget::NativeConstruct()
 	for (int i = 0; i < InventorySlots.Num(); i++)
 	{
 		InventorySlots[i]->SlotPosition = i;
+		InventorySlots[i]->SetPadding(FMargin(5.f));
 	}
+	//
 
+	
 }

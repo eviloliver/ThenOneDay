@@ -8,6 +8,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "MJInventoryInterface.h"
+#include "MJInventoryTooltip.h"
 
 void UMJInventorySlot::NativeConstruct()
 {
@@ -15,8 +16,9 @@ void UMJInventorySlot::NativeConstruct()
 	
 	Texture = nullptr;
 	InventoryData = { NAME_None, 0, SlotPosition }; // 공백아이템
-	DefaultBorderColor = {0.04f,0.04f,1.f,0.4f};
-	ClickedBorderColor = {0.04f,0.04f,1.f,0.2f};
+	
+	DefaultBorderColor = {0.0f,0.0f,0.0f,0.2f};
+	ClickedBorderColor = {0.0f,0.0f,0.0f,0.1f};
 	Border->SetBrushColor(DefaultBorderColor);
 }
 
@@ -27,6 +29,7 @@ void UMJInventorySlot::SetImage(UTexture2D* ItemTexture)
 	{
 		FSlateBrush Brush;
 		Brush.SetResourceObject(ItemTexture);
+		Brush.ImageSize = FVector2D(40,40);
 		Image->SetBrush(Brush);
 		Image->SetOpacity(1.0); // 이미지 들어가기전에 자꾸 인벤배경색(반투명)을 가려서 에디터에서 0으로 해놓은거 먹으면 밝혀주는 용도
 	}
@@ -54,10 +57,10 @@ FReply UMJInventorySlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, co
 			{
 				Border->SetBrushColor(ClickedBorderColor);
 			}
-        	UE_LOG(LogTemp, Log, TEXT("드래그 감지 시작 슬롯: %d, 아이템: %s, 아이템 : %s"), InventoryData.Position, *InventoryData.ItemName.ToString(), *ItemData.ItemID.ToString());
 			return FReply::Handled().DetectDrag(TakeWidget(), EKeys::LeftMouseButton);
         }
 	}
+	
 	return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 }
 
@@ -125,6 +128,7 @@ bool UMJInventorySlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDrop
 		}
 		else // 공백칸과의 교환일 시
 		{
+			
 			UE_LOG(LogTemp, Error, TEXT("<공백과 교환>"));
 			InventoryData =  DragOperation->InventoryItemData;
 			ItemData = DragOperation->ItemData;
@@ -150,11 +154,10 @@ bool UMJInventorySlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDrop
 			Char->GetInventoryComponent()->SetPosition(InventoryData.ItemName,InventoryData.Position);
 			UE_LOG(LogTemp, Log, TEXT("SlotPosition : %d"), InventoryData.Position);
 		}
-		
 		Border->SetBrushColor(DefaultBorderColor);
-		
 		return true;
 	}
+	Border->SetBrushColor(DefaultBorderColor);
 	return false;
 }
 
@@ -162,8 +165,7 @@ void UMJInventorySlot::NativeOnDragEnter(const FGeometry& InGeometry, const FDra
 	UDragDropOperation* InOperation)
 {
 	Super::NativeOnDragEnter(InGeometry, InDragDropEvent, InOperation);
-
-	UE_LOG(LogTemp,Error,TEXT("<마우스가 올라갓읍니다>"));
+	
 	Border->SetBrushColor(ClickedBorderColor);
 }
 
@@ -171,11 +173,40 @@ void UMJInventorySlot::NativeOnDragLeave(const FDragDropEvent& InDragDropEvent, 
 {
 	Super::NativeOnDragLeave(InDragDropEvent, InOperation);
 
-	UE_LOG(LogTemp,Error,TEXT("<마우스가 떨어졌읍니다>"));
 	Border->SetBrushColor(DefaultBorderColor);
 }
 
-void UMJInventorySlot::UpdateBorderColor()
+void UMJInventorySlot::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
-	
+    if (!InventoryData.IsEmpty()) // 공백칸 무시용
+    {
+    	if (!Tooltip)
+    	{
+    		Tooltip = CreateWidget<UMJInventoryTooltip>(this,TooltipWidgetClass);    	
+    		Tooltip->SetDescription(ItemData.Description);
+    		Tooltip->SetItemName(ItemData.ItemID);
+    		Tooltip->AddToViewport();
+    	}
+
+    	Tooltip->SetVisibility(ESlateVisibility::HitTestInvisible);
+
+    	FVector2D MousePos;
+    	if (GetWorld()->GetFirstPlayerController()->GetMousePosition(MousePos.X, MousePos.Y))
+    	{
+    		Tooltip->SetPositionInViewport(MousePos, true);
+    	}
+    }
 }
+
+void UMJInventorySlot::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
+{
+	if (!InventoryData.IsEmpty())
+	{
+		if (Tooltip)
+		{
+			Tooltip->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+}
+
+

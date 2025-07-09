@@ -21,6 +21,7 @@ class UBorder;
 class UTextBlock;
 class UImage;
 class UMJDragWidget;
+class UMJInventoryTooltip;
 
 UCLASS()
 class PROJECTMJ_API UMJInventorySlot : public UUserWidget
@@ -53,6 +54,14 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TSubclassOf<UMJDragWidget> DragWidgetClass;
 
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TSubclassOf<UMJInventoryTooltip> TooltipWidgetClass;
+
+	UMJInventoryTooltip* Tooltip = nullptr;
+
+	bool IsHovered = false;
+	FTimerHandle HoverTimerHandle;
+	
 public:
 	int32 SlotPosition;
 	bool bIsOccupied = false;
@@ -78,6 +87,9 @@ public:
 	virtual void NativeOnDragEnter(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 	virtual void NativeOnDragLeave(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 
-	void UpdateBorderColor();
+	// virtual FReply NativeOnMouseMove(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	virtual void NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent) override;
+	
 };
 	

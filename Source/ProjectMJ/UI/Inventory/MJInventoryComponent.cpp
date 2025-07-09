@@ -52,7 +52,6 @@ void UMJInventoryComponent::PickUpItem(FName ItemName)
 	if (ItemInInventory.Contains(ItemName)) // 인벤토리 내에 ItemName을 가진 아이템이 있다면 개수만 늘리고 같은 칸에 들어가야 함
 	{
 		ItemInInventory[ItemName].ItemCount++;
-		UE_LOG(LogTemp,Error,TEXT("위치는 : %d"),ItemInInventory[ItemName].Position);
 	}
 	else // 인벤에 없는 템이라면 
 	{
@@ -87,7 +86,6 @@ void UMJInventoryComponent::DropItem(FName ItemName)
 	// 티맵의 아이템을 지워야 하지 않을까
 	ItemInInventory.Remove(ItemName); // 나중에 전체가 아니라 일부만 버리고 싶게 할 때는 입력받은 숫자만큼 카운트만 줄이기??
 }
-
 
 void UMJInventoryComponent::UpdateSlot(FName ItemName)
 {

@@ -84,7 +84,9 @@ void AMJPlayerController::SetupInputComponent()
 	ProjectMJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
 	ProjectMJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
 
+	// UI Input
 	ProjectMJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowInventory);
+	ProjectMJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowStatPanel);
 }
 
 void AMJPlayerController::PlayerTick(float DeltaTime)
@@ -270,7 +272,6 @@ void AMJPlayerController::ShowStatPanel()
 
 void AMJPlayerController::ShowInventory()
 {
-	UE_LOG(LogTemp, Log, TEXT("OnTriggerrrrr"));
 	UIManager->ShowInventory();
 }
 
