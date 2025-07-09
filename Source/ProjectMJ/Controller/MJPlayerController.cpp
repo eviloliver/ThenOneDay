@@ -24,6 +24,7 @@
 #include "Compression/lz4.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/Inventory/MJInventoryWidget.h"
 
@@ -291,10 +292,13 @@ void AMJPlayerController::OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped
 	int32 OtherBodyIndex)
 {
 	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
-	if (MJChar->GetDialogueTarget()== Other)
+	if (MJChar)
 	{
-		MJChar->SetDialogueTarget(nullptr);
-		IsTriggered = false;
+		if (MJChar->GetDialogueTarget() == Other)
+		{
+			MJChar->SetDialogueTarget(nullptr);
+			IsTriggered = false;
+		}
 	}
 }
 

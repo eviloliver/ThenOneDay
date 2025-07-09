@@ -92,16 +92,28 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 		}
 		else if (Prob > 0.0f && Prob < 80.f)
 		{	
-			// Battle 1~5 Map Assign 
+			// Battle 1~5 Map Assign
+			// AISpawn Wave Map : 01 02
+			// AISpawn Static Map : 03 04 05 
 			float RandNum = FMath::RandRange(1,5);
 
 			EMJAISpawnType AISpawnType = EMJAISpawnType::Static;
-			float RandNumAISpawn = FMath::RandRange(1,4);
-
-			if (RandNumAISpawn == 1)
+			
+			// Wave 
+			if (RandNum == 1 || RandNum == 2)
 			{
 				AISpawnType = EMJAISpawnType::Wave;
+				
 			}
+			
+			// EMJAISpawnType AISpawnType = EMJAISpawnType::Static;
+			// float RandNumAISpawn = FMath::RandRange(1,4);
+			//
+			// if (RandNumAISpawn == 1)
+			// {
+			// 	AISpawnType = EMJAISpawnType::Wave;
+			// 	RandNum = FMath::RandRange(1,2);
+			// }
 			
 			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,RandNum,EMJNodeType::Battle, AISpawnType, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
