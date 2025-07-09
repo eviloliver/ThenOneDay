@@ -2,25 +2,48 @@
 
 
 #include "UI/MJUIManagerSubsystem.h"
+#include "MJHUDWidget.h"
 #include "Dialogue/MJDialogueWidget.h"
 #include "Dialogue/MJBacklogWidget.h"
 #include "Dialogue/MJDialogueComponent.h"
+#include "Player/MJPlayerState.h"
+#include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Inventory/MJInventoryWidget.h"
+
 
 void UMJUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
-	UE_LOG(LogTemp, Log, TEXT("으앵"));
+	UE_LOG(LogTemp, Log, TEXT("UIManager Initialize"));
 	DialogueWidgetClass = LoadClass<UMJDialogueWidget>(
 			nullptr,
-			TEXT("/Game/Dialogue/Widget/BP_MJDialogueWidget.BP_MJDialogueWidget_C"));
+			TEXT("/Game/UI/WBP/Dialogue/BP_MJDialogueWidget.BP_MJDialogueWidget_C"));
 
+	HUDWidgetClass = LoadClass<UMJHUDWidget>(
+		nullptr,
+		TEXT("/Game/UI/WBP/HUD/WBP_HUD.WBP_HUD_C"));
 }
 
 void UMJUIManagerSubsystem::Deinitialize()
 {
 	Super::Deinitialize();
+}
+
+void UMJUIManagerSubsystem::ShowHUD(AMJPlayerState* PlayerState)
+{
+	HUDWidget = CreateWidget<UMJHUDWidget>(GetWorld(), HUDWidgetClass);
+	if (HUDWidget)
+	{
+		HUDWidget->AddToViewport();
+		
+		if (PlayerState) 
+		{
+			auto* MJASC = Cast<UMJAbilitySystemComponent>(PlayerState->GetAbilitySystemComponent());
+			HUDWidget->BindAtrributesToChildren(MJASC,PlayerState->GetCharacterAttributeSet());
+		}
+	}
 }
 
 void UMJUIManagerSubsystem::ShowDialogue(UMJDialogueComponent* DialogueComp) // 위젯 띄우기만 하는 함수
@@ -56,7 +79,6 @@ void UMJUIManagerSubsystem::NextDialogue(UMJDialogueComponent* DialogueComp)
 		DialogueComp->NextDialogue(); // 인덱스 +1
 		
 		SetDialogue(DialogueComp); // +1된 row를 가져와 타이핑 >> 순서 중요
-		
 
 		if (DialogueComp->IsDialogueEnd())
 		{
@@ -97,4 +119,12 @@ void UMJUIManagerSubsystem::ShowBacklog()
 	DialogueWidget->ShowBacklog();
 }
 
+void UMJUIManagerSubsystem::ShowStatPanel()
+{
+	HUDWidget->ShowStatPanel();
+}
 
+void UMJUIManagerSubsystem::ShowInventory()
+{
+	HUDWidget->ShowInventory();
+}

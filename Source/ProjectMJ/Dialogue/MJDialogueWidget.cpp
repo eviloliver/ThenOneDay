@@ -13,7 +13,6 @@ void UMJDialogueWidget::NativeConstruct()
 	if (BacklogWidget)
 	{
 		BacklogWidget->SetVisibility(ESlateVisibility::Hidden);
-		UE_LOG(LogTemp, Warning, TEXT("Dialogue Widget Constructed"));
 	}
 }
 

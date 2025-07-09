@@ -13,6 +13,7 @@
 #include "Component/MJPlayerSkillComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
+#include "UI/Inventory/MJInventoryComponent.h"
 #include "Component/MJFadeObjectComponent.h"
 #include "Perception/AISense_Damage.h"
 #include "Perception/AISense_Hearing.h"
@@ -73,6 +74,7 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	DialogueTrigger->SetGenerateOverlapEvents(true);
 	DialogueTrigger->SetHiddenInGame(false);
 
+	InventoryComponent = CreateDefaultSubobject<UMJInventoryComponent>(TEXT("InventoryComponent"));
 	// Skill Component
 	SkillComponent = CreateDefaultSubobject<UMJPlayerSkillComponent>(TEXT("SkillComponent"));
 }

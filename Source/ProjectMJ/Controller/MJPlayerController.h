@@ -14,9 +14,9 @@ class UMJUIManagerSubsystem;
 /**
  * Class Description:
  * Author: Lee JuHyeon
- * Created Date: Create Controller
- * Last Modified By: Lee JuHyeon
- * Last Modified Date: Change Input And Move Actor beHind
+ * Created Date: ?
+ * Last Modified By: Lee Jisoo
+ * Last Modified Date: 2025.06.25(BeginPlay에 ShowHUD 추가)
  */
 
 UCLASS()
@@ -59,7 +59,7 @@ private:
 	float HoldThresHold = 0.2f;
 	float PressTimed = 0.0f;
 	
-#pragma region DialoguePart
+#pragma region UIPart
 private:
 	bool IsTriggered = false;
 
@@ -73,16 +73,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* ShowBacklogAction;
 
-	UPROPERTY()
-	UMJUIManagerSubsystem* UIManager; 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* ShowStatPanelAction;
 
-	// 이것들이 작동하면 아래 4개 함수는 지워도된다
+	UPROPERTY()
+	UMJUIManagerSubsystem* UIManager;
+	
 	void ChangeToIMCDialogue();
 	void ChangeToIMCDefault();
 	void ProceedDialogue();
 	
 	void ShowBacklog();
-
+	void ShowStatPanel();
+	void ShowInventory();
+	
 	UFUNCTION()
 	void OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 										int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -91,7 +95,10 @@ public:
 	void OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 										int32 OtherBodyIndex);
 
-		
+	UFUNCTION()
+	void OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
+										int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
 #pragma endregion
 
 	// Active Ability

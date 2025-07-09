@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Character/MJCharacterBase.h"
+#include "UI/Inventory/MJInventoryComponent.h"
+#include "UI/Inventory/MJInventoryInterface.h"
 #include "MJPlayerCharacter.generated.h"
 
 class UMJPlayerSkillComponent;
@@ -12,7 +14,9 @@ class UCameraComponent;
 class UMJPlayerCombatComponent;
 class UAIPerceptionStimuliSourceComponent;
 class USphereComponent;
+class UMJInventoryComponent;
 class UMJFadeObjectComponent;
+
 /**
  * Class Description:
  * Author: Lee JuHyeon
@@ -22,7 +26,7 @@ class UMJFadeObjectComponent;
  * Modified Description: Add SkillComponent
  */
 UCLASS()
-class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase
+class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase, public IMJInventoryInterface
 {
 	GENERATED_BODY()
 	
@@ -53,11 +57,16 @@ protected:
  	UPROPERTY()
  	AActor* DialogueTarget;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+	UMJInventoryComponent* InventoryComponent;
+
 public:
 	void SetDialogueTarget(AActor* NewTarget) { DialogueTarget = NewTarget; }
 	
 	AActor* GetDialogueTarget() {return DialogueTarget;}
 	USphereComponent* GetDialogueTrigger() {return DialogueTrigger;}
+	UMJInventoryComponent* GetInventoryComponent() {return InventoryComponent;}
+	
 #pragma endregion
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="Camera",meta=(AllowPrivateAccess=true))
 	TObjectPtr<USpringArmComponent> CameraBoom;

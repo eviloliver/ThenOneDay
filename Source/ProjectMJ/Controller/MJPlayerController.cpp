@@ -15,12 +15,17 @@
 #include "Dialogue/MJDialogueComponent.h"
 #include "Components/SphereComponent.h"
 #include "UI/MJUIManagerSubsystem.h"
+#include "Player/MJPlayerState.h"
 #include "ProjectMJ.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Character/MJPlayerCharacter.h"
 #include "Character/Component/MJPlayerSkillComponent.h"
 #include "Compression/lz4.h"
+#include "UI/Inventory/MJInventoryComponent.h"
+#include "Item/MJItemBase.h"
+#include "UI/MJHUDWidget.h"
+#include "UI/Inventory/MJInventoryWidget.h"
 
 
 AMJPlayerController::AMJPlayerController()
@@ -38,15 +43,22 @@ void AMJPlayerController::BeginPlay()
 
 	UIManager =	GetGameInstance()->GetSubsystem<UMJUIManagerSubsystem>();
 	ensure(UIManager);
-	// 언리얼 엔진의 초기화 순서 : GameInstance > GameMode > Actor
-	// 그러므로 GetSubsystem 시 nullptr 을 반환할 일은 없지만, !
-	// 혹시 모를 상황(모듈 누락, 이상한 호출 타이밍, 비동기 로직 중 접근 등)에 대비하여 ensure() 또는 UE_LOG 찍기
+	// ?��리얼 ?��진의 초기?�� ?��?�� : GameInstance > GameMode > Actor
+	// 그러�?�? GetSubsystem ?�� nullptr ?�� 반환?�� ?��??? ?���?�?, !
+	// ?��?�� 모�?? ?��?��(모듈 ?��?��, ?��?��?�� ?���? ????���?, 비동�? 로직 �? ?���? ?��)?�� ???비하?�� ensure() ?��?�� UE_LOG 찍기
 	
 	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
 	if (MJChar)
 	{
 		MJChar->GetDialogueTrigger()->OnComponentBeginOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueIn);
 		MJChar->GetDialogueTrigger()->OnComponentEndOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueOut);
+		MJChar->GetDialogueTrigger()->OnComponentBeginOverlap.AddDynamic(this,&ThisClass::OnTriggeredItemIn);
+	}
+
+	AMJPlayerState* State = GetPlayerState<AMJPlayerState>();
+	if (State)
+	{
+		UIManager->ShowHUD(State);
 	}
 }
 
@@ -72,7 +84,11 @@ void AMJPlayerController::SetupInputComponent()
 	ProjectMJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
 	ProjectMJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
 
+	// UI Input
+	ProjectMJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowInventory);
+	ProjectMJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowStatPanel);
 }
+
 void AMJPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
@@ -215,7 +231,7 @@ void AMJPlayerController::ChangeToIMCDialogue()
 	}
 }
 
-void AMJPlayerController::ChangeToIMCDefault() // showDialogue 마지막에 들어가야 함
+void AMJPlayerController::ChangeToIMCDefault() 
 {
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
@@ -237,7 +253,7 @@ void AMJPlayerController::ProceedDialogue()
 
 		UIManager->NextDialogue(DialogueComp);
 		
-		if (DialogueComp->IsDialogueEnd()) // 마지막 대사라면 imc 전환
+		if (DialogueComp->IsDialogueEnd()) 
 		{
 			ChangeToIMCDefault();
 		}
@@ -247,6 +263,16 @@ void AMJPlayerController::ProceedDialogue()
 void AMJPlayerController::ShowBacklog()
 {
 	UIManager->ShowBacklog();
+}
+
+void AMJPlayerController::ShowStatPanel()
+{
+	UIManager->ShowStatPanel();
+}
+
+void AMJPlayerController::ShowInventory()
+{
+	UIManager->ShowInventory();
 }
 
 void AMJPlayerController::OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
@@ -272,7 +298,22 @@ void AMJPlayerController::OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped
 	}
 }
 
-
+void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AActor* Other,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	AMJItemBase* Item = Cast<AMJItemBase>(Other);
+	if (!Item) return;
+	
+	AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
+	if (!MyChar) return;
+	
+	UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
+	 if (InventoryComp)
+	 {
+	 	InventoryComp->PickUpItem(Item->GetItemName());
+	 	Item->Destroy();
+	 }
+}
 
 void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
 {
@@ -289,9 +330,7 @@ void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
 				SkillComponent->ActivateSkillByInputTag(InInputTag);
 			}
 		}
-	}
-
-	
+	}	
 }
 
 void AMJPlayerController::Input_AbilityInputReleased(FGameplayTag InInputTag)
