@@ -4,6 +4,7 @@
 #include "MJ/AI/BTTask_MJKeepDistanceWhileMoveTo.h"
 
 #include "AIController.h"
+#include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "MJ/Interface/MJCharacterAIInterface.h"
 
@@ -42,14 +43,28 @@ EBTNodeResult::Type UBTTask_MJKeepDistanceWhileMoveTo::ExecuteTask(UBehaviorTree
 	FVector TargetLocation = TargetPawn->GetActorLocation();
 	float Distance = FVector::Dist(AILocation, TargetLocation);
 	
-	// Minjin: 거리가 MinimumAttackRange이하일 경우->플레이어와 멀어진다
-	if (Distance <= AIPawn->GetAIMinimumAttackRange()||
+	// Minjin: 거리가 MinimumAttackRange 미만일 경우->플레이어와 멀어진다
+	if (Distance < AIPawn->GetAIMinimumAttackRange()||
 		OwnerComp.GetBlackboardComponent()->GetValueAsBool("MinimumAttackRange"))
 	{
 		FVector AwayDir = (AILocation - TargetLocation).GetSafeNormal();
-		FVector MoveToLocation = AILocation + AwayDir * (AIPawn->GetAIMaximumAttackRange() - Distance);
+		FVector RandomDir = FMath::VRandCone(AwayDir, FMath::DegreesToRadians(30.f));
+		FVector MoveToLocation = AILocation + RandomDir *(AIPawn->GetAIMaximumAttackRange() - Distance);
 
+		// FNavLocation Destination;
+		//
+		// UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(ControlledPawn->GetWorld());
+		// if (nullptr == NavSystem)
+		// {
+		// 	return EBTNodeResult::Failed;
+		// }
+		// // TODO 최소 이상 혹은 원거리 범위로 이동하도록 만들기 -> EQS_RandomPosInDonut
+		//
+		// NavSystem->GetRandomPointInNavigableRadius(AwayDir, AIPawn->GetAIMaximumAttackRange() * 1.5f , Destination);
+		// OwnerController->MoveToLocation(Destination);
+		
 		OwnerController->MoveToLocation(MoveToLocation);
+	
 		return EBTNodeResult::Succeeded;
 	}
 
@@ -58,14 +73,22 @@ EBTNodeResult::Type UBTTask_MJKeepDistanceWhileMoveTo::ExecuteTask(UBehaviorTree
 		!OwnerComp.GetBlackboardComponent()->GetValueAsBool("MaximumAttackRange"))
 	{
 		FVector ToDir = (TargetLocation - AILocation).GetSafeNormal();
-		FVector MoveToLocation = AILocation + ToDir * (Distance - AIPawn->GetAIMaximumAttackRange());
+		FVector RandomDir = FMath::VRandCone(ToDir, FMath::DegreesToRadians(30.f));
 
+		/*
+		 * Minjin
+		 * TODO
+		 * 50.0f 안 더해주면 MaximumAttackRange가 true로 안 됨
+		 */
+		FVector MoveToLocation = AILocation + RandomDir * (Distance +50.0f - AIPawn->GetAIMaximumAttackRange());
+		
 		OwnerController->MoveToLocation(MoveToLocation);
+		
 		return EBTNodeResult::Succeeded;
 	}
 
 	// Minjin: Min~Max 범위에 있을 경우->제자리
-	// OwnerController->StopMovement();
+	OwnerController->StopMovement();
 
 	return EBTNodeResult::Succeeded;
 }

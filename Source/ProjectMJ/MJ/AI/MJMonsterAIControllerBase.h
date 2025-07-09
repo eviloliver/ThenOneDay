@@ -37,7 +37,7 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
 	// Minjin: BehaviorTree Component
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="AI|BehaviorTree")
+	UPROPERTY(EditDefaultsOnly, Category="AI|BehaviorTree")
 	TObjectPtr<UBehaviorTreeComponent> BehaviorTreeComponent;
 	
 	// AI Perception
