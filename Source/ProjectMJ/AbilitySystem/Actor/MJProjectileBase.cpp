@@ -10,8 +10,6 @@
 #include "Physics/MJCollision.h"
 #include "GameplayTagContainer.h"
 #include "NiagaraComponent.h"
-#include "DataWrappers/ChaosVDQueryDataWrappers.h"
-
 
 AMJProjectileBase::AMJProjectileBase()
 {
