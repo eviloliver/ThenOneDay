@@ -6,6 +6,7 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
+#include "Character/Component/MJSkillComponentBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 AMJMonsterCharacter::AMJMonsterCharacter()
@@ -29,7 +30,9 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	CharacterAttributeSet = CreateDefaultSubobject<UMJCharacterAttributeSet>(TEXT("CharacterAttributeSet"));
 
 	CharacterSkillAttributeSet = CreateDefaultSubobject<UMJCharacterSkillAttributeSet>(TEXT("CharacterSkillAttributeSet"));
-	
+
+	// Skill Component
+	SkillComponent = CreateDefaultSubobject<UMJSkillComponentBase>(TEXT("SkillComponent"));
 }
 
 void AMJMonsterCharacter::BeginPlay()

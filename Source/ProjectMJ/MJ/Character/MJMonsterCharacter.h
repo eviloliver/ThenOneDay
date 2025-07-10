@@ -5,8 +5,8 @@
 #include "CoreMinimal.h"
 #include "Character/MJCharacterBase.h"
 #include "MJ/Interface/MJCharacterAIInterface.h"
+#include "Character/Component/MJPlayerSkillComponent.h"
 #include "MJMonsterCharacter.generated.h"
-
 
 class UMJCharacterAttributeSet;
 class UMJCharacterSkillAttributeSet;
@@ -49,5 +49,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMJCharacterSkillAttributeSet> CharacterSkillAttributeSet;
+	// TODO: 우선 base
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gas")
+	TObjectPtr<UMJSkillComponentBase> SkillComponent;
 	
 };
