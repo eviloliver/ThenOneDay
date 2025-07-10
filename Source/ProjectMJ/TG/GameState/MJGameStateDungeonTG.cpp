@@ -157,22 +157,23 @@ void AMJGameStateDungeonTG::CheckSpawnAICondition()
 		return;
 	}
 	
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Magenta, FString::Printf(TEXT("Check AISpawn Coniditon Call")));
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Magenta, FString::Printf(TEXT("Check AISpawn Condition Call")));
 	
 	if (CurrentSpawnedAINum < SpawnAIMaxNum)
 	{
 		if (LoadedWaveDataRow.EnemyCount <= 0)
 		{
-			bool GetNextWave = GetWaveDataRowByIndex(++CurrentWaveNum);
-			
-			if (!GetNextWave)
-			{
-				GetWorldTimerManager().ClearTimer(WaveAISpawn_ConditionCheckTimerHandle);
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("Wave is end. Set Dungeon Context to Cleared")));
+			bool GetNextWave = GetWaveDataRowByIndex(CurrentWaveNum + 1);
 
-				LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
-				//GetWorldTimerManager().SetTimer(WaveAISpawn_ConditionCheckTimerHandle, this, &AMJGameStateDungeonTG::CheckSpawnAICondition,  2.0f, true);
-				
+			if (GetNextWave)
+			{
+				CurrentWaveNum += 1;
+			}
+			else if (!GetNextWave && CurrentSpawnedAINum <= 0)
+			{
+					GetWorldTimerManager().ClearTimer(WaveAISpawn_ConditionCheckTimerHandle);
+					LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
+					GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
 			}
 		}
 		else
@@ -256,8 +257,7 @@ void AMJGameStateDungeonTG::OnAIDestroy(AActor* DestroyedActor)
 				}
 				else if (CurrentAISpawnType == EMJAISpawnType::Wave && bIsActivatedMap && bIsAllEnemyDied )
 				{
-					//LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
-					GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
+					// Wave AISpawn Mode`s End called at CheckAISpawn callback
 				}
 				
 			}
@@ -379,7 +379,6 @@ void AMJGameStateDungeonTG::LoadFromInstancedDungeonSessionData(uint8 LoadFromNu
 
 void AMJGameStateDungeonTG::PublishOnBossHealthChanged(float Delta)
 {
-	
 	OnAIBossHealthChanged.Broadcast(Delta);
 }
 
