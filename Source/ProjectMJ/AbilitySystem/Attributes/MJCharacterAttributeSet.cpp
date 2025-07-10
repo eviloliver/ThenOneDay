@@ -3,6 +3,7 @@
 
 #include "MJCharacterAttributeSet.h"
 #include "GameplayEffectExtension.h"
+#include "ProjectMJ.h"
 
 UMJCharacterAttributeSet::UMJCharacterAttributeSet()
     :Level(1.0f)
@@ -84,5 +85,11 @@ bool UMJCharacterAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallba
 void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
+	// Effect 적용 후
+
+	if (GetHealth() <= 0)
+	{
+		OnDeath.Broadcast();
+	}
 
 }
