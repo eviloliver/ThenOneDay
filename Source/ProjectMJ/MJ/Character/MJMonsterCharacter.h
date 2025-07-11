@@ -43,11 +43,17 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 
 protected:
+	UFUNCTION()
+	virtual void OnDeath();
+
+protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMJCharacterAttributeSet> CharacterAttributeSet;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMJCharacterSkillAttributeSet> CharacterSkillAttributeSet;
-	
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
+	bool bIsDead;
 };
