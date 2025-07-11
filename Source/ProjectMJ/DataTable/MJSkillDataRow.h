@@ -72,7 +72,7 @@ struct FMJSkillDataRow : public FTableRowBase
 
 public:
 	// Dongmin: RowName을 태그와 같게 할 목적
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Skill"))
 	FGameplayTag DefaultSkillTag;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
