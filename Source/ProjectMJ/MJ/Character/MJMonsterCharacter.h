@@ -7,6 +7,9 @@
 #include "MJ/Interface/MJCharacterAIInterface.h"
 #include "MJMonsterCharacter.generated.h"
 
+
+class UMJCharacterAttributeSet;
+class UMJCharacterSkillAttributeSet;
 /**
  * Class Description: AICharacter
  * Author: Kim Minjin
@@ -22,8 +25,11 @@ class PROJECTMJ_API AMJMonsterCharacter : public AMJCharacterBase, public IMJCha
 public:
 	AMJMonsterCharacter();
 
-	// Interface
+	
 protected:
+	virtual void BeginPlay() override;
+	
+	// Minjin: Interface
 	virtual float GetAIPatrolRadius() override;
 	virtual float GetAITurnSpeed() override;
 	virtual float GetAIMaximumAttackRange() override;
@@ -32,4 +38,22 @@ protected:
 	virtual void AttackByAI() override;
 	virtual void MeleeAttackByAI() override;
 	virtual void RangeAttackByAI() override;
+
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual void PossessedBy(AController* NewController) override;
+
+protected:
+	UFUNCTION()
+	virtual void OnDeath();
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UMJCharacterAttributeSet> CharacterAttributeSet;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UMJCharacterSkillAttributeSet> CharacterSkillAttributeSet;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
+	bool bIsDead;
 };

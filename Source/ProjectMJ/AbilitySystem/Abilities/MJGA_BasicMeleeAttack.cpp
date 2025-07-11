@@ -53,10 +53,11 @@ void UMJGA_BasicMeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
 	AMJCharacterBase* AMJCharacter = Cast<AMJCharacterBase>(ActorInfo->AvatarActor.Get());
 	if (!AMJCharacter)
 	{
-		EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+		return; 
 	}
 	AMJCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 }

@@ -2,6 +2,11 @@
 
 
 #include "MJ/Character/MJMonsterCharacter.h"
+
+#include "ProjectMJ.h"
+#include "AbilitySystem/MJAbilitySystemComponent.h"
+#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
+#include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 AMJMonsterCharacter::AMJMonsterCharacter()
@@ -17,9 +22,24 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	bUseControllerRotationYaw = false;
 
-	// Minjin: 캐릭터는 미리 맵에 스폰되어 있다. 안 보이게 설정
-	// SetActorEnableCollision(false);
-	// AActor::SetActorHiddenInGame(true);
+
+	
+	// GAS, Attr Set
+	ASC = CreateDefaultSubobject<UMJAbilitySystemComponent>(TEXT("ASC"));
+	
+	CharacterAttributeSet = CreateDefaultSubobject<UMJCharacterAttributeSet>(TEXT("CharacterAttributeSet"));
+
+	CharacterSkillAttributeSet = CreateDefaultSubobject<UMJCharacterSkillAttributeSet>(TEXT("CharacterSkillAttributeSet"));
+	
+}
+
+void AMJMonsterCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Minjin: 캐릭터는 미리 맵에 스폰되어 있다. 안 보이게 설정-콜리전을 비활성화 하면 맵 밑으로 꺼짐
+	AActor::SetActorHiddenInGame(true);
+	SetActorEnableCollision(true);
 }
 
 float AMJMonsterCharacter::GetAIPatrolRadius()
@@ -81,4 +101,39 @@ void AMJMonsterCharacter::RangeAttackByAI()
  * 원거리 공격
  */
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("RangeAttack"));
+}
+
+UAbilitySystemComponent* AMJMonsterCharacter::GetAbilitySystemComponent() const
+{
+	if (ASC)
+	{
+		return ASC;
+	}
+	return nullptr;
+}
+
+void AMJMonsterCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (ASC)
+	{
+		ASC->InitAbilityActorInfo(this,this);
+	}
+	// TODO:
+	// 여기서 DT 받아와서 Attribute랑 몬스터가 가지고 있는 스킬 넣을거야
+	// 그래서 이 몬스터를 구븐 할 수 있는 RowName이 Tag인 형식의 DT와
+	// RowName이랑 똑같은 이름의 Tag(ex- Enemy.Dongmin)를 속성에서 가지고 있어서 BP로 양산할 때 넣는거야
+	// 그런데 자동으로 DT에 있는 값으로 Attribute를 넣어 줄 거면 전체 덮어주는 Effect 가지고 있고, 노가다가 필요해서
+	// 나중에 DT만들고 집중 안될 때 와서 작업 함
+	//  -동민 -
+	CharacterAttributeSet->OnDeath.AddDynamic(this, &ThisClass::OnDeath);
+}
+
+void AMJMonsterCharacter::OnDeath()
+{
+	// TODO:
+	// 애니메이션과 기타 등등 세팅
+	// - 동민 -
+	Destroy();
 }

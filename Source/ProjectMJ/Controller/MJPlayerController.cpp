@@ -24,6 +24,7 @@
 #include "Compression/lz4.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/Inventory/MJInventoryWidget.h"
 
@@ -300,6 +301,7 @@ void AMJPlayerController::OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped
 				MJChar->SetDialogueTarget(nullptr);
 				IsTriggered = false;
 			}
+
 		}
 	}
 }
