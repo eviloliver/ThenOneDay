@@ -31,11 +31,6 @@ float AMJMeleeMonsterCharacter::GetAIMinimumAttackRange()
 
 void AMJMeleeMonsterCharacter::AttackByAI()
 {
-	/*
-	 * Minjin
-	 * TODO
-	 * 공격
-	 */
 	// Minjin: Skill 공격
 	SkillComponent->ActivateSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.BasicMeleeAttack")));
 
