@@ -27,10 +27,9 @@ class PROJECTMJ_API UMJUIManagerSubsystem : public UGameInstanceSubsystem
 
 public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-	virtual void Deinitialize() override;
 
 	// HUD
-	void ShowHUD(class AMJPlayerState* PlayerState);
+	void ShowHUD(class AMJPlayerState* PlayerState, class AMJPlayerController* PC);
 	
 	// Dialogue Section
 	void ShowDialogue(UMJDialogueComponent* DialogueComp);
@@ -54,10 +53,16 @@ public:
 protected:
 	UPROPERTY()
 	UMJDialogueWidget* DialogueWidget;
+
+	UPROPERTY()
 	TSubclassOf<class UMJDialogueWidget> DialogueWidgetClass;
+
 	bool bIsDialogueActive;
-	
+
+	UPROPERTY()
 	UMJHUDWidget* HUDWidget;
+
+	UPROPERTY()
 	TSubclassOf<class UMJHUDWidget> HUDWidgetClass;
 
 	//UMJInventoryWidget* InventoryWidget;

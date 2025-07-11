@@ -71,12 +71,10 @@ void UMJDialogueWidget::SetImageOpacity(const FString& SpeakerName)
 	
 	if (SpeakerName == TEXT("태관"))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Image Opacity"));
 		PlayerImage->SetOpacity(1.0f);
 		NPCImage->SetOpacity(0.3f);
 	}
-
-	if (SpeakerName == TEXT("주현"))
+	else
 	{
 		NPCImage->SetOpacity(1.0f);
 		PlayerImage->SetOpacity(0.3f);

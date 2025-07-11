@@ -10,6 +10,7 @@
 /**
  * 
  */
+class USizeBox;
 class UTextBlock;
 UCLASS()
 class PROJECTMJ_API UMJInventoryTooltip : public UUserWidget
@@ -22,8 +23,12 @@ protected:
 	
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ItemName;
-	
+
+	UPROPERTY(meta = (BindWidget))
+	USizeBox* SizeBox;
 public:
+	//virtual void NativeConstruct() override;
+	
 	void SetDescription(FText Text) {Description->SetText(Text);}
 	void SetItemName(FText Text){ItemName->SetText(Text);}
 };

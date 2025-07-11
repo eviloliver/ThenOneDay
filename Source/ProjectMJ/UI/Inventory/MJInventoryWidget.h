@@ -5,12 +5,16 @@
 #include "CoreMinimal.h"
 #include "MJInventorySlot.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/CanvasPanel.h"
 #include "MJInventoryWidget.generated.h"
 
 /**
  * 
  */
+
+class UMJInventorySlot;
 UCLASS()
+
 class PROJECTMJ_API UMJInventoryWidget : public UUserWidget
 {
 	GENERATED_BODY()
@@ -24,6 +28,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Inventory)
 	TSubclassOf<UMJInventorySlot> InventorySlotClass;
+
+	UPROPERTY(meta = (BindWidget))
+	UCanvasPanel* CanvasPanel;
+	
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TSubclassOf<UMJInventoryTooltip> TooltipWidgetClass;
+
+	UPROPERTY()
+	UMJInventoryTooltip* Tooltip;
 	
 	int32 SlotIndex;
 	bool bIsOccupied;
@@ -34,8 +47,15 @@ protected:
 public:
 	virtual void NativeConstruct() override;
 
-	bool GetIsOccupied(){return bIsOccupied;}
-	void SetIsOccupied(bool b){bIsOccupied = b;}
+	UFUNCTION()
+	void ShowTooltip(UMJInventorySlot* InvSlot);
+
+	UFUNCTION()
+	void HideTooltip(UMJInventorySlot* InvSlot);
+	bool GetIsOccupied() {return bIsOccupied;}
+	void SetIsOccupied(bool b) {bIsOccupied = b;}
+
+	void SetCanvasPanel();
 	
 	TArray<UMJInventorySlot*> GetInventorySlot() {return InventorySlots;}
 	

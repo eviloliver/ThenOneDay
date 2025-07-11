@@ -17,6 +17,8 @@
  * Last Modified Date: 
  */
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMouseEnterEvent, UMJInventorySlot*, Slot);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMouseLeaveEvent, UMJInventorySlot*, Slot);
 class UBorder;
 class UTextBlock;
 class UImage;
@@ -40,7 +42,7 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ItemCount;
-		
+	
 	UTexture2D* Texture;
 
 	// visual
@@ -57,12 +59,19 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TSubclassOf<UMJInventoryTooltip> TooltipWidgetClass;
 
+	UPROPERTY()
 	UMJInventoryTooltip* Tooltip = nullptr;
-
-	bool IsHovered = false;
-	FTimerHandle HoverTimerHandle;
 	
+	FVector2D ScreenPos;
 public:
+	// Delegate
+	UPROPERTY(BlueprintAssignable, Category = "EventDispatchers")
+	FOnMouseEnterEvent OnMouseEntered;
+
+	UPROPERTY(BlueprintAssignable, Category = "EventDispatchers")
+	FOnMouseLeaveEvent OnMouseLeaved;
+
+	//
 	int32 SlotPosition;
 	bool bIsOccupied = false;
 	virtual void NativeConstruct() override;
@@ -79,6 +88,9 @@ public:
 	UTextBlock* GetText() {return Text;}
 	UTexture2D* GetItemTexture() {return Texture;}
 	int32 GetSlotPosition() {return SlotPosition;}
+	FVector2D GetScreenPos() {return ScreenPos;}
+	
+	FItemDataRow GetItemData() {return ItemData;};
 	
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 	virtual FReply NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
