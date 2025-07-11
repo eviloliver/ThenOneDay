@@ -7,6 +7,7 @@
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
 #include "Character/Component/MJSkillComponentBase.h"
+#include "DataAsset/DataAsset_StartDataBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 AMJMonsterCharacter::AMJMonsterCharacter()
@@ -121,5 +122,12 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	if (ASC)
 	{
 		ASC->InitAbilityActorInfo(this,this);
+	}
+	if (!CharacterStartData.IsNull())
+	{
+		if (UDataAsset_StartDataBase* LoadData = CharacterStartData.LoadSynchronous())
+		{
+			LoadData->GiveToAbilitySystemComponent(Cast<UMJAbilitySystemComponent>(GetAbilitySystemComponent()));
+		}
 	}
 }
