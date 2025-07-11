@@ -567,6 +567,7 @@ FodyWeavers.xsd
 
 # Our Assets Managing
 content/Assets/*
+content/VFX_Aseet/*
 
 # Rider .idea all ignore
 .idea/*
