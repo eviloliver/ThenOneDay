@@ -8,7 +8,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "MJInventoryInterface.h"
-#include "MJInventoryTooltip.h"
+#include "ProjectMJ.h"
 
 void UMJInventorySlot::NativeConstruct()
 {
@@ -20,6 +20,8 @@ void UMJInventorySlot::NativeConstruct()
 	DefaultBorderColor = {0.0f,0.0f,0.0f,0.2f};
 	ClickedBorderColor = {0.0f,0.0f,0.0f,0.1f};
 	Border->SetBrushColor(DefaultBorderColor);
+
+	// Tooltip = CreateWidget<UMJInventoryTooltip>(this,TooltipWidgetClass);    
 }
 
 void UMJInventorySlot::SetImage(UTexture2D* ItemTexture)
@@ -95,6 +97,9 @@ void UMJInventorySlot::NativeOnDragDetected(const FGeometry& InGeometry, const F
 bool UMJInventorySlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
 	UDragDropOperation* InOperation)
 {
+	ScreenPos = InDragDropEvent.GetScreenSpacePosition();
+	
+	MJ_LOG(LogMJ, Error, TEXT("In %f %f"),ScreenPos.X,ScreenPos.Y );
 	UMJInventoryDragDropOperation* DragOperation = Cast<UMJInventoryDragDropOperation>(InOperation);
 	
 	if (!DragOperation)
@@ -158,6 +163,7 @@ bool UMJInventorySlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDrop
 		return true;
 	}
 	Border->SetBrushColor(DefaultBorderColor);
+	
 	return false;
 }
 
@@ -180,21 +186,7 @@ void UMJInventorySlot::NativeOnMouseEnter(const FGeometry& InGeometry, const FPo
 {
     if (!InventoryData.IsEmpty()) // 공백칸 무시용
     {
-    	if (!Tooltip)
-    	{
-    		Tooltip = CreateWidget<UMJInventoryTooltip>(this,TooltipWidgetClass);    	
-    		Tooltip->SetDescription(ItemData.Description);
-    		Tooltip->SetItemName(ItemData.ItemID);
-    		Tooltip->AddToViewport();
-    	}
-
-    	Tooltip->SetVisibility(ESlateVisibility::HitTestInvisible);
-
-    	FVector2D MousePos;
-    	if (GetWorld()->GetFirstPlayerController()->GetMousePosition(MousePos.X, MousePos.Y))
-    	{
-    		Tooltip->SetPositionInViewport(MousePos, true);
-    	}
+	    OnMouseEntered.Broadcast(this);
     }
 }
 
@@ -202,10 +194,7 @@ void UMJInventorySlot::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
 {
 	if (!InventoryData.IsEmpty())
 	{
-		if (Tooltip)
-		{
-			Tooltip->SetVisibility(ESlateVisibility::Hidden);
-		}
+		OnMouseLeaved.Broadcast(this);
 	}
 }
 

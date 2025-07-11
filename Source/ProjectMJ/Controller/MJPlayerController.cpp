@@ -24,6 +24,7 @@
 #include "Compression/lz4.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/Inventory/MJInventoryWidget.h"
 
@@ -43,9 +44,6 @@ void AMJPlayerController::BeginPlay()
 
 	UIManager =	GetGameInstance()->GetSubsystem<UMJUIManagerSubsystem>();
 	ensure(UIManager);
-	// ?��리얼 ?��진의 초기?�� ?��?�� : GameInstance > GameMode > Actor
-	// 그러�?�? GetSubsystem ?�� nullptr ?�� 반환?�� ?��??? ?���?�?, !
-	// ?��?�� 모�?? ?��?��(모듈 ?��?��, ?��?��?�� ?���? ????���?, 비동�? 로직 �? ?���? ?��)?�� ???비하?�� ensure() ?��?�� UE_LOG 찍기
 	
 	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
 	if (MJChar)
@@ -58,7 +56,7 @@ void AMJPlayerController::BeginPlay()
 	AMJPlayerState* State = GetPlayerState<AMJPlayerState>();
 	if (State)
 	{
-		UIManager->ShowHUD(State);
+		UIManager->ShowHUD(State, this);
 	}
 }
 
@@ -85,7 +83,7 @@ void AMJPlayerController::SetupInputComponent()
 	ProjectMJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
 
 	// UI Input
-	ProjectMJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowInventory);
+	ProjectMJInputComponent->BindAction(ShowInventoryAction, ETriggerEvent::Triggered, this, &ThisClass::ShowInventory);
 	ProjectMJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowStatPanel);
 }
 
@@ -278,23 +276,33 @@ void AMJPlayerController::ShowInventory()
 void AMJPlayerController::OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
                                                 int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Log, TEXT("OnTriggerBegin"));
-	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
 	if ( Other && Other->FindComponentByClass<UMJDialogueComponent>())
 	{
-		MJChar->SetDialogueTarget(Other);
-		IsTriggered = true;
+		UE_LOG(LogTemp, Log, TEXT("OnTriggerBegin"));
+		AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
+		if (MJChar)
+		{
+			MJChar->SetDialogueTarget(Other);
+            IsTriggered = true;
+		}
 	}
 }
 
 void AMJPlayerController::OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex)
 {
-	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
-	if (MJChar->GetDialogueTarget()== Other)
+	if (Other && Other->FindComponentByClass<UMJDialogueComponent>())
 	{
-		MJChar->SetDialogueTarget(nullptr);
-		IsTriggered = false;
+		AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
+		if (MJChar)
+		{
+			if (MJChar->GetDialogueTarget() == Other)
+			{
+				MJChar->SetDialogueTarget(nullptr);
+				IsTriggered = false;
+			}
+
+		}
 	}
 }
 

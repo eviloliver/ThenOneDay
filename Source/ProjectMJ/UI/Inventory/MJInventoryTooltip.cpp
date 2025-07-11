@@ -2,4 +2,12 @@
 
 
 #include "UI/Inventory/MJInventoryTooltip.h"
+#include "Components/SizeBox.h"
 
+// void UMJInventoryTooltip::NativeConstruct()
+// {
+// 	Super::NativeConstruct();
+//
+// 	SizeBox->SetHeightOverride(500.f);
+// 	SizeBox->SetWidthOverride(400.f);
+// }

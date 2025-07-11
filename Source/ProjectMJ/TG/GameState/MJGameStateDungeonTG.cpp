@@ -11,6 +11,7 @@
 #include "TG/MJGameInstanceTG.h"
 #include "TG/Actor/MJDummyActorTG.h"
 #include "TG/Actor/MJDungeonAISpawnPointActor.h"
+#include "TG/AI/MJAIBossCharacterTG.h"
 #include "TG/SubSystem/MJDungeonGenerationSubSystem.h"
 
 
@@ -58,6 +59,10 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 		if (LoadedDungeonSessionData.AISpawnType == EMJAISpawnType::Static)
 		{
 			UGameplayStatics::GetAllActorsOfClass(GetWorld(),AMJDungeonAISpawnPointActor::StaticClass(),StaticSpawnPointActors);
+
+			// @fixme : using WaveData for now
+			GetWaveDataRowByIndex(1);
+
 			
 			for (auto& Iter : StaticSpawnPointActors)
 			{
@@ -66,20 +71,19 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 				FNavLocation ResultLocation;
 	
 				UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
-	
+				
 				if (NavSys)
 				{
-					// hard coded for now
+					// @fixme : hard coded for now
 					for (int i = 0 ; i < 10 ; ++i)
 					{
 						bool bIsFound = NavSys->GetRandomPointInNavigableRadius(IterSpawnPoint, 1000.f,ResultLocation);
 						if (bIsFound)
 						{
 							FActorSpawnParameters Params;
-							AActor* NewAIActor = GetWorld()->SpawnActor<AMJDummyActorTG>(DummyActorBPClass,ResultLocation,FRotator(),Params);
+							AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(GetActorFromPool(),ResultLocation,FRotator(),Params);
 							if (NewAIActor)
 							{
-								
 								NewAIActor->OnDestroyed.AddDynamic(this, &AMJGameStateDungeonTG::OnAIDestroy);
 								SpawnedActorRefs.Add(NewAIActor);
 								++CurrentSpawnedAINum;
@@ -108,7 +112,18 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 
 void AMJGameStateDungeonTG::Initialize_BossNode()
 {
-	
+	if (LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::InActive)
+	{
+		AMJAIBossCharacterTG* AIBoss = Cast<AMJAIBossCharacterTG>(UGameplayStatics::GetActorOfClass(GetWorld(),AMJAIBossCharacterTG::StaticClass()));
+		if (AIBoss)
+		{
+			AIBoss->OnDestroyed.AddDynamic(this ,&AMJGameStateDungeonTG::OnAIDestroy);
+			SpawnedActorRefs.Add(AIBoss);
+			CurrentSpawnedAINum++;
+		}
+		
+		LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Activated;
+	}
 }
 
 void AMJGameStateDungeonTG::Initialize_RewardNode()
@@ -142,22 +157,23 @@ void AMJGameStateDungeonTG::CheckSpawnAICondition()
 		return;
 	}
 	
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Magenta, FString::Printf(TEXT("Check AISpawn Coniditon Call")));
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Magenta, FString::Printf(TEXT("Check AISpawn Condition Call")));
 	
 	if (CurrentSpawnedAINum < SpawnAIMaxNum)
 	{
 		if (LoadedWaveDataRow.EnemyCount <= 0)
 		{
-			bool GetNextWave = GetWaveDataRowByIndex(++CurrentWaveNum);
-			
-			if (!GetNextWave)
-			{
-				GetWorldTimerManager().ClearTimer(WaveAISpawn_ConditionCheckTimerHandle);
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("Wave is end. Set Dungeon Context to Cleared")));
+			bool GetNextWave = GetWaveDataRowByIndex(CurrentWaveNum + 1);
 
-				LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
-				//GetWorldTimerManager().SetTimer(WaveAISpawn_ConditionCheckTimerHandle, this, &AMJGameStateDungeonTG::CheckSpawnAICondition,  2.0f, true);
-				
+			if (GetNextWave)
+			{
+				CurrentWaveNum += 1;
+			}
+			else if (!GetNextWave && CurrentSpawnedAINum <= 0)
+			{
+					GetWorldTimerManager().ClearTimer(WaveAISpawn_ConditionCheckTimerHandle);
+					LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
+					GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
 			}
 		}
 		else
@@ -221,23 +237,43 @@ void AMJGameStateDungeonTG::OnAIDestroy(AActor* DestroyedActor)
 	{
 		--CurrentSpawnedAINum;
 
-		if (LoadedDungeonSessionData.AISpawnType == EMJAISpawnType::Static &&
-			LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::Activated &&
-			CurrentSpawnedAINum <= 0)
+		UMJDungeonGenerationSubSystem* GS = GetGameInstance()->GetSubsystem<UMJDungeonGenerationSubSystem>();
+		check(GS);
+		if (GS)
 		{
-			LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
+			EMJNodeType CurrentNodeType = GS->GetDungeonGraph().Nodes[LoadedDungeonSessionData.DungeonNodeNum].NodeType;
+
+			EMJAISpawnType CurrentAISpawnType = LoadedDungeonSessionData.AISpawnType;
+			bool bIsActivatedMap = (LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::Activated);
+			bool bIsAllEnemyDied = CurrentSpawnedAINum <= 0;
 			
-			GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
-		}
-		else if (LoadedDungeonSessionData.AISpawnType == EMJAISpawnType::Wave &&
-			LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::Activated &&
-			CurrentSpawnedAINum <= 0
-			)
-		{
+			if (CurrentNodeType == EMJNodeType::Battle)
+			{
+				if (CurrentAISpawnType == EMJAISpawnType::Static && bIsActivatedMap && bIsAllEnemyDied)
+				{
+					LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
 			
-				//LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
-				GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
-			
+					GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
+				}
+				else if (CurrentAISpawnType == EMJAISpawnType::Wave && bIsActivatedMap && bIsAllEnemyDied )
+				{
+					// Wave AISpawn Mode`s End called at CheckAISpawn callback
+				}
+				
+			}
+			else if (CurrentNodeType == EMJNodeType::Boss)
+			{
+				if (CurrentAISpawnType == EMJAISpawnType::Static && bIsActivatedMap && bIsAllEnemyDied)
+				{
+					LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
+
+					GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
+				}
+			}
+			else if (CurrentNodeType == EMJNodeType::Reward)
+			{
+				
+			}
 		}
 	}
 }
@@ -343,7 +379,6 @@ void AMJGameStateDungeonTG::LoadFromInstancedDungeonSessionData(uint8 LoadFromNu
 
 void AMJGameStateDungeonTG::PublishOnBossHealthChanged(float Delta)
 {
-	
 	OnAIBossHealthChanged.Broadcast(Delta);
 }
 
