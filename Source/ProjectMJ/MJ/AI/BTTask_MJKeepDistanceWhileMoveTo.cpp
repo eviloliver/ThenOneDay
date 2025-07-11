@@ -74,15 +74,11 @@ EBTNodeResult::Type UBTTask_MJKeepDistanceWhileMoveTo::ExecuteTask(UBehaviorTree
 	{
 		FVector ToDir = (TargetLocation - AILocation).GetSafeNormal();
 		FVector RandomDir = FMath::VRandCone(ToDir, FMath::DegreesToRadians(30.f));
-
-		/*
-		 * Minjin
-		 * TODO
-		 * 50.0f 안 더해주면 MaximumAttackRange가 true로 안 됨
-		 */
-		FVector MoveToLocation = AILocation + RandomDir * (Distance +50.0f - AIPawn->GetAIMaximumAttackRange());
 		
-		OwnerController->MoveToLocation(MoveToLocation);
+		FVector MoveToLocation = AILocation + RandomDir * (Distance - AIPawn->GetAIMaximumAttackRange());
+
+		// Minjin: AcceptanceRadius 0.0f로 설정-> 정확히 목표지점에 와야 도착으로 간주
+		OwnerController->MoveToLocation(MoveToLocation, 0.0f, false);
 		
 		return EBTNodeResult::Succeeded;
 	}
