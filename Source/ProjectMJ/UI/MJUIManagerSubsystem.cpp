@@ -29,7 +29,7 @@ void UMJUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UMJUIManagerSubsystem::ShowHUD(AMJPlayerState* PlayerState, AMJPlayerController* PC)
 {
-	HUDWidget = CreateWidget<UMJHUDWidget>(GetWorld(), HUDWidgetClass);
+	HUDWidget = CreateWidget<UMJHUDWidget>(PC, HUDWidgetClass);
 	if (HUDWidget)
 	{
 		HUDWidget->AddToViewport();
