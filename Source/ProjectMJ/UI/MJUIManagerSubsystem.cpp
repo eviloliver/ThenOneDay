@@ -8,6 +8,7 @@
 #include "Dialogue/MJDialogueComponent.h"
 #include "Player/MJPlayerState.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
+#include "Controller/MJPlayerController.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Inventory/MJInventoryWidget.h"
 
@@ -26,12 +27,7 @@ void UMJUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 		TEXT("/Game/UI/WBP/HUD/WBP_HUD.WBP_HUD_C"));
 }
 
-void UMJUIManagerSubsystem::Deinitialize()
-{
-	Super::Deinitialize();
-}
-
-void UMJUIManagerSubsystem::ShowHUD(AMJPlayerState* PlayerState)
+void UMJUIManagerSubsystem::ShowHUD(AMJPlayerState* PlayerState, AMJPlayerController* PC)
 {
 	HUDWidget = CreateWidget<UMJHUDWidget>(GetWorld(), HUDWidgetClass);
 	if (HUDWidget)

@@ -43,9 +43,6 @@ void AMJPlayerController::BeginPlay()
 
 	UIManager =	GetGameInstance()->GetSubsystem<UMJUIManagerSubsystem>();
 	ensure(UIManager);
-	// ?��리얼 ?��진의 초기?�� ?��?�� : GameInstance > GameMode > Actor
-	// 그러�?�? GetSubsystem ?�� nullptr ?�� 반환?�� ?��??? ?���?�?, !
-	// ?��?�� 모�?? ?��?��(모듈 ?��?��, ?��?��?�� ?���? ????���?, 비동�? 로직 �? ?���? ?��)?�� ???비하?�� ensure() ?��?�� UE_LOG 찍기
 	
 	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
 	if (MJChar)
@@ -58,7 +55,7 @@ void AMJPlayerController::BeginPlay()
 	AMJPlayerState* State = GetPlayerState<AMJPlayerState>();
 	if (State)
 	{
-		UIManager->ShowHUD(State);
+		UIManager->ShowHUD(State, this);
 	}
 }
 
