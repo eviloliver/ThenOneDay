@@ -98,9 +98,9 @@ void UMJSkillComponentBase::ActivateSkill(const FGameplayTag& SkillTag)
 		return;
 	}
 
-	if (!GivenAbilityHandles.Contains(SkillTag))
+	if (!GivenActionAbilityHandles.Contains(SkillTag))
 	{
-		MJ_LOG(LogMJ, Error, TEXT("Not Exist GivenAbilityHandles(EquippedSlotSkill)"));
+		MJ_LOG(LogMJ, Error, TEXT("Not Exist GivenActionAbilityHandles(EquippedSlotSkill)"));
 		return;
 	}
 
@@ -183,7 +183,7 @@ void UMJSkillComponentBase::ActivateSkill(const FGameplayTag& SkillTag)
 		ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 	}
 
-	FGameplayAbilitySpecHandle Handle = GivenAbilityHandles[SkillTag];
+	FGameplayAbilitySpecHandle Handle = GivenActionAbilityHandles[SkillTag];
 	ASC->TryActivateAbility(Handle);
 }
 
@@ -216,9 +216,9 @@ void UMJSkillComponentBase::GiveAbilityToASC(const FGameplayTag& SkillTag)
 	}
 
 	const FMJSkillDataRow* DataRow = GI->SkillDataTable->FindRow<FMJSkillDataRow>(SkillTag.GetTagName(), TEXT("GiveAbility"));
-	if (!DataRow || !DataRow->SkillAbilityClass)
+	if (!DataRow)
 	{
-		MJ_LOG(LogMJ, Error, TEXT("Not Exist DataRow or SkillAbilityClass"));
+		MJ_LOG(LogMJ, Error, TEXT("Not Exist DataRow"));
 		return;
 	}
 
@@ -226,10 +226,7 @@ void UMJSkillComponentBase::GiveAbilityToASC(const FGameplayTag& SkillTag)
 
 	int32 SkillLevel = OwnedSkillMap[SkillTag].Level;
 
-	FGameplayAbilitySpec AbilitySpec(DataRow->SkillAbilityClass, SkillLevel, INDEX_NONE, OwnerCharacter);
-
 	const FSkillAssetDataByLevel* FoundAssetData = nullptr;
-
 	for (int32 i = DataRow->AssetTagDataByLevel.Num() - 1; i >= 0; --i)
 	{
 		const FSkillAssetDataByLevel& AssetData = DataRow->AssetTagDataByLevel[i];
@@ -240,26 +237,27 @@ void UMJSkillComponentBase::GiveAbilityToASC(const FGameplayTag& SkillTag)
 		}
 	}
 
-	if (FoundAssetData)
+	if (DataRow->SkillActionAbilityClass)
 	{
-		// Dongmin: 이거도 투사체 처럼 바꿀까 고민
-		if (FoundAssetData->AnimationTag.IsValid())
+		FGameplayAbilitySpec ActionAbilitySpec(DataRow->SkillActionAbilityClass, SkillLevel, INDEX_NONE, OwnerCharacter);
+		if (FoundAssetData && FoundAssetData->AnimationTag.IsValid())
 		{
-			AbilitySpec.DynamicAbilityTags.AddTag(FoundAssetData->AnimationTag);
+			ActionAbilitySpec.DynamicAbilityTags.AddTag(FoundAssetData->AnimationTag);
 		}
+		FGameplayAbilitySpecHandle ActionHandle = ASC->GiveAbility(ActionAbilitySpec);
+		GivenActionAbilityHandles.Add(SkillTag, ActionHandle);
+	}
 
-		if (OwnedSkillMap.Contains(SkillTag))
+	if (DataRow->SkillAbilityClass)
+	{
+		FGameplayAbilitySpec SkillAbilitySpec(DataRow->SkillAbilityClass, SkillLevel, INDEX_NONE, OwnerCharacter);
+		if (FoundAssetData && OwnedSkillMap.Contains(SkillTag))
 		{
 			OwnedSkillMap[SkillTag].ProjectileTag = FoundAssetData->ProjectileTag;
 		}
+		FGameplayAbilitySpecHandle SkillHandle = ASC->GiveAbility(SkillAbilitySpec);
+		GivenSkillAbilityHandles.Add(SkillTag, SkillHandle);
 	}
-	else
-	{
-
-	}
-
-	FGameplayAbilitySpecHandle Handle = ASC->GiveAbility(AbilitySpec);
-	GivenAbilityHandles.Add(SkillTag, Handle);
 }
 
 void UMJSkillComponentBase::RemoveAbility(const FGameplayTag& SkillTag)
@@ -277,10 +275,16 @@ void UMJSkillComponentBase::RemoveAbility(const FGameplayTag& SkillTag)
 		return;
 	}
 
-	if (GivenAbilityHandles.Contains(SkillTag))
+	if (GivenActionAbilityHandles.Contains(SkillTag))
 	{
-		ASC->ClearAbility(GivenAbilityHandles[SkillTag]);
-		GivenAbilityHandles.Remove(SkillTag);
+		ASC->ClearAbility(GivenActionAbilityHandles[SkillTag]);
+		GivenActionAbilityHandles.Remove(SkillTag);
+	}
+
+	if (GivenSkillAbilityHandles.Contains(SkillTag))
+	{
+		ASC->ClearAbility(GivenSkillAbilityHandles[SkillTag]);
+		GivenSkillAbilityHandles.Remove(SkillTag);
 	}
 }
 

@@ -18,8 +18,8 @@ void UMJPlayerSkillComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// 기존 BeginPlay의 테스트 코드를 여기에 둡니다.
-	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.BasicMeleeAttack")));
-	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.BasicMeleeAttack")));
+	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirArrow")));
+	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirArrow")));
 
 	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.Catastrophe")));
 	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.Catastrophe")));

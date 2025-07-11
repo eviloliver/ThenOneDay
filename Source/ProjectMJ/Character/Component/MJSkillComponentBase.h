@@ -69,5 +69,9 @@ protected:
 	TMap<FGameplayTag, FGameplayTag> EquippedSkillMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
-	TMap<FGameplayTag, FGameplayAbilitySpecHandle> GivenAbilityHandles;
+	TMap<FGameplayTag, FGameplayAbilitySpecHandle> GivenActionAbilityHandles;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+	TMap<FGameplayTag, FGameplayAbilitySpecHandle> GivenSkillAbilityHandles;
+	
 };

@@ -91,6 +91,9 @@ public:
 	ESkillTargetType SkillTargetType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UGameplayAbility> SkillActionAbilityClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UGameplayAbility> SkillAbilityClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
