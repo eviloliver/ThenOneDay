@@ -42,9 +42,9 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	DrawDebugCircle(GetWorld(), ControlledPawn->GetActorLocation(), AIPawn->GetAIMaximumAttackRange(), 16, FColor::Emerald, false, 0.2f, 0, 0, FVector::RightVector,FVector::ForwardVector, false);
 	DrawDebugCircle(GetWorld(), ControlledPawn->GetActorLocation(), AIPawn->GetAIMinimumAttackRange(), 16, FColor::Magenta, false, 0.2f, 0, 0, FVector::RightVector,FVector::ForwardVector, false);
 	
-	float DistanceTo = FVector::Distance(Target->GetActorLocation(), ControlledPawn->GetActorLocation());
-	float DistanceToTarget = ControlledPawn->GetDistanceTo(Target);
-
+	// float DistanceToTarget = ControlledPawn->GetDistanceTo(Target);
+	int32 DistanceToTarget = FMath::FloorToInt(ControlledPawn->GetDistanceTo(Target));
+	
 	// Minjin: 원거리 범위에 속할 경우
 	bool IsRange = DistanceToTarget <= AIPawn->GetAIMaximumAttackRange()
 		&& DistanceToTarget > AIPawn->GetAIMinimumAttackRange();

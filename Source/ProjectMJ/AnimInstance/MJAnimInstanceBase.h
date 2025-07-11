@@ -6,14 +6,14 @@
 #include "Animation/AnimInstance.h"
 #include "MJAnimInstanceBase.generated.h"
 
-class AMJPlayerCharacter;
+class AMJCharacterBase;
 class UCharacterMovementComponent;
 /**
  * Class Description:
  * Author: Lee JuHyeon
  * Created Date: 2025_06_12
- * Last Modified By: Lee JuHyeon
- * Last Modified Date: Add Class
+ * Last Modified By: Kim Minjin
+ * Last Modified Date: (25.07.10.)Change Cast
  */
 UCLASS()
 class PROJECTMJ_API UMJAnimInstanceBase : public UAnimInstance
@@ -28,7 +28,7 @@ public:
 
 public:
 	UPROPERTY(VisibleDefaultsOnly,BlueprintReadOnly,Category="AnimData|LocomotionData")
-	TObjectPtr<AMJPlayerCharacter> OwningCharacter;
+	TObjectPtr<AMJCharacterBase> OwningCharacter;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	TObjectPtr<UCharacterMovementComponent> OwningCharacterMovementComponent;

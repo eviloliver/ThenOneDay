@@ -3,13 +3,13 @@
 
 #include "AnimInstance/MJAnimInstanceBase.h"
 #include "MJAnimInstanceBase.h"
-#include "Character/MJPlayerCharacter.h"
+#include "Character/MJCharacterBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 void UMJAnimInstanceBase::NativeInitializeAnimation()
 {
 	
-	OwningCharacter = Cast<AMJPlayerCharacter>(TryGetPawnOwner());
+	OwningCharacter = Cast<AMJCharacterBase>(TryGetPawnOwner());
 	
 	if (OwningCharacter)
 	{

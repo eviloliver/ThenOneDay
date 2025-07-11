@@ -7,6 +7,8 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
+#include "Character/Component/MJSkillComponentBase.h"
+#include "DataAsset/DataAsset_StartDataBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 AMJMonsterCharacter::AMJMonsterCharacter()
@@ -30,7 +32,9 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	CharacterAttributeSet = CreateDefaultSubobject<UMJCharacterAttributeSet>(TEXT("CharacterAttributeSet"));
 
 	CharacterSkillAttributeSet = CreateDefaultSubobject<UMJCharacterSkillAttributeSet>(TEXT("CharacterSkillAttributeSet"));
-	
+
+	// Skill Component
+	SkillComponent = CreateDefaultSubobject<UMJSkillComponentBase>(TEXT("SkillComponent"));
 }
 
 void AMJMonsterCharacter::BeginPlay()
@@ -120,6 +124,15 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	{
 		ASC->InitAbilityActorInfo(this,this);
 	}
+
+	if (!CharacterStartData.IsNull())
+	{
+		if (UDataAsset_StartDataBase* LoadData = CharacterStartData.LoadSynchronous())
+		{
+			LoadData->GiveToAbilitySystemComponent(Cast<UMJAbilitySystemComponent>(GetAbilitySystemComponent()));
+		}
+	}
+
 	// TODO:
 	// 여기서 DT 받아와서 Attribute랑 몬스터가 가지고 있는 스킬 넣을거야
 	// 그래서 이 몬스터를 구븐 할 수 있는 RowName이 Tag인 형식의 DT와
@@ -136,4 +149,5 @@ void AMJMonsterCharacter::OnDeath()
 	// 애니메이션과 기타 등등 세팅
 	// - 동민 -
 	Destroy();
+
 }

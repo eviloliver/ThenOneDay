@@ -22,6 +22,8 @@ public:
 	AMJRangedMonsterCharacter();
 
 protected:
+	virtual void BeginPlay() override;
+	
 	virtual float GetAIMaximumAttackRange() override;
 	virtual float GetAIMinimumAttackRange() override;
 
