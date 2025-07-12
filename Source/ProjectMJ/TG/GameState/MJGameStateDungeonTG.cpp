@@ -80,8 +80,11 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 						bool bIsFound = NavSys->GetRandomPointInNavigableRadius(IterSpawnPoint, 1000.f,ResultLocation);
 						if (bIsFound)
 						{
-							FActorSpawnParameters Params;
-							AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(GetActorFromPool(),ResultLocation,FRotator(),Params);
+							
+							FActorSpawnParameters SpawnParams;
+							SpawnParams.Owner = this;
+							SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+							AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(GetActorFromPool(),ResultLocation,FRotator(), SpawnParams);
 							if (NewAIActor)
 							{
 								NewAIActor->OnDestroyed.AddDynamic(this, &AMJGameStateDungeonTG::OnAIDestroy);
@@ -206,15 +209,22 @@ void AMJGameStateDungeonTG::SpawnAI()
 							   AllLocations.Reserve(Result->Items.Num());
 	
 							   Result->GetAllAsLocations(AllLocations);
-
+								
 							   int i = 0;
 							   while (CurrentSpawnedAINum < SpawnAIMaxNum)
 							   {
-
-								   AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(GetActorFromPool(), AllLocations[i],FRotator());
-								   if (NewAIActor)
+							   	
+							   		//AllLocations[i].Z += 150.f;
+							   		FActorSpawnParameters SpawnParams;
+							   	    SpawnParams.Owner = this;
+							   		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+							   	
+								    AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(GetActorFromPool(), AllLocations[i],FRotator(), SpawnParams);
+							   	
+							   	   if (NewAIActor)
 								   {
-									   // Add Delegate when it`s spawned by GameState
+										
+							   		   // Add Delegate when it`s spawned by GameState
 									   NewAIActor->OnDestroyed.AddDynamic(this, &AMJGameStateDungeonTG::OnAIDestroy);
 									   SpawnedActorRefs.Add(NewAIActor);
 									   ++CurrentSpawnedAINum;
