@@ -94,7 +94,7 @@ void UMJInventoryWidget::ShowTooltip(UMJInventorySlot* InvSlot)
 		if (GetWorld()->GetFirstPlayerController()->GetMousePosition(MousePos.X, MousePos.Y))
 		{
 			MousePos /= Scale; 
-			CanvasSlot->SetPosition(MousePos);
+			CanvasSlot->SetPosition(MousePos + Pivot);
 		}
 		else // 드롭할 때 마우스 위치를 위 함수(GetMousePosition)로 못찾아서 대신 아래 방법씀
 		{

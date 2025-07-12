@@ -33,7 +33,7 @@ struct FInventoryItemData // 변할 수 있는 데이터값 // 인벤토리 아�
 	}
 };
 
-class UMJInventorySlot;
+//class UMJInventorySlot;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTMJ_API UMJInventoryComponent : public UActorComponent
 {
