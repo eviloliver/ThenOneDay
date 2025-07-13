@@ -25,8 +25,6 @@ public:
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	
-	UFUNCTION(BlueprintCallable)
-	bool GenerateDungeonGraph();
 	
 	UFUNCTION(BlueprintCallable)
 	const FDungeonGraph& GetDungeonGraph() const { return DungeonGraph; }
@@ -47,8 +45,15 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	uint8 MaxNodeNum;
 
+
+	UFUNCTION(BlueprintCallable)
+	bool GenerateDungeonGraph();
+
+	
 	UFUNCTION()
 	FDungeonNode MakeNewNode(uint8 NodeNum, uint8 AssignedMapID,  EMJNodeType NodeType, EMJAISpawnType AISpawnType, FVector2D UICoordinate);
+
+	
 	
 	UFUNCTION()
 	void ConnectNodesByDistance(float MaxDistance, int MaxEdgePerNode);
@@ -56,9 +61,20 @@ protected:
 	UFUNCTION()
 	void ConnectNodesByMST(float MaxDistance);
 
+	UFUNCTION()
+	bool CheckHasIterableGraph();
+
+	// DFS Section
+	
+	UFUNCTION()
+	void DFS(uint8 CurrentNode, const uint8 BossID, TArray<bool>& Visited);
+	
+	
 	UFUNCTION(BlueprintCallable)
 	bool CheckHasRoute(uint8 CurrentNodeNum, uint8 DestNodeNum);
 
+	
+	
 	UFUNCTION()
 	FVector2D GetCubicBezier(float t, const FVector2D Point);
 	

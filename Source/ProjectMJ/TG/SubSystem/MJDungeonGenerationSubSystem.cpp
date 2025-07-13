@@ -3,7 +3,6 @@
 
 #include "MJDungeonGenerationSubSystem.h"
 #include <functional>
-#include "ProjectMJ.h"
 #include "TG/MJGameInstanceTG.h"
 
 
@@ -15,7 +14,12 @@ UMJDungeonGenerationSubSystem::UMJDungeonGenerationSubSystem()
 void UMJDungeonGenerationSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	GenerateDungeonGraph();
+	do
+	{
+		GenerateDungeonGraph();
+	}
+	while (!CheckHasIterableGraph());
+
 }
 
 bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
@@ -106,15 +110,6 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 				
 			}
 			
-			// EMJAISpawnType AISpawnType = EMJAISpawnType::Static;
-			// float RandNumAISpawn = FMath::RandRange(1,4);
-			//
-			// if (RandNumAISpawn == 1)
-			// {
-			// 	AISpawnType = EMJAISpawnType::Wave;
-			// 	RandNum = FMath::RandRange(1,2);
-			// }
-			
 			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,RandNum,EMJNodeType::Battle, AISpawnType, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
 
@@ -160,23 +155,10 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 	
 			CurrentNotAssignedNodeNum++;
 		}
-	} 
+	}
+
 	
-	// @fixme : maybe cause infinite loop ?
-	// temporaily, start at random node
 	
-	// uint8 tmp;
-	// while (true)
-	// {
-	// 	tmp = FMath::RandRange(0,CurrentNotAssignedNodeNum - 1);
-	//
-	// 	if (DungeonGraph.Nodes[tmp].NodeType == ENodeType::Battle)
-	// 	{
-	// 		DungeonGraph.StartNodeID = tmp;
-	// 		SavedMapNodeNum = tmp;
-	// 		break;
-	// 	}
-	// }
 
 	// Choose most far node from BossNode
 	float MaxDist = FLT_MIN;
@@ -202,56 +184,13 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 		
 	}
 	
-#pragma region Debug
-	
-	// for (int i = 0 ; i < CurrentNotAssignedNodeNum ; i++)
-	// {
-	// 	MJ_LOG(LogTG, Warning, TEXT("Node Num = %d,  Node Assigned Num = %d, NodeType = %s"), DungeonGraph.Nodes[i].NodeID,DungeonGraph.Nodes[i].AssignedMapID, *FDungeonNode::NodeTypeToString(DungeonGraph.Nodes[i].NodeType));
-	// }
-	//
-	//
-	// for (int i = 0 ; i < CurrentNotAssignedNodeNum ; i++)
-	// {
-	// 	const FDungeonNode& Node = DungeonGraph.Nodes[i];
-	// 	bool bOutOfBounds =
-	// 		Node.UICoordinate.X < 0.f || Node.UICoordinate.X > ViewportSize.X ||
-	// 		Node.UICoordinate.Y < 0.f || Node.UICoordinate.Y > ViewportSize.Y;
-	//
-	// 	if (bOutOfBounds)
-	// 	{
-	// 		MJ_LOG(LogTG, Error, TEXT(" OUT OF BOUNDS → Node ID: %d | Pos: X=%.1f, Y=%.1f (Viewport: %.1f x %.1f)"),
-	// 			Node.NodeID,
-	// 			Node.UICoordinate.X,
-	// 			Node.UICoordinate.Y,
-	// 			ViewportSize.X,
-	// 			ViewportSize.Y);
-	// 	}
-	// 	else
-	// 	{
-	// 		MJ_LOG(LogTG, Log, TEXT("Node ID: %d | Pos: X=%.1f, Y=%.1f"),
-	// 			Node.NodeID,
-	// 			Node.UICoordinate.X,
-	// 			Node.UICoordinate.Y);
-	// 	}
-	// }
-	// for (int i = 0 ; i < CurrentNotAssignedNodeNum ; i++)
-	// {
-	// 	const FDungeonNode& Node = DungeonGraph.Nodes[i];
-	//
-	// 	MJ_LOG(LogTG, Warning, TEXT("Node ID: %d | Type: %s | Pos: X=%.1f, Y=%.1f"),
-	// 		Node.NodeID,
-	// 		*FDungeonNode::NodeTypeToString(Node.NodeType),
-	// 		Node.UICoordinate.X,
-	// 		Node.UICoordinate.Y);
-	// }
-#pragma endregion 
-	
 	ConnectNodesByMST(FVector2D::Distance(FVector2D(0.0f,0.0f), ViewportSize));
 	
 	ConnectNodesByDistance(400.f,4);
 	
 	return true;
 }
+
 
 FDungeonNode UMJDungeonGenerationSubSystem::MakeNewNode(uint8 NodeNum, uint8 AssignedMapID, EMJNodeType NodeType,EMJAISpawnType AISpawnType, FVector2D UICoordinate)
 {
@@ -310,21 +249,6 @@ void UMJDungeonGenerationSubSystem::ConnectNodesByDistance(float MaxDistance, in
 			}
 		}
 	}
-
-	// for debug
-	// for (const FDungeonNode& Node : DungeonGraph.Nodes)
-	// {
-	// 	FString ConnectedStr;
-	// 	for (int32 ID : Node.ConnectedNodeIDs)
-	// 	{
-	// 		ConnectedStr += FString::Printf(TEXT("%d "), ID);
-	// 	}
-	//
-	// 	MJ_LOG(LogTG, Warning, TEXT("Node %d (%s) → [%s]"),
-	// 		Node.NodeID,
-	// 		*FDungeonNode::NodeTypeToString(Node.NodeType),
-	// 		*ConnectedStr);
-	// }
 	
 }
 
@@ -382,6 +306,43 @@ void UMJDungeonGenerationSubSystem::ConnectNodesByMST(float MaxDistance)
 			DungeonGraph.Nodes[NodeA].ConnectedNodeIDs.Add(NodeB);
 			DungeonGraph.Nodes[NodeB].ConnectedNodeIDs.Add(NodeA);
 		}
+	}
+}
+
+bool UMJDungeonGenerationSubSystem::CheckHasIterableGraph()
+{
+	const uint8 NodeCount = DungeonGraph.Nodes.Num();
+	const uint8 BossID    = DungeonGraph.BossNodeID;
+	const uint8 StartID   = 0;
+	
+	TArray<bool> Visited;
+	Visited.Init(false, NodeCount);
+
+	DFS(StartID, BossID, /* OutArray */Visited);
+
+	for (uint8 NodeID = 0; NodeID < NodeCount; ++NodeID)
+	{
+		if (NodeID == BossID) 
+			continue;
+
+		if (!Visited[NodeID])
+			return false;  
+	}
+
+	return true;  
+}
+
+void UMJDungeonGenerationSubSystem::DFS(uint8 CurrentNode, const uint8 BossID, TArray<bool>& Visited)
+{
+	Visited[CurrentNode] = true;
+	
+	for (uint8 Next : DungeonGraph.Nodes[CurrentNode].ConnectedNodeIDs)
+	{
+		if (Next == BossID) 
+			continue;
+
+		if (!Visited[Next])
+			DFS(Next, BossID, Visited);
 	}
 }
 
