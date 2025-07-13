@@ -87,7 +87,7 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 							AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(GetActor,ResultLocation,FRotator(), SpawnParams);
 
 							check(NewAIActor);
-							
+
 							if (NewAIActor)
 							{
 								NewAIActor->OnDestroyed.AddDynamic(this, &AMJGameStateDungeonTG::OnAIDestroy);
@@ -222,7 +222,7 @@ void AMJGameStateDungeonTG::SpawnAI()
 							   {
 							   	
 							   		FActorSpawnParameters SpawnParams;
-							   	    SpawnParams.Owner = this;
+							   	  SpawnParams.Owner = this;
 							   		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 							   		TSubclassOf<AActor> GetActor = GetActorFromPool();
