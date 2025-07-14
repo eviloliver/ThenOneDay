@@ -58,6 +58,12 @@ void AMJPlayerController::BeginPlay()
 	{
 		UIManager->ShowHUD(State, this);
 	}
+	
+	PauseWidget = CreateWidget(this, PauseWidgetClass);
+	//PauseWidget->AddToViewport(10);
+	//PauseWidget->SetVisibility(ESlateVisibility::Hidden);
+	
+			
 }
 
 void AMJPlayerController::SetupInputComponent()
@@ -85,6 +91,9 @@ void AMJPlayerController::SetupInputComponent()
 	// UI Input
 	ProjectMJInputComponent->BindAction(ShowInventoryAction, ETriggerEvent::Triggered, this, &ThisClass::ShowInventory);
 	ProjectMJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowStatPanel);
+
+	ProjectMJInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &ThisClass::PauseGame);
+	
 }
 
 void AMJPlayerController::PlayerTick(float DeltaTime)
@@ -323,6 +332,7 @@ void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AAc
 	 }
 }
 
+
 void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
 {
 	MJ_LOG(LogMJ, Warning, TEXT("Input Pressed: %s"), *InInputTag.ToString())
@@ -348,8 +358,34 @@ void AMJPlayerController::Input_AbilityInputReleased(FGameplayTag InInputTag)
 	{
 		if (UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(ControlledPawn->GetAbilitySystemComponent()))
 		{
-
 			MJASC->OnAbilityInputReleased(InInputTag);
 		}
+	}
+}
+
+void AMJPlayerController::PauseGame()
+{
+	if (IsPaused())
+	{
+
+		if (PauseWidget->IsInViewport())
+		{
+			PauseWidget->RemoveFromParent();	
+		}
+		
+		SetPause(false);
+	}
+	else
+	{
+		if (PauseWidgetClass.Get())
+		{
+			if (!PauseWidget->IsInViewport())
+			{
+				PauseWidget->AddToViewport();
+			}
+		}
+		
+		SetPause(true);
+
 	}
 }

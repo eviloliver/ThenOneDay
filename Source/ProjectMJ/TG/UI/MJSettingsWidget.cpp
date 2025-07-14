@@ -16,6 +16,7 @@ void UMJSettingsWidget::NativeConstruct()
 	ComboBox_Resolution->OnSelectionChanged.AddDynamic(this, &UMJSettingsWidget::ComboBox_ResolutionChanged);
 	ComboBox_Graphics->OnSelectionChanged.AddDynamic(this, &UMJSettingsWidget::ComboBox_GraphicsChanged);
 	Button_Back->OnClicked.AddDynamic(this, &UMJSettingsWidget::OnClicked_Back);
+
 }
 
 void UMJSettingsWidget::ComboBox_WindowModeChanged(FString SelectedItem, ESelectInfo::Type SelectionType)
@@ -28,6 +29,7 @@ void UMJSettingsWidget::ComboBox_WindowModeChanged(FString SelectedItem, ESelect
 			if (SelectedItem == "Windowed")
 			{
 				CurrentGameUserSettings->SetFullscreenMode(EWindowMode::Type::Windowed);
+				// Have to change Resolution cuz it might not show it`s windowed UI when changed at same as screen resolution.
 				CurrentGameUserSettings->SetScreenResolution(FIntPoint(1280,720));
 			}
 			else if (SelectedItem == "FullScreen")
@@ -43,11 +45,7 @@ void UMJSettingsWidget::ComboBox_WindowModeChanged(FString SelectedItem, ESelect
 			CurrentGameUserSettings->ApplySettings(false);
 			CurrentGameUserSettings->SaveSettings();
 		}
-		
-	
 	}
-	
-	
 }
 
 void UMJSettingsWidget::ComboBox_ResolutionChanged(FString SelectedItem, ESelectInfo::Type SelectionType)
@@ -69,8 +67,7 @@ void UMJSettingsWidget::ComboBox_ResolutionChanged(FString SelectedItem, ESelect
 			{
 				CurrentGameUserSettings->SetScreenResolution(FIntPoint(1920,1080));
 			}
-
-
+			
 			CurrentGameUserSettings->ApplySettings(false);
 			CurrentGameUserSettings->SaveSettings();
 		}
@@ -84,7 +81,6 @@ void UMJSettingsWidget::ComboBox_GraphicsChanged(FString SelectedItem, ESelectIn
 		UGameUserSettings* CurrentGameUserSettings = GEngine->GetGameUserSettings();
 		if (CurrentGameUserSettings)
 		{
-			
 			// Sets all other settings based on an overall value
 			// @param Value 0:low, 1:medium, 2:high, 3:epic, 4:cinematic (gets clamped if needed)
 			if (SelectedItem == "Low")
@@ -111,11 +107,7 @@ void UMJSettingsWidget::ComboBox_GraphicsChanged(FString SelectedItem, ESelectIn
 			CurrentGameUserSettings->ApplySettings(false);
 			CurrentGameUserSettings->SaveSettings();
 		}
-		
 	}
-	
-
-	
 }
 
 void UMJSettingsWidget::OnClicked_Back()
@@ -125,10 +117,22 @@ void UMJSettingsWidget::OnClicked_Back()
 	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
 	if (PC)
 	{
-		UUserWidget* MainMewnuWidget = CreateWidget(PC, MainMenuWidgetClass,TEXT("MainMenuWidget"));
-		if (MainMewnuWidget)
+		if (PC->IsPaused())
 		{
-			MainMewnuWidget->AddToViewport();
+			
+			UUserWidget* PauseWidget = CreateWidget(PC, PauseMenuWidgetClass);
+			if (PauseWidget)
+			{
+				PauseWidget->AddToViewport();
+			}
+		}
+		else
+		{
+			UUserWidget* MainMewnuWidget = CreateWidget(PC, MainMenuWidgetClass);
+			if (MainMewnuWidget)
+			{
+				MainMewnuWidget->AddToViewport();
+			}		
 		}
 	}
 }

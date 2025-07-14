@@ -17,18 +17,37 @@ void UMJMainMenuWidget::NativeConstruct()
 	Button_LoadGame->OnClicked.AddDynamic(this, &ThisClass::OnClicked_LoadGame);
 	Button_Settings->OnClicked.AddDynamic(this, &ThisClass::OnClicked_Settings);
 	Button_Quit->OnClicked.AddDynamic(this, &ThisClass::OnClicked_Quit);
+	
+	APlayerController* PC = UGameplayStatics::GetPlayerController(this,0);
+	if (PC)
+	{
+		FInputModeUIOnly InputModeUI;
+		InputModeUI.SetWidgetToFocus(this->TakeWidget());
+		InputModeUI.SetLockMouseToViewportBehavior(EMouseLockMode::LockInFullscreen);
+   
+		PC->SetInputMode(InputModeUI);
+	}
+	
 }
 
 void UMJMainMenuWidget::OnClicked_NewGame()
 {
 	RemoveFromParent();
+
+	if (APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+	{
+		FInputModeGameAndUI InputModeGameAndUI;
+		PC->SetInputMode(InputModeGameAndUI);
+	}
+
 	// Move to TG_Town
 	// @fixme : maybe there`s other good method
+	
 	AMJGameModeBase* GM = Cast<AMJGameModeBase>(UGameplayStatics::GetGameMode(this));
-
 	if (GM)
 	{
-		GM->TravelToMap(TEXT("TG_Town"));
+		UGameplayStatics::OpenLevel(this,TEXT("TG_Town"));
+		//GM->TravelToMap(TEXT("TG_Town"));
 	}
 }
 
@@ -43,10 +62,10 @@ void UMJMainMenuWidget::OnClicked_Settings()
 	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
 	if (PC)
 	{
-		UUserWidget* SettingsWidget = CreateWidget(PC,SettingsWidgetClass,TEXT("SettingsWidget"));
+		UUserWidget* SettingsWidget = CreateWidget(PC,SettingsWidgetClass);
 		if (SettingsWidget)
 		{
-			SettingsWidget->AddToViewport();
+			SettingsWidget->AddToViewport(1);
 		}
 	}
 }

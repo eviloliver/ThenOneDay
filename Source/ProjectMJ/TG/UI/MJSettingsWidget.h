@@ -28,6 +28,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> MainMenuWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> PauseMenuWidgetClass;
+
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UComboBoxString> ComboBox_WindowMode;
 

@@ -107,4 +107,18 @@ public:
 	// Active Ability
 	void Input_InstantSkillPressed(FGameplayTag InInputTag);
 	void Input_InstantSkillReleased(FGameplayTag InInputTag);
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> PauseWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<UUserWidget> PauseWidgetClass;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = UI)
+	UInputAction* PauseAction;
+
+	UFUNCTION()
+	void PauseGame();
+	
+	
 };
