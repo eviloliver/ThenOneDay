@@ -7,10 +7,6 @@
 
 UMJPlayerSkillComponent::UMJPlayerSkillComponent()
 {
-	// TODO: 현재 테스트 용 Input 태그를 사용해서 매핑했으므로 나중에 태그 정리와 함께 할 것
-	// 하드 코딩 개선 하고 싶음
-	InputTagToSkillTagMap.Add(FGameplayTag::RequestGameplayTag(TEXT("Input.Test.Q")), FGameplayTag::RequestGameplayTag(TEXT("Skill.Instant")));
-	InputTagToSkillTagMap.Add(FGameplayTag::RequestGameplayTag(TEXT("Input.Test.W")), FGameplayTag::RequestGameplayTag(TEXT("Skill.Charge")));
 }
 
 void UMJPlayerSkillComponent::BeginPlay()
@@ -31,28 +27,13 @@ void UMJPlayerSkillComponent::BeginPlay()
 
 void UMJPlayerSkillComponent::ActivateSkillByInputTag(const FGameplayTag InputTag)
 {
-	if (!InputTagToSkillTagMap.Contains(InputTag))
+	if (EquippedSkillMap.Contains(InputTag))
 	{
-		MJ_LOG(LogMJ, Error, TEXT("Not Exist InputTag in InputTagToSkillTagMap"));
-		return;
+		FGameplayTag EquippedSkill = EquippedSkillMap[InputTag];
+		ActivateSkill(EquippedSkill);
 	}
-	FGameplayTag SkillTypeTag = InputTagToSkillTagMap[InputTag];
-
-	if (!EquippedSkillMap.Contains(SkillTypeTag))
+	else
 	{
-		MJ_LOG(LogMJ, Error, TEXT("Not Exist SkillTag in EquippedSkillMap"));
-		return;
+		MJ_LOG(LogMJ, Warning, TEXT("Not Equipped Skill Tag"))
 	}
-
-	FGameplayTag EquippedSkill = EquippedSkillMap[SkillTypeTag];
-	ActivateSkill(EquippedSkill);
-}
-
-FGameplayTag UMJPlayerSkillComponent::ConvertInputTagToTypeTag(const FGameplayTag& InputTag)
-{
-	if (InputTagToSkillTagMap.Contains(InputTag))
-	{
-		return InputTagToSkillTagMap[InputTag];
-	}
-	return FGameplayTag();
 }

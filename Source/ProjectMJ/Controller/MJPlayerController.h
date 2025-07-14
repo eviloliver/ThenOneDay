@@ -57,10 +57,10 @@ private:
 	float RMBHoldTime = 0.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	float HoldThreshold = 0.2f;
+	float HoldThreshold = 0.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	float ChargeThreshold = 1.0f;
+	float ChargeThreshold = 0.4f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inpur", meta = (AllowPrivateAccess = "true"))
 	UDataAsset_InputConfig* InputConfigDataAsset;

@@ -17,7 +17,7 @@ UInputAction* UDataAsset_InputConfig::FindNativeInputActionByTag(const FGameplay
 
 UInputAction* UDataAsset_InputConfig::FindAbilityInputActionByTag(const FGameplayTag& InInputTag) const
 {
-    for (const FMJInputActionConfig& InputActionConfig : AbilityInputAction)
+    for (const FMJInputActionConfig& InputActionConfig : AbilityInputActions)
     {
         if (InputActionConfig.InputTag == InInputTag && InputActionConfig.InputAction)
         {

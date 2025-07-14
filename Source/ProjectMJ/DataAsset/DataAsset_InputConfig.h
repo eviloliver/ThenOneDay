@@ -39,7 +39,7 @@ class PROJECTMJ_API UDataAsset_InputConfig : public UDataAsset
 	GENERATED_BODY()
 	
 	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UInputMappingContext>DefaultMappingContext;
+	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UInputMappingContext> DialogueMappingContext;
@@ -48,11 +48,14 @@ class PROJECTMJ_API UDataAsset_InputConfig : public UDataAsset
 	TArray<FMJInputActionConfig> NativeInputActions;
 
 	UPROPERTY(EditDefaultsOnly, meta = (TitleProperty = InputTag))
-	TArray<FMJInputActionConfig>AbilityInputAction;
+	TArray<FMJInputActionConfig> AbilityInputActions;
 
 public:
 	UInputMappingContext* GetDefaultMappingContext() const { return DefaultMappingContext.Get(); }
 	UInputMappingContext* GetDialogueMappingContext() const { return DialogueMappingContext.Get(); }
+
+	const TArray<FMJInputActionConfig>& GetNativeInputActions() const { return NativeInputActions; }
+	const TArray<FMJInputActionConfig>& GetAbilityInputActions() const { return NativeInputActions; }
 
 	UInputAction* FindNativeInputActionByTag(const FGameplayTag& InInputTag) const;
 	UInputAction* FindAbilityInputActionByTag(const FGameplayTag& InInputTag) const;
