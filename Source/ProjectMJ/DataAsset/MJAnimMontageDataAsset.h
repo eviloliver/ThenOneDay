@@ -26,6 +26,6 @@ class PROJECTMJ_API UMJAnimMontageDataAsset : public UDataAsset
 	TMap<FGameplayTag, TObjectPtr<UAnimMontage>> AnimMontageMap;
 
 public:
-	TObjectPtr<UAnimMontage> FindAnimMontageForTag(const FGameplayTag& Tag) const;
+	UAnimMontage* FindAnimMontageForTag(const FGameplayTag& Tag) const;
 
 };
