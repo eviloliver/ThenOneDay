@@ -34,7 +34,7 @@ AMJPlayerController::AMJPlayerController()
 	bIsRMBPressed = false;
 	RMBHoldTime = 0.0f;
 
-	HoldThreshold = 0.0f;
+	HoldThreshold = 0.1f;
 	ChargeThreshold = 0.3f;
 }
 
@@ -147,6 +147,8 @@ void AMJPlayerController::OnRightMousePressed()
 
 void AMJPlayerController::OnRightMouseReleased()
 {
+	StopMovement();
+
 	AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
 	if (!ControlledCharacter)
 	{
@@ -174,15 +176,13 @@ void AMJPlayerController::OnRightMouseReleased()
 
 void AMJPlayerController::AttackOrMove(const FHitResult& HitResult)
 {
+	MJ_LOG(LogMJ, Warning, TEXT("A"));
+
 	AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
 	if (!ControlledCharacter)
 	{
-		return;
-	}
+		MJ_LOG(LogMJ, Warning, TEXT("AA"));
 
-	AMJCharacterBase* TargetCharacter = Cast<AMJCharacterBase>(HitResult.GetActor());
-	if (!TargetCharacter)
-	{
 		return;
 	}
 
@@ -192,7 +192,12 @@ void AMJPlayerController::AttackOrMove(const FHitResult& HitResult)
 		return;
 	}
 
-	if (TargetCharacter != ControlledCharacter && TargetCharacter->GetGenericTeamId() != ControlledCharacter->GetGenericTeamId())
+	AMJCharacterBase* TargetCharacter = Cast<AMJCharacterBase>(HitResult.GetActor());
+	if (!TargetCharacter)
+	{
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitResult.Location);;
+	}
+	else if (TargetCharacter != ControlledCharacter && TargetCharacter->GetGenericTeamId() != ControlledCharacter->GetGenericTeamId())
 	{
 		FGameplayTag LeftClickInputTag = FGameplayTag::RequestGameplayTag(FName("Skill.Basic"));
 		SkillComponent->ActivateSkillByInputTag(LeftClickInputTag);
