@@ -176,13 +176,9 @@ void AMJPlayerController::OnRightMouseReleased()
 
 void AMJPlayerController::AttackOrMove(const FHitResult& HitResult)
 {
-	MJ_LOG(LogMJ, Warning, TEXT("A"));
-
 	AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
 	if (!ControlledCharacter)
 	{
-		MJ_LOG(LogMJ, Warning, TEXT("AA"));
-
 		return;
 	}
 
@@ -199,7 +195,7 @@ void AMJPlayerController::AttackOrMove(const FHitResult& HitResult)
 	}
 	else if (TargetCharacter != ControlledCharacter && TargetCharacter->GetGenericTeamId() != ControlledCharacter->GetGenericTeamId())
 	{
-		FGameplayTag LeftClickInputTag = FGameplayTag::RequestGameplayTag(FName("Skill.Basic"));
+		FGameplayTag LeftClickInputTag = FGameplayTag::RequestGameplayTag(FName("Skill.Normal"));
 		SkillComponent->ActivateSkillByInputTag(LeftClickInputTag);
 	}
 	else
