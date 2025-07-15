@@ -2,10 +2,15 @@
 
 
 #include "MJ/AI/BTTask_MJAttack.h"
+
+#include "AbilitySystemComponent.h"
 #include "AIController.h"
+#include "ProjectMJ.h"
 #include "Abilities/GameplayAbility.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "MJ/Interface/MJCharacterAIInterface.h"
+#include "MJ/Character/MJMonsterCharacter.h"
+#include "Character/Component/MJSkillComponentBase.h"
 
 UBTTask_MJAttack::UBTTask_MJAttack()
 {
@@ -14,18 +19,43 @@ UBTTask_MJAttack::UBTTask_MJAttack()
 EBTNodeResult::Type UBTTask_MJAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	APawn* ControlledPawn = OwnerComp.GetAIOwner()->GetPawn();
-	if (nullptr == ControlledPawn)
+	if (ControlledPawn == nullptr)
 	{
 		return EBTNodeResult::Failed;
 	}
 
-	IMJCharacterAIInterface* AIPawn = Cast<IMJCharacterAIInterface>(ControlledPawn);
-	if (nullptr == AIPawn)
+	AMJMonsterCharacter* Monster = Cast<AMJMonsterCharacter>(ControlledPawn);
+	if (ControlledPawn == nullptr)
 	{
 		return EBTNodeResult::Failed;
 	}
 
-	AIPawn->AttackByAI();
+	UAbilitySystemComponent* ASC = Monster->GetAbilitySystemComponent();
+	UMJSkillComponentBase* SkillComponent = Monster->GetSkillComponent();
+	FGameplayTag AttackTag = Monster->GetAttackTag();
 
-	return EBTNodeResult::Succeeded;
+	FDelegateHandle Handle;
+	Handle = ASC->OnAbilityEnded.AddLambda(
+	[&](const FAbilityEndedData& EndedData)
+	{
+		MJ_LOG(LogMJ, Error,TEXT("A"));
+		if (EndedData.AbilityThatEnded->AbilityTags.HasTagExact(AttackTag))
+		{
+			MJ_LOG(LogMJ, Error,TEXT("AA"));
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			ASC->OnAbilityEnded.Remove(Handle);
+		}
+	});
+	MJ_LOG(LogMJ, Error,TEXT("AAA"));
+	SkillComponent->ActivateSkill(AttackTag);
+	
+	// IMJCharacterAIInterface* AIPawn = Cast<IMJCharacterAIInterface>(ControlledPawn);
+	// if (AIPawn == nullptr)
+	// {
+	// 	return EBTNodeResult::Failed;
+	// }
+	//
+	// AIPawn->AttackByAI();
+	
+	return EBTNodeResult::InProgress;
 }
