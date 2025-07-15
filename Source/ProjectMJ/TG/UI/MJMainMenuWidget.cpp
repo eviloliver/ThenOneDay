@@ -3,7 +3,6 @@
 
 #include "TG/UI/MJMainMenuWidget.h"
 #include "ProjectMJ.h"
-#include "SkeletalRenderPublic.h"
 #include "Components/Button.h"
 #include "GameMode/MJGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
@@ -22,11 +21,12 @@ void UMJMainMenuWidget::NativeConstruct()
 	APlayerController* PC = UGameplayStatics::GetPlayerController(this,0);
 	if (PC)
 	{
-		FInputModeUIOnly InputModeUI;
-		InputModeUI.SetWidgetToFocus(this->TakeWidget());
-		InputModeUI.SetLockMouseToViewportBehavior(EMouseLockMode::LockInFullscreen);
+		 
+		FInputModeGameAndUI InputMode;
+		InputMode.SetWidgetToFocus(this->TakeWidget());
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockInFullscreen);
    
-		PC->SetInputMode(InputModeUI);
+		PC->SetInputMode(InputMode);
 		
 		SettingsWidget = CreateWidget(PC,SettingsWidgetClass);
 		if (SettingsWidget)
@@ -34,7 +34,6 @@ void UMJMainMenuWidget::NativeConstruct()
 			SettingsWidget->AddToViewport(2);
 			SettingsWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
-		
 	}
 	
 }
@@ -56,7 +55,6 @@ void UMJMainMenuWidget::OnClicked_NewGame()
 	if (GM)
 	{
 		UGameplayStatics::OpenLevel(this,TEXT("TG_Town"));
-		//GM->TravelToMap(TEXT("TG_Town"));
 	}
 }
 
