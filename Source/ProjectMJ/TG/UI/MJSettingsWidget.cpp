@@ -5,6 +5,7 @@
 
 #include "Components/Button.h"
 #include "Components/ComboBoxString.h"
+#include "Controller/MJPlayerController.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -112,27 +113,23 @@ void UMJSettingsWidget::ComboBox_GraphicsChanged(FString SelectedItem, ESelectIn
 
 void UMJSettingsWidget::OnClicked_Back()
 {
-	RemoveFromParent();
-	
 	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
 	if (PC)
 	{
 		if (PC->IsPaused())
 		{
-			
-			UUserWidget* PauseWidget = CreateWidget(PC, PauseMenuWidgetClass);
-			if (PauseWidget)
+			AMJPlayerController* MJPC = Cast<AMJPlayerController>(PC);
+			if (MJPC)
 			{
-				PauseWidget->AddToViewport();
+				UUserWidget* PauseWidget = MJPC->GetPauseWidget();
+				if (PauseWidget)
+				{
+					PauseWidget->SetVisibility(ESlateVisibility::Visible);
+				}					
 			}
 		}
-		else
-		{
-			UUserWidget* MainMewnuWidget = CreateWidget(PC, MainMenuWidgetClass);
-			if (MainMewnuWidget)
-			{
-				MainMewnuWidget->AddToViewport();
-			}		
-		}
+		
+			SetVisibility(ESlateVisibility::Hidden);
+		
 	}
 }

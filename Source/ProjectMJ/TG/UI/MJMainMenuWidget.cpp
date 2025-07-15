@@ -3,6 +3,7 @@
 
 #include "TG/UI/MJMainMenuWidget.h"
 #include "ProjectMJ.h"
+#include "SkeletalRenderPublic.h"
 #include "Components/Button.h"
 #include "GameMode/MJGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
@@ -26,6 +27,14 @@ void UMJMainMenuWidget::NativeConstruct()
 		InputModeUI.SetLockMouseToViewportBehavior(EMouseLockMode::LockInFullscreen);
    
 		PC->SetInputMode(InputModeUI);
+		
+		SettingsWidget = CreateWidget(PC,SettingsWidgetClass);
+		if (SettingsWidget)
+		{
+			SettingsWidget->AddToViewport(2);
+			SettingsWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
+		
 	}
 	
 }
@@ -58,16 +67,7 @@ void UMJMainMenuWidget::OnClicked_LoadGame()
 
 void UMJMainMenuWidget::OnClicked_Settings()
 {
-	RemoveFromParent();
-	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
-	if (PC)
-	{
-		UUserWidget* SettingsWidget = CreateWidget(PC,SettingsWidgetClass);
-		if (SettingsWidget)
-		{
-			SettingsWidget->AddToViewport(1);
-		}
-	}
+	SettingsWidget->SetVisibility(ESlateVisibility::Visible);
 }
 void UMJMainMenuWidget::OnClicked_Quit()
 {

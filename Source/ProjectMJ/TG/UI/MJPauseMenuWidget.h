@@ -19,6 +19,11 @@ UCLASS()
 class PROJECTMJ_API UMJPauseMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
+public:
+
+	UFUNCTION()
+	UUserWidget* GetSettingsWidget();
+	
 
 protected:
 
@@ -28,8 +33,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> SettingsWidgetClass;
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> MainMenuWidgetClass;
+	UPROPERTY()
+	TObjectPtr<UUserWidget> SettingsWidget;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_Resume;

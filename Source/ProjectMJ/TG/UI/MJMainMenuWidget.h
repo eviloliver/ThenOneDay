@@ -26,6 +26,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = UI)
 	TSubclassOf<UUserWidget> SettingsWidgetClass;
 
+	UPROPERTY()
+	TObjectPtr<UUserWidget> SettingsWidget;
+	
+
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_NewGame;
 	

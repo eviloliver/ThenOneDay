@@ -25,6 +25,7 @@
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "TG/UI/MJPauseMenuWidget.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/Inventory/MJInventoryWidget.h"
 
@@ -60,8 +61,8 @@ void AMJPlayerController::BeginPlay()
 	}
 	
 	PauseWidget = CreateWidget(this, PauseWidgetClass);
-	//PauseWidget->AddToViewport(10);
-	//PauseWidget->SetVisibility(ESlateVisibility::Hidden);
+	PauseWidget->AddToViewport(1);
+	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
 	
 			
 }
@@ -367,25 +368,27 @@ void AMJPlayerController::PauseGame()
 {
 	if (IsPaused())
 	{
-
-		if (PauseWidget->IsInViewport())
+		if (UUserWidget* SettingsWidget = Cast<UMJPauseMenuWidget>(PauseWidget)->GetSettingsWidget())
 		{
-			PauseWidget->RemoveFromParent();	
+			if (SettingsWidget->GetVisibility() == ESlateVisibility::Visible)
+			{
+				SettingsWidget->SetVisibility(ESlateVisibility::Hidden);
+			}
+			else
+			{
+				PauseWidget->SetVisibility(ESlateVisibility::Hidden);
+				SetPause(false);		
+			}
 		}
-		
-		SetPause(false);
 	}
 	else
 	{
-		if (PauseWidgetClass.Get())
-		{
-			if (!PauseWidget->IsInViewport())
-			{
-				PauseWidget->AddToViewport();
-			}
-		}
-		
+		PauseWidget->SetVisibility(ESlateVisibility::Visible);
 		SetPause(true);
-
 	}
+}
+
+UUserWidget* AMJPlayerController::GetPauseWidget()
+{
+	return PauseWidget;
 }
