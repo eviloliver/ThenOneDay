@@ -116,7 +116,7 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 
 		LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Activated;
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("AISpawnType is %s"), *FDungeonNode::AISpawnTypeToString(LoadedDungeonSessionData.AISpawnType)));
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("AISpawnType is %s"), *FMJDungeonNode::AISpawnTypeToString(LoadedDungeonSessionData.AISpawnType)));
 		
 }
 

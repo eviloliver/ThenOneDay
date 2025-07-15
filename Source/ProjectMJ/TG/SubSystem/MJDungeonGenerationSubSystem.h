@@ -24,10 +24,10 @@ public:
 	UMJDungeonGenerationSubSystem();
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-	
+
 	
 	UFUNCTION(BlueprintCallable)
-	const FDungeonGraph& GetDungeonGraph() const { return DungeonGraph; }
+	const FMJDungeonGraph& GetDungeonGraph() const { return DungeonGraph; }
 
 	UFUNCTION(BlueprintCallable, Category="Dungeon")
 	uint8 GetMaxNodeNum() const;
@@ -40,7 +40,7 @@ protected:
 	// GeneratingDungeonSystem Section
 
 	UPROPERTY(BlueprintReadOnly)
-	FDungeonGraph DungeonGraph;
+	FMJDungeonGraph DungeonGraph;
 	
 	UPROPERTY(BlueprintReadOnly)
 	uint8 MaxNodeNum;
@@ -51,7 +51,7 @@ protected:
 
 	
 	UFUNCTION()
-	FDungeonNode MakeNewNode(uint8 NodeNum, uint8 AssignedMapID,  EMJNodeType NodeType, EMJAISpawnType AISpawnType, FVector2D UICoordinate);
+	FMJDungeonNode MakeNewNode(uint8 NodeNum, uint8 AssignedMapID,  EMJNodeType NodeType, EMJAISpawnType AISpawnType, FVector2D UICoordinate);
 
 	
 	

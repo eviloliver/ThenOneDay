@@ -14,6 +14,7 @@ UMJDungeonGenerationSubSystem::UMJDungeonGenerationSubSystem()
 void UMJDungeonGenerationSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+	
 	do
 	{
 		GenerateDungeonGraph();
@@ -25,8 +26,9 @@ void UMJDungeonGenerationSubSystem::Initialize(FSubsystemCollectionBase& Collect
 bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 {
 	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetGameInstance());
-
+	
 	check(MJGI);
+	DungeonGraph = FMJDungeonGraph();
 	
 	FVector2D StartPoint;
 	FVector2D EndPoint;
@@ -85,7 +87,7 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 		{
 			// Boss
 			
-			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,EMJNodeType::Boss, EMJAISpawnType::Static, CandidatePoint);
+			FMJDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,EMJNodeType::Boss, EMJAISpawnType::Static, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
 			DungeonGraph.BossNodeID = CurrentNotAssignedNodeNum;
 
@@ -110,7 +112,7 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 				
 			}
 			
-			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,RandNum,EMJNodeType::Battle, AISpawnType, CandidatePoint);
+			FMJDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,RandNum,EMJNodeType::Battle, AISpawnType, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
 
 			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, AISpawnType, FString(TEXT("Battle"))));
@@ -120,7 +122,7 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 		else if (Prob >= 80.f && Prob < 90.f)
 		{
 			// Reward
-			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,EMJNodeType::Reward, EMJAISpawnType::Static, CandidatePoint);
+			FMJDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,EMJNodeType::Reward, EMJAISpawnType::Static, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
 
 			
@@ -147,7 +149,7 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 				continue;
 			}
 			
-			FDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,EMJNodeType::Boss, EMJAISpawnType::Static, CandidatePoint);
+			FMJDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,EMJNodeType::Boss, EMJAISpawnType::Static, CandidatePoint);
 			DungeonGraph.Nodes.Add(NewNode);
 			DungeonGraph.BossNodeID = CurrentNotAssignedNodeNum;
 
@@ -192,9 +194,9 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 }
 
 
-FDungeonNode UMJDungeonGenerationSubSystem::MakeNewNode(uint8 NodeNum, uint8 AssignedMapID, EMJNodeType NodeType,EMJAISpawnType AISpawnType, FVector2D UICoordinate)
+FMJDungeonNode UMJDungeonGenerationSubSystem::MakeNewNode(uint8 NodeNum, uint8 AssignedMapID, EMJNodeType NodeType,EMJAISpawnType AISpawnType, FVector2D UICoordinate)
 {
-	FDungeonNode NewNode;
+	FMJDungeonNode NewNode;
 
 	NewNode.NodeID = NodeNum;
 	NewNode.AssignedMapID = AssignedMapID;
@@ -211,7 +213,7 @@ void UMJDungeonGenerationSubSystem::ConnectNodesByDistance(float MaxDistance, in
 
 	for (int i = 0 ; i < NodeCount ; i++)
 	{
-		FDungeonNode& CurrentNode = DungeonGraph.Nodes[i];
+		FMJDungeonNode& CurrentNode = DungeonGraph.Nodes[i];
 
 		TArray<TPair<uint32, float>> CandidateNodes;
 
@@ -219,7 +221,7 @@ void UMJDungeonGenerationSubSystem::ConnectNodesByDistance(float MaxDistance, in
 		{
 			if (i == j) continue;
 
-			FDungeonNode& IterNode = DungeonGraph.Nodes[j];
+			FMJDungeonNode& IterNode = DungeonGraph.Nodes[j];
 			
 			float DistanceBetweenNodes = FVector2D::Distance(CurrentNode.UICoordinate, IterNode.UICoordinate);
 			

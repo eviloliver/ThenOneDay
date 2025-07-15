@@ -27,7 +27,7 @@ void UMJGameInstanceTG::OnStart()
 	if (CurrentGameUserSettings)
 	{
 		CurrentGameUserSettings->SetFullscreenMode(EWindowMode::Type::Windowed);
-		CurrentGameUserSettings->SetScreenResolution(FIntPoint(1280,720));
+		CurrentGameUserSettings->SetScreenResolution(FIntPoint(1600,900));
 		CurrentGameUserSettings->SetOverallScalabilityLevel(1); // Medium
 
 		CurrentGameUserSettings->ApplySettings(false);
