@@ -21,6 +21,13 @@ class PROJECTMJ_API UMJSettingsWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	UFUNCTION()
+	void SetParentWidget(UUserWidget* NewParentWidget);
+
+	UFUNCTION()
+	UUserWidget* GetParentWidget();
+
 protected:
 
 	virtual void NativeConstruct() override;
@@ -30,7 +37,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> PauseMenuWidgetClass;
-
+	
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<UUserWidget> ParentWidget;
+	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UComboBoxString> ComboBox_WindowMode;
 
@@ -42,10 +52,6 @@ protected:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_Back;
-	
-	
-	UPROPERTY()
-	TEnumAsByte<EWindowMode::Type> WindowMode = EWindowMode::Type::Fullscreen;
 	
 
 	UFUNCTION()

@@ -2,9 +2,10 @@
 
 
 #include "TG/UI/MJMainMenuWidget.h"
+
+#include "MJSettingsWidget.h"
 #include "ProjectMJ.h"
 #include "Components/Button.h"
-#include "GameMode/MJGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -18,10 +19,9 @@ void UMJMainMenuWidget::NativeConstruct()
 	Button_Settings->OnClicked.AddDynamic(this, &ThisClass::OnClicked_Settings);
 	Button_Quit->OnClicked.AddDynamic(this, &ThisClass::OnClicked_Quit);
 	
-	APlayerController* PC = UGameplayStatics::GetPlayerController(this,0);
+	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
 	if (PC)
 	{
-		 
 		FInputModeGameAndUI InputMode;
 		InputMode.SetWidgetToFocus(this->TakeWidget());
 		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockInFullscreen);
@@ -35,7 +35,6 @@ void UMJMainMenuWidget::NativeConstruct()
 			SettingsWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
-	
 }
 
 void UMJMainMenuWidget::OnClicked_NewGame()
@@ -50,12 +49,8 @@ void UMJMainMenuWidget::OnClicked_NewGame()
 
 	// Move to TG_Town
 	// @fixme : maybe there`s other good method
+	UGameplayStatics::OpenLevel(this,TEXT("TG_Town"));
 	
-	AMJGameModeBase* GM = Cast<AMJGameModeBase>(UGameplayStatics::GetGameMode(this));
-	if (GM)
-	{
-		UGameplayStatics::OpenLevel(this,TEXT("TG_Town"));
-	}
 }
 
 void UMJMainMenuWidget::OnClicked_LoadGame()
@@ -65,7 +60,15 @@ void UMJMainMenuWidget::OnClicked_LoadGame()
 
 void UMJMainMenuWidget::OnClicked_Settings()
 {
-	SettingsWidget->SetVisibility(ESlateVisibility::Visible);
+	SetVisibility(ESlateVisibility::Hidden);
+	
+	UMJSettingsWidget* MJSettingsWidget = Cast<UMJSettingsWidget>(SettingsWidget);
+	
+	if (MJSettingsWidget)
+	{
+		MJSettingsWidget->SetParentWidget(this);
+		MJSettingsWidget->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 void UMJMainMenuWidget::OnClicked_Quit()
 {

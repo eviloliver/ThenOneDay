@@ -3,6 +3,7 @@
 
 #include "TG/UI/MJPauseMenuWidget.h"
 
+#include "MJSettingsWidget.h"
 #include "Components/Button.h"
 #include "Controller/MJPlayerController.h"
 #include "Kismet/GameplayStatics.h"
@@ -51,7 +52,13 @@ void UMJPauseMenuWidget::OnClicked_Resume()
 
 void UMJPauseMenuWidget::OnClicked_Settings()
 {
-	SettingsWidget->SetVisibility(ESlateVisibility::Visible);
+	UMJSettingsWidget* MJSettingsWidget = Cast<UMJSettingsWidget>(SettingsWidget);
+	if (MJSettingsWidget)
+	{
+		SetVisibility(ESlateVisibility::Hidden);
+		MJSettingsWidget->SetParentWidget(this);
+		MJSettingsWidget->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 
 void UMJPauseMenuWidget::OnClicked_MainMenu()

@@ -9,6 +9,8 @@
 #include "GameFramework/GameUserSettings.h"
 #include "Kismet/GameplayStatics.h"
 
+
+
 void UMJSettingsWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -128,8 +130,25 @@ void UMJSettingsWidget::OnClicked_Back()
 				}					
 			}
 		}
+		else
+		{
+			ParentWidget->SetVisibility(ESlateVisibility::Visible);
+		}
 		
 			SetVisibility(ESlateVisibility::Hidden);
-		
 	}
+}
+
+
+void UMJSettingsWidget::SetParentWidget(UUserWidget* NewParentWidget)
+{
+	if (NewParentWidget)
+	{
+		ParentWidget = NewParentWidget;
+	}
+}
+
+UUserWidget* UMJSettingsWidget::GetParentWidget()
+{
+	return ParentWidget;
 }

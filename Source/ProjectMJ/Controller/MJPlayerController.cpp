@@ -26,6 +26,7 @@
 #include "Item/MJItemBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "TG/UI/MJPauseMenuWidget.h"
+#include "TG/UI/MJSettingsWidget.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/Inventory/MJInventoryWidget.h"
 
@@ -368,10 +369,11 @@ void AMJPlayerController::PauseGame()
 {
 	if (IsPaused())
 	{
-		if (UUserWidget* SettingsWidget = Cast<UMJPauseMenuWidget>(PauseWidget)->GetSettingsWidget())
+		if (UMJSettingsWidget* SettingsWidget = Cast<UMJSettingsWidget>((Cast<UMJPauseMenuWidget>(PauseWidget)->GetSettingsWidget())))
 		{
 			if (SettingsWidget->GetVisibility() == ESlateVisibility::Visible)
 			{
+				SettingsWidget->GetParentWidget()->SetVisibility(ESlateVisibility::Visible);
 				SettingsWidget->SetVisibility(ESlateVisibility::Hidden);
 			}
 			else
