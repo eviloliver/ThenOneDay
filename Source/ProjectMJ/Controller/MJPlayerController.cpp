@@ -413,7 +413,7 @@ void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AAc
 	UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
 	 if (InventoryComp)
 	 {
-	 	InventoryComp->PickUpItem(Item->GetItemName());
+	 	InventoryComp->PickUpItem(Item->GetItemTag());
 	 	Item->Destroy();
 	 }
 }

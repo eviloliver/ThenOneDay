@@ -54,6 +54,7 @@ public:
 
 	UFUNCTION()
 	void HideTooltip(UMJInventorySlot* InvSlot);
+	
 	bool GetIsOccupied() {return bIsOccupied;}
 	void SetIsOccupied(bool b) {bIsOccupied = b;}
 

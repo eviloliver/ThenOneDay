@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "GameplayTagContainer.h"
 #include "MJInventoryComponent.generated.h"
 
 /**
@@ -19,7 +20,10 @@ struct FInventoryItemData // 변할 수 있는 데이터값 // 인벤토리 아�
 	GENERATED_BODY()
 
 	UPROPERTY()
-	FName ItemName;
+	FGameplayTag ItemTag;
+	
+	// UPROPERTY()
+	// FName ItemName;
 	
 	UPROPERTY()
 	int32 ItemCount = 0;
@@ -43,12 +47,13 @@ class PROJECTMJ_API UMJInventoryComponent : public UActorComponent
 
 public:
 	int32 Position;
-	void PickUpItem(FName ItemName);
-	void DropItem(FName ItemName);
-	void UpdateSlot(FName ItemName);
-
-	void SetPosition(FName ItemName, int32 NewPosition) {ItemInInventory[ItemName].Position = NewPosition;};
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "Inventory")
-	TMap<FName,FInventoryItemData> ItemInInventory; // 내가 가지고 있는 아이템의 정보 맵
+	void PickUpItem(FGameplayTag ItemTag);
+	void DropItem(FGameplayTag ItemTag);
+	void UpdateSlot(FGameplayTag ItemTag);
+
+	void SetPosition(FGameplayTag ItemTag, int32 NewPosition) {ItemInInventory[ItemTag].Position = NewPosition;};
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	TMap<FGameplayTag, FInventoryItemData> ItemInInventory;
 };
