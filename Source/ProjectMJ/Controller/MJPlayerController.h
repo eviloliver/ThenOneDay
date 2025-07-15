@@ -61,7 +61,8 @@ private:
 	
 #pragma region UIPart
 private:
-	bool IsTriggered = false;
+	bool IsTriggeredForStore = false;
+	bool IsTriggeredForDialogue = false;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -78,30 +79,36 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* ShowInventoryAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* ShowStoreAction;
 	
 	UPROPERTY()
 	UMJUIManagerSubsystem* UIManager;
-	
+
+	//Dialogue
 	void ChangeToIMCDialogue();
 	void ChangeToIMCDefault();
 	void ProceedDialogue();
-	
+
+	//Store
+	void VisitStore(); // 아이템 정보를 넘길 요량 // 인스턴스 > 캐릭터 > 트리거 시 npc 정보를 가져와서 
+	// Show Widget
 	void ShowBacklog();
 	void ShowStatPanel();
 	void ShowInventory();
 	
 	UFUNCTION()
-	void OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
+	void OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 										int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-	void OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
+	void OnTriggeredOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 										int32 OtherBodyIndex);
 
 	UFUNCTION()
 	void OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 										int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	
 #pragma endregion
 
 	// Active Ability

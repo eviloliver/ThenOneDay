@@ -7,6 +7,7 @@
 #include "MJExperienceWidget.h"
 #include "MJStatWidget.h"
 #include "Inventory/MJInventoryWidget.h"
+#include "Store/MJStoreWidget.h"
 
 void UMJHUDWidget::NativeConstruct()
 {
@@ -19,6 +20,11 @@ void UMJHUDWidget::NativeConstruct()
 	if (Inventory)
 	{
 		Inventory->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (Store)
+	{
+		Store->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -66,5 +72,17 @@ void UMJHUDWidget::ShowInventory()
 	else if (Inventory->GetVisibility() == ESlateVisibility::Hidden)
 	{
 		Inventory->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+void UMJHUDWidget::ShowStore()
+{
+	if (Store->GetVisibility() == ESlateVisibility::Visible)
+	{
+		Store->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else if (Store->GetVisibility() == ESlateVisibility::Hidden)
+	{
+		Store->SetVisibility(ESlateVisibility::Visible);
 	}
 }

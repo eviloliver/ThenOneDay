@@ -17,4 +17,11 @@ struct FItemDataRow : public FTableRowBase // 안바뀌는값 // 아이템 고�
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText Description;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Price;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsMerchandise;
+	
 };

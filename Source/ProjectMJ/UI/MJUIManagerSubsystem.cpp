@@ -124,3 +124,8 @@ void UMJUIManagerSubsystem::ShowInventory()
 {
 	HUDWidget->ShowInventory();
 }
+
+void UMJUIManagerSubsystem::ShowStore()
+{
+	HUDWidget->ShowStore();
+}

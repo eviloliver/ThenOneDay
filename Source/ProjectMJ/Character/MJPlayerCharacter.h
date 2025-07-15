@@ -52,19 +52,19 @@ public:
 #pragma region DialoguePart	
 protected:
  	UPROPERTY(VisibleAnywhere, BlueprintReadOnly ,Category = "Trigger")
- 	USphereComponent* DialogueTrigger;
+ 	USphereComponent* UITrigger;
 
  	UPROPERTY()
- 	AActor* DialogueTarget;
+ 	AActor* UITarget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
 	UMJInventoryComponent* InventoryComponent;
 
 public:
-	void SetDialogueTarget(AActor* NewTarget) { DialogueTarget = NewTarget; }
+	void SetUITarget(AActor* NewTarget) { UITarget = NewTarget; }
 	
-	AActor* GetDialogueTarget() {return DialogueTarget;}
-	USphereComponent* GetDialogueTrigger() {return DialogueTrigger;}
+	AActor* GetUITarget() {return UITarget;}
+	USphereComponent* GetUITrigger() {return UITrigger;}
 	UMJInventoryComponent* GetInventoryComponent() {return InventoryComponent;}
 	
 #pragma endregion

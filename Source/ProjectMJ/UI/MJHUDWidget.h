@@ -19,6 +19,7 @@ class UMJManaBarWidget;
 class UMJExperienceWidget;
 class UMJStatWidget;
 class UMJInventoryWidget;
+class UMJStoreWidget;
 
 UCLASS()
 class PROJECTMJ_API UMJHUDWidget : public UUserWidget
@@ -41,7 +42,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UMJInventoryWidget* Inventory;
 
-	
+	UPROPERTY(meta = (BindWidget))
+	UMJStoreWidget* Store;
+
 public:
 	UFUNCTION()
 	virtual void NativeConstruct() override;
@@ -49,8 +52,9 @@ public:
 	void BindAtrributesToChildren(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet);
 	void ShowStatPanel();
 	void ShowInventory();
+	void ShowStore();
 
 	UMJInventoryWidget* GetInventoryWidget() {return Inventory;};
-	
+	UMJStoreWidget* GetStoreWidget() {return Store;};
 
 };

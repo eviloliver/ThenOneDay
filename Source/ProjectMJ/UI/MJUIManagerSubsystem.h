@@ -47,6 +47,9 @@ public:
 	// Inventory Section
 	void ShowInventory();
 
+	// Store Section
+	void ShowStore();
+
 	//UMJInventoryWidget* GetInventoryWidget() {return InventoryWidget;};
 	UMJHUDWidget* GetHUDWidget() {return HUDWidget;};
 	
@@ -64,7 +67,7 @@ protected:
 
 	UPROPERTY()
 	TSubclassOf<class UMJHUDWidget> HUDWidgetClass;
-
+	
 	//UMJInventoryWidget* InventoryWidget;
 	//TSubclassOf<class UMJInventoryWidget> InventoryWidgetClass;
 };
