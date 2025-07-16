@@ -37,7 +37,9 @@ protected:
 
 	UPROPERTY()
 	UMJInventoryTooltip* Tooltip;
-	
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, category = Tooltip)
+	float Pivot;
 	int32 SlotIndex;
 	bool bIsOccupied;
 

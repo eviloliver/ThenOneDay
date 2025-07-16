@@ -40,6 +40,8 @@ private:
 	float Speed;
 
 public:
+	UFUNCTION()
 	void BindToAttribute(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet);
+	
 	void UpdateStat(const FOnAttributeChangeData& Data);
 };

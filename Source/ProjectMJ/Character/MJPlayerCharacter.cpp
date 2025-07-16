@@ -65,14 +65,14 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 		PerceptionStimuliSourceComponent->RegisterWithPerceptionSystem();
 	}
 
-	DialogueTarget = nullptr;
+	UITarget = nullptr;
 
-	DialogueTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("DialogueTrigger"));
-	DialogueTrigger->SetupAttachment(RootComponent);
-	DialogueTrigger->InitSphereRadius(120.f);
-	DialogueTrigger->SetCollisionProfileName(TEXT("Trigger"));
-	DialogueTrigger->SetGenerateOverlapEvents(true);
-	DialogueTrigger->SetHiddenInGame(false);
+	UITrigger = CreateDefaultSubobject<USphereComponent>(TEXT("UITrigger"));
+	UITrigger->SetupAttachment(RootComponent);
+	UITrigger->InitSphereRadius(120.f);
+	UITrigger->SetCollisionProfileName(TEXT("Trigger"));
+	UITrigger->SetGenerateOverlapEvents(true);
+	UITrigger->SetHiddenInGame(false);
 
 	InventoryComponent = CreateDefaultSubobject<UMJInventoryComponent>(TEXT("InventoryComponent"));
 	// Skill Component
