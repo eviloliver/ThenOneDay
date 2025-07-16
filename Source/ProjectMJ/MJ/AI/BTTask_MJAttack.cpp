@@ -25,7 +25,7 @@ EBTNodeResult::Type UBTTask_MJAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	}
 
 	AMJMonsterCharacter* Monster = Cast<AMJMonsterCharacter>(ControlledPawn);
-	if (ControlledPawn == nullptr)
+	if (Monster == nullptr)
 	{
 		return EBTNodeResult::Failed;
 	}
@@ -36,7 +36,7 @@ EBTNodeResult::Type UBTTask_MJAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	FDelegateHandle Handle;
 	Handle = ASC->OnAbilityEnded.AddLambda(
-	[&](const FAbilityEndedData& EndedData)
+	[&, AttackTag, Handle](const FAbilityEndedData& EndedData)
 	{
 		MJ_LOG(LogMJ, Error,TEXT("A"));
 		if (EndedData.AbilityThatEnded->AbilityTags.HasTagExact(AttackTag))
@@ -57,5 +57,5 @@ EBTNodeResult::Type UBTTask_MJAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	//
 	// AIPawn->AttackByAI();
 	
-	return EBTNodeResult::InProgress;
+	return EBTNodeResult::Succeeded;
 }
