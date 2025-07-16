@@ -25,6 +25,9 @@ class PROJECTMJ_API AMJMonsterCharacter : public AMJCharacterBase, public IMJCha
 public:
 	AMJMonsterCharacter();
 
+	FGameplayTag GetAttackTag() {return AttackTag;}
+	UMJSkillComponentBase* GetSkillComponent() {return SkillComponent;}
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -38,8 +41,7 @@ protected:
 	virtual void AttackByAI() override;
 	virtual void MeleeAttackByAI() override;
 	virtual void RangeAttackByAI() override;
-
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	
 	virtual void PossessedBy(AController* NewController) override;
 
 protected:
@@ -61,4 +63,6 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	bool bIsDead;
 
+	// Minjin: Ability Tag
+	FGameplayTag AttackTag;
 };

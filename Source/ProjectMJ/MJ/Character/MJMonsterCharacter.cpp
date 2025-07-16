@@ -53,7 +53,7 @@ float AMJMonsterCharacter::GetAIPatrolRadius()
 
 float AMJMonsterCharacter::GetAITurnSpeed()
 {
-	return 2.0f;
+	return 5.0f;
 }
 
 float AMJMonsterCharacter::GetAIMaximumAttackRange()
