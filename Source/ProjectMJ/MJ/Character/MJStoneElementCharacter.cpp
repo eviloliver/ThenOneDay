@@ -3,12 +3,14 @@
 
 #include "MJ/Character/MJStoneElementCharacter.h"
 
+AMJStoneElementCharacter::AMJStoneElementCharacter()
+{
+}
+
 void AMJStoneElementCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	AttackTag = FGameplayTag::RequestGameplayTag(FName("Skill.Instant.StoneElementalMeleeAttack"));
-	SkillComponent->LearnSkill(AttackTag);
-	SkillComponent->EquipSkill(AttackTag);
 	
 }
 

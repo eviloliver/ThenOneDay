@@ -44,6 +44,8 @@ protected:
 	
 	virtual void PossessedBy(AController* NewController) override;
 
+	
+
 protected:
 	UFUNCTION()
 	virtual void OnDeath();
@@ -59,6 +61,9 @@ protected:
 	// TODO: 우선 base
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gas")
 	TObjectPtr<UMJSkillComponentBase> SkillComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Enemy.Name"))
+	FGameplayTag DefaultEnemyTag;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	bool bIsDead;
