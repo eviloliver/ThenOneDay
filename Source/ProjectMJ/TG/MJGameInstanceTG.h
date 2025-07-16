@@ -33,6 +33,7 @@ public:
 	UMJGameInstanceTG();
 
 	virtual void Init() override;
+	virtual void OnStart() override;
 	
 	TObjectPtr<UMJHttpDownloadManager> HttpDownloader;
 

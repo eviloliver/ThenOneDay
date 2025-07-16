@@ -41,7 +41,7 @@ inline void UMJInputComponent::BindAbilityInputAction(const UDataAsset_InputConf
 {
 	checkf(InInputConfig, TEXT("Input config data aseet is Null, can not Proceed with binding"));
 	
-	for (const FMJInputActionConfig& AbilityInputActionConfig : InInputConfig->AbilityInputAction)
+	for (const FMJInputActionConfig& AbilityInputActionConfig : InInputConfig->GetAbilityInputActions())
 	{
 		if (!AbilityInputActionConfig.IsVaild())
 		{
