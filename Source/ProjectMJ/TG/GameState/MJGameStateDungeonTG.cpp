@@ -5,9 +5,9 @@
 
 #include "EngineUtils.h"
 #include "NavigationSystem.h"
-#include "Character/MJPlayerCharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/MJPlayerState.h"
 #include "TG/MJGameInstanceTG.h"
 #include "TG/Actor/MJDummyActorTG.h"
 #include "TG/Actor/MJDungeonAISpawnPointActor.h"
@@ -30,11 +30,17 @@ void AMJGameStateDungeonTG::BeginPlay()
 	Super::BeginPlay();
 
 	UMJDungeonGenerationSubSystem* GS = GetGameInstance()->GetSubsystem<UMJDungeonGenerationSubSystem>();
-	check(GS);
+	
+	AMJPlayerState* MJPS = Cast<AMJPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(),0));
+	if (MJPS)
+	{
+		LoadFromInstancedDungeonSessionData(MJPS->GetPlayerSessionDataRef().CurrentDungeonMapNum);
+	}
+		
 	if (GS)
 	{
 		EMJNodeType CurrentNodeType = GS->GetDungeonGraph().Nodes[LoadedDungeonSessionData.DungeonNodeNum].NodeType;
-
+		
 		switch (CurrentNodeType)
 		{
 			case EMJNodeType::Battle:
@@ -48,7 +54,14 @@ void AMJGameStateDungeonTG::BeginPlay()
 			case EMJNodeType::Reward:
 				Initialize_RewardNode();
 				break;
+			default:
+				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("InValid!!!")));
+				break;
 		}
+	}
+	else
+	{
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("GameState is nullptr!!!")));
 	}
 }
 
@@ -115,8 +128,8 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 		}
 
 		LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Activated;
+		
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("AISpawnType is %s"), *FMJDungeonNode::AISpawnTypeToString(LoadedDungeonSessionData.AISpawnType)));
 		
 }
 

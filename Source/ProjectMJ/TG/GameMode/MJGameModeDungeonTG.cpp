@@ -12,7 +12,6 @@
 
 AMJGameModeDungeonTG::AMJGameModeDungeonTG()
 {
-	MJ_LOG(LogTG,Log,TEXT("New GameMode Instance Created"));
 }
 
 void AMJGameModeDungeonTG::BeginPlay()
@@ -28,13 +27,6 @@ void AMJGameModeDungeonTG::BeginPlay()
 			MJPS->LoadFromInstancedPlayerSessionData();
 		}
 	}
-	
-	AMJGameStateDungeonTG* MJGS = GetGameState<AMJGameStateDungeonTG>();
-	if (MJGS)
-	{
-		MJGS->LoadFromInstancedDungeonSessionData(MJPS->GetPlayerSessionDataRef().CurrentDungeonMapNum);
-	}
-
 }
 
 bool AMJGameModeDungeonTG::TravelToMapByNode(const FString MapName, const uint8 NodeNum)
