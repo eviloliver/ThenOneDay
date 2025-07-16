@@ -55,11 +55,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftObjectPtr<UCurveTable> AttributeCurve;
 
-	// 외형
-	// Visual Section
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<USkeletalMesh> SkeletalMesh;
-
 	// TODO: 사운드나 아이콘 등등
 
 	// 초기 세팅값
