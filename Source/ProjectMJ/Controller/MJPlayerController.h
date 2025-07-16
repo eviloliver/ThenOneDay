@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -16,8 +16,12 @@ class UMJUIManagerSubsystem;
  * Class Description:
  * Author: Lee JuHyeon
  * Created Date: ?
- * Last Modified By: Lee Jisoo
- * Last Modified Date: 2025.06.25(BeginPlay에 ShowHUD 추가)
+ * Modified By: Lee Jisoo
+ * Modified Date: 2025.06.25(BeginPlay에 ShowHUD 추가)
+ * ---
+ * Modified By: 신동민
+ * Modified Date: 2025.07.14
+ * Modified Description: 이동과 공격 관련 Input 
  */
 
 UCLASS()
@@ -30,36 +34,38 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
-	
-	virtual void PlayerTick(float DeltaTime)override;
-#pragma region move and Input
-	void StopMove();
-	void HoldingMove();
-	void OnTouchStart();
-	void OnTouchReleased();
-	
+	virtual void PlayerTick(float DeltaTime) override;
 
+public:
+	void OnLeftMousePressed();
+	void OnLeftMouseReleased();
+	void HandleLeftMouseHold();
 
-	void Input_AbilityInputPressed(FGameplayTag InInputTag);
-	void Input_AbilityInputReleased(FGameplayTag InInputTag);
-	
-#pragma endregion 
+	void OnRightMousePressed();
+	void OnRightMouseReleased();
+
+	void AttackOrMove(const FHitResult& HitResult);
+
+	void AbilityInputPressed(FGameplayTag InInputTag);
+	void AbilityInputReleased(FGameplayTag InInputTag);
 
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
+	bool bIsLMBPressed = false;
+	bool bIsLMBHolding = false;
+	float LMBHoldTime = 0.0f;
+
+	bool bIsRMBPressed = false;
+	float RMBHoldTime = 0.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	float HoldThreshold = 0.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	float ChargeThreshold = 0.4f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inpur", meta = (AllowPrivateAccess = "true"))
 	UDataAsset_InputConfig* InputConfigDataAsset;
 
-	FVector CachedDestination;
-
-	bool bIsTouch; // Is it a touch device
-	float FollowTime; // For how long it has been pressed
-
-	bool bIsHolding;
-	bool bIspressed;
-
-	float HoldThresHold = 0.2f;
-	float PressTimed = 0.0f;
-	
 #pragma region UIPart
 private:
 	bool IsTriggered = false;
@@ -105,10 +111,6 @@ public:
 	
 #pragma endregion
 
-	// Active Ability
-	void Input_InstantSkillPressed(FGameplayTag InInputTag);
-	void Input_InstantSkillReleased(FGameplayTag InInputTag);
-
 
 protected:
 	UPROPERTY()
@@ -126,6 +128,5 @@ public:
 
 	UFUNCTION()
 	UUserWidget* GetPauseWidget();	
-	
-	
+
 };

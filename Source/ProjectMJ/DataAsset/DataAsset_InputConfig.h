@@ -9,22 +9,20 @@
 
 class UInputAction;
 class UInputMappingContext;
+
 USTRUCT(BlueprintType)
 struct FMJInputActionConfig
 {
 	GENERATED_BODY()
 
-public:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly,meta=(Categories="InputTag"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(Categories="Input"))
 	FGameplayTag InputTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UInputAction> InputAction;
 
-	bool IsVaild()const;
+	bool IsVaild() const;
 
-	
 };
 
 /**
@@ -34,24 +32,31 @@ public:
  * Last Modified By: (Last Modifier)
  * Last Modified Date: (Last Modified Date)
  */
+
 UCLASS()
 class PROJECTMJ_API UDataAsset_InputConfig : public UDataAsset
 {
 	GENERATED_BODY()
+	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
-public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UInputMappingContext>DefaultMappingContext;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UInputMappingContext> DialogueMappingContext;
 	
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, meta=(TitleProperty=InputAction))
+	UPROPERTY(EditDefaultsOnly, meta = (TitleProperty = InputTag))
 	TArray<FMJInputActionConfig> NativeInputActions;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (TitleProperty = InputAction))
-	TArray<FMJInputActionConfig>AbilityInputAction;
+	UPROPERTY(EditDefaultsOnly, meta = (TitleProperty = InputTag))
+	TArray<FMJInputActionConfig> AbilityInputActions;
 
+public:
+	UInputMappingContext* GetDefaultMappingContext() const { return DefaultMappingContext.Get(); }
+	UInputMappingContext* GetDialogueMappingContext() const { return DialogueMappingContext.Get(); }
+
+	const TArray<FMJInputActionConfig>& GetNativeInputActions() const { return NativeInputActions; }
+	const TArray<FMJInputActionConfig>& GetAbilityInputActions() const { return NativeInputActions; }
 
 	UInputAction* FindNativeInputActionByTag(const FGameplayTag& InInputTag) const;
+	UInputAction* FindAbilityInputActionByTag(const FGameplayTag& InInputTag) const;
 };

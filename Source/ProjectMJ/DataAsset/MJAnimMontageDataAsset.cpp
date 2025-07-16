@@ -3,11 +3,11 @@
 
 #include "DataAsset/MJAnimMontageDataAsset.h"
 
-TObjectPtr<UAnimMontage> UMJAnimMontageDataAsset::FindAnimMontageForTag(const FGameplayTag& Tag) const
+UAnimMontage* UMJAnimMontageDataAsset::FindAnimMontageForTag(const FGameplayTag& Tag) const
 {
-	if (const TObjectPtr<UAnimMontage>* FoundAnimMontage = AnimMontageMap.Find(Tag))
-	{
-		return *FoundAnimMontage;
-	}
-	return nullptr;
+    if (const TObjectPtr<UAnimMontage>* FoundAnimMontage = AnimMontageMap.Find(Tag))
+    {
+        return FoundAnimMontage->Get();
+    }
+    return nullptr;
 }

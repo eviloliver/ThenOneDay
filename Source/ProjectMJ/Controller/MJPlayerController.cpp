@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Controller/MJPlayerController.h"
@@ -11,17 +11,12 @@
 #include "Character/MJPlayerCharacter.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
-#include "MJGamePlayTags.h"
 #include "Dialogue/MJDialogueComponent.h"
 #include "Components/SphereComponent.h"
 #include "UI/MJUIManagerSubsystem.h"
 #include "Player/MJPlayerState.h"
 #include "ProjectMJ.h"
-#include "Navigation/PathFollowingComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Character/MJPlayerCharacter.h"
 #include "Character/Component/MJPlayerSkillComponent.h"
-#include "Compression/lz4.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
 #include "Kismet/GameplayStatics.h"
@@ -30,14 +25,22 @@
 #include "UI/MJHUDWidget.h"
 #include "UI/Inventory/MJInventoryWidget.h"
 
+// TODO: Input 관련한 로직들 Component로 따로 빼기 - 동민 - 
 
 AMJPlayerController::AMJPlayerController()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
-	CachedDestination = FVector::ZeroVector;
-	FollowTime = 0.f;
-	bIsTouch=false;
+
+	bIsLMBPressed = false;
+	bIsLMBHolding = false;
+	LMBHoldTime = 0.0f;
+
+	bIsRMBPressed = false;
+	RMBHoldTime = 0.0f;
+
+	HoldThreshold = 0.1f;
+	ChargeThreshold = 0.3f;
 }
 
 void AMJPlayerController::BeginPlay()
@@ -74,149 +77,193 @@ void AMJPlayerController::SetupInputComponent()
 
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
-		Subsystem->AddMappingContext(InputConfigDataAsset->DefaultMappingContext, 0);
+		Subsystem->AddMappingContext(InputConfigDataAsset->GetDefaultMappingContext(), 0);
 	}
 	
-	UMJInputComponent* ProjectMJInputComponent = CastChecked< UMJInputComponent>(InputComponent);
+	UMJInputComponent* MJInputComponent = CastChecked< UMJInputComponent>(InputComponent);
 
-	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Click, ETriggerEvent::Started, this, &ThisClass::OnTouchStart);
-	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Click, ETriggerEvent::Completed, this, &ThisClass::OnTouchReleased);
-
-
-	ProjectMJInputComponent->BindAbilityInputAction(InputConfigDataAsset, this, &AMJPlayerController::Input_AbilityInputPressed, &AMJPlayerController::Input_AbilityInputReleased);
+	MJInputComponent->BindAbilityInputAction(InputConfigDataAsset, this, &AMJPlayerController::AbilityInputPressed, &AMJPlayerController::AbilityInputReleased);
 
 	//Dialogue Input
-	ProjectMJInputComponent->BindAction(ChangeIMCAction, ETriggerEvent::Triggered, this, &ThisClass::ChangeToIMCDialogue);
-	ProjectMJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
-	ProjectMJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
+	MJInputComponent->BindAction(ChangeIMCAction, ETriggerEvent::Triggered, this, &ThisClass::ChangeToIMCDialogue);
+	MJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
+	MJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
 
 	// UI Input
-	ProjectMJInputComponent->BindAction(ShowInventoryAction, ETriggerEvent::Triggered, this, &ThisClass::ShowInventory);
-	ProjectMJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowStatPanel);
+	MJInputComponent->BindAction(ShowInventoryAction, ETriggerEvent::Triggered, this, &ThisClass::ShowInventory);
+	MJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowStatPanel);
 
-	ProjectMJInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &ThisClass::PauseGame);
+	MJInputComponent->BindAction(ShowInventoryAction, ETriggerEvent::Triggered, this, &ThisClass::ShowInventory);
+	MJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowStatPanel);
+
+	MJInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &ThisClass::PauseGame);
 	
 }
 
 void AMJPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
-	if (bIspressed && !bIsHolding)
+
+	if (bIsLMBPressed && !bIsLMBHolding)
 	{
-		PressTimed += DeltaTime;
-		if (PressTimed >= HoldThresHold)
+		LMBHoldTime += DeltaTime;
+		if (LMBHoldTime >= HoldThreshold)
 		{
-			bIsHolding = true;
-			StopMove();
+			bIsLMBHolding = true;
 		}
 	}
-	if (bIsHolding)
+
+	if (bIsLMBHolding)
 	{
-		HoldingMove();
+		HandleLeftMouseHold();
+	}
+
+	if (bIsRMBPressed)
+	{
+		RMBHoldTime += DeltaTime;
 	}
 }
 
-void AMJPlayerController::StopMove()
+void AMJPlayerController::OnLeftMousePressed()
 {
-		StopMovement();	
+	bIsLMBPressed = true;
+	LMBHoldTime = 0.0f;
+	bIsLMBHolding = false;
 }
 
-
-void AMJPlayerController::HoldingMove()
+void AMJPlayerController::OnLeftMouseReleased()
 {
-	//FollowTime = 0.f;
-	FHitResult Hit;
-
-	if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
+	if (!bIsLMBHolding)
 	{
-		FVector MoveDir = Hit.ImpactPoint - GetPawn()->GetActorLocation();
-		MoveDir.Z = 0;
-		MoveDir.Normalize();
-
-		if (!MoveDir.IsNearlyZero())
+		FHitResult HitResult;
+		if (GetHitResultUnderCursor(ECC_Visibility, false, HitResult))
 		{
-			GetPawn()->AddMovementInput(MoveDir, 1.0f);
+			AttackOrMove(HitResult);
 		}
 	}
+
+	bIsLMBPressed = false;
+	bIsLMBHolding = false;
 }
 
-void AMJPlayerController::OnTouchStart()
+void AMJPlayerController::HandleLeftMouseHold()
 {
-	//bIsTouch = true;
-	bIspressed = true;
-	bIsHolding = false;
-	PressTimed = 0.0f;
-}
-
-void AMJPlayerController::OnTouchReleased()
-{
-	//bIsTouch = false;
-	const float TraceOffsetZ = 10.0f;
-	const float TraceDepthZ = 1000.0;
-
-
-	if (!bIsHolding)
+	// 꾹 눌렀을 때는 몹 위에 마우스 있어도 이동이 맞음 - 동민 -
+	FHitResult HitResult;
+	if (GetHitResultUnderCursor(ECC_Visibility, false, HitResult))
 	{
-		FHitResult Hit;
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitResult.Location);
+	}
+}
+
+void AMJPlayerController::OnRightMousePressed()
+{
+	bIsRMBPressed = true;
+	RMBHoldTime = 0.0f;
+}
+
+void AMJPlayerController::OnRightMouseReleased()
+{
+	StopMovement();
+
+	AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
+	if (!ControlledCharacter)
+	{
+		return;
+	}
+
+	UMJPlayerSkillComponent* SkillComponent = ControlledCharacter->FindComponentByClass<UMJPlayerSkillComponent>();
+	if (!SkillComponent)
+	{
+		return;
+	}
+	MJ_LOG(LogMJ, Warning, TEXT("%f"), RMBHoldTime);
+	if (RMBHoldTime < ChargeThreshold)
+	{
 		
-		FVector WorldOrigin, WorldDirection;
-
-		if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
-		{
-			if (DeprojectMousePositionToWorld(WorldOrigin, WorldDirection))
-			{
-				FVector TraceStart = WorldOrigin;
-				FVector TraceEnd = TraceStart + WorldDirection * 10000.0f;
-
-				TArray<FHitResult> HitResults;
-				FCollisionQueryParams TraceParams;
-				TraceParams.AddIgnoredActor(GetPawn()); 
-				
-				bool bHit = GetWorld()->LineTraceMultiByChannel(
-					HitResults,
-					TraceStart,
-					TraceEnd,
-					ECC_Visibility,
-					TraceParams
-				);
-				DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.5f);
-				for (const FHitResult& Hits : HitResults)
-				{
-					UE_LOG(LogTemp, Warning, TEXT("%d"), HitResults.Num());
-					AActor* HitActor = Hits.GetActor();
-					if (!HitActor)
-					{
-						continue;
-					}
-			
-					if (HitActor->ActorHasTag("BlockClick"))
-					{
-						continue;
-					}
-				
-					if (HitActor->ActorHasTag("Ground") || Hits.Component->GetCollisionObjectType() == ECC_WorldStatic)
-					{
-						UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, Hits.ImpactPoint);
-						break;
-					}
-				}
-			}
-
-			CachedDestination = Hit.Location;
-
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
-		}
+		FGameplayTag InstantSkillTag = FGameplayTag::RequestGameplayTag(FName("Skill.Instant"));
+		SkillComponent->ActivateSkillByInputTag(InstantSkillTag);
 	}
 	else
 	{
-		StopMove();
+		FGameplayTag ChargeSkillTag = FGameplayTag::RequestGameplayTag(FName("Skill.Charge"));
+		SkillComponent->ActivateSkillByInputTag(ChargeSkillTag);
 	}
-
-	bIspressed = false;
-	bIsHolding = false;
-	PressTimed = 0.0f;
 }
 
+void AMJPlayerController::AttackOrMove(const FHitResult& HitResult)
+{
+	AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
+	if (!ControlledCharacter)
+	{
+		return;
+	}
+
+	UMJPlayerSkillComponent* SkillComponent = ControlledCharacter->FindComponentByClass<UMJPlayerSkillComponent>();
+	if (!SkillComponent)
+	{
+		return;
+	}
+
+	AMJCharacterBase* TargetCharacter = Cast<AMJCharacterBase>(HitResult.GetActor());
+	if (!TargetCharacter)
+	{
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitResult.Location);;
+	}
+	else if (TargetCharacter != ControlledCharacter && TargetCharacter->GetGenericTeamId() != ControlledCharacter->GetGenericTeamId())
+	{
+		FGameplayTag LeftClickInputTag = FGameplayTag::RequestGameplayTag(FName("Skill.Normal"));
+		SkillComponent->ActivateSkillByInputTag(LeftClickInputTag);
+	}
+	else
+	{
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitResult.Location);
+	}
+}
+
+void AMJPlayerController::AbilityInputPressed(FGameplayTag InInputTag)
+{
+	AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
+	if (!ControlledCharacter)
+	{
+		return;
+	}
+
+	UMJPlayerSkillComponent* SkillComponent = ControlledCharacter->FindComponentByClass<UMJPlayerSkillComponent>();
+	if (!SkillComponent)
+	{
+		return;
+	}
+
+	if (InInputTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Input.Mouse.Left.Pressed"))))
+	{
+		OnLeftMousePressed();
+	}
+	else if (InInputTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Input.Mouse.Right.Pressed"))))
+	{
+		OnRightMousePressed();
+	}
+	else
+	{
+		
+	}
+}
+
+void AMJPlayerController::AbilityInputReleased(FGameplayTag InInputTag)
+{
+	if (InInputTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Input.Mouse.Left.Released"))))
+	{
+		OnLeftMouseReleased();
+	}
+	else if (InInputTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Input.Mouse.Right.Released"))))
+	{
+		OnRightMouseReleased();
+	}
+	else
+	{
+		
+	}
+}
 
 
 void AMJPlayerController::ChangeToIMCDialogue()
@@ -234,8 +281,8 @@ void AMJPlayerController::ChangeToIMCDialogue()
 		
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
         {
-        		Subsystem->AddMappingContext(InputConfigDataAsset->DialogueMappingContext, 0);
-        		Subsystem->RemoveMappingContext(InputConfigDataAsset->DefaultMappingContext);
+        		Subsystem->AddMappingContext(InputConfigDataAsset->GetDialogueMappingContext(), 0);
+        		Subsystem->RemoveMappingContext(InputConfigDataAsset->GetDialogueMappingContext());
         }
 	}
 }
@@ -244,8 +291,8 @@ void AMJPlayerController::ChangeToIMCDefault()
 {
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
-		Subsystem->AddMappingContext(InputConfigDataAsset->DefaultMappingContext, 0);
-		Subsystem->RemoveMappingContext(InputConfigDataAsset->DialogueMappingContext);
+		Subsystem->AddMappingContext(InputConfigDataAsset->GetDialogueMappingContext(), 0);
+		Subsystem->RemoveMappingContext(InputConfigDataAsset->GetDialogueMappingContext());
 	}
 }
 
@@ -332,37 +379,6 @@ void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AAc
 	 	InventoryComp->PickUpItem(Item->GetItemName());
 	 	Item->Destroy();
 	 }
-}
-
-
-void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
-{
-	MJ_LOG(LogMJ, Warning, TEXT("Input Pressed: %s"), *InInputTag.ToString())
-	AMJPlayerCharacter* ControlledPawn = Cast<AMJPlayerCharacter>(GetPawn());
-	if (ControlledPawn)
-	{
-		if (UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(ControlledPawn->GetAbilitySystemComponent()))
-		{
-			
-			MJASC->OnAbilityInputPressed(InInputTag);
-			if (UMJPlayerSkillComponent* SkillComponent = ControlledPawn->FindComponentByClass<UMJPlayerSkillComponent>())
-			{
-				SkillComponent->ActivateSkillByInputTag(InInputTag);
-			}
-		}
-	}	
-}
-
-void AMJPlayerController::Input_AbilityInputReleased(FGameplayTag InInputTag)
-{
-	AMJPlayerCharacter* ControlledPawn = Cast<AMJPlayerCharacter>(GetPawn());
-	if (ControlledPawn)
-	{
-		if (UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(ControlledPawn->GetAbilitySystemComponent()))
-		{
-			MJASC->OnAbilityInputReleased(InInputTag);
-		}
-	}
 }
 
 void AMJPlayerController::PauseGame()

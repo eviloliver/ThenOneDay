@@ -9,11 +9,11 @@
 /**
  * Class Description: 스킬 컴포넌트
  * - 플레이어가 사용할 컴포넌트
- * - input과 매핑하며 장착한 스킬을 발동
  * Author: 신동민
  * Created Date: 2025.07.08
- * Last Modified By:
- * Last Modified Date:
+ * Modified Description: InputTag 를 그냥 유형으로 받아오기
+ * Modified By: 신동민
+ * Modified Date: 2025.07.15
  */
 
 UCLASS(ClassGroup = (Skill), meta = (BlueprintSpawnableComponent))
@@ -27,11 +27,5 @@ public:
 	virtual void BeginPlay() override;
 
 	void ActivateSkillByInputTag(const FGameplayTag InputTag);
-
-	FGameplayTag ConvertInputTagToTypeTag(const FGameplayTag& InputTag);
-
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
-	TMap<FGameplayTag, FGameplayTag> InputTagToSkillTagMap;
 
 };
