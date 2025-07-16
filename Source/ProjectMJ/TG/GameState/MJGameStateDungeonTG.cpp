@@ -5,9 +5,9 @@
 
 #include "EngineUtils.h"
 #include "NavigationSystem.h"
-#include "Character/MJPlayerCharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/MJPlayerState.h"
 #include "TG/MJGameInstanceTG.h"
 #include "TG/Actor/MJDummyActorTG.h"
 #include "TG/Actor/MJDungeonAISpawnPointActor.h"
@@ -17,7 +17,6 @@
 
 AMJGameStateDungeonTG::AMJGameStateDungeonTG()
 {
-	LoadedDungeonSessionData = FMJDungeonSessionData();
 	LoadedDungeonNodeNum = 255;
 	
 	CurrentWaveNum = 1;
@@ -30,11 +29,18 @@ void AMJGameStateDungeonTG::BeginPlay()
 	Super::BeginPlay();
 
 	UMJDungeonGenerationSubSystem* GS = GetGameInstance()->GetSubsystem<UMJDungeonGenerationSubSystem>();
-	check(GS);
+	
+	UMJGameInstanceTG * MJGI = GetGameInstance<UMJGameInstanceTG>();
+	if (MJGI)
+	{
+		//LoadedDungeonSessionData = FMJDungeonSessionData();
+		LoadFromInstancedDungeonSessionData(MJGI->GetPlayerSessionDataRef().CurrentDungeonMapNum);
+	}
+		
 	if (GS)
 	{
 		EMJNodeType CurrentNodeType = GS->GetDungeonGraph().Nodes[LoadedDungeonSessionData.DungeonNodeNum].NodeType;
-
+		
 		switch (CurrentNodeType)
 		{
 			case EMJNodeType::Battle:
@@ -48,8 +54,25 @@ void AMJGameStateDungeonTG::BeginPlay()
 			case EMJNodeType::Reward:
 				Initialize_RewardNode();
 				break;
+			default:
+				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("InValid!!!")));
+				break;
 		}
 	}
+	else
+	{
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("GameState is nullptr!!!")));
+	}
+}
+
+void AMJGameStateDungeonTG::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	// AMJPlayerState* PS = Cast<AMJPlayerState>(UGameplayStatics::GetPlayerState(this,0));
+	// if (PS)
+	// {
+	// 	SaveToInstancedDungeonSessionData(PS->GetPlayerSessionDataRef().CurrentDungeonMapNum);
+	// }
 }
 
 void AMJGameStateDungeonTG::Initialize_BattleNode()
@@ -115,8 +138,8 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 		}
 
 		LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Activated;
+		
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("AISpawnType is %s"), *FMJDungeonNode::AISpawnTypeToString(LoadedDungeonSessionData.AISpawnType)));
 		
 }
 
@@ -401,6 +424,7 @@ void AMJGameStateDungeonTG::LoadFromInstancedDungeonSessionData(uint8 LoadFromNu
 		}
 	}
 }
+
 
 void AMJGameStateDungeonTG::PublishOnBossHealthChanged(float Delta)
 {

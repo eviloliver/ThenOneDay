@@ -45,8 +45,15 @@ public:
 	UFUNCTION()
 	void LoadFromInstancedDungeonSessionData(uint8 LoadFromNum);
 
+
+	
+	bool TravelToMapByNode(const FString MapName, const uint8 NodeNum);
 	
 protected:
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	
 	// Initialize Section
 	UFUNCTION()
 	void Initialize_BattleNode();
