@@ -281,7 +281,7 @@ void AMJPlayerController::ChangeToIMCDialogue()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
         {
         		Subsystem->AddMappingContext(InputConfigDataAsset->GetDialogueMappingContext(), 0);
-        		Subsystem->RemoveMappingContext(InputConfigDataAsset->GetDialogueMappingContext());
+        		Subsystem->RemoveMappingContext(InputConfigDataAsset->GetDefaultMappingContext());
         }
 	}
 }
@@ -290,7 +290,7 @@ void AMJPlayerController::ChangeToIMCDefault()
 {
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
-		Subsystem->AddMappingContext(InputConfigDataAsset->GetDialogueMappingContext(), 0);
+		Subsystem->AddMappingContext(InputConfigDataAsset->GetDefaultMappingContext(), 0);
 		Subsystem->RemoveMappingContext(InputConfigDataAsset->GetDialogueMappingContext());
 	}
 }
