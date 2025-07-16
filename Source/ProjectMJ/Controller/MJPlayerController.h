@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "GameplayTagContainer.h"
 #include "MJPlayerController.generated.h"
+
 
 class UDataAsset_InputConfig;
 class UInputAction;
@@ -110,5 +111,22 @@ public:
 	
 #pragma endregion
 
+
+protected:
+	UPROPERTY()
+	TObjectPtr<UUserWidget> PauseWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<UUserWidget> PauseWidgetClass;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = UI)
+	UInputAction* PauseAction;
+
+	UFUNCTION()
+	void PauseGame();
+public:
+
+	UFUNCTION()
+	UUserWidget* GetPauseWidget();	
 
 };

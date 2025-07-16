@@ -16,8 +16,6 @@ class PROJECTMJ_API AMJGameModeBase : public AGameModeBase
 
 public:
 	AMJGameModeBase();
-
-protected:
 	
 	UFUNCTION(BlueprintCallable)
 	virtual bool TravelToMapByNode(const FString MapName, const uint8 NodeNum);

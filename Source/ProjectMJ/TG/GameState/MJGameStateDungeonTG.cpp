@@ -62,7 +62,6 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 
 			// @fixme : using WaveData for now
 			GetWaveDataRowByIndex(1);
-
 			
 			for (auto& Iter : StaticSpawnPointActors)
 			{
@@ -75,26 +74,34 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 				if (NavSys)
 				{
 					// @fixme : hard coded for now
-					for (int i = 0 ; i < 10 ; ++i)
+					for (int i = 0 ; i < 10 ;)
 					{
 						bool bIsFound = NavSys->GetRandomPointInNavigableRadius(IterSpawnPoint, 1000.f,ResultLocation);
 						if (bIsFound)
 						{
-							
 							FActorSpawnParameters SpawnParams;
 							SpawnParams.Owner = this;
-							SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-							AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(GetActorFromPool(),ResultLocation,FRotator(), SpawnParams);
+							SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+							TSubclassOf<AActor> GetActor = GetActorFromPool();
+							AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(GetActor,ResultLocation,FRotator(), SpawnParams);
+
+							check(NewAIActor);
+
 							if (NewAIActor)
 							{
 								NewAIActor->OnDestroyed.AddDynamic(this, &AMJGameStateDungeonTG::OnAIDestroy);
 								SpawnedActorRefs.Add(NewAIActor);
 								++CurrentSpawnedAINum;
+								++i;
+							}
+							else
+							{
+								GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("AISpawn Failed!!")));
 							}
 						}
 					}
 				}
-				//GetWorldTimerManager().SetTimer(StaticAIEndCheckTimerHandle, this, &AMJGameStateDungeonTG::CheckSpawnAICondition,  2.0f, true);
 			}
 		}
 		else if (LoadedDungeonSessionData.AISpawnType == EMJAISpawnType::Wave)
@@ -109,7 +116,7 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 
 		LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Activated;
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("AISpawnType is %s"), *FDungeonNode::AISpawnTypeToString(LoadedDungeonSessionData.AISpawnType)));
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("AISpawnType is %s"), *FMJDungeonNode::AISpawnTypeToString(LoadedDungeonSessionData.AISpawnType)));
 		
 }
 
@@ -214,12 +221,14 @@ void AMJGameStateDungeonTG::SpawnAI()
 							   while (CurrentSpawnedAINum < SpawnAIMaxNum)
 							   {
 							   	
-							   		//AllLocations[i].Z += 150.f;
 							   		FActorSpawnParameters SpawnParams;
-							   	    SpawnParams.Owner = this;
-							   		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-							   	
-								    AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(GetActorFromPool(), AllLocations[i],FRotator(), SpawnParams);
+							   	  SpawnParams.Owner = this;
+							   		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+							   		TSubclassOf<AActor> GetActor = GetActorFromPool();
+								    AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(GetActor, AllLocations[i],FRotator(), SpawnParams);
+
+							   		check(NewAIActor);
 							   	
 							   	   if (NewAIActor)
 								   {
@@ -300,6 +309,11 @@ TSubclassOf<AActor> AMJGameStateDungeonTG::GetActorFromPool()
 	}
 	
 	const int32 RandomIndex = FMath::RandRange(0,Keys.Num() - 1);
+
+	if (Keys[RandomIndex] == nullptr)
+	{
+		return GetActorFromPool();
+	}
 	
 	return Keys[RandomIndex];
 }
@@ -325,11 +339,12 @@ void AMJGameStateDungeonTG::SpawnEndPortal()
 				Location = Result->GetItemAsLocation(0);
 
 				FActorSpawnParameters Params;
+				Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+				
 				AActor* Portal = GetWorld()->SpawnActor<AActor>(PortalActor,Location,FRotator(),Params);
 				if (Portal)
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("PortalActor is Successfully Spawned")));
-
 				}
 			}
 		}));
