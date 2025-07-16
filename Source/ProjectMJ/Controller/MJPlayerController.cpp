@@ -25,6 +25,8 @@
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "TG/UI/MJPauseMenuWidget.h"
+#include "TG/UI/MJSettingsWidget.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/Inventory/MJInventoryWidget.h"
 
@@ -58,6 +60,12 @@ void AMJPlayerController::BeginPlay()
 	{
 		UIManager->ShowHUD(State, this);
 	}
+	
+	PauseWidget = CreateWidget(this, PauseWidgetClass);
+	PauseWidget->AddToViewport(1);
+	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
+	
+			
 }
 
 void AMJPlayerController::SetupInputComponent()
@@ -85,6 +93,9 @@ void AMJPlayerController::SetupInputComponent()
 	// UI Input
 	ProjectMJInputComponent->BindAction(ShowInventoryAction, ETriggerEvent::Triggered, this, &ThisClass::ShowInventory);
 	ProjectMJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowStatPanel);
+
+	ProjectMJInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &ThisClass::PauseGame);
+	
 }
 
 void AMJPlayerController::PlayerTick(float DeltaTime)
@@ -323,6 +334,7 @@ void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AAc
 	 }
 }
 
+
 void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
 {
 	MJ_LOG(LogMJ, Warning, TEXT("Input Pressed: %s"), *InInputTag.ToString())
@@ -348,8 +360,37 @@ void AMJPlayerController::Input_AbilityInputReleased(FGameplayTag InInputTag)
 	{
 		if (UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(ControlledPawn->GetAbilitySystemComponent()))
 		{
-
 			MJASC->OnAbilityInputReleased(InInputTag);
 		}
 	}
+}
+
+void AMJPlayerController::PauseGame()
+{
+	if (IsPaused())
+	{
+		if (UMJSettingsWidget* SettingsWidget = Cast<UMJSettingsWidget>((Cast<UMJPauseMenuWidget>(PauseWidget)->GetSettingsWidget())))
+		{
+			if (SettingsWidget->GetVisibility() == ESlateVisibility::Visible)
+			{
+				SettingsWidget->GetParentWidget()->SetVisibility(ESlateVisibility::Visible);
+				SettingsWidget->SetVisibility(ESlateVisibility::Hidden);
+			}
+			else
+			{
+				PauseWidget->SetVisibility(ESlateVisibility::Hidden);
+				SetPause(false);		
+			}
+		}
+	}
+	else
+	{
+		PauseWidget->SetVisibility(ESlateVisibility::Visible);
+		SetPause(true);
+	}
+}
+
+UUserWidget* AMJPlayerController::GetPauseWidget()
+{
+	return PauseWidget;
 }

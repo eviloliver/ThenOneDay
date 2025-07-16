@@ -7,6 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "MJPlayerController.generated.h"
 
+
 class UDataAsset_InputConfig;
 class UInputAction;
 class UMJUIManagerSubsystem;
@@ -107,4 +108,24 @@ public:
 	// Active Ability
 	void Input_InstantSkillPressed(FGameplayTag InInputTag);
 	void Input_InstantSkillReleased(FGameplayTag InInputTag);
+
+
+protected:
+	UPROPERTY()
+	TObjectPtr<UUserWidget> PauseWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<UUserWidget> PauseWidgetClass;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = UI)
+	UInputAction* PauseAction;
+
+	UFUNCTION()
+	void PauseGame();
+public:
+
+	UFUNCTION()
+	UUserWidget* GetPauseWidget();	
+	
+	
 };

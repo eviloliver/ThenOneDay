@@ -20,7 +20,7 @@ enum class EMJAISpawnType : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FDungeonNode
+struct FMJDungeonNode
 {
 	GENERATED_BODY()
 
@@ -75,12 +75,12 @@ struct FDungeonNode
 };
 
 USTRUCT(BlueprintType)
-struct FDungeonGraph
+struct FMJDungeonGraph
 {
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadOnly)
-	TArray<FDungeonNode> Nodes;
+	TArray<FMJDungeonNode> Nodes;
 
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FVector2D> BezierPoints;
