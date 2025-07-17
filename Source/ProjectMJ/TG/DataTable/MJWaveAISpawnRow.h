@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
-#include "MJDataTable_Wave.generated.h"
+#include "MJWaveAISpawnRow.generated.h"
 
 /**
  * Class Description: Wave Datatable Row
@@ -14,7 +14,7 @@
  * Last Modified Date: 2025-07-03
  */
 USTRUCT(BlueprintType)
-struct FMJWaveDataRow : public  FTableRowBase
+struct FMJWaveAISpawnDataRow : public  FTableRowBase
 {
 	GENERATED_BODY()
 
