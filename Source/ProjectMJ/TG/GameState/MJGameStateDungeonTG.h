@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
 #include "TG/Interface/MJBossEventManagerTG.h"
-#include "TG/Struct/MJDataTable_Wave.h"
+#include "TG/DataTable/MJWaveAISpawnRow.h"
 #include "TG/Struct/MJDungeonSessionDataStruct.h"
 #include "MJGameStateDungeonTG.generated.h"
 
@@ -44,14 +44,8 @@ public:
 
 	UFUNCTION()
 	void LoadFromInstancedDungeonSessionData(uint8 LoadFromNum);
-
-
-	
-	bool TravelToMapByNode(const FString MapName, const uint8 NodeNum);
 	
 protected:
-
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	
 	// Initialize Section
@@ -96,10 +90,14 @@ protected:
 	// Static AISpawn Section
 	
 	UPROPERTY(BlueprintReadOnly)
-	TArray<AActor*> StaticSpawnPointActors; 
+	TArray<AActor*> StaticSpawnPointActors;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AActor> DummyActorBPClass;
+	TObjectPtr<UDataTable> LoadedStaticDataTable;
+	
+	UPROPERTY(EditDefaultsOnly)
+	int32 StaticAISpawnMaxNum;
+	
 
 	// Wave Section
 	
@@ -113,7 +111,7 @@ protected:
 	TObjectPtr<UDataTable> LoadedWaveDataTable;
 
 	UPROPERTY(BlueprintReadOnly)
-	FMJWaveDataRow LoadedWaveDataRow;
+	FMJWaveAISpawnDataRow LoadedWaveDataRow;
 
 	UPROPERTY(BlueprintReadOnly)
 	int32 CurrentWaveNum;
@@ -121,7 +119,7 @@ protected:
 	// AI Spawn Condition Section
 
 	UPROPERTY(BlueprintReadOnly)
-	int32 SpawnAIMaxNum;
+	int32 WaveAISpawnMaxNum;
 
 	UPROPERTY(BlueprintReadWrite)
 	int32 CurrentSpawnedAINum;
