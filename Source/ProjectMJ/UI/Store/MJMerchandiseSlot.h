@@ -22,16 +22,16 @@ class PROJECTMJ_API UMJMerchandiseSlot : public UUserWidget
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	UImage* MerImage;
+	TObjectPtr<UImage> MerImage;
 	
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* ItemName;
+	TObjectPtr<UTextBlock> ItemName;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* Description;
+	TObjectPtr<UTextBlock> Description;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* Price;
+	TObjectPtr<UTextBlock> Price;
 
 public:
 	void SetImage(UTexture2D* ItemTexture);

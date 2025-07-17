@@ -19,19 +19,19 @@ class PROJECTMJ_API UMJStatWidget : public UUserWidget
 
 private:
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* StatLevel;
+	TObjectPtr<UTextBlock> StatLevel;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* StatHealth;
+	TObjectPtr<UTextBlock> StatHealth;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* StatAttackPower;
+	TObjectPtr<UTextBlock> StatAttackPower;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* StatSpellPower;
+	TObjectPtr<UTextBlock> StatSpellPower;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* StatSpeed;
+	TObjectPtr<UTextBlock> StatSpeed;
 
 	float Level;
 	float Health;

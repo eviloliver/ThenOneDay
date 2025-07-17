@@ -19,13 +19,13 @@ class PROJECTMJ_API UMJInventoryTooltip : public UUserWidget
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* Description;
+	TObjectPtr<UTextBlock> Description;
 	
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* ItemName;
+	TObjectPtr<UTextBlock> ItemName;
 
 	UPROPERTY(meta = (BindWidget))
-	USizeBox* SizeBox;
+	TObjectPtr<USizeBox> SizeBox;
 public:
 	//virtual void NativeConstruct() override;
 	

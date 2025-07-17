@@ -6,18 +6,17 @@
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "Components/ProgressBar.h"
 
-void UMJExperienceWidget::BindToAttributes(class UMJAbilitySystemComponent* ASC,
-	class UMJCharacterAttributeSet* AttributeSet)
+void UMJExperienceWidget::BindToAttributes(UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet)
 {
 	if (!ASC || !AttributeSet)
 	{
 		return;
 	}
 	
-	MaxExp = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxHealthAttribute());
-	CurrentExp = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute());
+	MaxExp = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxExperienceAttribute());
+	CurrentExp = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetExperienceAttribute());
 	// 데이터가 실제로 변할 때마다, GAS가 자동 호출
-	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this,&UMJExperienceWidget::OnExpChanged);
+	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetExperienceAttribute()).AddUObject(this,&UMJExperienceWidget::OnExpChanged);
 
 	OnExpChanged(FOnAttributeChangeData{});
 }

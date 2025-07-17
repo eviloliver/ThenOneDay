@@ -22,7 +22,7 @@ class PROJECTMJ_API UMJExperienceWidget : public UUserWidget
 
 private:
 	UPROPERTY(meta = (BindWidget))
-	UProgressBar* ExpBar;
+	TObjectPtr<UProgressBar> ExpBar;
 
 	float MaxExp;
 	float CurrentExp;

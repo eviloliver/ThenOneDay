@@ -11,7 +11,7 @@
 /**
  * 
  */
-
+class UGridPanel;
 class UMJInventorySlot;
 UCLASS()
 
@@ -21,22 +21,22 @@ class PROJECTMJ_API UMJInventoryWidget : public UUserWidget
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	class UGridPanel* GridPanel;
+	TObjectPtr<UGridPanel> GridPanel;
 	
 	UPROPERTY(meta = (BindWidget))
-	TArray<UMJInventorySlot*> InventorySlots;
+	TArray<TObjectPtr<UMJInventorySlot>> InventorySlots;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Inventory)
 	TSubclassOf<UMJInventorySlot> InventorySlotClass;
 
 	UPROPERTY(meta = (BindWidget))
-	UCanvasPanel* CanvasPanel;
+	TObjectPtr<UCanvasPanel> CanvasPanel;
 	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TSubclassOf<UMJInventoryTooltip> TooltipWidgetClass;
 
 	UPROPERTY()
-	UMJInventoryTooltip* Tooltip;
+	TObjectPtr<UMJInventoryTooltip> Tooltip;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, category = Tooltip)
 	float Pivot;

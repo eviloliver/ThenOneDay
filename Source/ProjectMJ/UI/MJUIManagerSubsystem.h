@@ -55,18 +55,18 @@ public:
 	
 protected:
 	UPROPERTY()
-	UMJDialogueWidget* DialogueWidget;
+	TObjectPtr<UMJDialogueWidget> DialogueWidget;
 
 	UPROPERTY()
-	TSubclassOf<class UMJDialogueWidget> DialogueWidgetClass;
+	TSubclassOf<UMJDialogueWidget> DialogueWidgetClass;
 
 	bool bIsDialogueActive;
 
 	UPROPERTY()
-	UMJHUDWidget* HUDWidget;
+	TObjectPtr<UMJHUDWidget> HUDWidget;
 
 	UPROPERTY()
-	TSubclassOf<class UMJHUDWidget> HUDWidgetClass;
+	TSubclassOf<UMJHUDWidget> HUDWidgetClass;
 	
 	//UMJInventoryWidget* InventoryWidget;
 	//TSubclassOf<class UMJInventoryWidget> InventoryWidgetClass;

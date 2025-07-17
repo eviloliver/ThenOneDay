@@ -24,7 +24,7 @@ class PROJECTMJ_API UMJHealthBarWidget : public UUserWidget
 
 private:
 	UPROPERTY(meta = (BindWidget))
-	UProgressBar* HealthBar;
+	TObjectPtr<UProgressBar> HealthBar;
 
 	float MaxHealth;
 	float CurrentHealth;

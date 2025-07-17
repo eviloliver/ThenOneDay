@@ -28,22 +28,22 @@ class PROJECTMJ_API UMJHUDWidget : public UUserWidget
 
 private:
 	UPROPERTY(meta = (BindWidget))
-	UMJHealthBarWidget* HealthBar;
+	TObjectPtr<UMJHealthBarWidget> HealthBar;
 
 	UPROPERTY(meta = (BindWidget))
-	UMJManaBarWidget* ManaBar;
+	TObjectPtr<UMJManaBarWidget> ManaBar;
 
 	UPROPERTY(meta = (BindWidget))
-	UMJExperienceWidget* ExpBar;
+	TObjectPtr<UMJExperienceWidget> ExpBar;
 
 	UPROPERTY(meta = (BindWidget))
-	UMJStatWidget* StatPanel;
+	TObjectPtr<UMJStatWidget> StatPanel;
 
 	UPROPERTY(meta = (BindWidget))
-	UMJInventoryWidget* Inventory;
+	TObjectPtr<UMJInventoryWidget> Inventory;
 
 	UPROPERTY(meta = (BindWidget))
-	UMJStoreWidget* Store;
+	TObjectPtr<UMJStoreWidget> Store;
 
 public:
 	UFUNCTION()

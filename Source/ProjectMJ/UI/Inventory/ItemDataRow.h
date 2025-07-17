@@ -39,6 +39,9 @@ struct FItemDataRow : public FTableRowBase // 안바뀌는값 // 아이템 고�
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag ItemTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTag DropMonsterTag;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText ItemID;

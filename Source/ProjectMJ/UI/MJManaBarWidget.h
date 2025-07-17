@@ -23,7 +23,7 @@ class PROJECTMJ_API UMJManaBarWidget : public UUserWidget
 
 private:
 	UPROPERTY(meta = (BindWidget))
-	UProgressBar* ManaBar;
+	TObjectPtr<UProgressBar> ManaBar;
 
 	float MaxMana;
 	float CurrentMana;

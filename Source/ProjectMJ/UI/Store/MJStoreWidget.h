@@ -18,10 +18,10 @@ class PROJECTMJ_API UMJStoreWidget : public UUserWidget
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	UScrollBox* ScrollBox;
+	TObjectPtr<UScrollBox> ScrollBox;
 	
 	UPROPERTY(meta = (BindWidget))
-	TArray<UMJMerchandiseSlot*> MerchandiseSlots;
+	TArray<TObjectPtr<UMJMerchandiseSlot>> MerchandiseSlots;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Inventory)
 	TSubclassOf<UMJMerchandiseSlot> MerchandiseSlotClass;

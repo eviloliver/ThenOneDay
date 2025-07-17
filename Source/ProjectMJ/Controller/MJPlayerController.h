@@ -73,25 +73,25 @@ private:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* ChangeIMCAction;
+	TObjectPtr<UInputAction> ChangeIMCAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* NextDialogueAction;
+	TObjectPtr<UInputAction> NextDialogueAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* ShowBacklogAction;
+	TObjectPtr<UInputAction> ShowBacklogAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* ShowStatPanelAction;
+	TObjectPtr<UInputAction> ShowStatPanelAction;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* ShowInventoryAction;
+	TObjectPtr<UInputAction> ShowInventoryAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* ShowStoreAction;
+	TObjectPtr<UInputAction> ShowStoreAction;
 	
 	UPROPERTY()
-	UMJUIManagerSubsystem* UIManager;
+	TObjectPtr<UMJUIManagerSubsystem> UIManager;
 
 	//Dialogue
 	void ChangeToIMCDialogue();
