@@ -15,6 +15,7 @@
  * Last Modified Date: 
  */
 
+class UTextBlock;
 class UProgressBar;
 
 UCLASS()
@@ -26,12 +27,16 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UProgressBar> HealthBar;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> Percent;
+
 	float MaxHealth;
 	float CurrentHealth;
 
-	void OnHealthChanged(const FOnAttributeChangeData& Data);
-	
 public:
 	UFUNCTION()
 	void BindToAttributes(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet);
+	void InitializeWidget();
+	
+	void OnHealthChanged(const FOnAttributeChangeData& Data);
 };

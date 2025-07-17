@@ -5,31 +5,33 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "AbilitySystemComponent.h"
-#include "MJExperienceWidget.generated.h"
+#include "MJStaminaBar.generated.h"
 
 /**
- * Class Description: HUD 경험치 바
- * Author: 이지수
- * Created Date: 2025.06.26
- * Last Modified By: 
- * Last Modified Date: 
+ * 
  */
+class UTextBlock;
 class UProgressBar;
 UCLASS()
-class PROJECTMJ_API UMJExperienceWidget : public UUserWidget
+class PROJECTMJ_API UMJStaminaBar : public UUserWidget
 {
 	GENERATED_BODY()
 
 private:
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UProgressBar> ExpBar;
+	TObjectPtr<UProgressBar> StaminaBar;
 
-	float MaxExp;
-	float CurrentExp;
-
-	void OnExpChanged(const FOnAttributeChangeData& Data);
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> Percent;
 	
+	float MaxStamina;
+	float CurrentStamina;
+
+
 public:
 	UFUNCTION()
 	void BindToAttributes(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet);
+	void InitializeWidget();
+	void OnStaminaChanged(const FOnAttributeChangeData& Data);
+    	
 };

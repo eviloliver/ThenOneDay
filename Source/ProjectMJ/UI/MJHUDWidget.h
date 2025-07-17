@@ -16,6 +16,7 @@
 
 class UMJHealthBarWidget;
 class UMJManaBarWidget;
+class UMJStaminaBar;
 class UMJExperienceWidget;
 class UMJStatWidget;
 class UMJInventoryWidget;
@@ -32,6 +33,9 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJManaBarWidget> ManaBar;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJStaminaBar> StaminaBar;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJExperienceWidget> ExpBar;
