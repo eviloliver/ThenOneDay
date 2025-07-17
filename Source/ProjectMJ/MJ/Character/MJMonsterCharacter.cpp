@@ -7,6 +7,7 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
+#include "Character/Component/MJEnemyStatComponent.h"
 #include "Character/Component/MJSkillComponentBase.h"
 #include "DataAsset/DataAsset_StartDataBase.h"
 #include "DataTable/MJEnemyDataRow.h"
@@ -30,6 +31,9 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	ASC = CreateDefaultSubobject<UMJAbilitySystemComponent>(TEXT("ASC"));
 	
 	CharacterAttributeSet = CreateDefaultSubobject<UMJCharacterAttributeSet>(TEXT("CharacterAttributeSet"));
+
+	// Stat Component
+	StatComponent = CreateDefaultSubobject<UMJEnemyStatComponent>(TEXT("StatComponent"));
 
 	CharacterSkillAttributeSet = CreateDefaultSubobject<UMJCharacterSkillAttributeSet>(TEXT("CharacterSkillAttributeSet"));
 
@@ -120,6 +124,8 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+	CharacterAttributeSet->OnDeath.AddDynamic(this, &ThisClass::OnDeath);
+	
 	if (ASC)
 	{
 		ASC->InitAbilityActorInfo(this,this);
@@ -162,27 +168,26 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	}
 
 	// Minjin: 기본 공격
-	SkillComponent->LearnSkill(DataRow->NormalAttackTag);
-	SkillComponent->EquipSkill(DataRow->NormalAttackTag);
+	//SkillComponent->LearnSkill(DataRow->NormalAttackTag);
+	//SkillComponent->EquipSkill(DataRow->NormalAttackTag);
 
 	// Minjin: 특수 공격 -> 드랍하는 스킬
 	SkillComponent->LearnSkill(DataRow->IdentitySkillTag);
 	SkillComponent->EquipSkill(DataRow->IdentitySkillTag);
 
 	// Minjin: Attribute Setting
-	UCurveTable* AttributeCurve = DataRow->AttributeCurve.LoadSynchronous();
-	if (!AttributeCurve)
+	if (StatComponent)
 	{
-		MJ_LOG(LogMJ, Log, TEXT("Not Exist AttributeCurve"));
-		return;
+		UCurveTable* AttributeCurve = DataRow->AttributeCurve.LoadSynchronous();
+		if (!AttributeCurve)
+		{
+			MJ_LOG(LogMJ, Log, TEXT("Not Exist AttributeCurve"));
+			return;
+		}
+		
+		StatComponent->SetStatTable(AttributeCurve);
+		StatComponent->InitializeStat();
 	}
-
-	// Minjin
-	// TODO
-	// Attibute 덮어주는 Effect가 필요하다.
-	
-	
-	CharacterAttributeSet->OnDeath.AddDynamic(this, &ThisClass::OnDeath);
 }
 
 void AMJMonsterCharacter::OnDeath()
