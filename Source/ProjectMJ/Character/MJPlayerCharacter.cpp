@@ -15,6 +15,7 @@
 #include "Perception/AISense_Sight.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Component/MJFadeObjectComponent.h"
+#include "Component/MJPlayerStatComponent.h"
 #include "Perception/AISense_Damage.h"
 #include "Perception/AISense_Hearing.h"
 
@@ -77,12 +78,13 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	InventoryComponent = CreateDefaultSubobject<UMJInventoryComponent>(TEXT("InventoryComponent"));
 	// Skill Component
 	SkillComponent = CreateDefaultSubobject<UMJPlayerSkillComponent>(TEXT("SkillComponent"));
+	// Stat Component
+	StatComponent = CreateDefaultSubobject<UMJPlayerStatComponent>(TEXT("StatComponent"));
 }
 
 void AMJPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 void AMJPlayerCharacter::PossessedBy(AController* NewController)
@@ -111,7 +113,10 @@ void AMJPlayerCharacter::PossessedBy(AController* NewController)
 	// 	}
 	// 	MJ_LOG(LogTG, Log, TEXT("player loaded health : %f"),  GetAbilitySystemComponent()->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));
 	// }
-	
+	if (StatComponent)
+	{
+		StatComponent->InitializeStat();
+	}
 }
 
 void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
