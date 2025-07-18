@@ -1,18 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AbilitySystem/Abilities/MJGA_BasicMeleeAttack.h"
+#include "AbilitySystem/Abilities/MJGA_ActionInstantAbility.h"
 
 #include "Character/MJCharacterBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 
-UMJGA_BasicMeleeAttack::UMJGA_BasicMeleeAttack()
+UMJGA_ActionInstantAbility::UMJGA_ActionInstantAbility()
 {
 	//
 }
 
-void UMJGA_BasicMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+void UMJGA_ActionInstantAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
@@ -33,14 +33,14 @@ void UMJGA_BasicMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	AMJCharacter->GetCharacterMovement()->SetMovementMode(MOVE_None);
 	UAbilityTask_PlayMontageAndWait* PlayAttackMontage = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, TEXT("PlayAttack"), SkillActionAnimMontage, 1.0f);
 
-	PlayAttackMontage->OnCompleted.AddDynamic(this, &UMJGA_BasicMeleeAttack::OnCompleteCallback);
-	PlayAttackMontage->OnInterrupted.AddDynamic(this, &UMJGA_BasicMeleeAttack::OnInterruptedCallback);
-	PlayAttackMontage->OnCancelled.AddDynamic(this, &UMJGA_BasicMeleeAttack::OnInterruptedCallback);
+	PlayAttackMontage->OnCompleted.AddDynamic(this, &UMJGA_ActionInstantAbility::OnCompleteCallback);
+	PlayAttackMontage->OnInterrupted.AddDynamic(this, &UMJGA_ActionInstantAbility::OnInterruptedCallback);
+	PlayAttackMontage->OnCancelled.AddDynamic(this, &UMJGA_ActionInstantAbility::OnInterruptedCallback);
 
 	PlayAttackMontage->ReadyForActivation();
 }
 
-void UMJGA_BasicMeleeAttack::CancelAbility(const FGameplayAbilitySpecHandle Handle,
+void UMJGA_ActionInstantAbility::CancelAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateCancelAbility)
 {
@@ -48,7 +48,7 @@ void UMJGA_BasicMeleeAttack::CancelAbility(const FGameplayAbilitySpecHandle Hand
 
 }
 
-void UMJGA_BasicMeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle,
+void UMJGA_ActionInstantAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
@@ -62,14 +62,14 @@ void UMJGA_BasicMeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	AMJCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 }
 
-void UMJGA_BasicMeleeAttack::OnCompleteCallback()
+void UMJGA_ActionInstantAbility::OnCompleteCallback()
 {
 	bool bReplicatedEndAbility = true;
 	bool bWasCancelled = false;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicatedEndAbility, bWasCancelled);
 }
 
-void UMJGA_BasicMeleeAttack::OnInterruptedCallback()
+void UMJGA_ActionInstantAbility::OnInterruptedCallback()
 {
 	bool bReplicatedEndAbility = true;
 	bool bWasCancelled = true;

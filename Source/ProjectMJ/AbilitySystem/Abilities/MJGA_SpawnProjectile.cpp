@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AbilitySystem/Abilities/MJGA_BaseProjectile.h"
+#include "AbilitySystem/Abilities/MJGA_SpawnProjectile.h"
 
 #include "MJGA_InstantSkill.h"
 #include "ProjectMJ.h"
@@ -11,12 +11,12 @@
 #include "Character/Component/MJSkillComponentBase.h"
 #include "DataAsset/MJProjectileDataAsset.h"
 
-UMJGA_BaseProjectile::UMJGA_BaseProjectile()
+UMJGA_SpawnProjectile::UMJGA_SpawnProjectile()
 {
 
 }
 
-void UMJGA_BaseProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+void UMJGA_SpawnProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                            const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                            const FGameplayEventData* TriggerEventData)
 {

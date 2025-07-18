@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Abilities/MJGA_InstantSkill.h"
-#include "MJGA_BasicMeleeAttack.generated.h"
+#include "MJGA_ActionInstantAbility.generated.h"
 
 /**
  * Class Description: 기본 근접 공격
@@ -14,12 +14,12 @@
  * Last Modified Date: (Last Modified Date)
  */
 UCLASS()
-class PROJECTMJ_API UMJGA_BasicMeleeAttack : public UMJGA_InstantSkill
+class PROJECTMJ_API UMJGA_ActionInstantAbility : public UMJGA_InstantSkill
 {
 	GENERATED_BODY()
 
 public:
-	UMJGA_BasicMeleeAttack();
+	UMJGA_ActionInstantAbility();
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
@@ -35,4 +35,5 @@ protected:
 
 	//bool bReplicatedEndAbility = true;
 	//bool bWasCancelled = false;
+
 };
