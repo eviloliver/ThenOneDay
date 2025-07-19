@@ -8,10 +8,10 @@
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "TG/MJGameInstanceTG.h"
-#include "TG/Actor/MJDummyActorTG.h"
 #include "TG/Actor/MJDungeonAISpawnPointActor.h"
 #include "TG/AI/MJAIBossCharacterTG.h"
 #include "TG/DataTable/MJStaticAISpawnRow.h"
+#include "TG/Interface/MJInstancedActorInterface.h"
 #include "TG/SubSystem/MJDungeonGenerationSubSystem.h"
 
 
@@ -67,6 +67,7 @@ void AMJGameStateDungeonTG::BeginPlay()
 			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("GameState is nullptr!!!")));
 	}
 }
+
 
 void AMJGameStateDungeonTG::Initialize_BattleNode()
 {
@@ -167,14 +168,14 @@ void AMJGameStateDungeonTG::Initialize_BossNode()
 {
 	if (LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::InActive)
 	{
-		AMJAIBossCharacterTG* AIBoss = Cast<AMJAIBossCharacterTG>(UGameplayStatics::GetActorOfClass(GetWorld(),AMJAIBossCharacterTG::StaticClass()));
-		if (AIBoss)
+		BossAIRef = Cast<AMJAIBossCharacterTG>(UGameplayStatics::GetActorOfClass(GetWorld(),AMJAIBossCharacterTG::StaticClass()));
+		if (BossAIRef)
 		{
-			AIBoss->OnDestroyed.AddDynamic(this ,&AMJGameStateDungeonTG::OnAIDestroy);
-			SpawnedActorRefs.Add(AIBoss);
+			BossAIRef->OnDestroyed.AddDynamic(this ,&AMJGameStateDungeonTG::OnAIDestroy);
+			SpawnedActorRefs.Add(BossAIRef);
 			CurrentSpawnedAINum++;
+			GetWorldTimerManager().SetTimer(OnBossSpawnedBroadCastTimerHandle,this, &ThisClass::PublishOnBossSpawned,3.0f);
 		}
-		
 		LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Activated;
 	}
 }
@@ -446,12 +447,7 @@ void AMJGameStateDungeonTG::LoadFromInstancedDungeonSessionData(uint8 LoadFromNu
 }
 
 
-void AMJGameStateDungeonTG::PublishOnBossHealthChanged(float Delta)
+void AMJGameStateDungeonTG::PublishOnBossSpawned()
 {
-	OnAIBossHealthChanged.Broadcast(Delta);
-}
-
-void AMJGameStateDungeonTG::PublishOnBossSpawned(float Health)
-{
-	OnAIBossSpawned.Broadcast(Health);
+	OnAIBossSpawned.Broadcast();
 }

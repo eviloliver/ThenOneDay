@@ -17,9 +17,11 @@
  * Last Modified Date: 2025-06-13
  */
 
+class AMJAIBossCharacterTG;
 class UEnvQuery;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnHealthChangedSignature, float, Delta);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnSpawnedSignature, float, Health);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIBossOnSpawnedSignature);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIOnDestroyedSignature);
 
 UCLASS()
@@ -36,14 +38,24 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetDungeonSessionData(FMJDungeonSessionData& DungeonSessionData);
-
-	// Called at Gamemode
 	
 	UFUNCTION(BlueprintCallable)
 	void SaveToInstancedDungeonSessionData(uint8 SaveToNum);
 
 	UFUNCTION()
 	void LoadFromInstancedDungeonSessionData(uint8 LoadFromNum);
+
+	// Miscellaneous
+	
+	UPROPERTY(BlueprintAssignable)
+	FMJAIBossOnHealthChangedSignature OnAIBossHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FMJAIBossOnSpawnedSignature OnAIBossSpawned;
+
+
+	UFUNCTION(BlueprintCallable)
+	virtual void PublishOnBossSpawned() override;
 	
 protected:
 
@@ -137,18 +149,18 @@ protected:
 	FTimerHandle EndPortalSpawnTimerHandle;
 
 
-	// Miscellaneous
+	// Boss Section
+
+	UPROPERTY()
+	TObjectPtr<AMJAIBossCharacterTG> BossAIRef;
+
+	UPROPERTY()
+	FTimerHandle OnBossSpawnedBroadCastTimerHandle;
+
 	
-	UPROPERTY(BlueprintAssignable)
-	FMJAIBossOnHealthChangedSignature OnAIBossHealthChanged;
+	
 
-	UPROPERTY(BlueprintAssignable)
-	FMJAIBossOnSpawnedSignature OnAIBossSpawned;
 
-	UFUNCTION(BlueprintCallable)
-	virtual void PublishOnBossHealthChanged(float Delta) override;
 
-	UFUNCTION(BlueprintCallable)
-	virtual void PublishOnBossSpawned(float Health) override;
 	
 };
