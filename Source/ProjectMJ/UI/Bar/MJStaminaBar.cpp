@@ -26,10 +26,12 @@ void UMJStaminaBar::BindToAttributes(class UMJAbilitySystemComponent* ASC, class
 
 void UMJStaminaBar::InitializeWidget()
 {
-	float Percentage = (MaxStamina > 0.f) ? CurrentStamina / MaxStamina : 0.f;
+	// 아래 두줄 추가한 이유 : 무작정 1.f로 해놓으면 나중에 게임 다시 켰을 때 체력이 자동회복되어있을까봐
+	float per = (MaxStamina > 0.f) ? CurrentStamina / MaxStamina : 0.f;
+	TargetPercent = (MaxStamina > 0.f) ? CurrentStamina / MaxStamina : 0.f;
 	if (StaminaBar)
 	{
-		StaminaBar->SetPercent(Percentage);
+		StaminaBar->SetPercent(per);
 	}
 	if (Percent)
 	{
@@ -40,15 +42,29 @@ void UMJStaminaBar::InitializeWidget()
 void UMJStaminaBar::OnStaminaChanged(const FOnAttributeChangeData& Data)
 {
 	CurrentStamina = Data.NewValue;
-	float Percentage = (MaxStamina > 0.f) ? CurrentStamina / MaxStamina : 0.f;
-
-	if (StaminaBar)
-	{
-		StaminaBar->SetPercent(Percentage);
-	}
+	TargetPercent = (MaxStamina > 0.f) ? CurrentStamina / MaxStamina : 0.f;
+	
 	if (Percent)
 	{
-		float curStamina =   CurrentStamina< 0.f ? 0.f : CurrentStamina;
-		Percent->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), curStamina, MaxStamina)));
+		CurrentStamina = CurrentStamina < 0.f ? 0.f : CurrentStamina;
+		Percent->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), CurrentStamina, MaxStamina)));
+	}
+}
+
+void UMJStaminaBar::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	if (StaminaBar->GetPercent() >= 0.f)
+	{
+		Super::NativeTick(MyGeometry, InDeltaTime);
+
+		if (FMath::Abs(CurrentPercent- TargetPercent) > KINDA_SMALL_NUMBER)
+		{
+			CurrentPercent = FMath::FInterpTo(CurrentPercent, TargetPercent, InDeltaTime, LerpSpeed);
+			CurrentPercent = CurrentPercent < 0.f ? -0.0001f : CurrentPercent;
+			if (StaminaBar)
+			{
+				StaminaBar->SetPercent(CurrentPercent);
+			}
+		}
 	}
 }

@@ -21,15 +21,15 @@ void UMJManaBarWidget::BindToAttributes(class UMJAbilitySystemComponent* ASC,
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetManaAttribute()).AddUObject(this,&UMJManaBarWidget::OnManaChanged);
 
 	InitializeWidget();
-	//OnManaChanged(FOnAttributeChangeData{}); 
 }
 
 void UMJManaBarWidget::InitializeWidget()
 {
-	float Percentage = (MaxMana > 0.f) ? CurrentMana / MaxMana : 0.f;
+	float per = (MaxMana > 0.f) ? CurrentMana / MaxMana : 0.f;
+	TargetPercent = (MaxMana > 0.f) ? CurrentMana / MaxMana : 0.f;
 	if (ManaBar)
 	{
-		ManaBar->SetPercent(Percentage);
+		ManaBar->SetPercent(per);
 	}
 	if (Percent)
 	{
@@ -40,16 +40,29 @@ void UMJManaBarWidget::InitializeWidget()
 void UMJManaBarWidget::OnManaChanged(const FOnAttributeChangeData& Data)
 {
 	CurrentMana = Data.NewValue;
-	float Percentage = (MaxMana > 0.f) ? CurrentMana / MaxMana : 0.f;
+	TargetPercent = (MaxMana > 0.f) ? CurrentMana / MaxMana : 0.f;
 	
-	if (ManaBar)
-	{
-		ManaBar->SetPercent(Percentage);
-	}
 	if (Percent)
 	{
-		float curMP =  CurrentMana < 0.f ? 0.f : CurrentMana;
-		Percent->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), curMP, MaxMana)));
+		CurrentMana = CurrentMana < 0.f ? 0.f : CurrentMana;
+		Percent->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), CurrentMana, MaxMana)));
 	}
-	
+}
+
+void UMJManaBarWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	if (ManaBar->GetPercent() >= 0.f)
+	{
+		Super::NativeTick(MyGeometry, InDeltaTime);
+        
+        if (FMath::Abs(CurrentPercent- TargetPercent) > KINDA_SMALL_NUMBER)
+        {
+        	CurrentPercent = FMath::FInterpTo(CurrentPercent, TargetPercent, InDeltaTime, LerpSpeed);
+        	CurrentPercent = CurrentPercent < 0.f ? -0.0001f : CurrentPercent;
+        	if (ManaBar)
+        	{
+        		ManaBar->SetPercent(CurrentPercent);
+        	}
+        }
+	}
 }

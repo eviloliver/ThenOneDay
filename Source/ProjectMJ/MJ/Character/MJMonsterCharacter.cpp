@@ -10,6 +10,8 @@
 #include "Character/Component/MJSkillComponentBase.h"
 #include "DataAsset/DataAsset_StartDataBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/WidgetComponent.h"
+#include "UI/MJUIManagerSubsystem.h"
 
 AMJMonsterCharacter::AMJMonsterCharacter()
 {
@@ -35,6 +37,12 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 
 	// Skill Component
 	SkillComponent = CreateDefaultSubobject<UMJSkillComponentBase>(TEXT("SkillComponent"));
+
+	// UI Component
+	HPBarComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBarComponent"));
+	HPBarComponent->SetupAttachment(GetMesh());
+	// static ConstructorHelpers::FClassFinder<UMJEnemyHPBar> HPBarWidgetRef(TEXT("Game/UI/WBP/World/Bar/WBP_EnemyHPBar.WBP_EnemyHPBar"));
+	// > 이거 왜인지 모르겠는데 안되어서, 몬스터 BP에서 유저인터페이스 상에서 설정을 따로 해줘야 함
 }
 
 void AMJMonsterCharacter::BeginPlay()
@@ -44,6 +52,17 @@ void AMJMonsterCharacter::BeginPlay()
 	// Minjin: 캐릭터는 미리 맵에 스폰되어 있다. 안 보이게 설정-콜리전을 비활성화 하면 맵 밑으로 꺼짐
 	AActor::SetActorHiddenInGame(true);
 	SetActorEnableCollision(true);
+	
+	// Jisoo
+	HPBarComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 220.0f));
+	HPBarComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	HPBarComponent->SetDrawSize(FVector2D(100.0f,10.0f));
+	HPBarComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	HPBarComponent->SetVisibility(false);
+
+	UIManager =	GetGameInstance()->GetSubsystem<UMJUIManagerSubsystem>();
+	ensure(UIManager);
+	UIManager->ResisterWorldUI(HPBarComponent,ASC,CharacterAttributeSet);
 }
 
 float AMJMonsterCharacter::GetAIPatrolRadius()
@@ -140,6 +159,7 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	// 그런데 자동으로 DT에 있는 값으로 Attribute를 넣어 줄 거면 전체 덮어주는 Effect 가지고 있고, 노가다가 필요해서
 	// 나중에 DT만들고 집중 안될 때 와서 작업 함
 	//  -동민 -
+	CharacterAttributeSet->OnDamage.AddDynamic(this,&ThisClass::OnDamage);
 	CharacterAttributeSet->OnDeath.AddDynamic(this, &ThisClass::OnDeath);
 }
 
@@ -149,5 +169,9 @@ void AMJMonsterCharacter::OnDeath()
 	// 애니메이션과 기타 등등 세팅
 	// - 동민 -
 	Destroy();
+}
 
+void AMJMonsterCharacter::OnDamage()
+{
+	HPBarComponent->SetVisibility(true);
 }

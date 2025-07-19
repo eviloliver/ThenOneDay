@@ -25,10 +25,11 @@ void UMJExperienceWidget::BindToAttributes(UMJAbilitySystemComponent* ASC, UMJCh
 void UMJExperienceWidget::InitializeWidget()
 {
 	// 초기화
-	float Percentage = (MaxExp > 0.f) ? CurrentExp / MaxExp : 0.f;
+	CurrentPercent= (MaxExp > 0.f) ? CurrentExp / MaxExp : 0.f;
+	TargetPercent = (MaxExp > 0.f) ? CurrentExp / MaxExp : 0.f;
 	if (ExpBar)
 	{
-		ExpBar->SetPercent(Percentage);
+		ExpBar->SetPercent(CurrentPercent);
 	}
 	if (Percent)
 	{
@@ -49,5 +50,19 @@ void UMJExperienceWidget::OnExpChanged(const FOnAttributeChangeData& Data)
 	{
 		float curExp = CurrentExp < 0.f ? 0.f : CurrentExp;
 		Percent->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), curExp, MaxExp)));
+	}
+}
+
+void UMJExperienceWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+	
+	if (FMath::Abs(CurrentPercent- TargetPercent) > KINDA_SMALL_NUMBER)
+	{
+		CurrentPercent = FMath::FInterpTo(CurrentPercent, TargetPercent, InDeltaTime, LerpSpeed);
+		if (ExpBar)
+		{
+			ExpBar->SetPercent(CurrentPercent);
+		}
 	}
 }

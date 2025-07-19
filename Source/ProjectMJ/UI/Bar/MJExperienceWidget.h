@@ -27,8 +27,12 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> Percent;
-	
 
+	// 스르륵 게이지가 줄도록 하기 위한 변수
+	float TargetPercent ;
+	float CurrentPercent ;
+	float LerpSpeed = 2.5f; // 보간 속도
+	
 	float MaxExp;
 	float CurrentExp;
 	
@@ -38,4 +42,5 @@ public:
 	void BindToAttributes(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet);
 	void InitializeWidget();
 	void OnExpChanged(const FOnAttributeChangeData& Data);
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 };

@@ -30,6 +30,10 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> Percent;
 
+	float TargetPercent;
+	float CurrentPercent;
+	float LerpSpeed = 2.5f; // 보간 속도
+	
 	float MaxHealth;
 	float CurrentHealth;
 
@@ -39,4 +43,5 @@ public:
 	void InitializeWidget();
 	
 	void OnHealthChanged(const FOnAttributeChangeData& Data);
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 };

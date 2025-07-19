@@ -21,15 +21,20 @@ void UMJHealthBarWidget::BindToAttributes(UMJAbilitySystemComponent* ASC, UMJCha
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this,&UMJHealthBarWidget::OnHealthChanged);
 	
 	InitializeWidget();
-	//OnHealthChanged(FOnAttributeChangeData{}); // 데이터가 변하기 전까지는 위 방식으로 호출되지 않음. 그러므로 처음 세팅을 위해 직접 한번 호출
 }
 
 void UMJHealthBarWidget::InitializeWidget()
 {
-	float Percentage = (MaxHealth > 0.f) ? CurrentHealth / MaxHealth : 0.f;
+	float per = (MaxHealth > 0.f) ? (CurrentHealth / MaxHealth) : 0.f;
+	// CurrentPercent = (MaxHealth > 0.f) ? (CurrentHealth / MaxHealth) : 0.f;
+	// CurrentPercent 대신 per를 쓰면 게임 시작할때 체력이 빠르게 차오르는 꼴을 볼 수 있다
+	// 이유 : CurrentPercent = 0 이라서 NativeTick에서 0->TargetPercent까지 차오르는 거임
+	// 이게 더 예뻐보여서 이렇게 했는데, 처음부터 꽉 찬 상태로 시작하고 싶으면 currentPercent 쓰면 된다.
+
+	TargetPercent = (MaxHealth > 0.f) ? CurrentHealth / MaxHealth : 0.f;
 	if (HealthBar)
 	{
-		HealthBar->SetPercent(Percentage);
+		HealthBar->SetPercent(per);
 	}
 	if (Percent)
 	{
@@ -41,16 +46,29 @@ void UMJHealthBarWidget::OnHealthChanged(const FOnAttributeChangeData& Data)
 {
 	CurrentHealth = Data.NewValue; // 바뀐 데이터로 갱신할 수 있는? 근데 이게 있으면 시작할 땐 currentHealth가 0이 되넴
 	
-	// 0으로 나누기 방지
-	float Percentage = (MaxHealth > 0.f) ? CurrentHealth / MaxHealth : 0.f;
-	
-	if (HealthBar)
-	{
-		HealthBar->SetPercent(Percentage);
-	}
+	TargetPercent = (MaxHealth > 0.f) ? CurrentHealth / MaxHealth : 0.f; // 바 퍼센트 갱신
+
 	if (Percent)
 	{
-		float curHP = CurrentHealth < 0.f ? 0.f : CurrentHealth;
-		Percent->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), curHP, MaxHealth)));
+		CurrentHealth = CurrentHealth < 0.f ? 0.f : CurrentHealth;
+		Percent->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), CurrentHealth, MaxHealth)));
+	}
+}
+
+void UMJHealthBarWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	if (HealthBar->GetPercent() >= 0.f) // 더이상 tick이 돌지않도록 가라로..
+	{
+		Super::NativeTick(MyGeometry, InDeltaTime);
+		if (FMath::Abs(CurrentPercent- TargetPercent) > KINDA_SMALL_NUMBER)
+		{
+			UE_LOG(LogTemp,Error,TEXT("%f"),CurrentPercent);
+			CurrentPercent = FMath::FInterpTo(CurrentPercent, TargetPercent, InDeltaTime, LerpSpeed);
+			CurrentPercent = CurrentPercent < 0.f ? -0.0001f : CurrentPercent;
+			if (HealthBar)
+			{
+				HealthBar->SetPercent(CurrentPercent);
+			}
+		}
 	}
 }

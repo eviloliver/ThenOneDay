@@ -28,6 +28,10 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> Percent;
+
+	float TargetPercent;
+	float CurrentPercent;
+	float LerpSpeed = 2.5f;
 	
 	float MaxMana;
 	float CurrentMana;
@@ -37,5 +41,6 @@ public:
 	void BindToAttributes(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet);
 	void InitializeWidget();
 	void OnManaChanged(const FOnAttributeChangeData& Data);
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 };
 

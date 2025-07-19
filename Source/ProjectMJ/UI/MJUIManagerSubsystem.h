@@ -14,11 +14,15 @@
  * Last Modified Date: 2025-06-26
  */
 
+class UWidgetComponent;
+class UMJEnemyHPBar;
 class UMJDialogueWidget;
 class UMJBacklogWidget;
 class UMJDialogueComponent;
 class UMJHUDWidget;
 class UMJInventoryWidget;
+class UMJCharacterAttributeSet;
+class UMJAbilitySystemComponent;
 
 UCLASS()
 class PROJECTMJ_API UMJUIManagerSubsystem : public UGameInstanceSubsystem
@@ -50,8 +54,11 @@ public:
 	// Store Section
 	void ShowStore();
 
+	// World UI
+	void ResisterWorldUI(UWidgetComponent* WidgetComp,UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet);
+	void UnresisterWorldUI(UWidgetComponent* WidgetComp);
 	//UMJInventoryWidget* GetInventoryWidget() {return InventoryWidget;};
-	UMJHUDWidget* GetHUDWidget() {return HUDWidget;};
+	UMJHUDWidget* GetHUDWidget() {return HUDWidget;}
 	
 protected:
 	UPROPERTY()
@@ -67,7 +74,10 @@ protected:
 
 	UPROPERTY()
 	TSubclassOf<UMJHUDWidget> HUDWidgetClass;
-	
-	//UMJInventoryWidget* InventoryWidget;
-	//TSubclassOf<class UMJInventoryWidget> InventoryWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UMJEnemyHPBar> EnemyHPBarWidget;
+
+	UPROPERTY()
+	TArray<TWeakObjectPtr<UWidgetComponent>> WorldUIs;
 };

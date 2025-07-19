@@ -8,6 +8,9 @@
 #include "Character/Component/MJPlayerSkillComponent.h"
 #include "MJMonsterCharacter.generated.h"
 
+class UWidgetComponent;
+class UMJEnemyHPBar;
+class UMJUIManagerSubsystem;
 class UMJCharacterAttributeSet;
 class UMJCharacterSkillAttributeSet;
 /**
@@ -48,8 +51,19 @@ protected:
 	UFUNCTION()
 	virtual void OnDeath();
 
-protected:
+	UFUNCTION()
+	void OnDamage();
 
+protected:
+	// Jisoo : UI Section
+	UPROPERTY()
+	TObjectPtr<UMJUIManagerSubsystem> UIManager;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UWidgetComponent> HPBarComponent;
+
+
+protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMJCharacterAttributeSet> CharacterAttributeSet;
 
