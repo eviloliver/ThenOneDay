@@ -7,6 +7,7 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/Effect/MJGE_SetCharacterAttributeSet.h"
 #include "DataTable/MJEnemyDataRow.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "MJ/Character/MJMonsterCharacter.h"
 #include "TG/MJGameInstanceTG.h"
 
@@ -44,7 +45,6 @@ void UMJEnemyStatComponent::InitializeStat()
 	FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(EffectClass, 1.f, EffectContext);
 	if (!SpecHandle.IsValid())
 	{
-		MJ_LOG(LogMJ, Warning, TEXT("AAA"));
 		return;
 	}
 
@@ -60,4 +60,5 @@ void UMJEnemyStatComponent::InitializeStat()
 		}
 	}
 	ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+	OwnerCharacter->GetCharacterMovement()->MaxWalkSpeed = ASC->GetSet<UMJCharacterAttributeSet>()->GetMaxMovementSpeed();
 }
