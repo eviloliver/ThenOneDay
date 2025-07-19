@@ -40,20 +40,20 @@ EBTNodeResult::Type UBTTask_MJInstantAttack::ExecuteTask(UBehaviorTreeComponent&
 		return EBTNodeResult::Failed;
 	}
 
-	FDelegateHandle Handle;
-	Handle = ASC->OnAbilityEnded.AddLambda(
-	[&, AttackTag, Handle](const FAbilityEndedData& EndedData)
-	{
-		MJ_LOG(LogMJ, Error,TEXT("A"));
-		if (EndedData.AbilityThatEnded->AbilityTags.HasTagExact(AttackTag))
-		{
-			MJ_LOG(LogMJ, Error,TEXT("AA"));
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-			ASC->OnAbilityEnded.Remove(Handle);
-		}
-	});
+	// FDelegateHandle Handle;
+	// Handle = ASC->OnAbilityEnded.AddLambda(
+	// [&, AttackTag, Handle](const FAbilityEndedData& EndedData)
+	// {
+	// 	MJ_LOG(LogMJ, Error,TEXT("A"));
+	// 	if (EndedData.AbilityThatEnded->AbilityTags.HasTagExact(AttackTag))
+	// 	{
+	// 		MJ_LOG(LogMJ, Error,TEXT("AA"));
+	// 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	// 		ASC->OnAbilityEnded.Remove(Handle);
+	// 	}
+	// });
 	MJ_LOG(LogMJ, Error,TEXT("AAA"));
 	SkillComponent->ActivateSkill(AttackTag);
 	
-	return EBTNodeResult::InProgress;
+	return EBTNodeResult::Succeeded;
 }
