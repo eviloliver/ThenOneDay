@@ -50,7 +50,6 @@ void UMJEnemyHPBar::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
         	CurrentPercent = CurrentPercent < 0.f ? -0.0001f : CurrentPercent;
         	if (HPBar)
         	{
-        		UE_LOG(LogTemp,Error,TEXT("CurrentPercent : %f"),CurrentPercent)
         		HPBar->SetPercent(CurrentPercent);
         	}
         }

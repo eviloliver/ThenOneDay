@@ -62,7 +62,6 @@ void UMJHealthBarWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTi
 		Super::NativeTick(MyGeometry, InDeltaTime);
 		if (FMath::Abs(CurrentPercent- TargetPercent) > KINDA_SMALL_NUMBER)
 		{
-			UE_LOG(LogTemp,Error,TEXT("%f"),CurrentPercent);
 			CurrentPercent = FMath::FInterpTo(CurrentPercent, TargetPercent, InDeltaTime, LerpSpeed);
 			CurrentPercent = CurrentPercent < 0.f ? -0.0001f : CurrentPercent;
 			if (HealthBar)

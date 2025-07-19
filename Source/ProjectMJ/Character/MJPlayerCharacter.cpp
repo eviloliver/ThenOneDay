@@ -69,7 +69,7 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 
 	UITrigger = CreateDefaultSubobject<USphereComponent>(TEXT("UITrigger"));
 	UITrigger->SetupAttachment(RootComponent);
-	UITrigger->InitSphereRadius(120.f);
+	UITrigger->InitSphereRadius(180.f);
 	UITrigger->SetCollisionProfileName(TEXT("Trigger"));
 	UITrigger->SetGenerateOverlapEvents(true);
 	UITrigger->SetHiddenInGame(false);

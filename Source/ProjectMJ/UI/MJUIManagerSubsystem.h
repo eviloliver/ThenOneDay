@@ -17,10 +17,8 @@
 class UWidgetComponent;
 class UMJEnemyHPBar;
 class UMJDialogueWidget;
-class UMJBacklogWidget;
 class UMJDialogueComponent;
 class UMJHUDWidget;
-class UMJInventoryWidget;
 class UMJCharacterAttributeSet;
 class UMJAbilitySystemComponent;
 
@@ -34,6 +32,7 @@ public:
 
 	// HUD
 	void ShowHUD(class AMJPlayerState* PlayerState, class AMJPlayerController* PC);
+	UMJHUDWidget* GetHUDWidget() {return HUDWidget;}
 	
 	// Dialogue Section
 	void ShowDialogue(UMJDialogueComponent* DialogueComp);
@@ -57,8 +56,7 @@ public:
 	// World UI
 	void ResisterWorldUI(UWidgetComponent* WidgetComp,UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet);
 	void UnresisterWorldUI(UWidgetComponent* WidgetComp);
-	//UMJInventoryWidget* GetInventoryWidget() {return InventoryWidget;};
-	UMJHUDWidget* GetHUDWidget() {return HUDWidget;}
+
 	
 protected:
 	UPROPERTY()
@@ -77,7 +75,7 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UMJEnemyHPBar> EnemyHPBarWidget;
-
+	
 	UPROPERTY()
 	TArray<TWeakObjectPtr<UWidgetComponent>> WorldUIs;
 };
