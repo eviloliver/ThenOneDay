@@ -29,6 +29,7 @@ void UMJGA_MeleeAttackHitCheck::ActivateAbility(const FGameplayAbilitySpecHandle
 
 void UMJGA_MeleeAttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
+	// TODO: 여러명 적중시 데미지 적용하기
 	if (UAbilitySystemBlueprintLibrary::TargetDataHasHitResult(TargetDataHandle, 0))
 	{
 		FHitResult HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
