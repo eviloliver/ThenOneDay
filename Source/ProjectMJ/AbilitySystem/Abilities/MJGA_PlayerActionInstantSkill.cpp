@@ -4,6 +4,8 @@
 #include "AbilitySystem/Abilities/MJGA_PlayerActionInstantSkill.h"
 
 #include "MJGA_AIActionInstantAbility.h"
+#include "MotionWarpingComponent.h"
+#include "ProjectMJ.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "AbilitySystem/AbilityTasks/MJAT_GetMousePosition.h"
 #include "Character/MJCharacterBase.h"
@@ -12,6 +14,7 @@
 
 UMJGA_PlayerActionInstantSkill::UMJGA_PlayerActionInstantSkill()
 {
+
 }
 
 void UMJGA_PlayerActionInstantSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -45,7 +48,6 @@ void UMJGA_PlayerActionInstantSkill::EndAbility(const FGameplayAbilitySpecHandle
 	{
 		return;
 	}
-	AMJCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 }
 
 void UMJGA_PlayerActionInstantSkill::OnMousePositionReady(const FVector& MouseLocation)
@@ -68,10 +70,17 @@ void UMJGA_PlayerActionInstantSkill::OnMousePositionReady(const FVector& MouseLo
 	TargetRotation.Pitch = 0;
 	TargetRotation.Roll = 0;
 
-	// TODO: 모션 워핑 사용할 예정 -동민-
-	AMJCharacter->SetActorRotation(TargetRotation);
+	UMotionWarpingComponent* MotionWarpingComponent = AMJCharacter->FindComponentByClass<UMotionWarpingComponent>();
+	if (MotionWarpingComponent)
+	{
+		FMotionWarpingTarget Target = {};
+		Target.Location = MouseLocation;
+		Target.Rotation = TargetRotation;
+		Target.Name = FName("Target");
 
-	AMJCharacter->GetCharacterMovement()->SetMovementMode(MOVE_None);
+		MotionWarpingComponent->AddOrUpdateWarpTarget(Target);
+	}
+
 	UAbilityTask_PlayMontageAndWait* PlayAttackMontage = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, TEXT("PlayAttack"), SkillActionAnimMontage, 1.0f);
 
 	PlayAttackMontage->OnCompleted.AddDynamic(this, &UMJGA_PlayerActionInstantSkill::OnCompleteCallback);

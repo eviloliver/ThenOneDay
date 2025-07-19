@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Physics/MJCollision.h"
 #include "Player/MJPlayerState.h"
+#include "MotionWarpingComponent.h"
 
 // Sets default values
 AMJCharacterBase::AMJCharacterBase()
@@ -21,6 +22,9 @@ AMJCharacterBase::AMJCharacterBase()
 
 	// Capsule Component Collision Profile
 	GetCapsuleComponent()->SetCollisionProfileName(CPROFILE_MJCAPSULE);
+
+	// MotionWarpingComponent Section
+	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 }
 
 UAbilitySystemComponent* AMJCharacterBase::GetAbilitySystemComponent() const
