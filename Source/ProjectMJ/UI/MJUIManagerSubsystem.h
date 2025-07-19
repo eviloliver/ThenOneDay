@@ -14,6 +14,7 @@
  * Last Modified Date: 2025-06-26
  */
 
+class UMJBossHpBarWidget;
 class UMJDialogueWidget;
 class UMJBacklogWidget;
 class UMJDialogueComponent;
@@ -49,6 +50,10 @@ public:
 
 	// Store Section
 	void ShowStore();
+
+	// BossHpBar Section
+	UFUNCTION()
+	void OnBossSpawned();
 
 	//UMJInventoryWidget* GetInventoryWidget() {return InventoryWidget;};
 	UMJHUDWidget* GetHUDWidget() {return HUDWidget;};
