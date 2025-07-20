@@ -3,20 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MJ/Character/MJMeleeMonsterCharacter.h"
+#include "MJ/Character/MJMonsterCharacter.h"
 #include "MJStoneElementCharacter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECTMJ_API AMJStoneElementCharacter : public AMJMeleeMonsterCharacter
+class PROJECTMJ_API AMJStoneElementCharacter : public AMJMonsterCharacter
 {
 	GENERATED_BODY()
+
 public:
+	AMJStoneElementCharacter();
 
-	AMJStoneElementCharacter() {};
+protected:
 	virtual void BeginPlay() override;
-
 	virtual void AttackByAI() override;
 };

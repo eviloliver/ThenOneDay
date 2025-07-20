@@ -8,6 +8,7 @@
 #include "Character/Component/MJPlayerSkillComponent.h"
 #include "MJMonsterCharacter.generated.h"
 
+class UMJEnemyStatComponent;
 class UMJCharacterAttributeSet;
 class UMJCharacterSkillAttributeSet;
 /**
@@ -49,7 +50,6 @@ protected:
 	virtual void OnDeath();
 
 protected:
-
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMJCharacterAttributeSet> CharacterAttributeSet;
 
@@ -59,6 +59,12 @@ protected:
 	// TODO: 우선 base
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gas")
 	TObjectPtr<UMJSkillComponentBase> SkillComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	TObjectPtr<UMJEnemyStatComponent> StatComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Enemy.Name"))
+	FGameplayTag DefaultEnemyTag;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	bool bIsDead;

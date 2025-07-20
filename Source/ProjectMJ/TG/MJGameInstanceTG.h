@@ -52,6 +52,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TObjectPtr<UDataTable> ItemDataTable;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TObjectPtr<UDataTable> EnemyDataTable;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UMJProjectileDataAsset> ProjectileDataAsset;
 

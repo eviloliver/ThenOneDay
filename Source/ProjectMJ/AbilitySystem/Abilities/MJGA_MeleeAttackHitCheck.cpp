@@ -36,13 +36,29 @@ void UMJGA_MeleeAttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTarg
 
 		UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo_Checked();
 		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitResult.GetActor());
-		// null check 해야함
-		// GameplayCue 에 사용함
+		if (!SourceASC)
+		{
+			MJ_LOG(LogMJ, Warning, TEXT("Not Exist SourceASC"))
+			return;
+		}
+		if (!TargetASC)
+		{
+			MJ_LOG(LogMJ, Warning, TEXT("Not Exist TargetASC"))
+			return;
+		}
 
 		const UMJCharacterAttributeSet* SourceCharacterAttributeSet = SourceASC->GetSet<UMJCharacterAttributeSet>();
 		const UMJCharacterSkillAttributeSet* SourceCharacterSkillAttributeSet = SourceASC->GetSet<UMJCharacterSkillAttributeSet>();
-		// null check 해야함
-		// GE 없이 테스트 할 때 사용해 볼 것
+		if (!SourceCharacterAttributeSet)
+		{
+			MJ_LOG(LogMJ, Warning, TEXT("Not Exist SourceCharacterAttributeSet"))
+			return;
+		}
+		if (!SourceCharacterSkillAttributeSet)
+		{
+			MJ_LOG(LogMJ, Warning, TEXT("Not Exist SourceCharacterSkillAttributeSet"))
+			return;
+		}
 
 		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
 		if (EffectSpecHandle.IsValid())

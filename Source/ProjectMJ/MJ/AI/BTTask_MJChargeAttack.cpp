@@ -1,22 +1,21 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MJ/AI/BTTask_MJAttack.h"
-
-#include "AbilitySystemComponent.h"
+#include "MJ/AI/BTTask_MJChargeAttack.h"
 #include "AIController.h"
-#include "ProjectMJ.h"
-#include "Abilities/GameplayAbility.h"
-#include "BehaviorTree/BlackboardComponent.h"
-#include "MJ/Interface/MJCharacterAIInterface.h"
 #include "MJ/Character/MJMonsterCharacter.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "AbilitySystemComponent.h"
+#include "Abilities/GameplayAbility.h"
 #include "Character/Component/MJSkillComponentBase.h"
+#include "ProjectMJ.h"
 
-UBTTask_MJAttack::UBTTask_MJAttack()
+UBTTask_MJChargeAttack::UBTTask_MJChargeAttack()
 {
+	NodeName = TEXT("ChargeAttack");
 }
 
-EBTNodeResult::Type UBTTask_MJAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_MJChargeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	APawn* ControlledPawn = OwnerComp.GetAIOwner()->GetPawn();
 	if (ControlledPawn == nullptr)
@@ -32,7 +31,14 @@ EBTNodeResult::Type UBTTask_MJAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	UAbilitySystemComponent* ASC = Monster->GetAbilitySystemComponent();
 	UMJSkillComponentBase* SkillComponent = Monster->GetSkillComponent();
-	FGameplayTag AttackTag = Monster->GetAttackTag();
+	
+	FGameplayTag SkillTypeTag = FGameplayTag::RequestGameplayTag(FName("Skill.Charge"));
+	FGameplayTag AttackTag = SkillComponent->GetEquippedSkillMap()[SkillTypeTag];
+
+	if (!AttackTag.IsValid())
+	{
+		return EBTNodeResult::Failed;
+	}
 
 	FDelegateHandle Handle;
 	Handle = ASC->OnAbilityEnded.AddLambda(
@@ -48,14 +54,6 @@ EBTNodeResult::Type UBTTask_MJAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	});
 	MJ_LOG(LogMJ, Error,TEXT("AAA"));
 	SkillComponent->ActivateSkill(AttackTag);
-	
-	// IMJCharacterAIInterface* AIPawn = Cast<IMJCharacterAIInterface>(ControlledPawn);
-	// if (AIPawn == nullptr)
-	// {
-	// 	return EBTNodeResult::Failed;
-	// }
-	//
-	// AIPawn->AttackByAI();
 	
 	return EBTNodeResult::InProgress;
 }
