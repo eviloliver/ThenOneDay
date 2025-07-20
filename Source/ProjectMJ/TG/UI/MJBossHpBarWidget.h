@@ -20,7 +20,7 @@ class PROJECTMJ_API UMJBossHpBarWidget : public UUserWidget
 	GENERATED_BODY()
 public:
 	
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void BindToAttributes();
 
 protected:

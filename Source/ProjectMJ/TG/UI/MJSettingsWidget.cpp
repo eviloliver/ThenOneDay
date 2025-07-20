@@ -5,7 +5,6 @@
 
 #include "Components/Button.h"
 #include "Components/ComboBoxString.h"
-#include "Controller/MJPlayerController.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -118,37 +117,23 @@ void UMJSettingsWidget::OnClicked_Back()
 	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
 	if (PC)
 	{
-		if (PC->IsPaused())
-		{
-			AMJPlayerController* MJPC = Cast<AMJPlayerController>(PC);
-			if (MJPC)
-			{
-				UUserWidget* PauseWidget = MJPC->GetPauseWidget();
-				if (PauseWidget)
-				{
-					PauseWidget->SetVisibility(ESlateVisibility::Visible);
-				}					
-			}
-		}
-		else
-		{
-			ParentWidget->SetVisibility(ESlateVisibility::Visible);
-		}
+		// if (PC->IsPaused())
+		// {
+		//
+		// 	BackToParentWidget();
+		// 	AMJPlayerController* MJPC = Cast<AMJPlayerController>(PC);
+		// 	
+		// 	
+		// 	if (MJPC)
+		// 	{
+		// 		UUserWidget* PauseWidget = MJPC->GetPauseWidget();
+		// 		if (PauseWidget)
+		// 		{
+		// 			PauseWidget->SetVisibility(ESlateVisibility::Visible);
+		// 		}					
+		// 	}
+		// }
+		BackToParentWidget();
 		
-			SetVisibility(ESlateVisibility::Hidden);
 	}
-}
-
-
-void UMJSettingsWidget::SetParentWidget(UUserWidget* NewParentWidget)
-{
-	if (NewParentWidget)
-	{
-		ParentWidget = NewParentWidget;
-	}
-}
-
-UUserWidget* UMJSettingsWidget::GetParentWidget()
-{
-	return ParentWidget;
 }
