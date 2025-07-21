@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystem/Abilities/MJGA_GameplayAbility.h"
 #include "AbilitySystem/Struct/MJSkillProjectileParams.h"
-#include "MJGA_BaseProjectile.generated.h"
+#include "MJGA_SpawnProjectile.generated.h"
 
 /**
  * Class Description: Spawn Projectile Ability
@@ -19,12 +19,12 @@ class UMJProjectileDataAsset;
 class AMJProjectileBase;
 
 UCLASS()
-class PROJECTMJ_API UMJGA_BaseProjectile : public UMJGA_GameplayAbility
+class PROJECTMJ_API UMJGA_SpawnProjectile : public UMJGA_GameplayAbility
 {
 	GENERATED_BODY()
 
 public:
-	UMJGA_BaseProjectile();
+	UMJGA_SpawnProjectile();
 
 
 protected:

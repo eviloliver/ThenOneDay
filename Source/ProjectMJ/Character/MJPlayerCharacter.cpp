@@ -45,7 +45,6 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
-	GetCharacterMovement()->MaxWalkSpeed = 400.0;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.0;
 
 	PlayerCombatComponent = CreateDefaultSubobject<UMJPlayerCombatComponent>(TEXT("PlayerCombatComponent"));
