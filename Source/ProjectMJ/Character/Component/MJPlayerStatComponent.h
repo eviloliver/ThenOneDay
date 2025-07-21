@@ -48,6 +48,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stat|Experience")
 	float ExperienceForNextLevel = 0.0f;
 
+	FORCEINLINE int32 GetPlayerLevel() const { return PlayerLevel; }
+	FORCEINLINE float GetTotalCumulativeExperience() const { return TotalCumulativeExperience; }
+
 private:
 	void CheckForLevelUp();
 
