@@ -8,6 +8,7 @@
 #include "UI/Inventory/MJInventoryInterface.h"
 #include "MJPlayerCharacter.generated.h"
 
+class UMJPlayerEffectComponent;
 class UMJPlayerStatComponent;
 class UMJPlayerSkillComponent;
 class USpringArmComponent;
@@ -86,7 +87,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skill", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UMJPlayerSkillComponent> SkillComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stat")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stat", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UMJPlayerStatComponent> StatComponent;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Effect", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UMJPlayerEffectComponent> EffectComponent;
 
 };
