@@ -76,7 +76,13 @@ void UMJSaveGameSubsystem::SaveGameToCurrentSlotNum()
 	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetGameInstance());
 	if (MJGI)
 	{
-		const int32 SlotNum = MJGI->GetPlayerSessionDataRef().SaveGameSlotNum; 
+		const int32 SlotNum = MJGI->GetPlayerSessionDataRef().SaveGameSlotNum;
+
+		if (MJGI->GetPlayerSessionDataRef().SaveGameSlotNum == INDEX_NONE)
+		{
+			return;
+		}
+		
 		const FString SlotName = FString::Printf(TEXT("Slot_%d"), SlotNum);
 
 		UMJSaveGame* SaveGame = Cast<UMJSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
@@ -89,8 +95,9 @@ void UMJSaveGameSubsystem::SaveGameToCurrentSlotNum()
 
 		SaveGame->PlayerName = MJGI->GetPlayerSessionDataRef().PlayerName;
 		SaveGame->PlayerLevel = MJGI->GetPlayerSessionDataRef().PlayerLevel;
-		SaveGame->RecentPlayedDateTime = FDateTime::Now();
+		SaveGame->PlayerExp = MJGI->GetPlayerSessionDataRef().PlayerExp;
 		SaveGame->SlotNum = MJGI->GetPlayerSessionDataRef().SaveGameSlotNum;
+		SaveGame->RecentPlayedDateTime = FDateTime::Now();
 
 		UGameplayStatics::SaveGameToSlot(SaveGame, SlotName, 0);
 	}
@@ -111,6 +118,7 @@ void UMJSaveGameSubsystem::LoadGameFromSlotNum(int8 SlotNum)
 
 			MJGI->GetPlayerSessionDataRef().PlayerName = SaveGame->PlayerName;
 			MJGI->GetPlayerSessionDataRef().PlayerLevel = SaveGame->PlayerLevel;
+			MJGI->GetPlayerSessionDataRef().PlayerExp = SaveGame->PlayerExp;
 			MJGI->GetPlayerSessionDataRef().SaveGameSlotNum = SaveGame->SlotNum;
 			
 		}

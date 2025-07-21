@@ -117,23 +117,6 @@ void UMJSettingsWidget::OnClicked_Back()
 	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
 	if (PC)
 	{
-		// if (PC->IsPaused())
-		// {
-		//
-		// 	BackToParentWidget();
-		// 	AMJPlayerController* MJPC = Cast<AMJPlayerController>(PC);
-		// 	
-		// 	
-		// 	if (MJPC)
-		// 	{
-		// 		UUserWidget* PauseWidget = MJPC->GetPauseWidget();
-		// 		if (PauseWidget)
-		// 		{
-		// 			PauseWidget->SetVisibility(ESlateVisibility::Visible);
-		// 		}					
-		// 	}
-		// }
 		BackToParentWidget();
-		
 	}
 }

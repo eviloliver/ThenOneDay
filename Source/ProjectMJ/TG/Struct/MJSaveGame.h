@@ -22,13 +22,16 @@ class PROJECTMJ_API UMJSaveGame : public USaveGame
 public:
 	UMJSaveGame();
 	UPROPERTY(SaveGame)
-	int8 SlotNum;
+	int8 SlotNum = -1;
 
 	UPROPERTY(BlueprintReadOnly, SaveGame)
 	FString PlayerName;
 
 	UPROPERTY(BlueprintReadOnly, SaveGame)
 	int32 PlayerLevel;
+	
+	UPROPERTY(BlueprintReadOnly, SaveGame)
+	int32 PlayerExp;
 
 	UPROPERTY(BlueprintReadOnly, SaveGame)
 	FDateTime RecentPlayedDateTime;
