@@ -86,14 +86,15 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 {
 	Super::PostGameplayEffectExecute(Data);
 	// Effect 적용 후
-	if (GetHealth() < GetMaxHealth())
-	{
-		OnDamage.Broadcast();
-	}
-		
 	if (GetHealth() <= 0)
 	{
 		OnDeath.Broadcast();
+	}
+
+	// Jisoo
+	if (GetHealth() < GetMaxHealth())
+	{
+		OnDamage.Broadcast(Data.EvaluatedData.Magnitude);
 	}
 
 }

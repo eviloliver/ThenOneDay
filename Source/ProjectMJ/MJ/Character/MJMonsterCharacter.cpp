@@ -3,6 +3,7 @@
 
 #include "MJ/Character/MJMonsterCharacter.h"
 
+#include "MJDamageComponent.h"
 #include "ProjectMJ.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
@@ -11,6 +12,7 @@
 #include "DataAsset/DataAsset_StartDataBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/WidgetComponent.h"
+#include "UI/MJDamageWidget.h"
 #include "UI/MJUIManagerSubsystem.h"
 
 AMJMonsterCharacter::AMJMonsterCharacter()
@@ -26,7 +28,6 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	bUseControllerRotationYaw = false;
 
-
 	
 	// GAS, Attr Set
 	ASC = CreateDefaultSubobject<UMJAbilitySystemComponent>(TEXT("ASC"));
@@ -41,8 +42,6 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	// UI Component
 	HPBarComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBarComponent"));
 	HPBarComponent->SetupAttachment(GetMesh());
-	// static ConstructorHelpers::FClassFinder<UMJEnemyHPBar> HPBarWidgetRef(TEXT("Game/UI/WBP/World/Bar/WBP_EnemyHPBar.WBP_EnemyHPBar"));
-	// > 이거 왜인지 모르겠는데 안되어서, 몬스터 BP에서 유저인터페이스 상에서 설정을 따로 해줘야 함
 }
 
 void AMJMonsterCharacter::BeginPlay()
@@ -169,9 +168,24 @@ void AMJMonsterCharacter::OnDeath()
 	// 애니메이션과 기타 등등 세팅
 	// - 동민 -
 	Destroy();
+	DamageIndex = 0;
 }
 
-void AMJMonsterCharacter::OnDamage()
+void AMJMonsterCharacter::OnDamage(float Magnitude)
 {
 	HPBarComponent->SetVisibility(true);
+	
+	{
+		UMJDamageComponent* NewComp = NewObject<UMJDamageComponent>(this);
+		NewComp->RegisterComponent();
+		NewComp->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+		NewComp->SetWidget();
+		NewComp->SetVisibility(true);
+		DamageComponents.Add(NewComp);
+		
+		Cast<UMJDamageWidget>(DamageComponents[DamageIndex]->GetUserWidgetObject())->PlayAnim();
+		Cast<UMJDamageWidget>(DamageComponents[DamageIndex]->GetUserWidgetObject())->SetDamage(-Magnitude);
+
+		DamageIndex ++;
+	}
 }

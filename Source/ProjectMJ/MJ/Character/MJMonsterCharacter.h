@@ -8,6 +8,7 @@
 #include "Character/Component/MJPlayerSkillComponent.h"
 #include "MJMonsterCharacter.generated.h"
 
+class UMJDamageComponent;
 class UWidgetComponent;
 class UMJEnemyHPBar;
 class UMJUIManagerSubsystem;
@@ -52,7 +53,7 @@ protected:
 	virtual void OnDeath();
 
 	UFUNCTION()
-	void OnDamage();
+	void OnDamage(float Magnitude);
 
 protected:
 	// Jisoo : UI Section
@@ -62,6 +63,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UWidgetComponent> HPBarComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
+	TArray<TObjectPtr<UMJDamageComponent>> DamageComponents;
+	int DamageIndex = 0;
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
