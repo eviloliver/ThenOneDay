@@ -211,6 +211,7 @@ void AMJPlayerController::AttackOrMove(const FHitResult& HitResult)
 	}
 	else if (TargetCharacter != ControlledCharacter && TargetCharacter->GetGenericTeamId() != ControlledCharacter->GetGenericTeamId())
 	{
+		MJ_LOG(LogMJ, Warning, TEXT("NormalAttack"));
 		FGameplayTag LeftClickInputTag = FGameplayTag::RequestGameplayTag(FName("Skill.Normal"));
 		SkillComponent->ActivateSkillByInputTag(LeftClickInputTag);
 	}

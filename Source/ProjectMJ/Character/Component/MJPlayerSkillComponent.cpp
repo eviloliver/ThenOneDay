@@ -13,7 +13,6 @@ void UMJPlayerSkillComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// 기존 BeginPlay의 테스트 코드를 여기에 둡니다.
 	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirArrow")));
 	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirArrow")));
 
@@ -21,8 +20,9 @@ void UMJPlayerSkillComponent::BeginPlay()
 	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.Catastrophe")));
 	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.Catastrophe")));
 
-	// TODO:일반 공격 슬롯 만들어야 함
-	// 일반 공격 태그를 따로 만들어야 하나?
+	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
+	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
+
 }
 
 void UMJPlayerSkillComponent::ActivateSkillByInputTag(const FGameplayTag InputTag)
