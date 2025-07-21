@@ -66,16 +66,14 @@ void AMJMonsterAIControllerBase::RunAI()
 	 * 블랙보드 초기화, StartTree
 	 * StartLogic()에서 DefaultBehaviorTreeAsset(에디터에서 설정)을 시작에셋으로 설정해준다.
 	 */
+	// BehaviorTreeComponent->
+	// BehaviorTreeComponent.DefaultBehaviorTreeAsset
 	BehaviorTreeComponent->StartLogic();
 	RunBehaviorTree(BehaviorTreeComponent->GetCurrentTree());;
 }
 
 void AMJMonsterAIControllerBase::StopAI()
 {
-	/*
-	 * TODO
-	 * Character가 죽을 때 호출해야 됨?
-	 */
 	BehaviorTreeComponent->StopTree();
 }
 

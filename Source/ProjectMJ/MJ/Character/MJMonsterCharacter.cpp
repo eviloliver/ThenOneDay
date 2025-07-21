@@ -12,6 +12,7 @@
 #include "DataAsset/DataAsset_StartDataBase.h"
 #include "DataTable/MJEnemyDataRow.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "MJ/AI/MJMonsterAIControllerBase.h"
 #include "TG/MJGameInstanceTG.h"
 
 AMJMonsterCharacter::AMJMonsterCharacter()
@@ -166,7 +167,7 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 		MJ_LOG(LogMJ, Error, TEXT("Not Exist DataRow"));
 		return;
 	}
-
+	
 	// Minjin: 기본 공격
 	//SkillComponent->LearnSkill(DataRow->NormalAttackTag);
 	//SkillComponent->EquipSkill(DataRow->NormalAttackTag);
@@ -174,7 +175,7 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	// Minjin: 특수 공격 -> 드랍하는 스킬
 	SkillComponent->LearnSkill(DataRow->IdentitySkillTag);
 	SkillComponent->EquipSkill(DataRow->IdentitySkillTag);
-
+	
 	// Minjin: Attribute Setting
 	if (StatComponent)
 	{
@@ -188,6 +189,10 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 		StatComponent->SetStatTable(AttributeCurve);
 		StatComponent->InitializeStat();
 	}
+
+	// Minjin: Animation Setting
+	AppearanceAnimation = DataRow->AppearanceAnimation;
+	DeathAnimation = DataRow->DeathAnimation;
 }
 
 void AMJMonsterCharacter::OnDeath()
@@ -195,6 +200,30 @@ void AMJMonsterCharacter::OnDeath()
 	// TODO:
 	// 애니메이션과 기타 등등 세팅
 	// - 동민 -
-	Destroy();
 
+	AMJMonsterAIControllerBase* AIController = Cast<AMJMonsterAIControllerBase>(GetController());
+	if (AIController)
+	{
+		AIController->StopAI();
+	}
+	
+	if (DeathAnimation)
+	{
+		StopAnimMontage();
+		// Minjin: 몽타주로 하는 게 좋을까 생각중
+		//GetMesh()->PlayAnimation(DeathAnimation, false);<-이거로 하면 공격 들어갈때마다 애니메이션이 처음부터 재생됨
+		GetMesh()->OverrideAnimationData(DeathAnimation, false);
+		const float FinishDelay = DeathAnimation->GetPlayLength();
+		FTimerHandle DeadTimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
+			[&]()
+			{
+				Destroy();
+			}
+		), FinishDelay, false);
+	}
+	else
+	{
+		Destroy();
+	}
 }

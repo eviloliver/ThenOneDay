@@ -29,6 +29,8 @@ public:
 	FGameplayTag GetAttackTag() {return AttackTag;}
 	UMJSkillComponentBase* GetSkillComponent() {return SkillComponent;}
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	TObjectPtr<UAnimationAsset> GetAppearanceAnimation(){return AppearanceAnimation;}
 	
 protected:
 	virtual void BeginPlay() override;
@@ -69,6 +71,13 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	bool bIsDead;
 
+	// Minjin: Animation
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UAnimationAsset> AppearanceAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UAnimationAsset> DeathAnimation;
+	
 	// Minjin: Ability Tag
 	FGameplayTag AttackTag;
 };
