@@ -31,6 +31,7 @@ void UMJInteractionComponent::Active(FString key)
 	SetVisibility(true);
 	UMJInteractionWidget* InteractionWidget = Cast<UMJInteractionWidget>(GetUserWidgetObject());
 	InteractionWidget->SetText(key);
+	InteractionWidget->PlayTestAnimation();
 }
 
 void UMJInteractionComponent::Deactive()

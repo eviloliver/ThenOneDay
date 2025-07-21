@@ -6,6 +6,13 @@
 
 void UMJInteractionWidget::SetText(FString text)
 {
-	UE_LOG(LogTemp, Display, TEXT("텍스트 적용됏다"));
 	Key->SetText(FText::FromString(text));
+}
+
+void UMJInteractionWidget::PlayTestAnimation()
+{
+	if (Test)
+	{
+		PlayAnimation(Test,0.f,0);
+	}
 }

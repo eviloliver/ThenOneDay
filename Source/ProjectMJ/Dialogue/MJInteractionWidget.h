@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MJInteractionWidget.generated.h"
 
+class UBorder;
 class UTextBlock;
 /**
  * 
@@ -17,7 +18,11 @@ class PROJECTMJ_API UMJInteractionWidget : public UUserWidget
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> Key;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	TObjectPtr<UWidgetAnimation> Test;
 	
 public:
 	void SetText(FString text);
+	void PlayTestAnimation();
 };
