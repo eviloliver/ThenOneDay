@@ -15,6 +15,7 @@
 #include "Perception/AISense_Sight.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Component/MJFadeObjectComponent.h"
+#include "Component/MJPlayerEffectComponent.h"
 #include "Component/MJPlayerStatComponent.h"
 #include "Perception/AISense_Damage.h"
 #include "Perception/AISense_Hearing.h"
@@ -79,6 +80,9 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	SkillComponent = CreateDefaultSubobject<UMJPlayerSkillComponent>(TEXT("SkillComponent"));
 	// Stat Component
 	StatComponent = CreateDefaultSubobject<UMJPlayerStatComponent>(TEXT("StatComponent"));
+	// Effect Component
+	EffectComponent = CreateDefaultSubobject<UMJPlayerEffectComponent>(TEXT("EffectComponent"));
+
 }
 
 void AMJPlayerCharacter::BeginPlay()
