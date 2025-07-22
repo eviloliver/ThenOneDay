@@ -12,12 +12,17 @@
 class UMJAbilitySystemComponent;
 class UMJAttributeSet;
 class UDataAsset_StartDataBase;
+class UMotionWarpingComponent;
 /**
  * Class Description: CharacterBase
  * Author: Lee JuHyeon
  * Created Date: 2025_06_11
- * Last Modified By: Lee JuHyeon / Kim Minjin
- * Last Modified Date: Add DA_StartData / (2025.06.20.)Inheritance from IGenericTeamAgentInterface
+ * Modified By: Lee JuHyeon / Kim Minjin
+ * Modified Date: Add DA_StartData / (2025.06.20.)Inheritance from IGenericTeamAgentInterface
+ * 
+ * Description of Change: 모션 워핑 컴포넌트 추가
+ * Modified By: 신동민	
+ * Modified Date: 2025.07.19
  */
 UCLASS()
 class PROJECTMJ_API AMJCharacterBase : public ACharacter , public IAbilitySystemInterface, public IGenericTeamAgentInterface
@@ -45,7 +50,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS")
 	TSoftObjectPtr<UDataAsset_StartDataBase>CharacterStartData;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation")
+	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
+
 	FGenericTeamId TeamId;
 };
 

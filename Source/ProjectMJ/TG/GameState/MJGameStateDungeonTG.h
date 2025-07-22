@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
 #include "TG/Interface/MJBossEventManagerTG.h"
-#include "TG/Struct/MJDataTable_Wave.h"
+#include "TG/DataTable/MJWaveAISpawnRow.h"
 #include "TG/Struct/MJDungeonSessionDataStruct.h"
 #include "MJGameStateDungeonTG.generated.h"
 
@@ -17,9 +17,11 @@
  * Last Modified Date: 2025-06-13
  */
 
+class AMJAIBossCharacterTG;
 class UEnvQuery;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnHealthChangedSignature, float, Delta);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnSpawnedSignature, float, Health);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIBossOnSpawnedSignature);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIOnDestroyedSignature);
 
 UCLASS()
@@ -36,8 +38,6 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetDungeonSessionData(FMJDungeonSessionData& DungeonSessionData);
-
-	// Called at Gamemode
 	
 	UFUNCTION(BlueprintCallable)
 	void SaveToInstancedDungeonSessionData(uint8 SaveToNum);
@@ -45,8 +45,21 @@ public:
 	UFUNCTION()
 	void LoadFromInstancedDungeonSessionData(uint8 LoadFromNum);
 
+	// Miscellaneous
+	
+	UPROPERTY(BlueprintAssignable)
+	FMJAIBossOnHealthChangedSignature OnAIBossHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FMJAIBossOnSpawnedSignature OnAIBossSpawned;
+
+
+	UFUNCTION(BlueprintCallable)
+	virtual void PublishOnBossSpawned() override;
 	
 protected:
+
+	
 	// Initialize Section
 	UFUNCTION()
 	void Initialize_BattleNode();
@@ -89,10 +102,14 @@ protected:
 	// Static AISpawn Section
 	
 	UPROPERTY(BlueprintReadOnly)
-	TArray<AActor*> StaticSpawnPointActors; 
+	TArray<AActor*> StaticSpawnPointActors;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AActor> DummyActorBPClass;
+	TObjectPtr<UDataTable> LoadedStaticDataTable;
+	
+	UPROPERTY(EditDefaultsOnly)
+	int32 StaticAISpawnMaxNum;
+	
 
 	// Wave Section
 	
@@ -106,7 +123,7 @@ protected:
 	TObjectPtr<UDataTable> LoadedWaveDataTable;
 
 	UPROPERTY(BlueprintReadOnly)
-	FMJWaveDataRow LoadedWaveDataRow;
+	FMJWaveAISpawnDataRow LoadedWaveDataRow;
 
 	UPROPERTY(BlueprintReadOnly)
 	int32 CurrentWaveNum;
@@ -114,7 +131,7 @@ protected:
 	// AI Spawn Condition Section
 
 	UPROPERTY(BlueprintReadOnly)
-	int32 SpawnAIMaxNum;
+	int32 WaveAISpawnMaxNum;
 
 	UPROPERTY(BlueprintReadWrite)
 	int32 CurrentSpawnedAINum;
@@ -132,18 +149,18 @@ protected:
 	FTimerHandle EndPortalSpawnTimerHandle;
 
 
-	// Miscellaneous
+	// Boss Section
+
+	UPROPERTY()
+	TObjectPtr<AMJAIBossCharacterTG> BossAIRef;
+
+	UPROPERTY()
+	FTimerHandle OnBossSpawnedBroadCastTimerHandle;
+
 	
-	UPROPERTY(BlueprintAssignable)
-	FMJAIBossOnHealthChangedSignature OnAIBossHealthChanged;
+	
 
-	UPROPERTY(BlueprintAssignable)
-	FMJAIBossOnSpawnedSignature OnAIBossSpawned;
 
-	UFUNCTION(BlueprintCallable)
-	virtual void PublishOnBossHealthChanged(float Delta) override;
 
-	UFUNCTION(BlueprintCallable)
-	virtual void PublishOnBossSpawned(float Health) override;
 	
 };

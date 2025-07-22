@@ -16,6 +16,7 @@
 
 class UWidgetComponent;
 class UMJEnemyHPBar;
+class UMJBossHpBarWidget;
 class UMJDialogueWidget;
 class UMJDialogueComponent;
 class UMJHUDWidget;
@@ -57,6 +58,12 @@ public:
 	void ResisterWorldUI(UWidgetComponent* WidgetComp,UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet);
 	void UnresisterWorldUI(UWidgetComponent* WidgetComp);
 
+	// BossHpBar Section
+	UFUNCTION()
+	void OnBossSpawned();
+
+	//UMJInventoryWidget* GetInventoryWidget() {return InventoryWidget;};
+	UMJHUDWidget* GetHUDWidget() {return HUDWidget;};
 	
 protected:
 	UPROPERTY()

@@ -12,6 +12,7 @@ class UMJDamageComponent;
 class UWidgetComponent;
 class UMJEnemyHPBar;
 class UMJUIManagerSubsystem;
+class UMJEnemyStatComponent;
 class UMJCharacterAttributeSet;
 class UMJCharacterSkillAttributeSet;
 /**
@@ -77,6 +78,12 @@ protected:
 	// TODO: 우선 base
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gas")
 	TObjectPtr<UMJSkillComponentBase> SkillComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
+	TObjectPtr<UMJEnemyStatComponent> StatComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Enemy.Name"))
+	FGameplayTag DefaultEnemyTag;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	bool bIsDead;

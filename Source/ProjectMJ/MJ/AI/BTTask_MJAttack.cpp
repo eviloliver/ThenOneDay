@@ -57,5 +57,5 @@ EBTNodeResult::Type UBTTask_MJAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	//
 	// AIPawn->AttackByAI();
 	
-	return EBTNodeResult::Succeeded;
+	return EBTNodeResult::InProgress;
 }

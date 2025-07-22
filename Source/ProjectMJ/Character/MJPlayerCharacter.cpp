@@ -15,6 +15,8 @@
 #include "Perception/AISense_Sight.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Component/MJFadeObjectComponent.h"
+#include "Component/MJPlayerEffectComponent.h"
+#include "Component/MJPlayerStatComponent.h"
 #include "Perception/AISense_Damage.h"
 #include "Perception/AISense_Hearing.h"
 
@@ -44,7 +46,6 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
-	GetCharacterMovement()->MaxWalkSpeed = 400.0;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.0;
 
 	PlayerCombatComponent = CreateDefaultSubobject<UMJPlayerCombatComponent>(TEXT("PlayerCombatComponent"));
@@ -77,12 +78,16 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	InventoryComponent = CreateDefaultSubobject<UMJInventoryComponent>(TEXT("InventoryComponent"));
 	// Skill Component
 	SkillComponent = CreateDefaultSubobject<UMJPlayerSkillComponent>(TEXT("SkillComponent"));
+	// Stat Component
+	StatComponent = CreateDefaultSubobject<UMJPlayerStatComponent>(TEXT("StatComponent"));
+	// Effect Component
+	EffectComponent = CreateDefaultSubobject<UMJPlayerEffectComponent>(TEXT("EffectComponent"));
+
 }
 
 void AMJPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 void AMJPlayerCharacter::PossessedBy(AController* NewController)
@@ -111,7 +116,10 @@ void AMJPlayerCharacter::PossessedBy(AController* NewController)
 	// 	}
 	// 	MJ_LOG(LogTG, Log, TEXT("player loaded health : %f"),  GetAbilitySystemComponent()->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));
 	// }
-	
+	if (StatComponent)
+	{
+		StatComponent->InitializeStat();
+	}
 }
 
 void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)

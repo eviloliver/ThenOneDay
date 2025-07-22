@@ -91,9 +91,11 @@ void UBTTask_MJTurnToTarget::OnRotated()
 	FRotator NewRot = FMath::RInterpTo(ControlledPawn->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), TurnSpeed);
 	ControlledPawn->SetActorRotation(NewRot);
 
+	// Minjin: 반내림
+	int32 Angle = FMath::FloorToInt(FMath::Abs((NewRot - TargetRot).GetNormalized().Yaw));
 	float AngleDiff = FMath::Abs((NewRot - TargetRot).GetNormalized().Yaw);
 	
-	if (AngleDiff < 1.0f)
+	if (/*Angle == 0*/AngleDiff < 1.0f)
 	{
 		MJ_LOG(LogMJ,Log, TEXT("회전완료"));
 		// we're done here, report success so that BT can pick next task

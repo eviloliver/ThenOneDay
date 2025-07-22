@@ -29,54 +29,44 @@ void UMJGA_MeleeAttackHitCheck::ActivateAbility(const FGameplayAbilitySpecHandle
 
 void UMJGA_MeleeAttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	if (UAbilitySystemBlueprintLibrary::TargetDataHasHitResult(TargetDataHandle, 0))
+	TArray<AActor*> HitActors = UAbilitySystemBlueprintLibrary::GetActorsFromTargetData(TargetDataHandle,0);
+
+	if (HitActors.Num() > 0)
 	{
-		FHitResult HitResult = UAbilitySystemBlueprintLibrary::GetHitResultFromTargetData(TargetDataHandle, 0);
-		// 이거 가까운거 하나만 검사하는건데 나중에 수정할 필요 있어보임
-
-		UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo_Checked();
-		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitResult.GetActor());
-		// null check 해야함
-		// GameplayCue 에 사용함
-
-		const UMJCharacterAttributeSet* SourceCharacterAttributeSet = SourceASC->GetSet<UMJCharacterAttributeSet>();
-		const UMJCharacterSkillAttributeSet* SourceCharacterSkillAttributeSet = SourceASC->GetSet<UMJCharacterSkillAttributeSet>();
-		// null check 해야함
-		// GE 없이 테스트 할 때 사용해 볼 것
-
 		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
 		if (EffectSpecHandle.IsValid())
 		{
+			UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo_Checked();
+			if (!SourceASC)
+			{
+				return;
+			}
 
-			EffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.BaseDamage")), SourceCharacterSkillAttributeSet->GetBaseDamage());
-			EffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AttackDamageScaling")), SourceCharacterSkillAttributeSet->GetAttackDamageScaling());
-			EffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AbilityPowerScaling")), SourceCharacterSkillAttributeSet->GetAbilityPowerScaling());
-			
-			ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle, TargetDataHandle);
+			const UMJCharacterSkillAttributeSet* SourceCharacterSkillAttributeSet = SourceASC->GetSet<UMJCharacterSkillAttributeSet>();
 
-			FGameplayEffectContextHandle CueContextHandle = UAbilitySystemBlueprintLibrary::GetEffectContext(EffectSpecHandle);
-			CueContextHandle.AddHitResult(HitResult);
-			FGameplayCueParameters CueParams;
-			CueParams.EffectContext = CueContextHandle;
-
-			TargetASC->ExecuteGameplayCue(GameplayCueTag, CueParams);
-		}
-	}
-	else if (UAbilitySystemBlueprintLibrary::TargetDataHasActor(TargetDataHandle, 0))
-	{
-		// Gameplay Cue 에 사용
-		// UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo_Checked();
-
-		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(AttackDamageEffect);
-
-		if (EffectSpecHandle.IsValid())
-		{
+			if (SourceCharacterSkillAttributeSet)
+			{
+				EffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.BaseDamage")), SourceCharacterSkillAttributeSet->GetBaseDamage());
+				EffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AttackDamageScaling")), SourceCharacterSkillAttributeSet->GetAttackDamageScaling());
+				EffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AbilityPowerScaling")), SourceCharacterSkillAttributeSet->GetAbilityPowerScaling());
+			}
 
 			ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle, TargetDataHandle);
 
-			// TODO : GameplayCue
+			for (AActor* HitActor : HitActors)
+			{
+				UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitActor);
+				if (TargetASC)
+				{
+					FGameplayCueParameters CueParams;
+					CueParams.EffectContext = UAbilitySystemBlueprintLibrary::GetEffectContext(EffectSpecHandle);
+					TargetASC->ExecuteGameplayCue(GameplayCueTag, CueParams);
+				}
+			}
 		}
 	}
+
+	
 	bool bReplicatedEndAbility = true;
 	bool bWasCancelled = false;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicatedEndAbility, bWasCancelled);

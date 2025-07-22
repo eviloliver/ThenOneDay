@@ -12,6 +12,10 @@
 #include "Components/WidgetComponent.h"
 #include "Controller/MJPlayerController.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Inventory/MJInventoryWidget.h"
+#include "Kismet/GameplayStatics.h"
+#include "TG/GameState/MJGameStateDungeonTG.h"
+#include "TG/UI/MJBossHpBarWidget.h"
 
 
 void UMJUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -44,6 +48,12 @@ void UMJUIManagerSubsystem::ShowHUD(AMJPlayerState* PlayerState, AMJPlayerContro
 		{
 			auto* MJASC = Cast<UMJAbilitySystemComponent>(PlayerState->GetAbilitySystemComponent());
 			HUDWidget->BindAtrributesToChildren(MJASC,PlayerState->GetCharacterAttributeSet());
+		}
+
+		AMJGameStateDungeonTG* MJDungeonState = Cast<AMJGameStateDungeonTG>(UGameplayStatics::GetGameState(GetWorld()));
+		if (MJDungeonState)
+		{
+			MJDungeonState->OnAIBossSpawned.AddDynamic(this,&UMJUIManagerSubsystem::OnBossSpawned);
 		}
 	}
 }
@@ -158,3 +168,8 @@ void UMJUIManagerSubsystem::UnresisterWorldUI(UWidgetComponent* WidgetComp)
 	WidgetComp->SetVisibility(false);
 }
 //
+void UMJUIManagerSubsystem::OnBossSpawned()
+{
+	HUDWidget->GetBossHpBarWidget()->BindToAttributes();
+	HUDWidget->ShowBossHpBar();
+}

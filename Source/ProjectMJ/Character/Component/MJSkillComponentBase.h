@@ -58,8 +58,8 @@ public:
 	void RemoveAbility(const FGameplayTag& SkillTag);
 
 	// Getter
-	TMap<FGameplayTag, FSkillData> GetOwnedSkillMap() const { return OwnedSkillMap; };
-
+	TMap<FGameplayTag, FSkillData> GetOwnedSkillMap() const { return OwnedSkillMap; }
+	TMap<FGameplayTag, FGameplayTag> GetEquippedSkillMap() const {return EquippedSkillMap;}
 
 protected:	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")

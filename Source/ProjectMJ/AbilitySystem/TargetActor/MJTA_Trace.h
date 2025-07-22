@@ -9,9 +9,10 @@
 /**
  * Class Description: 충돌을 확인하는 Target Actor
  * Author: 신동민
- * Created Date: 2025_06_18
- * Last Modified By: (Last Modifier)
- * Last Modified Date: (Last Modified Date)
+ * Created Date: 2025.06.18
+ * Description of Change: 추상화 후 자식에서 구체화 하도록 구조 변경
+ * Modified By: 신동민
+ * Modified Date: 2025.07.18
  */
 UCLASS()
 class PROJECTMJ_API AMJTA_Trace : public AGameplayAbilityTargetActor

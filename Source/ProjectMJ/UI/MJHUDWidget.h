@@ -14,6 +14,7 @@
  * Last Modified Date: 
  */
 
+class UMJBossHpBarWidget;
 class UMJHealthBarWidget;
 class UMJManaBarWidget;
 class UMJStaminaBar;
@@ -49,6 +50,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJStoreWidget> Store;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJBossHpBarWidget> BossHpBar;
+
 public:
 	UFUNCTION()
 	virtual void NativeConstruct() override;
@@ -57,7 +61,10 @@ public:
 	void ShowStatPanel();
 	void ShowInventory();
 	void ShowStore();
+	void HideBossHpBar();
+	void ShowBossHpBar();
 
+	UMJBossHpBarWidget* GetBossHpBarWidget() {return BossHpBar;}
 	UMJInventoryWidget* GetInventoryWidget() {return Inventory;};
 	UMJStoreWidget* GetStoreWidget() {return Store;};
 

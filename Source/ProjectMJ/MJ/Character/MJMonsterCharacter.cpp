@@ -8,12 +8,15 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
+#include "Character/Component/MJEnemyStatComponent.h"
 #include "Character/Component/MJSkillComponentBase.h"
 #include "DataAsset/DataAsset_StartDataBase.h"
+#include "DataTable/MJEnemyDataRow.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/WidgetComponent.h"
 #include "UI/World/MJDamageWidget.h"
 #include "UI/MJUIManagerSubsystem.h"
+#include "TG/MJGameInstanceTG.h"
 
 AMJMonsterCharacter::AMJMonsterCharacter()
 {
@@ -28,11 +31,13 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	bUseControllerRotationYaw = false;
 
-	
 	// GAS, Attr Set
 	ASC = CreateDefaultSubobject<UMJAbilitySystemComponent>(TEXT("ASC"));
 	
 	CharacterAttributeSet = CreateDefaultSubobject<UMJCharacterAttributeSet>(TEXT("CharacterAttributeSet"));
+
+	// Stat Component
+	StatComponent = CreateDefaultSubobject<UMJEnemyStatComponent>(TEXT("StatComponent"));
 
 	CharacterSkillAttributeSet = CreateDefaultSubobject<UMJCharacterSkillAttributeSet>(TEXT("CharacterSkillAttributeSet"));
 
@@ -138,6 +143,8 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+	CharacterAttributeSet->OnDeath.AddDynamic(this, &ThisClass::OnDeath);
+	
 	if (ASC)
 	{
 		ASC->InitAbilityActorInfo(this,this);
@@ -150,7 +157,7 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 			LoadData->GiveToAbilitySystemComponent(Cast<UMJAbilitySystemComponent>(GetAbilitySystemComponent()));
 		}
 	}
-
+	
 	// TODO:
 	// 여기서 DT 받아와서 Attribute랑 몬스터가 가지고 있는 스킬 넣을거야
 	// 그래서 이 몬스터를 구븐 할 수 있는 RowName이 Tag인 형식의 DT와
@@ -160,6 +167,48 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	//  -동민 -
 	CharacterAttributeSet->OnDamage.AddDynamic(this,&ThisClass::OnDamage);
 	CharacterAttributeSet->OnDeath.AddDynamic(this, &ThisClass::OnDeath);
+	// 알겠긔 -민진-
+
+	/*
+	* Minjin
+	* EnemyDataTable을 통해 스탯 초기화
+	* 기본 태그와 행이름이 동일. 기본 태그를 통해 행을 가져온다. 기본 태그는 BP에서 설정
+	*/
+	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+	if (!GI || !GI->EnemyDataTable)
+	{
+		MJ_LOG(LogMJ, Error, TEXT("Not Exist GI or EnemyDataTable"));
+		return;
+	}
+
+	const FMJEnemyDataRow* DataRow = GI->EnemyDataTable->FindRow<FMJEnemyDataRow>(DefaultEnemyTag.GetTagName(), TEXT("Find EnemyData"));
+	if (!DataRow)
+	{
+		MJ_LOG(LogMJ, Error, TEXT("Not Exist DataRow"));
+		return;
+	}
+
+	// Minjin: 기본 공격
+	//SkillComponent->LearnSkill(DataRow->NormalAttackTag);
+	//SkillComponent->EquipSkill(DataRow->NormalAttackTag);
+
+	// Minjin: 특수 공격 -> 드랍하는 스킬
+	SkillComponent->LearnSkill(DataRow->IdentitySkillTag);
+	SkillComponent->EquipSkill(DataRow->IdentitySkillTag);
+
+	// Minjin: Attribute Setting
+	if (StatComponent)
+	{
+		UCurveTable* AttributeCurve = DataRow->AttributeCurve.LoadSynchronous();
+		if (!AttributeCurve)
+		{
+			MJ_LOG(LogMJ, Log, TEXT("Not Exist AttributeCurve"));
+			return;
+		}
+		
+		StatComponent->SetStatTable(AttributeCurve);
+		StatComponent->InitializeStat();
+	}
 }
 
 void AMJMonsterCharacter::OnDeath()

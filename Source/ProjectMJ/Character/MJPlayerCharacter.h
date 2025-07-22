@@ -8,6 +8,8 @@
 #include "UI/Inventory/MJInventoryInterface.h"
 #include "MJPlayerCharacter.generated.h"
 
+class UMJPlayerEffectComponent;
+class UMJPlayerStatComponent;
 class UMJPlayerSkillComponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -82,7 +84,13 @@ public:
 	TObjectPtr<UMJFadeObjectComponent>FadeComponent;*/
 #pragma endregion
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gas", meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skill", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UMJPlayerSkillComponent> SkillComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stat", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UMJPlayerStatComponent> StatComponent;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Effect", meta = (AllowPrivateAccess = true))
+	TObjectPtr<UMJPlayerEffectComponent> EffectComponent;
 
 };
