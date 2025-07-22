@@ -40,4 +40,15 @@ protected:
 
 	UFUNCTION(BlueprintPure, Category = "Player|Combat")
 	UMJAbilitySystemComponent* GetAbilitySysteamComponent() const;
+
+	// 
+	UPROPERTY(EditDefaultsOnly, Category = "Cost")
+	TSubclassOf<UGameplayEffect> CostGameplayEffect;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Cooldown")
+	TSubclassOf<UGameplayEffect> CooldownGameplayEffect;
+
+	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
+	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
+
 };

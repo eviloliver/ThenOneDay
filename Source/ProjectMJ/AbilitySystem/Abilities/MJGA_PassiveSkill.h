@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -7,9 +7,9 @@
 #include "MJGA_PassiveSkill.generated.h"
 
 /**
- * Class Description: ÇÃ·¹ÀÌ¾îÀÇ ½ºÅ³À» Instant, Charging, Passive·Î ±¸ºĞ
- * Passive´Â ÆĞ½ÃºêÁö ¹¹
- * Author: ½Åµ¿¹Î
+ * Class Description: í”Œë ˆì´ì–´ì˜ ìŠ¤í‚¬ì„ Instant, Charging, Passiveë¡œ êµ¬ë¶„
+ * PassiveëŠ” í•­ìƒ ì˜í–¥ì„ ì£¼ëŠ” ë²„í”„ ë˜ëŠ” ë””ë²„í”„ ê°™ì€ ìŠ¤í‚¬, ê¸°ë³¸ ì§€ì† íš¨ê³¼ ë¼ê³ ë„ í•¨
+ * Author: ì‹ ë™ë¯¼
  * Created Date: 2025_06_24
  * Last Modified By: (Last Modifier)
  * Last Modified Date: (Last Modified Date)
@@ -22,6 +22,10 @@ class PROJECTMJ_API UMJGA_PassiveSkill : public UMJGA_GameplayAbility
 public:
 	UMJGA_PassiveSkill();
 
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Passive")
+	TArray<TSubclassOf<UGameplayEffect>> PassiveEffects;
 
 };

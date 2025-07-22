@@ -7,6 +7,9 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "MJGA_GameplayAbility.h"
 
+#include "ProjectMJ.h"
+#include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
+
 void UMJGA_GameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	Super::OnGiveAbility(ActorInfo, Spec);
@@ -25,6 +28,7 @@ void UMJGA_GameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Han
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	ApplyCost(Handle, ActorInfo, ActivationInfo);
 }
 
 void UMJGA_GameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
@@ -49,4 +53,46 @@ UMJAbilitySystemComponent* UMJGA_GameplayAbility::GetAbilitySysteamComponent() c
 {
 	return Cast< UMJAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent);
 	
+}
+
+void UMJGA_GameplayAbility::ApplyCost(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
+{
+	if (!CostGameplayEffect)
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("Not Exist CostGameplayEffect"));
+		return;
+	}
+
+	UMJAbilitySystemComponent* ASC = Cast<UMJAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent);
+	if (!ASC)
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("Not Exist ASC"));
+		return;
+	}
+
+	const UMJCharacterSkillAttributeSet* SkillAttributeSet = ASC->GetSet<UMJCharacterSkillAttributeSet>();
+	if (!SkillAttributeSet)
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("Not Exist SkillAttributeSet"));
+		return;
+	}
+
+	FGameplayEffectSpecHandle CostSpecHandle = MakeOutgoingGameplayEffectSpec(CostGameplayEffect, 1.0f);
+	if (!CostSpecHandle.Data)
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("Not Exist CostSpecHandle.Data"));
+		return;
+	}
+
+	CostSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.CostStamina")), SkillAttributeSet->GetCostStamina());
+	CostSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.CostMana")), SkillAttributeSet->GetCostMana());
+	CostSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.CostFocus")), SkillAttributeSet->GetCostFocus());
+
+	ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, CostSpecHandle);
+}
+
+void UMJGA_GameplayAbility::ApplyCooldown(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
+{
 }
