@@ -188,6 +188,8 @@ void AMJPlayerController::HandleLeftMouseHold()
 
 			FGameplayTag BasicAttackTag = FGameplayTag::RequestGameplayTag(FName("Skill.Normal"));
 			SkillComponent->ActivateSkillByInputTag(BasicAttackTag);
+			StopMovement();
+
 		}
 		else
 		{
