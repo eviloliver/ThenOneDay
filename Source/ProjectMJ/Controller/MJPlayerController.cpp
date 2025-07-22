@@ -24,7 +24,7 @@
 #include "TG/UI/MJPauseMenuWidget.h"
 #include "TG/UI/MJSettingsWidget.h"
 #include "UI/MJHUDWidget.h"
-#include "UI/MJInteractionComponent.h"
+#include "UI/World/MJInteractionComponent.h"
 #include "UI/Store/MJStoreComponent.h"
 #include "UI/Store/MJStoreWidget.h"
 

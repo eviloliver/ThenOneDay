@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/MJInteractionComponent.h"
-#include "Dialogue/MJInteractionWidget.h"
+#include "MJInteractionComponent.h"
+#include "MJInteractionWidget.h"
 
 UMJInteractionComponent::UMJInteractionComponent()
 {

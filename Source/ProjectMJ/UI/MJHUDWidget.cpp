@@ -2,11 +2,11 @@
 
 
 #include "UI/MJHUDWidget.h"
-#include "Bar/MJHealthBarWidget.h"
+#include "UI/Bar/MJHealthBarWidget.h"
 #include "Bar/MJManaBarWidget.h"
 #include "Bar/MJStaminaBar.h"
 #include "Bar/MJExperienceWidget.h"
-#include "MJStatWidget.h"
+#include "World/MJStatWidget.h"
 #include "Inventory/MJInventoryWidget.h"
 #include "Store/MJStoreWidget.h"
 

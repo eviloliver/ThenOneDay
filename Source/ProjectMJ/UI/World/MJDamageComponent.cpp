@@ -3,7 +3,7 @@
 
 #include "MJDamageComponent.h"
 
-#include "UI/MJDamageWidget.h"
+#include "UI/World/MJDamageWidget.h"
 
 UMJDamageComponent::UMJDamageComponent()
 {

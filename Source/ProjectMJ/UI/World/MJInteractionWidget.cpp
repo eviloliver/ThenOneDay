@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Dialogue/MJInteractionWidget.h"
+#include "MJInteractionWidget.h"
 #include "Components/TextBlock.h"
 
 void UMJInteractionWidget::SetText(FString text)

@@ -3,7 +3,7 @@
 
 #include "MJ/Character/MJMonsterCharacter.h"
 
-#include "MJDamageComponent.h"
+#include "UI/World/MJDamageComponent.h"
 #include "ProjectMJ.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
@@ -12,7 +12,7 @@
 #include "DataAsset/DataAsset_StartDataBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/WidgetComponent.h"
-#include "UI/MJDamageWidget.h"
+#include "UI/World/MJDamageWidget.h"
 #include "UI/MJUIManagerSubsystem.h"
 
 AMJMonsterCharacter::AMJMonsterCharacter()
