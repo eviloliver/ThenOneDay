@@ -8,6 +8,7 @@
 #include "MJStatWidget.h"
 #include "Inventory/MJInventoryWidget.h"
 #include "Store/MJStoreWidget.h"
+#include "TG/UI/MJBossHpBarWidget.h"
 
 void UMJHUDWidget::NativeConstruct()
 {
@@ -25,6 +26,11 @@ void UMJHUDWidget::NativeConstruct()
 	if (Store)
 	{
 		Store->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (BossHpBar)
+	{
+		BossHpBar->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -85,4 +91,14 @@ void UMJHUDWidget::ShowStore()
 	{
 		Store->SetVisibility(ESlateVisibility::Visible);
 	}
+}
+
+void UMJHUDWidget::HideBossHpBar()
+{
+	BossHpBar->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UMJHUDWidget::ShowBossHpBar()
+{
+	BossHpBar->SetVisibility(ESlateVisibility::Visible);
 }

@@ -7,20 +7,23 @@
 #include "NavigationSystem.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "Kismet/GameplayStatics.h"
-#include "Player/MJPlayerState.h"
 #include "TG/MJGameInstanceTG.h"
-#include "TG/Actor/MJDummyActorTG.h"
 #include "TG/Actor/MJDungeonAISpawnPointActor.h"
 #include "TG/AI/MJAIBossCharacterTG.h"
+#include "TG/DataTable/MJStaticAISpawnRow.h"
+#include "TG/Interface/MJInstancedActorInterface.h"
 #include "TG/SubSystem/MJDungeonGenerationSubSystem.h"
 
 
 AMJGameStateDungeonTG::AMJGameStateDungeonTG()
 {
 	LoadedDungeonNodeNum = 255;
-	
+
 	CurrentWaveNum = 1;
-	SpawnAIMaxNum = 5;
+	WaveAISpawnMaxNum = 5;
+
+	StaticAISpawnMaxNum = 10;
+
 	CurrentSpawnedAINum = 0;
 }
 
@@ -65,15 +68,6 @@ void AMJGameStateDungeonTG::BeginPlay()
 	}
 }
 
-void AMJGameStateDungeonTG::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	Super::EndPlay(EndPlayReason);
-	// AMJPlayerState* PS = Cast<AMJPlayerState>(UGameplayStatics::GetPlayerState(this,0));
-	// if (PS)
-	// {
-	// 	SaveToInstancedDungeonSessionData(PS->GetPlayerSessionDataRef().CurrentDungeonMapNum);
-	// }
-}
 
 void AMJGameStateDungeonTG::Initialize_BattleNode()
 {
@@ -83,10 +77,19 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 		{
 			UGameplayStatics::GetAllActorsOfClass(GetWorld(),AMJDungeonAISpawnPointActor::StaticClass(),StaticSpawnPointActors);
 
-			// @fixme : using WaveData for now
-			GetWaveDataRowByIndex(1);
+			// using StaticAISpawnData 
+			TArray<const FMJStaticAISpawnDataRow*> LoadedAllRows;
+			LoadedStaticDataTable->GetAllRows(TEXT("Load All StaticAISpawnData Rows"),LoadedAllRows);
+
+			float TotalWeight = 0.0f;
+
+			for (const auto& Iter  : LoadedAllRows)
+			{
+				TotalWeight += Iter->SpawnWeight;
+			}
 			
-			for (auto& Iter : StaticSpawnPointActors)
+			
+			for (const auto& Iter : StaticSpawnPointActors)
 			{
 				FVector IterSpawnPoint = Iter->GetActorLocation();
 	
@@ -96,19 +99,37 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 				
 				if (NavSys)
 				{
-					// @fixme : hard coded for now
-					for (int i = 0 ; i < 10 ;)
+					int32 CurrentPointSpawnedAINum = 0;
+					while (CurrentPointSpawnedAINum < StaticAISpawnMaxNum)
 					{
+						TSubclassOf<AActor> WeightedChosenClass;
+
+						float RandWeight = FMath::RandRange(0.0f,TotalWeight);
+
+						float AccumulatedWeight = 0.0f;
+						
+						for (const auto& Row : LoadedAllRows)
+						{
+							AccumulatedWeight += Row->SpawnWeight;
+
+							if (AccumulatedWeight >= RandWeight)
+							{
+								WeightedChosenClass = Row->EnemyClass;
+								break;
+							}
+						}
+						
 						bool bIsFound = NavSys->GetRandomPointInNavigableRadius(IterSpawnPoint, 1000.f,ResultLocation);
+
 						if (bIsFound)
 						{
 							FActorSpawnParameters SpawnParams;
 							SpawnParams.Owner = this;
 							SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-							TSubclassOf<AActor> GetActor = GetActorFromPool();
-							AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(GetActor,ResultLocation,FRotator(), SpawnParams);
-
+						
+							
+							AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(WeightedChosenClass,ResultLocation,FRotator(), SpawnParams);
+							
 							check(NewAIActor);
 
 							if (NewAIActor)
@@ -116,7 +137,7 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 								NewAIActor->OnDestroyed.AddDynamic(this, &AMJGameStateDungeonTG::OnAIDestroy);
 								SpawnedActorRefs.Add(NewAIActor);
 								++CurrentSpawnedAINum;
-								++i;
+								++CurrentPointSpawnedAINum;
 							}
 							else
 							{
@@ -147,14 +168,14 @@ void AMJGameStateDungeonTG::Initialize_BossNode()
 {
 	if (LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::InActive)
 	{
-		AMJAIBossCharacterTG* AIBoss = Cast<AMJAIBossCharacterTG>(UGameplayStatics::GetActorOfClass(GetWorld(),AMJAIBossCharacterTG::StaticClass()));
-		if (AIBoss)
+		BossAIRef = Cast<AMJAIBossCharacterTG>(UGameplayStatics::GetActorOfClass(GetWorld(),AMJAIBossCharacterTG::StaticClass()));
+		if (BossAIRef)
 		{
-			AIBoss->OnDestroyed.AddDynamic(this ,&AMJGameStateDungeonTG::OnAIDestroy);
-			SpawnedActorRefs.Add(AIBoss);
+			BossAIRef->OnDestroyed.AddDynamic(this ,&AMJGameStateDungeonTG::OnAIDestroy);
+			SpawnedActorRefs.Add(BossAIRef);
 			CurrentSpawnedAINum++;
+			GetWorldTimerManager().SetTimer(OnBossSpawnedBroadCastTimerHandle,this, &ThisClass::PublishOnBossSpawned,3.0f);
 		}
-		
 		LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Activated;
 	}
 }
@@ -168,7 +189,7 @@ bool AMJGameStateDungeonTG::GetWaveDataRowByIndex(int32 InputWaveRowNum)
 {
 	// Hard coded wave name for now
 	FName Name = *FString::Printf(TEXT("Wave%d"), InputWaveRowNum);
-	FMJWaveDataRow* RowPtr = LoadedWaveDataTable->FindRow<FMJWaveDataRow>(Name, TEXT("FindRow is Failed"));
+	FMJWaveAISpawnDataRow* RowPtr = LoadedWaveDataTable->FindRow<FMJWaveAISpawnDataRow>(Name, TEXT("FindRow is Failed"));
 	
 	if (RowPtr)
 	{
@@ -192,7 +213,7 @@ void AMJGameStateDungeonTG::CheckSpawnAICondition()
 	
 	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Magenta, FString::Printf(TEXT("Check AISpawn Condition Call")));
 	
-	if (CurrentSpawnedAINum < SpawnAIMaxNum)
+	if (CurrentSpawnedAINum < WaveAISpawnMaxNum)
 	{
 		if (LoadedWaveDataRow.EnemyCount <= 0)
 		{
@@ -241,7 +262,7 @@ void AMJGameStateDungeonTG::SpawnAI()
 							   Result->GetAllAsLocations(AllLocations);
 								
 							   int i = 0;
-							   while (CurrentSpawnedAINum < SpawnAIMaxNum)
+							   while (CurrentSpawnedAINum < WaveAISpawnMaxNum)
 							   {
 							   	
 							   		FActorSpawnParameters SpawnParams;
@@ -426,12 +447,7 @@ void AMJGameStateDungeonTG::LoadFromInstancedDungeonSessionData(uint8 LoadFromNu
 }
 
 
-void AMJGameStateDungeonTG::PublishOnBossHealthChanged(float Delta)
+void AMJGameStateDungeonTG::PublishOnBossSpawned()
 {
-	OnAIBossHealthChanged.Broadcast(Delta);
-}
-
-void AMJGameStateDungeonTG::PublishOnBossSpawned(float Health)
-{
-	OnAIBossSpawned.Broadcast(Health);
+	OnAIBossSpawned.Broadcast();
 }

@@ -4,26 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
-#include "MJDataTable_Wave.generated.h"
+#include "MJStaticAISpawnRow.generated.h"
 
 /**
- * Class Description: Wave Datatable Row
+ * Class Description: static AI Spawn Data Row
  * Author: Cha Tae Gwan
- * Created Date: 2025-07-03
+ * Created Date: 2025-07-17
  * Last Modified By: Cha Tae Gwan
- * Last Modified Date: 2025-07-03
+ * Last Modified Date: 2025-07-17
  */
 USTRUCT(BlueprintType)
-struct FMJWaveDataRow : public  FTableRowBase
+struct FMJStaticAISpawnDataRow : public  FTableRowBase
 {
 	GENERATED_BODY()
-
+	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	uint8 WaveNum;	
+	TSubclassOf<AActor> EnemyClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 EnemyCount;
+	float SpawnWeight;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
-	TMap<TSubclassOf<AActor>, int32> EnemyPool;
+	
 };
