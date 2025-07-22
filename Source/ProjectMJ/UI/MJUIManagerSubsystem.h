@@ -61,9 +61,6 @@ public:
 	// BossHpBar Section
 	UFUNCTION()
 	void OnBossSpawned();
-
-	//UMJInventoryWidget* GetInventoryWidget() {return InventoryWidget;};
-	UMJHUDWidget* GetHUDWidget() {return HUDWidget;};
 	
 protected:
 	UPROPERTY()
