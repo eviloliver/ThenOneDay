@@ -8,11 +8,14 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
+#include "Character/MJPlayerCharacter.h"
 #include "Character/Component/MJEnemyStatComponent.h"
 #include "Character/Component/MJSkillComponentBase.h"
 #include "DataAsset/DataAsset_StartDataBase.h"
 #include "DataTable/MJEnemyDataRow.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "MJ/AI/MJMonsterAIControllerBase.h"
+#include "MJ/Drop/MJSkillDropTest.h"
 #include "Components/WidgetComponent.h"
 #include "UI/World/MJDamageWidget.h"
 #include "UI/MJUIManagerSubsystem.h"
@@ -187,7 +190,7 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 		MJ_LOG(LogMJ, Error, TEXT("Not Exist DataRow"));
 		return;
 	}
-
+	
 	// Minjin: 기본 공격
 	//SkillComponent->LearnSkill(DataRow->NormalAttackTag);
 	//SkillComponent->EquipSkill(DataRow->NormalAttackTag);
@@ -195,28 +198,95 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	// Minjin: 특수 공격 -> 드랍하는 스킬
 	SkillComponent->LearnSkill(DataRow->IdentitySkillTag);
 	SkillComponent->EquipSkill(DataRow->IdentitySkillTag);
-
+	
 	// Minjin: Attribute Setting
-	if (StatComponent)
+	UCurveTable* AttributeCurve = DataRow->AttributeCurve.LoadSynchronous();
+	if (!AttributeCurve)
 	{
-		UCurveTable* AttributeCurve = DataRow->AttributeCurve.LoadSynchronous();
-		if (!AttributeCurve)
-		{
-			MJ_LOG(LogMJ, Log, TEXT("Not Exist AttributeCurve"));
-			return;
-		}
-		
-		StatComponent->SetStatTable(AttributeCurve);
-		StatComponent->InitializeStat();
+		MJ_LOG(LogMJ, Log, TEXT("Not Exist AttributeCurve"));
+		return;
 	}
+		
+	StatComponent->SetStatTable(AttributeCurve);
+	StatComponent->InitializeStat();
+
+	// Minjin: Animation Setting
+	AppearanceAnimation = DataRow->AppearanceAnimation;
+	DeathAnimation = DataRow->DeathAnimation;
+
+	// Minjin: 죽었을 때 전달할 정보 Setting
+	EnemyBequest.IdentitySkillTag = DataRow->IdentitySkillTag;
+	EnemyBequest.Exp = ASC->GetSet<UMJCharacterAttributeSet>()->GetDropExperience();
+	// TODO: 테이블에 아이템 태그 설정하기.
+	EnemyBequest.ItemTag = FGameplayTag::EmptyTag;
 }
 
-void AMJMonsterCharacter::OnDeath()
+void AMJMonsterCharacter::OnDeath(AActor* InEffectCauser)
 {
+	MJ_LOG(LogMJ, Warning, TEXT("Death Start"));
 	// TODO:
 	// 애니메이션과 기타 등등 세팅
 	// - 동민 -
-	Destroy();
+
+	AMJMonsterAIControllerBase* AIController = Cast<AMJMonsterAIControllerBase>(GetController());
+	if (AIController)
+	{
+		AIController->StopAI();
+	}
+	
+	if (DeathAnimation)
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("Death"));
+		//StopAnimMontage();
+		// Minjin: 몽타주로 하는 게 좋을까 생각중
+		//GetMesh()->PlayAnimation(DeathAnimation, false);<-이거로 하면 공격 들어갈때마다 애니메이션이 처음부터 재생됨
+		GetMesh()->OverrideAnimationData(DeathAnimation, false);
+		const float FinishDelay = DeathAnimation->GetPlayLength();
+		FTimerHandle DeadTimerHandle;
+
+		// Minjin: 애니메이션 재생되는 동안 경험치 전달
+		// TODO: 스킬도 애니메이션 재생 때 전달하도록 변경하기
+		AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(InEffectCauser);
+		if (Player)
+		{
+			Player->GainExperience(EnemyBequest.Exp);
+			MJ_LOG(LogMJ, Warning, TEXT("경험치 전달: %d"), EnemyBequest.Exp);
+		}
+		
+		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
+			[&]()
+			{
+				SetActorEnableCollision(false);
+				SetActorHiddenInGame(true);
+				
+				// Minjin: 죽은 이후 활동
+				UWorld* World = GetWorld();
+				FTransform SpawnTransform(GetActorLocation() /*+  FVector(0.0f, 0.0f, 30.0f)*/);
+				AMJSkillDropTest* DropSkill = World->SpawnActorDeferred<AMJSkillDropTest>(AMJSkillDropTest::StaticClass(), SpawnTransform);
+				MJ_LOG(LogMJ, Warning, TEXT("Create DropSkll"));
+				DropSkill->SetSkillTag(EnemyBequest.IdentitySkillTag);
+					
+				DropSkill->FinishSpawning(SpawnTransform);
+				Destroy();
+			}
+		), FinishDelay, false);
+	}
+	else
+	{
+		SetActorEnableCollision(false);
+		SetActorHiddenInGame(true);
+
+		// Minjin: 죽은 이후 활동
+		UWorld* World = GetWorld();
+		FTransform SpawnTransform(GetActorLocation() /*+  FVector(0.0f, 0.0f, 30.0f)*/);
+		AMJSkillDropTest* DropSkill = World->SpawnActorDeferred<AMJSkillDropTest>(AMJSkillDropTest::StaticClass(), SpawnTransform);
+
+		DropSkill->SetSkillTag(EnemyBequest.IdentitySkillTag);
+					
+		DropSkill->FinishSpawning(SpawnTransform);
+		
+		Destroy();
+	}
 	DamageIndex = 0;
 }
 

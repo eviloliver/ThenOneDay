@@ -22,6 +22,13 @@ class UMJCharacterSkillAttributeSet;
  * Last Modified By: (Last Modifier)
  * Last Modified Date: (Last Modified Date)
  */
+struct EnemyTransferData
+{
+	FGameplayTag IdentitySkillTag;
+	int32 Exp;
+	FGameplayTag ItemTag;
+};
+
 UCLASS()
 class PROJECTMJ_API AMJMonsterCharacter : public AMJCharacterBase, public IMJCharacterAIInterface
 {
@@ -33,6 +40,8 @@ public:
 	FGameplayTag GetAttackTag() {return AttackTag;}
 	UMJSkillComponentBase* GetSkillComponent() {return SkillComponent;}
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	TObjectPtr<UAnimationAsset> GetAppearanceAnimation(){return AppearanceAnimation;}
 	
 protected:
 	virtual void BeginPlay() override;
@@ -51,7 +60,7 @@ protected:
 
 protected:
 	UFUNCTION()
-	virtual void OnDeath();
+	virtual void OnDeath(AActor* InEffectCauser);
 
 	UFUNCTION()
 	void OnDamage(float Magnitude);
@@ -88,6 +97,16 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	bool bIsDead;
 
-	// Minjin: Ability Tag
+	// Minjin: Animation
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UAnimationAsset> AppearanceAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UAnimationAsset> DeathAnimation;
+	
+	// Minjin: Ability Tag-안씀
 	FGameplayTag AttackTag;
+
+	// Minjin: 죽고 플레이어한테 줘야 하는 정보
+	EnemyTransferData EnemyBequest;
 };
