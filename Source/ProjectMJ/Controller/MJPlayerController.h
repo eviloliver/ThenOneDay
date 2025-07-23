@@ -50,6 +50,8 @@ public:
 	void AbilityInputPressed(FGameplayTag InInputTag);
 	void AbilityInputReleased(FGameplayTag InInputTag);
 
+	void ShiftPressed();
+	void ShiftReleased();
 private:
 	bool bIsLMBPressed = false;
 	bool bIsLMBHolding = false;
@@ -57,6 +59,8 @@ private:
 
 	bool bIsRMBPressed = false;
 	float RMBHoldTime = 0.0f;
+
+	bool bShiftKeyDown = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	float HoldThreshold = 0.0f;
@@ -67,6 +71,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inpur", meta = (AllowPrivateAccess = "true"))
 	UDataAsset_InputConfig* InputConfigDataAsset;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> ShiftAction;
 #pragma region UIPart
 private:
 	bool IsTriggeredForStore = false;
@@ -74,25 +80,25 @@ private:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* ChangeIMCAction;
+	TObjectPtr<UInputAction> ChangeIMCAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* NextDialogueAction;
+	TObjectPtr<UInputAction> NextDialogueAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* ShowBacklogAction;
+	TObjectPtr<UInputAction> ShowBacklogAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* ShowStatPanelAction;
+	TObjectPtr<UInputAction> ShowStatPanelAction;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* ShowInventoryAction;
+	TObjectPtr<UInputAction> ShowInventoryAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* ShowStoreAction;
+	TObjectPtr<UInputAction> ShowStoreAction;
 	
 	UPROPERTY()
-	UMJUIManagerSubsystem* UIManager;
+	TObjectPtr<UMJUIManagerSubsystem> UIManager;
 
 	//Dialogue
 	void ChangeToIMCDialogue();

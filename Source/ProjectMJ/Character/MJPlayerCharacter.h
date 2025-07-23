@@ -54,13 +54,13 @@ public:
 #pragma region DialoguePart	
 protected:
  	UPROPERTY(VisibleAnywhere, BlueprintReadOnly ,Category = "Trigger")
- 	USphereComponent* UITrigger;
+ 	TObjectPtr<USphereComponent> UITrigger;
 
  	UPROPERTY()
- 	AActor* UITarget;
+ 	TObjectPtr<AActor> UITarget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
-	UMJInventoryComponent* InventoryComponent;
+	TObjectPtr<UMJInventoryComponent> InventoryComponent;
 
 public:
 	void SetUITarget(AActor* NewTarget) { UITarget = NewTarget; }

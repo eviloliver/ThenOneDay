@@ -16,7 +16,7 @@
  * Modified Date: 2025.07.15
  */
 
-UCLASS(ClassGroup = (Skill), meta = (BlueprintSpawnableComponent))
+UCLASS()
 class PROJECTMJ_API UMJPlayerSkillComponent : public UMJSkillComponentBase
 {
 	GENERATED_BODY()

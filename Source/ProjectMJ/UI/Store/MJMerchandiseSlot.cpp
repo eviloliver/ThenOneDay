@@ -22,8 +22,7 @@ void UMJMerchandiseSlot::SetItemName(FText itemName)
 	if (ItemName)
 	{
 		ItemName->SetText(itemName);
-	}
-	UE_LOG(LogTemp, Error, TEXT("%p"), ItemName);
+	};
 }
 
 void UMJMerchandiseSlot::SetDescription(FText description)

@@ -32,18 +32,18 @@ class PROJECTMJ_API UMJInventorySlot : public UUserWidget
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	UBorder* Border;
+	TObjectPtr<UBorder> Border;
 	
 	UPROPERTY(meta = (BindWidget))
-	UImage* Image;
+	TObjectPtr<UImage> Image;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* Text;
+	TObjectPtr<UTextBlock> Text;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* ItemCount;
+	TObjectPtr<UTextBlock> ItemCount;
 	
-	UTexture2D* Texture;
+	TObjectPtr<UTexture2D> Texture;
 
 	// visual
 	FLinearColor DefaultBorderColor;
@@ -60,7 +60,7 @@ protected:
 	TSubclassOf<UMJInventoryTooltip> TooltipWidgetClass;
 
 	UPROPERTY()
-	UMJInventoryTooltip* Tooltip = nullptr;
+	TObjectPtr<UMJInventoryTooltip> Tooltip = nullptr;
 	
 	FVector2D ScreenPos;
 public:

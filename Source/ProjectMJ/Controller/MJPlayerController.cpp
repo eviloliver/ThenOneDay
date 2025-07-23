@@ -17,12 +17,14 @@
 #include "Player/MJPlayerState.h"
 #include "ProjectMJ.h"
 #include "Character/Component/MJPlayerSkillComponent.h"
+#include "Engine/DocumentationActor.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "TG/UI/MJPauseMenuWidget.h"
 #include "TG/UI/MJSettingsWidget.h"
 #include "UI/MJHUDWidget.h"
+#include "UI/World/MJInteractionComponent.h"
 #include "UI/Store/MJStoreComponent.h"
 #include "UI/Store/MJStoreWidget.h"
 
@@ -97,6 +99,9 @@ void AMJPlayerController::SetupInputComponent()
 
 	MJInputComponent->BindAbilityInputAction(InputConfigDataAsset, this, &AMJPlayerController::AbilityInputPressed, &AMJPlayerController::AbilityInputReleased);
 
+	MJInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AMJPlayerController::ShiftPressed);
+	MJInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AMJPlayerController::ShiftReleased);
+
 	//Dialogue Input
 	MJInputComponent->BindAction(ChangeIMCAction, ETriggerEvent::Triggered, this, &ThisClass::ChangeToIMCDialogue);
 	MJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
@@ -140,6 +145,24 @@ void AMJPlayerController::OnLeftMousePressed()
 	bIsLMBPressed = true;
 	LMBHoldTime = 0.0f;
 	bIsLMBHolding = false;
+
+	if (bShiftKeyDown)
+	{
+		AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
+		if (!ControlledCharacter)
+		{
+			return;
+		}
+
+		UMJPlayerSkillComponent* SkillComponent = ControlledCharacter->FindComponentByClass<UMJPlayerSkillComponent>();
+		if (!SkillComponent)
+		{
+			return;
+		}
+
+		FGameplayTag BasicAttackTag = FGameplayTag::RequestGameplayTag(FName("Skill.Normal"));
+		SkillComponent->ActivateSkillByInputTag(BasicAttackTag);
+	}
 }
 
 void AMJPlayerController::OnLeftMouseReleased()
@@ -163,7 +186,30 @@ void AMJPlayerController::HandleLeftMouseHold()
 	FHitResult HitResult;
 	if (GetHitResultUnderCursor(ECC_Visibility, false, HitResult))
 	{
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitResult.Location);
+		if (bShiftKeyDown)
+		{
+			AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
+			if (!ControlledCharacter)
+			{
+				return;
+			}
+
+			UMJPlayerSkillComponent* SkillComponent = ControlledCharacter->FindComponentByClass<UMJPlayerSkillComponent>();
+			if (!SkillComponent)
+			{
+				return;
+			}
+
+			FGameplayTag BasicAttackTag = FGameplayTag::RequestGameplayTag(FName("Skill.Normal"));
+			SkillComponent->ActivateSkillByInputTag(BasicAttackTag);
+			StopMovement();
+
+		}
+		else
+		{
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitResult.Location);
+
+		}
 	}
 }
 
@@ -204,6 +250,12 @@ void AMJPlayerController::OnRightMouseReleased()
 
 void AMJPlayerController::AttackOrMove(const FHitResult& HitResult)
 {
+	if (bShiftKeyDown)
+	{
+		// Shift + Left Click은 OnLeftMousePressed에서 처리되므로 여기서는 아무것도 하지 않습니다.
+		return;
+	}
+
 	AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
 	if (!ControlledCharacter)
 	{
@@ -223,6 +275,7 @@ void AMJPlayerController::AttackOrMove(const FHitResult& HitResult)
 	}
 	else if (TargetCharacter != ControlledCharacter && TargetCharacter->GetGenericTeamId() != ControlledCharacter->GetGenericTeamId())
 	{
+		MJ_LOG(LogMJ, Warning, TEXT("NormalAttack"));
 		FGameplayTag LeftClickInputTag = FGameplayTag::RequestGameplayTag(FName("Skill.Normal"));
 		SkillComponent->ActivateSkillByInputTag(LeftClickInputTag);
 	}
@@ -274,6 +327,16 @@ void AMJPlayerController::AbilityInputReleased(FGameplayTag InInputTag)
 	{
 		
 	}
+}
+
+void AMJPlayerController::ShiftPressed()
+{
+	bShiftKeyDown = true;
+}
+
+void AMJPlayerController::ShiftReleased()
+{
+	bShiftKeyDown = false;
 }
 
 
@@ -365,8 +428,11 @@ void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor*
 		if (MJChar)
 		{
 			MJChar->SetUITarget(Other);
+			
             IsTriggeredForDialogue = true;
 		}
+		Other->FindComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/UI/WBP/HUD/Inventory/woodcover.woodcover")));
+		Other->FindComponentByClass<UMJInteractionComponent>()->Active("X");
 	}
 
 	// Store Trigger
@@ -394,9 +460,10 @@ void AMJPlayerController::OnTriggeredOut(UPrimitiveComponent* Overlapped, AActor
 			{
 				MJChar->SetUITarget(nullptr);
 				IsTriggeredForDialogue = false;
+				Other->FindComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(nullptr);
 			}
-
 		}
+		Other->FindComponentByClass<UMJInteractionComponent>()->Deactive();
 	}
 
 	if (Other && Other->FindComponentByClass<UMJStoreComponent>())
@@ -425,7 +492,7 @@ void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AAc
 	UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
 	 if (InventoryComp)
 	 {
-	 	InventoryComp->PickUpItem(Item->GetItemName());
+	 	InventoryComp->PickUpItem(Item->GetItemTag());
 	 	Item->Destroy();
 	 }
 }

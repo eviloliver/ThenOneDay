@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/Actor.h"
 #include "MJItemBase.generated.h"
 
@@ -15,8 +16,8 @@ class PROJECTMJ_API AMJItemBase : public AActor
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
-	FName ItemName; // 각각의 아이템에 넘버를 지정해두고 이걸로 지정하면 될 거 같음
-
+	FGameplayTag ItemTag;
+	
 public:
-	FName GetItemName() {return ItemName;}
+	FGameplayTag GetItemTag() {return ItemTag;}
 };
