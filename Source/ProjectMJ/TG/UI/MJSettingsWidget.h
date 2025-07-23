@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "MJChildMenuBaseWidget.h"
 #include "MJSettingsWidget.generated.h"
 
 class UButton;
@@ -17,29 +17,14 @@ class UComboBoxString;
  * Last Modified Date: 2025-07-14
  */
 UCLASS()
-class PROJECTMJ_API UMJSettingsWidget : public UUserWidget
+class PROJECTMJ_API UMJSettingsWidget : public UMJChildMenuBaseWidget
 {
 	GENERATED_BODY()
-
-public:
-	UFUNCTION()
-	void SetParentWidget(UUserWidget* NewParentWidget);
-
-	UFUNCTION()
-	UUserWidget* GetParentWidget();
 
 protected:
 
 	virtual void NativeConstruct() override;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> MainMenuWidgetClass;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> PauseMenuWidgetClass;
 	
-	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<UUserWidget> ParentWidget;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UComboBoxString> ComboBox_WindowMode;

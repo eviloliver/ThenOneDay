@@ -2,12 +2,14 @@
 
 
 #include "UI/MJHUDWidget.h"
-#include "MJHealthBarWidget.h"
-#include "MJManaBarWidget.h"
-#include "MJExperienceWidget.h"
-#include "MJStatWidget.h"
+#include "UI/Bar/MJHealthBarWidget.h"
+#include "Bar/MJManaBarWidget.h"
+#include "Bar/MJStaminaBar.h"
+#include "Bar/MJExperienceWidget.h"
+#include "World/MJStatWidget.h"
 #include "Inventory/MJInventoryWidget.h"
 #include "Store/MJStoreWidget.h"
+#include "TG/UI/MJBossHpBarWidget.h"
 
 void UMJHUDWidget::NativeConstruct()
 {
@@ -26,6 +28,11 @@ void UMJHUDWidget::NativeConstruct()
 	{
 		Store->SetVisibility(ESlateVisibility::Hidden);
 	}
+
+	if (BossHpBar)
+	{
+		BossHpBar->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet)
@@ -40,6 +47,11 @@ void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJC
 		ManaBar->BindToAttributes(ASC,AttributeSet);
 	}
 
+	if (StaminaBar)
+	{
+		StaminaBar->BindToAttributes(ASC,AttributeSet);
+	}
+	
 	if (ExpBar)
 	{
 		ExpBar->BindToAttributes(ASC,AttributeSet);
@@ -85,4 +97,14 @@ void UMJHUDWidget::ShowStore()
 	{
 		Store->SetVisibility(ESlateVisibility::Visible);
 	}
+}
+
+void UMJHUDWidget::HideBossHpBar()
+{
+	BossHpBar->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UMJHUDWidget::ShowBossHpBar()
+{
+	BossHpBar->SetVisibility(ESlateVisibility::Visible);
 }

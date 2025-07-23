@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MJMainMenuWidget.generated.h"
 
+class UMJChildMenuBaseWidget;
 class UButton;
 /**
  * Class Description: MainMenu Widget
@@ -22,13 +23,24 @@ class PROJECTMJ_API UMJMainMenuWidget : public UUserWidget
 protected:
 	
 	virtual void NativeConstruct() override;
+
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<UUserWidget> NewGamePopUpWidgetClass;
+
+	UPROPERTY(BlueprintReadWrite)
+	TObjectPtr<UMJChildMenuBaseWidget> NewGamePopUpWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<UUserWidget> LoadGameWidgetClass;
+
+	UPROPERTY(BlueprintReadWrite)
+	TObjectPtr<UMJChildMenuBaseWidget> LoadGameWidget;
 	
 	UPROPERTY(EditDefaultsOnly, Category = UI)
 	TSubclassOf<UUserWidget> SettingsWidgetClass;
 
 	UPROPERTY(BlueprintReadWrite)
-	TObjectPtr<UUserWidget> SettingsWidget;
-	
+	TObjectPtr<UMJChildMenuBaseWidget> SettingsWidget;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_NewGame;

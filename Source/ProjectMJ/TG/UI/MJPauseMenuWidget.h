@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "MJChildMenuBaseWidget.h"
 #include "MJPauseMenuWidget.generated.h"
 
 class UButton;
@@ -16,7 +16,7 @@ class UButton;
  * Last Modified Date: 2025-07-14
  */
 UCLASS()
-class PROJECTMJ_API UMJPauseMenuWidget : public UUserWidget
+class PROJECTMJ_API UMJPauseMenuWidget : public UMJChildMenuBaseWidget
 {
 	GENERATED_BODY()
 public:
@@ -34,7 +34,7 @@ protected:
 	TSubclassOf<UUserWidget> SettingsWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<UUserWidget> SettingsWidget;
+	TObjectPtr<UMJChildMenuBaseWidget> SettingsWidget;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_Resume;

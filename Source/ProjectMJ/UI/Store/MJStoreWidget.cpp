@@ -19,7 +19,6 @@ void UMJStoreWidget::NativeConstruct()
 	
 	for (int i = 0; i < 5; i++)
     {
-    	UE_LOG(LogTemp,Error,TEXT("Widget안에 슬롯 생성햇다"));
         UMJMerchandiseSlot* NewSlot = CreateWidget<UMJMerchandiseSlot>(this, MerchandiseSlotClass);
         ScrollBox->AddChild(NewSlot);
         MerchandiseSlots.Add(NewSlot);

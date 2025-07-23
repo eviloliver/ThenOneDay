@@ -15,7 +15,7 @@ void UMJInventorySlot::NativeConstruct()
 	Super::NativeConstruct();
 	
 	Texture = nullptr;
-	InventoryData = { NAME_None, 0, SlotPosition }; // 공백아이템
+	InventoryData = { FGameplayTag::EmptyTag, 0, SlotPosition }; // 공백아이템
 	
 	DefaultBorderColor = {0.0f,0.0f,0.0f,0.2f};
 	ClickedBorderColor = {0.0f,0.0f,0.0f,0.1f};
@@ -82,7 +82,6 @@ void UMJInventorySlot::NativeOnDragDetected(const FGeometry& InGeometry, const F
     DragOperation->SourceSlot = this;
     DragOperation->InventoryItemData = InventoryData;
     DragOperation->ItemData = ItemData;
-	UE_LOG(LogTemp, Log, TEXT("드래그 감지 시작 슬롯: %d, 아이템: %s, 아이템 : %s"), DragOperation->InventoryItemData.Position, * DragOperation->InventoryItemData.ItemName.ToString(), *DragOperation->ItemData.ItemID.ToString());
 
 	UMJDragWidget* DragWidget = CreateWidget<UMJDragWidget>(GetWorld(),DragWidgetClass);
     if (DragWidget)
@@ -111,7 +110,6 @@ bool UMJInventorySlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDrop
 	{
 		if (!InventoryData.IsEmpty())
 		{
-			UE_LOG(LogTemp, Error, TEXT("드롭완료"));
             FInventoryItemData Temp = InventoryData;
             FItemDataRow Temp2 = ItemData; 
             
@@ -133,12 +131,10 @@ bool UMJInventorySlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDrop
 		}
 		else // 공백칸과의 교환일 시
 		{
-			
-			UE_LOG(LogTemp, Error, TEXT("<공백과 교환>"));
 			InventoryData =  DragOperation->InventoryItemData;
 			ItemData = DragOperation->ItemData;
 			
-			DragOperation->SourceSlot->SetInventoryItemData({ NAME_None, 0, SlotPosition });
+			DragOperation->SourceSlot->SetInventoryItemData({ FGameplayTag::EmptyTag, 0, SlotPosition });
 
 			SetImage(ItemData.Icon);
 			SetText(ItemData.ItemID);
@@ -156,7 +152,7 @@ bool UMJInventorySlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDrop
 		IMJInventoryInterface* Char = Cast<IMJInventoryInterface>(GetOwningPlayerPawn());
 		if (Char)
 		{
-			Char->GetInventoryComponent()->SetPosition(InventoryData.ItemName,InventoryData.Position);
+			Char->GetInventoryComponent()->SetPosition(InventoryData.ItemTag,InventoryData.Position);
 			UE_LOG(LogTemp, Log, TEXT("SlotPosition : %d"), InventoryData.Position);
 		}
 		Border->SetBrushColor(DefaultBorderColor);
