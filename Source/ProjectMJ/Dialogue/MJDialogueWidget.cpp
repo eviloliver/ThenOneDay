@@ -16,9 +16,23 @@ void UMJDialogueWidget::NativeConstruct()
 	}
 }
 
+void UMJDialogueWidget::SetTextBlock(const FString& InText,const FString& speaker)
+{
+	if (Text)
+	{
+		Text->SetText(FText::FromString(InText));
+	}
+	
+	if (Speaker)
+	{
+		Speaker->SetText(FText::FromString(speaker));
+	}
+}
+
 void UMJDialogueWidget::StartTyping(const FString& InText, float TypingSpeed)
 {
 	FullText = InText;
+	UE_LOG(LogTemp, Display, TEXT("Text: %s"), *FullText);
 	CurrentCharIndex = 0;
 	bIsTyping = true;
 	Text->SetText(FText::FromString(TEXT(""))); // 빈문자열로 초기화해서 한글자씩 나타날 수 있도록 하기
@@ -56,6 +70,7 @@ void UMJDialogueWidget::SkipTyping()
 {
 	if (bIsTyping)
 	{
+		UE_LOG(LogTemp, Display, TEXT("SkipTyping"));
 		GetWorld()->GetTimerManager().ClearTimer(TypingTimerHandle);
 		Text->SetText(FText::FromString(FullText));
 		bIsTyping = false;
@@ -66,6 +81,7 @@ void UMJDialogueWidget::SetImageOpacity(const FString& SpeakerName)
 {
 	if (!PlayerImage)
 		return;
+	
 	if (!NPCImage)
 		return;
 	

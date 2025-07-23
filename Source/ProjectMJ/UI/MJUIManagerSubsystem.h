@@ -35,16 +35,6 @@ public:
 	void ShowHUD(class AMJPlayerState* PlayerState, class AMJPlayerController* PC);
 	UMJHUDWidget* GetHUDWidget() {return HUDWidget;}
 	
-	// Dialogue Section
-	void ShowDialogue(UMJDialogueComponent* DialogueComp);
-	void NextDialogue(UMJDialogueComponent* DialogueComp);
-	void HideDialogue();
-	
-	void SetDialogue(const UMJDialogueComponent* DialogueComp) const;
-	
-	//BackLog Section
-	void ShowBacklog();
-
 	// StatPanel Section
 	void ShowStatPanel();
 
@@ -63,14 +53,6 @@ public:
 	void OnBossSpawned();
 	
 protected:
-	UPROPERTY()
-	TObjectPtr<UMJDialogueWidget> DialogueWidget;
-
-	UPROPERTY()
-	TSubclassOf<UMJDialogueWidget> DialogueWidgetClass;
-
-	bool bIsDialogueActive;
-
 	UPROPERTY()
 	TObjectPtr<UMJHUDWidget> HUDWidget;
 

@@ -6,6 +6,7 @@
 #include "Bar/MJManaBarWidget.h"
 #include "Bar/MJStaminaBar.h"
 #include "Bar/MJExperienceWidget.h"
+#include "Dialogue/MJDialogueWidget.h"
 #include "World/MJStatWidget.h"
 #include "Inventory/MJInventoryWidget.h"
 #include "Store/MJStoreWidget.h"
@@ -32,6 +33,11 @@ void UMJHUDWidget::NativeConstruct()
 	if (BossHpBar)
 	{
 		BossHpBar->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (Dialogue)
+	{
+		Dialogue->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -107,4 +113,14 @@ void UMJHUDWidget::HideBossHpBar()
 void UMJHUDWidget::ShowBossHpBar()
 {
 	BossHpBar->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UMJHUDWidget::ShowDialogue()
+{
+	Dialogue->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UMJHUDWidget::HideDialogue()
+{
+	Dialogue->SetVisibility(ESlateVisibility::Hidden);
 }

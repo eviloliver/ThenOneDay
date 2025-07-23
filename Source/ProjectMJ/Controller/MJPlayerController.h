@@ -75,8 +75,7 @@ private:
 	TObjectPtr<UInputAction> ShiftAction;
 #pragma region UIPart
 private:
-	bool IsTriggeredForStore = false;
-	bool IsTriggeredForDialogue = false;
+	bool IsInteracted = false;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -106,9 +105,10 @@ public:
 	void ProceedDialogue();
 
 	//Store
-	void VisitStore(); // 아이템 정보를 넘길 요량 // 인스턴스 > 캐릭터 > 트리거 시 npc 정보를 가져와서 
+	void VisitStore(); // 아이템 정보를 넘길 요량 // 인스턴스 > 캐릭터 > 트리거 시 npc 정보를 가져와서
+	
 	// Show Widget
-	void ShowBacklog();
+	// void ShowBacklog();
 	void ShowStatPanel();
 	void ShowInventory();
 	
