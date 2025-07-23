@@ -19,9 +19,10 @@ void UMJPauseMenuWidget::NativeConstruct()
 	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
 	if (PC)
 	{
-		SettingsWidget = CreateWidget(PC, SettingsWidgetClass);
+		SettingsWidget = Cast<UMJChildMenuBaseWidget>(CreateWidget(PC, SettingsWidgetClass));
 		if (SettingsWidget)
-		{
+		{		
+			SettingsWidget->SetParentWidget(this);
 			SettingsWidget->AddToViewport(2);
 			SettingsWidget->SetVisibility(ESlateVisibility::Hidden);
 		}

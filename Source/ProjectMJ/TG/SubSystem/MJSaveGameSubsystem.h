@@ -23,6 +23,7 @@ public:
 	UMJSaveGameSubsystem();
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void Deinitialize() override;
 
 	UFUNCTION(BlueprintCallable)
 	UMJSaveGame* GetSaveGameData();
@@ -33,14 +34,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int32 GetUserIndex() const;
 
-	UFUNCTION(BlueprintCallable)
-	void CreateSaveGame();
-	
-	UFUNCTION(BlueprintCallable)
-	void LoadSaveGame(AMJPlayerCharacter* Player);
 
-	UFUNCTION(BlueprintCallable)
-	void SaveGameToSlot(AMJPlayerCharacter* Player);
+	UFUNCTION()
+	void SaveGameToCurrentSlotNum();
+
+	UFUNCTION()
+	void LoadGameFromSlotNum(int8 SlotNum);
+
 
 
 	// Loading Screen Section

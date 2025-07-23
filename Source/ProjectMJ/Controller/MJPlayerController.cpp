@@ -17,12 +17,14 @@
 #include "Player/MJPlayerState.h"
 #include "ProjectMJ.h"
 #include "Character/Component/MJPlayerSkillComponent.h"
+#include "Engine/DocumentationActor.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "TG/UI/MJPauseMenuWidget.h"
 #include "TG/UI/MJSettingsWidget.h"
 #include "UI/MJHUDWidget.h"
+#include "UI/World/MJInteractionComponent.h"
 #include "UI/Store/MJStoreComponent.h"
 #include "UI/Store/MJStoreWidget.h"
 
@@ -414,8 +416,11 @@ void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor*
 		if (MJChar)
 		{
 			MJChar->SetUITarget(Other);
+			
             IsTriggeredForDialogue = true;
 		}
+		Other->FindComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/UI/WBP/HUD/Inventory/woodcover.woodcover")));
+		Other->FindComponentByClass<UMJInteractionComponent>()->Active("X");
 	}
 
 	// Store Trigger
@@ -443,9 +448,10 @@ void AMJPlayerController::OnTriggeredOut(UPrimitiveComponent* Overlapped, AActor
 			{
 				MJChar->SetUITarget(nullptr);
 				IsTriggeredForDialogue = false;
+				Other->FindComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(nullptr);
 			}
-
 		}
+		Other->FindComponentByClass<UMJInteractionComponent>()->Deactive();
 	}
 
 	if (Other && Other->FindComponentByClass<UMJStoreComponent>())
@@ -474,7 +480,7 @@ void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AAc
 	UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
 	 if (InventoryComp)
 	 {
-	 	InventoryComp->PickUpItem(Item->GetItemName());
+	 	InventoryComp->PickUpItem(Item->GetItemTag());
 	 	Item->Destroy();
 	 }
 }

@@ -25,9 +25,7 @@ class PROJECTMJ_API IMJBossEventManagerTG
 	GENERATED_BODY()
 
 public:
-
-	virtual void PublishOnBossHealthChanged(float Delta) = 0;
-
-	virtual void PublishOnBossSpawned(float Health) = 0;
+	
+	virtual void PublishOnBossSpawned() = 0;
 
 };

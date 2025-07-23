@@ -3,6 +3,7 @@
 
 #include "MJ/Character/MJMonsterCharacter.h"
 
+#include "UI/World/MJDamageComponent.h"
 #include "ProjectMJ.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
@@ -12,6 +13,9 @@
 #include "DataAsset/DataAsset_StartDataBase.h"
 #include "DataTable/MJEnemyDataRow.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/WidgetComponent.h"
+#include "UI/World/MJDamageWidget.h"
+#include "UI/MJUIManagerSubsystem.h"
 #include "TG/MJGameInstanceTG.h"
 
 AMJMonsterCharacter::AMJMonsterCharacter()
@@ -26,7 +30,7 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	// Minjin: 캐릭터의 회전을 부드럽게 해줌
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	bUseControllerRotationYaw = false;
-	
+
 	// GAS, Attr Set
 	ASC = CreateDefaultSubobject<UMJAbilitySystemComponent>(TEXT("ASC"));
 	
@@ -39,6 +43,10 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 
 	// Skill Component
 	SkillComponent = CreateDefaultSubobject<UMJSkillComponentBase>(TEXT("SkillComponent"));
+
+	// UI Component
+	HPBarComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBarComponent"));
+	HPBarComponent->SetupAttachment(GetMesh());
 }
 
 void AMJMonsterCharacter::BeginPlay()
@@ -48,6 +56,17 @@ void AMJMonsterCharacter::BeginPlay()
 	// Minjin: 캐릭터는 미리 맵에 스폰되어 있다. 안 보이게 설정-콜리전을 비활성화 하면 맵 밑으로 꺼짐
 	AActor::SetActorHiddenInGame(true);
 	SetActorEnableCollision(true);
+	
+	// Jisoo
+	HPBarComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 220.0f));
+	HPBarComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	HPBarComponent->SetDrawSize(FVector2D(100.0f,10.0f));
+	HPBarComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	HPBarComponent->SetVisibility(false);
+
+	UIManager =	GetGameInstance()->GetSubsystem<UMJUIManagerSubsystem>();
+	ensure(UIManager);
+	UIManager->ResisterWorldUI(HPBarComponent,ASC,CharacterAttributeSet);
 }
 
 float AMJMonsterCharacter::GetAIPatrolRadius()
@@ -146,6 +165,8 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	// 그런데 자동으로 DT에 있는 값으로 Attribute를 넣어 줄 거면 전체 덮어주는 Effect 가지고 있고, 노가다가 필요해서
 	// 나중에 DT만들고 집중 안될 때 와서 작업 함
 	//  -동민 -
+	CharacterAttributeSet->OnDamage.AddDynamic(this,&ThisClass::OnDamage);
+	CharacterAttributeSet->OnDeath.AddDynamic(this, &ThisClass::OnDeath);
 	// 알겠긔 -민진-
 
 	/*
@@ -196,5 +217,24 @@ void AMJMonsterCharacter::OnDeath()
 	// 애니메이션과 기타 등등 세팅
 	// - 동민 -
 	Destroy();
+	DamageIndex = 0;
+}
 
+void AMJMonsterCharacter::OnDamage(float Magnitude)
+{
+	HPBarComponent->SetVisibility(true);
+	
+	{
+		UMJDamageComponent* NewComp = NewObject<UMJDamageComponent>(this);
+		NewComp->RegisterComponent();
+		NewComp->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+		NewComp->SetWidget();
+		NewComp->SetVisibility(true);
+		DamageComponents.Add(NewComp);
+		
+		Cast<UMJDamageWidget>(DamageComponents[DamageIndex]->GetUserWidgetObject())->PlayAnim();
+		Cast<UMJDamageWidget>(DamageComponents[DamageIndex]->GetUserWidgetObject())->SetDamage(-Magnitude);
+
+		DamageIndex ++;
+	}
 }

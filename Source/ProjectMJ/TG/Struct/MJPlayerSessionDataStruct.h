@@ -19,6 +19,18 @@ struct FMJPlayerSessionData
 {
 	GENERATED_BODY()
 
+	UPROPERTY()
+	FString PlayerName;
+	
+	UPROPERTY()
+	int32 PlayerLevel;
+
+	UPROPERTY()
+	float PlayerExp;
+
+	UPROPERTY()
+	int8 SaveGameSlotNum = -1;
+
 	UPROPERTY(BlueprintReadOnly)
 	EMJGameplayContext GameplayContext;
 
