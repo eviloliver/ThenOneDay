@@ -8,6 +8,8 @@
 #include "Dialogue/MJDialogueComponent.h"
 #include "Player/MJPlayerState.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
+#include "Bar/MJEnemyHPBar.h"
+#include "Components/WidgetComponent.h"
 #include "Controller/MJPlayerController.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Inventory/MJInventoryWidget.h"
@@ -19,8 +21,7 @@
 void UMJUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-
-	UE_LOG(LogTemp, Log, TEXT("UIManager Initialize"));
+	
 	DialogueWidgetClass = LoadClass<UMJDialogueWidget>(
 			nullptr,
 			TEXT("/Game/UI/WBP/Dialogue/BP_MJDialogueWidget.BP_MJDialogueWidget_C"));
@@ -28,6 +29,12 @@ void UMJUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	HUDWidgetClass = LoadClass<UMJHUDWidget>(
 		nullptr,
 		TEXT("/Game/UI/WBP/HUD/WBP_HUD.WBP_HUD_C"));
+
+	// EnemyHPBarWidgetClass = LoadClass<UMJEnemyHPBar>(
+	// 	nullptr,
+	// 	TEXT("/Game/UI/WBP/World/Bar/WBP_EnemyHPBar.WBP_EnemyHPBar_C"));
+	//
+	// EnemyHPBarWidget = CreateWidget<UMJEnemyHPBar>(GetWorld(),EnemyHPBarWidgetClass );
 }
 
 void UMJUIManagerSubsystem::ShowHUD(AMJPlayerState* PlayerState, AMJPlayerController* PC)
@@ -139,6 +146,28 @@ void UMJUIManagerSubsystem::ShowStore()
 	HUDWidget->ShowStore();
 }
 
+// World UI
+void UMJUIManagerSubsystem::ResisterWorldUI(UWidgetComponent* WidgetComp,UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet)
+{
+	if (WidgetComp && !WorldUIs.Contains(WidgetComp))
+	{
+		WorldUIs.Add(WidgetComp);
+		
+		// Enemy HPBar
+		UMJEnemyHPBar* HPBarWidget = Cast<UMJEnemyHPBar>(WidgetComp->GetUserWidgetObject());
+		if (HPBarWidget && ASC && AttributeSet)
+		{
+			HPBarWidget->BindToAttributes(ASC, AttributeSet);
+		}
+	}
+}
+
+void UMJUIManagerSubsystem::UnresisterWorldUI(UWidgetComponent* WidgetComp)
+{
+	WorldUIs.Remove(WidgetComp);
+	WidgetComp->SetVisibility(false);
+}
+//
 void UMJUIManagerSubsystem::OnBossSpawned()
 {
 	HUDWidget->GetBossHpBarWidget()->BindToAttributes();

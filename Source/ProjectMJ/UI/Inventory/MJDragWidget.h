@@ -17,7 +17,7 @@ class PROJECTMJ_API UMJDragWidget : public UUserWidget
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	UImage* DragImage;
+	TObjectPtr<UImage> DragImage;
 
 public:
 	void SetDragImage(UTexture2D* ItemTexture);

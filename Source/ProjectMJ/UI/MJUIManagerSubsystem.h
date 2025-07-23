@@ -14,12 +14,14 @@
  * Last Modified Date: 2025-06-26
  */
 
+class UWidgetComponent;
+class UMJEnemyHPBar;
 class UMJBossHpBarWidget;
 class UMJDialogueWidget;
-class UMJBacklogWidget;
 class UMJDialogueComponent;
 class UMJHUDWidget;
-class UMJInventoryWidget;
+class UMJCharacterAttributeSet;
+class UMJAbilitySystemComponent;
 
 UCLASS()
 class PROJECTMJ_API UMJUIManagerSubsystem : public UGameInstanceSubsystem
@@ -31,6 +33,7 @@ public:
 
 	// HUD
 	void ShowHUD(class AMJPlayerState* PlayerState, class AMJPlayerController* PC);
+	UMJHUDWidget* GetHUDWidget() {return HUDWidget;}
 	
 	// Dialogue Section
 	void ShowDialogue(UMJDialogueComponent* DialogueComp);
@@ -51,28 +54,32 @@ public:
 	// Store Section
 	void ShowStore();
 
+	// World UI
+	void ResisterWorldUI(UWidgetComponent* WidgetComp,UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet);
+	void UnresisterWorldUI(UWidgetComponent* WidgetComp);
+
 	// BossHpBar Section
 	UFUNCTION()
 	void OnBossSpawned();
-
-	//UMJInventoryWidget* GetInventoryWidget() {return InventoryWidget;};
-	UMJHUDWidget* GetHUDWidget() {return HUDWidget;};
 	
 protected:
 	UPROPERTY()
-	UMJDialogueWidget* DialogueWidget;
+	TObjectPtr<UMJDialogueWidget> DialogueWidget;
 
 	UPROPERTY()
-	TSubclassOf<class UMJDialogueWidget> DialogueWidgetClass;
+	TSubclassOf<UMJDialogueWidget> DialogueWidgetClass;
 
 	bool bIsDialogueActive;
 
 	UPROPERTY()
-	UMJHUDWidget* HUDWidget;
+	TObjectPtr<UMJHUDWidget> HUDWidget;
 
 	UPROPERTY()
-	TSubclassOf<class UMJHUDWidget> HUDWidgetClass;
+	TSubclassOf<UMJHUDWidget> HUDWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UMJEnemyHPBar> EnemyHPBarWidget;
 	
-	//UMJInventoryWidget* InventoryWidget;
-	//TSubclassOf<class UMJInventoryWidget> InventoryWidgetClass;
+	UPROPERTY()
+	TArray<TWeakObjectPtr<UWidgetComponent>> WorldUIs;
 };

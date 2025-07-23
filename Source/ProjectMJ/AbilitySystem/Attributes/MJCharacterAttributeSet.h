@@ -14,6 +14,7 @@ GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeathDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDamageDelegate, float, Data);
 
 /**
  * Class Description: 캐릭터 어트리뷰트 세트
@@ -108,6 +109,8 @@ public:
 
 	FOnDeathDelegate OnDeath;
 	// mutable FOnDeathDelegate OnDeath;
+	FOnDamageDelegate OnDamage;
+	
 
 	// EC에서 접근하게 해주기 위해서
 	// 이거 아니면 접근지정자를 public으로 하는건데 Aura는 Public, 보통은 캡슐화를 위해서 protected(friend 하긴 하지만 그래도 최소한의 캡슐화)

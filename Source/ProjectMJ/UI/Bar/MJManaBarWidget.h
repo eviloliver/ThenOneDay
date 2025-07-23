@@ -7,6 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "MJManaBarWidget.generated.h"
 
+class UTextBlock;
 /**
 * Class Description: HUD 마나바
  * Author: 이지수
@@ -23,15 +24,23 @@ class PROJECTMJ_API UMJManaBarWidget : public UUserWidget
 
 private:
 	UPROPERTY(meta = (BindWidget))
-	UProgressBar* ManaBar;
+	TObjectPtr<UProgressBar> ManaBar;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> Percent;
+
+	float TargetPercent;
+	float CurrentPercent;
+	float LerpSpeed = 2.5f;
+	
 	float MaxMana;
 	float CurrentMana;
 
-	void OnManaChanged(const FOnAttributeChangeData& Data);
-	
 public:
 	UFUNCTION()
 	void BindToAttributes(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet);
+	void InitializeWidget();
+	void OnManaChanged(const FOnAttributeChangeData& Data);
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 };
 

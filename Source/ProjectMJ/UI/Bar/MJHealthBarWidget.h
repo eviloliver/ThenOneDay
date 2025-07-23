@@ -15,6 +15,7 @@
  * Last Modified Date: 
  */
 
+class UTextBlock;
 class UProgressBar;
 
 UCLASS()
@@ -24,14 +25,23 @@ class PROJECTMJ_API UMJHealthBarWidget : public UUserWidget
 
 private:
 	UPROPERTY(meta = (BindWidget))
-	UProgressBar* HealthBar;
+	TObjectPtr<UProgressBar> HealthBar;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> Percent;
+
+	float TargetPercent;
+	float CurrentPercent;
+	float LerpSpeed = 2.5f; // 보간 속도
+	
 	float MaxHealth;
 	float CurrentHealth;
 
-	void OnHealthChanged(const FOnAttributeChangeData& Data);
-	
 public:
 	UFUNCTION()
 	void BindToAttributes(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet);
+	void InitializeWidget();
+	
+	void OnHealthChanged(const FOnAttributeChangeData& Data);
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 };

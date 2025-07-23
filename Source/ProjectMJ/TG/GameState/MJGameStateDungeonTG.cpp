@@ -7,6 +7,7 @@
 #include "NavigationSystem.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/MJPlayerState.h"
 #include "TG/MJGameInstanceTG.h"
 #include "TG/Actor/MJDungeonAISpawnPointActor.h"
 #include "TG/AI/MJAIBossCharacterTG.h"

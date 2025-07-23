@@ -17,6 +17,7 @@
 class UMJBossHpBarWidget;
 class UMJHealthBarWidget;
 class UMJManaBarWidget;
+class UMJStaminaBar;
 class UMJExperienceWidget;
 class UMJStatWidget;
 class UMJInventoryWidget;
@@ -29,22 +30,25 @@ class PROJECTMJ_API UMJHUDWidget : public UUserWidget
 
 private:
 	UPROPERTY(meta = (BindWidget))
-	UMJHealthBarWidget* HealthBar;
+	TObjectPtr<UMJHealthBarWidget> HealthBar;
 
 	UPROPERTY(meta = (BindWidget))
-	UMJManaBarWidget* ManaBar;
+	TObjectPtr<UMJManaBarWidget> ManaBar;
 
 	UPROPERTY(meta = (BindWidget))
-	UMJExperienceWidget* ExpBar;
+	TObjectPtr<UMJStaminaBar> StaminaBar;
 
 	UPROPERTY(meta = (BindWidget))
-	UMJStatWidget* StatPanel;
+	TObjectPtr<UMJExperienceWidget> ExpBar;
 
 	UPROPERTY(meta = (BindWidget))
-	UMJInventoryWidget* Inventory;
+	TObjectPtr<UMJStatWidget> StatPanel;
 
 	UPROPERTY(meta = (BindWidget))
-	UMJStoreWidget* Store;
+	TObjectPtr<UMJInventoryWidget> Inventory;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJStoreWidget> Store;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJBossHpBarWidget> BossHpBar;
