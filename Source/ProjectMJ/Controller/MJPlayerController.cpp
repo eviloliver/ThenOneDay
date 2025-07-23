@@ -44,6 +44,18 @@ AMJPlayerController::AMJPlayerController()
 	ChargeThreshold = 0.3f;
 }
 
+void AMJPlayerController::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	AMJPlayerState* MJPS = GetPlayerState<AMJPlayerState>();
+	if (MJPS)
+	{
+		MJPS->GetCharacterAttributeSet()->OnDeath.AddDynamic(this,&AMJPlayerController::OnDead);
+	}
+	
+}
+
 void AMJPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -446,4 +458,13 @@ void AMJPlayerController::PauseGame()
 UUserWidget* AMJPlayerController::GetPauseWidget()
 {
 	return PauseWidget;
+}
+
+void AMJPlayerController::OnDead()
+{
+	// TODO : StatComponent에서 델리게이트 로 호출해서 입력 막고 UI 띄울 예정
+	//DisableInput(this);
+
+	DungeonEndMenuWidget = CreateWidget(this,DungeonEndMenuWidgetClass);
+	DungeonEndMenuWidget->AddToViewport(1);
 }
