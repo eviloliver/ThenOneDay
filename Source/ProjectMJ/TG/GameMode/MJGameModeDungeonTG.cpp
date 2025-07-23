@@ -20,13 +20,11 @@ void AMJGameModeDungeonTG::BeginPlay()
 	
 	AMJPlayerState* MJPS = Cast<AMJPlayerState>(UGameplayStatics::GetPlayerState(this,0));
 
-	if (GetGameInstance<UMJGameInstanceTG>()->bIsPlayerStateDirty)
+	if (MJPS)
 	{
-		if (MJPS)
-		{
-			MJPS->LoadFromInstancedPlayerSessionData();
-		}
+		MJPS->LoadFromInstancedPlayerSessionData();
 	}
+	
 }
 
 bool AMJGameModeDungeonTG::TravelToMapByNode(const FString MapName, const uint8 NodeNum)
@@ -41,7 +39,7 @@ bool AMJGameModeDungeonTG::TravelToMapByNode(const FString MapName, const uint8 
 		
 		AMJGameStateDungeonTG* MJGS = GetGameState<AMJGameStateDungeonTG>();
 		
-		if (MJGS)
+		if (MJGS )
 		{
 			MJGS->SaveToInstancedDungeonSessionData(PS->GetPlayerSessionDataRef().CurrentDungeonMapNum);
 		}

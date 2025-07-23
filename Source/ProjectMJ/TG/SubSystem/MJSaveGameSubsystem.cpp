@@ -22,7 +22,6 @@ UMJSaveGameSubsystem::UMJSaveGameSubsystem()
 void UMJSaveGameSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-
 	
 	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UMJSaveGameSubsystem::BeginLoadingScreen);
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UMJSaveGameSubsystem::EndLoadingScreen);
@@ -32,7 +31,7 @@ void UMJSaveGameSubsystem::Deinitialize()
 {
 	Super::Deinitialize();
 	
-	SaveGameToCurrentSlotNum();
+	//SaveGameToCurrentSlotNum();
 	
 }
 
