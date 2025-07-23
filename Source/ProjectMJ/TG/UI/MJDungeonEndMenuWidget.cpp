@@ -24,7 +24,8 @@ void UMJDungeonEndMenuWidget::NativeConstruct()
 	{
 		MJPS->GetCharacterAttributeSet()->OnDeath.AddDynamic(this,&UMJDungeonEndMenuWidget::OnDead);
 	}
-	
+
+	SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UMJDungeonEndMenuWidget::OnClicked_GotoTown()

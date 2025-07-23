@@ -532,6 +532,6 @@ void AMJPlayerController::OnDead(AActor* InEffectCauser)
 	// TODO : StatComponent에서 델리게이트 로 호출해서 입력 막고 UI 띄울 예정
 	//DisableInput(this);
 
-	DungeonEndMenuWidget = CreateWidget(this,DungeonEndMenuWidgetClass);
-	DungeonEndMenuWidget->AddToViewport(1);
+	//DungeonEndMenuWidget = CreateWidget(this,DungeonEndMenuWidgetClass);
+	//DungeonEndMenuWidget->AddToViewport(1);
 }
