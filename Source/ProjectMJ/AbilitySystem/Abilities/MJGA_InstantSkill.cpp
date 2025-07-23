@@ -34,6 +34,7 @@ bool UMJGA_InstantSkill::CanActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	if (CharacterAttributeSet && SkillAttributeSet)
 	{
+		// TODO: 더 좋은 방법이 있을거 같음
 		if (SkillAttributeSet->GetCostMana() > 0 && CharacterAttributeSet->GetMana() < SkillAttributeSet->GetCostMana())
 		{
 			MJ_LOG(LogMJ, Warning, TEXT("Need Mana"));
@@ -52,6 +53,13 @@ bool UMJGA_InstantSkill::CanActivateAbility(const FGameplayAbilitySpecHandle Han
 			return false;
 		}
 	}
+
+	if (ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.Cooldown"))))
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("Instant Cooldown"));
+		return false;
+	}
+
 	return true;
 }
 
@@ -62,13 +70,15 @@ void UMJGA_InstantSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	ApplyCost(Handle, ActorInfo, ActivationInfo);
+
+	ApplyCooldown(Handle, ActorInfo, ActivationInfo);
 }
 
 
 void UMJGA_InstantSkill::ApplyCost(const FGameplayAbilitySpecHandle Handle,
                                    const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
-	if (!CostGameplayEffect)
+	if (!CostGameplayEffectClass)
 	{
 		MJ_LOG(LogMJ, Warning, TEXT("Not Exist CostGameplayEffect"));
 		return;
@@ -88,7 +98,7 @@ void UMJGA_InstantSkill::ApplyCost(const FGameplayAbilitySpecHandle Handle,
 		return;
 	}
 
-	FGameplayEffectSpecHandle CostSpecHandle = MakeOutgoingGameplayEffectSpec(CostGameplayEffect, 1.0f);
+	FGameplayEffectSpecHandle CostSpecHandle = MakeOutgoingGameplayEffectSpec(CostGameplayEffectClass, 1.0f);
 	if (!CostSpecHandle.Data)
 	{
 		MJ_LOG(LogMJ, Warning, TEXT("Not Exist CostSpecHandle.Data"));
@@ -105,5 +115,37 @@ void UMJGA_InstantSkill::ApplyCost(const FGameplayAbilitySpecHandle Handle,
 void UMJGA_InstantSkill::ApplyCooldown(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
+	if (!CooldownGameplayEffectClass)
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("Not Exist CooldownGameplayEffectClass"));
+		return;
+	}
+	UMJAbilitySystemComponent* ASC = Cast<UMJAbilitySystemComponent>(ActorInfo->AbilitySystemComponent);
+	if (!ASC)
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("Not Exist ASC"));
+		return;
+	}
+
+	const UMJCharacterSkillAttributeSet* SkillAttributeSet = ASC->GetSet<UMJCharacterSkillAttributeSet>();
+	if (!SkillAttributeSet)
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("Not Exist SkillAttributeSet"));
+		return;
+	}
+
+	const UMJCharacterAttributeSet* CharacterAttributeSet = ASC->GetSet<UMJCharacterAttributeSet>();
+
+	float BaseCooldown = SkillAttributeSet->GetCooldown();
+	float CharacterSkillCooldown = CharacterAttributeSet->GetSkillCooldown() * 0.01f;
+	float FinalCooldown = BaseCooldown * (100.f / (100.f + CharacterSkillCooldown));
+	
+	FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(CooldownGameplayEffectClass, 1.f, ASC->MakeEffectContext());
+	if (SpecHandle.IsValid())
+	{
+		SpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.Cooldown")), FinalCooldown);
+
+		ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
+	}
 	return;
 }

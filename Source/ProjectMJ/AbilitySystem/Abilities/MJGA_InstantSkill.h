@@ -36,12 +36,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	TObjectPtr<UAnimMontage> SkillActionAnimMontage;
 
-	// 
-	UPROPERTY(EditDefaultsOnly, Category = "Cost")
-	TSubclassOf<UGameplayEffect> CostGameplayEffect;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Cooldown")
-	TSubclassOf<UGameplayEffect> CooldownGameplayEffect;
 
 
 
