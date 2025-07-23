@@ -35,6 +35,6 @@ protected:
 	void OnClicked_TryAgain();
 
 	UFUNCTION()
-	void OnDead();
+	void OnDead(AActor* InEffectCauser);
 	
 };

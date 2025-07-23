@@ -46,7 +46,7 @@ void UMJDungeonEndMenuWidget::OnClicked_TryAgain()
 	GetWorld()->ServerTravel(UGameplayStatics::GetCurrentLevelName(GetWorld()));
 }
 
-void UMJDungeonEndMenuWidget::OnDead()
+void UMJDungeonEndMenuWidget::OnDead(AActor* InEffectCauser)
 {
 	SetVisibility(ESlateVisibility::Visible);
 	

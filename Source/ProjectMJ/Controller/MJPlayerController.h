@@ -154,6 +154,6 @@ public:
 
 protected:
 	UFUNCTION()
-	void OnDead();
+	void OnDead(AActor* InEffectCauser);
 
 };
