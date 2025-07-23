@@ -87,6 +87,9 @@ void AMJPlayerController::SetupInputComponent()
 
 	MJInputComponent->BindAbilityInputAction(InputConfigDataAsset, this, &AMJPlayerController::AbilityInputPressed, &AMJPlayerController::AbilityInputReleased);
 
+	MJInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AMJPlayerController::ShiftPressed);
+	MJInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AMJPlayerController::ShiftReleased);
+
 	//Dialogue Input
 	MJInputComponent->BindAction(ChangeIMCAction, ETriggerEvent::Triggered, this, &ThisClass::ChangeToIMCDialogue);
 	MJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
@@ -130,6 +133,24 @@ void AMJPlayerController::OnLeftMousePressed()
 	bIsLMBPressed = true;
 	LMBHoldTime = 0.0f;
 	bIsLMBHolding = false;
+
+	if (bShiftKeyDown)
+	{
+		AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
+		if (!ControlledCharacter)
+		{
+			return;
+		}
+
+		UMJPlayerSkillComponent* SkillComponent = ControlledCharacter->FindComponentByClass<UMJPlayerSkillComponent>();
+		if (!SkillComponent)
+		{
+			return;
+		}
+
+		FGameplayTag BasicAttackTag = FGameplayTag::RequestGameplayTag(FName("Skill.Normal"));
+		SkillComponent->ActivateSkillByInputTag(BasicAttackTag);
+	}
 }
 
 void AMJPlayerController::OnLeftMouseReleased()
@@ -153,7 +174,30 @@ void AMJPlayerController::HandleLeftMouseHold()
 	FHitResult HitResult;
 	if (GetHitResultUnderCursor(ECC_Visibility, false, HitResult))
 	{
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitResult.Location);
+		if (bShiftKeyDown)
+		{
+			AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
+			if (!ControlledCharacter)
+			{
+				return;
+			}
+
+			UMJPlayerSkillComponent* SkillComponent = ControlledCharacter->FindComponentByClass<UMJPlayerSkillComponent>();
+			if (!SkillComponent)
+			{
+				return;
+			}
+
+			FGameplayTag BasicAttackTag = FGameplayTag::RequestGameplayTag(FName("Skill.Normal"));
+			SkillComponent->ActivateSkillByInputTag(BasicAttackTag);
+			StopMovement();
+
+		}
+		else
+		{
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitResult.Location);
+
+		}
 	}
 }
 
@@ -194,6 +238,12 @@ void AMJPlayerController::OnRightMouseReleased()
 
 void AMJPlayerController::AttackOrMove(const FHitResult& HitResult)
 {
+	if (bShiftKeyDown)
+	{
+		// Shift + Left Click은 OnLeftMousePressed에서 처리되므로 여기서는 아무것도 하지 않습니다.
+		return;
+	}
+
 	AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
 	if (!ControlledCharacter)
 	{
@@ -213,6 +263,7 @@ void AMJPlayerController::AttackOrMove(const FHitResult& HitResult)
 	}
 	else if (TargetCharacter != ControlledCharacter && TargetCharacter->GetGenericTeamId() != ControlledCharacter->GetGenericTeamId())
 	{
+		MJ_LOG(LogMJ, Warning, TEXT("NormalAttack"));
 		FGameplayTag LeftClickInputTag = FGameplayTag::RequestGameplayTag(FName("Skill.Normal"));
 		SkillComponent->ActivateSkillByInputTag(LeftClickInputTag);
 	}
@@ -264,6 +315,16 @@ void AMJPlayerController::AbilityInputReleased(FGameplayTag InInputTag)
 	{
 		
 	}
+}
+
+void AMJPlayerController::ShiftPressed()
+{
+	bShiftKeyDown = true;
+}
+
+void AMJPlayerController::ShiftReleased()
+{
+	bShiftKeyDown = false;
 }
 
 

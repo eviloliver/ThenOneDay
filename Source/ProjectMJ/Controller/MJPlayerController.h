@@ -49,6 +49,8 @@ public:
 	void AbilityInputPressed(FGameplayTag InInputTag);
 	void AbilityInputReleased(FGameplayTag InInputTag);
 
+	void ShiftPressed();
+	void ShiftReleased();
 private:
 	bool bIsLMBPressed = false;
 	bool bIsLMBHolding = false;
@@ -56,6 +58,8 @@ private:
 
 	bool bIsRMBPressed = false;
 	float RMBHoldTime = 0.0f;
+
+	bool bShiftKeyDown = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	float HoldThreshold = 0.0f;
@@ -66,6 +70,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inpur", meta = (AllowPrivateAccess = "true"))
 	UDataAsset_InputConfig* InputConfigDataAsset;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> ShiftAction;
 #pragma region UIPart
 private:
 	bool IsTriggeredForStore = false;
