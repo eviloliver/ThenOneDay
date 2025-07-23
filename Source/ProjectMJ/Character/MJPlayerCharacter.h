@@ -35,6 +35,8 @@ class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase, public IMJInve
 public:
 	AMJPlayerCharacter();
 
+	// TODO: 일단 이렇게 해봄
+	void GainExperience(int32 Exp);
 protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController)override;

@@ -85,6 +85,11 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 
 }
 
+void AMJPlayerCharacter::GainExperience(int32 Exp)
+{
+	StatComponent->GainExperience(Exp);
+}
+
 void AMJPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();

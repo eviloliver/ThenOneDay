@@ -178,26 +178,30 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	SkillComponent->EquipSkill(DataRow->IdentitySkillTag);
 	
 	// Minjin: Attribute Setting
-	if (StatComponent)
+	UCurveTable* AttributeCurve = DataRow->AttributeCurve.LoadSynchronous();
+	if (!AttributeCurve)
 	{
-		UCurveTable* AttributeCurve = DataRow->AttributeCurve.LoadSynchronous();
-		if (!AttributeCurve)
-		{
-			MJ_LOG(LogMJ, Log, TEXT("Not Exist AttributeCurve"));
-			return;
-		}
-		
-		StatComponent->SetStatTable(AttributeCurve);
-		StatComponent->InitializeStat();
+		MJ_LOG(LogMJ, Log, TEXT("Not Exist AttributeCurve"));
+		return;
 	}
+		
+	StatComponent->SetStatTable(AttributeCurve);
+	StatComponent->InitializeStat();
 
 	// Minjin: Animation Setting
 	AppearanceAnimation = DataRow->AppearanceAnimation;
 	DeathAnimation = DataRow->DeathAnimation;
+
+	// Minjin: 죽었을 때 전달할 정보 Setting
+	EnemyBequest.IdentitySkillTag = DataRow->IdentitySkillTag;
+	EnemyBequest.Exp = ASC->GetSet<UMJCharacterAttributeSet>()->GetDropExperience();
+	// TODO: 테이블에 아이템 태그 설정하기.
+	EnemyBequest.ItemTag = FGameplayTag::EmptyTag;
 }
 
 void AMJMonsterCharacter::OnDeath(AActor* InEffectCauser)
 {
+	MJ_LOG(LogMJ, Warning, TEXT("Death Start"));
 	// TODO:
 	// 애니메이션과 기타 등등 세팅
 	// - 동민 -
@@ -210,12 +214,23 @@ void AMJMonsterCharacter::OnDeath(AActor* InEffectCauser)
 	
 	if (DeathAnimation)
 	{
-		StopAnimMontage();
+		MJ_LOG(LogMJ, Warning, TEXT("Death"));
+		//StopAnimMontage();
 		// Minjin: 몽타주로 하는 게 좋을까 생각중
 		//GetMesh()->PlayAnimation(DeathAnimation, false);<-이거로 하면 공격 들어갈때마다 애니메이션이 처음부터 재생됨
 		GetMesh()->OverrideAnimationData(DeathAnimation, false);
 		const float FinishDelay = DeathAnimation->GetPlayLength();
 		FTimerHandle DeadTimerHandle;
+
+		// Minjin: 애니메이션 재생되는 동안 경험치 전달
+		// TODO: 스킬도 애니메이션 재생 때 전달하도록 변경하기
+		AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(InEffectCauser);
+		if (Player)
+		{
+			Player->GainExperience(EnemyBequest.Exp);
+			MJ_LOG(LogMJ, Warning, TEXT("경험치 전달: %d"), EnemyBequest.Exp);
+		}
+		
 		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
 			[&]()
 			{

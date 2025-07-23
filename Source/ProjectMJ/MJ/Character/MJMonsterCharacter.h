@@ -18,6 +18,13 @@ class UMJCharacterSkillAttributeSet;
  * Last Modified By: (Last Modifier)
  * Last Modified Date: (Last Modified Date)
  */
+struct EnemyTransferData
+{
+	FGameplayTag IdentitySkillTag;
+	int32 Exp;
+	FGameplayTag ItemTag;
+};
+
 UCLASS()
 class PROJECTMJ_API AMJMonsterCharacter : public AMJCharacterBase, public IMJCharacterAIInterface
 {
@@ -78,6 +85,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UAnimationAsset> DeathAnimation;
 	
-	// Minjin: Ability Tag
+	// Minjin: Ability Tag-안씀
 	FGameplayTag AttackTag;
+
+	// Minjin: 죽고 플레이어한테 줘야 하는 정보
+	EnemyTransferData EnemyBequest;
 };
