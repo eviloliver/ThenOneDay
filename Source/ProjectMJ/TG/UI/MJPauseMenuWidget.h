@@ -6,6 +6,7 @@
 #include "MJChildMenuBaseWidget.h"
 #include "MJPauseMenuWidget.generated.h"
 
+class USpacer;
 class UButton;
 
 /**
@@ -38,20 +39,44 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_Resume;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> Button_SaveGame;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_Settings;
 
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> Button_GotoTown;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USpacer> Spacer_GotoTown;
+	
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_MainMenu;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> Button_QuitGame;
 	
 	UFUNCTION()
 	void OnClicked_Resume();
+	
+	UFUNCTION()
+	void OnClicked_SaveGame();
 
 	UFUNCTION()
 	void OnClicked_Settings();
 
+	
+	UFUNCTION()
+	void OnClicked_GotoTown();
+
+	
 	UFUNCTION()
 	void OnClicked_MainMenu();
+
+	UFUNCTION()
+	void OnClicked_QuitGame();
+	
 	
 };

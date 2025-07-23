@@ -4,6 +4,7 @@
 #include "GameMode/MJGameModeBase.h"
 
 #include "ProjectMJ.h"
+#include "Controller/MJPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/MJPlayerState.h"
 #include "TG/MJGameInstanceTG.h"
@@ -41,8 +42,8 @@ bool AMJGameModeBase::TravelToMapByNode(const FString MapName, const uint8 NodeN
 		{
 			PS->GetPlayerSessionDataRef().CurrentDungeonMapNum = NodeNum;
 			PS->SaveToInstancedPlayerSessionData();
+			
 		}
-		MJGI->bIsPlayerStateDirty = true;
 		
 	}
 

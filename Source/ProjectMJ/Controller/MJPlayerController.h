@@ -32,6 +32,7 @@ public:
 	AMJPlayerController();
 
 protected:
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 	virtual void PlayerTick(float DeltaTime) override;
@@ -137,9 +138,22 @@ protected:
 
 	UFUNCTION()
 	void PauseGame();
+
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> DungeonEndMenuWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<UUserWidget> DungeonEndMenuWidgetClass;
+	
 public:
 
 	UFUNCTION()
-	UUserWidget* GetPauseWidget();	
+	UUserWidget* GetPauseWidget();
+
+
+protected:
+	UFUNCTION()
+	void OnDead();
 
 };
