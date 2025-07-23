@@ -3,9 +3,14 @@
 
 #include "AbilitySystem/Abilities/MJGA_AIActionInstantAbility.h"
 
+#include "MotionWarpingComponent.h"
 #include "Character/MJCharacterBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "MJ/AI/MJMonsterAIControllerBase.h"
+#include "MJ/Character/MJMonsterCharacter.h"
 
 UMJGA_AIActionInstantAbility::UMJGA_AIActionInstantAbility()
 {
@@ -30,7 +35,46 @@ void UMJGA_AIActionInstantAbility::ActivateAbility(const FGameplayAbilitySpecHan
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 		return;
 	}
-	AMJCharacter->GetCharacterMovement()->SetMovementMode(MOVE_None);
+	// AMJCharacter->GetCharacterMovement()->SetMovementMode(MOVE_None);
+
+	FVector CharacterLocation = AMJCharacter->GetActorLocation();
+
+	AMJMonsterCharacter* EnemyCharacter = Cast<AMJMonsterCharacter>(AMJCharacter);
+	if (!EnemyCharacter)
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+		return;
+	}
+
+	AMJMonsterAIControllerBase* AIController = Cast<AMJMonsterAIControllerBase>(EnemyCharacter->GetController());
+	if (!AIController)
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+		return;
+	}
+
+	AActor* TargetActor = Cast<AActor>(AIController->GetBlackboardComponent()->GetValueAsObject("Target"));
+	if (!TargetActor)
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+		return;
+	}
+	
+	FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(CharacterLocation, TargetActor->GetActorLocation());
+	TargetRotation.Pitch = 0;
+	TargetRotation.Roll = 0;
+
+	UMotionWarpingComponent* MotionWarpingComponent = AMJCharacter->FindComponentByClass<UMotionWarpingComponent>();
+	if (MotionWarpingComponent)
+	{
+		FMotionWarpingTarget Target = {};
+		Target.Location = TargetActor->GetActorLocation();
+		Target.Rotation = TargetRotation;
+		Target.Name = FName("T");
+
+		MotionWarpingComponent->AddOrUpdateWarpTarget(Target);
+	}
+	
 	UAbilityTask_PlayMontageAndWait* PlayAttackMontage = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, TEXT("PlayAttack"), SkillActionAnimMontage, 1.0f);
 
 	PlayAttackMontage->OnCompleted.AddDynamic(this, &UMJGA_AIActionInstantAbility::OnCompleteCallback);

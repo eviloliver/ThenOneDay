@@ -2,7 +2,7 @@
 
 
 #include "MJ/AI/BTTask_MJPlayAppearance.h"
-
+#include "MJ/Character/MJMonsterCharacter.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
@@ -24,5 +24,14 @@ EBTNodeResult::Type UBTTask_MJPlayAppearance::ExecuteTask(UBehaviorTreeComponent
 
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool("IsAppear", true);
 
+	AMJMonsterCharacter* Character = Cast<AMJMonsterCharacter>(ControlledPawn);
+	if (ControlledPawn)
+	{
+		if (Character->GetAppearanceAnimation())
+		{
+			AnimationToPlay = Character->GetAppearanceAnimation();	
+		}
+	}
+	
 	return Super::ExecuteTask(OwnerComp, NodeMemory);
 }

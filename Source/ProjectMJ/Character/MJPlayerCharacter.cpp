@@ -85,6 +85,21 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 
 }
 
+void AMJPlayerCharacter::LearnSkill(const FGameplayTag& SkillTag)
+{
+	if(SkillTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Skill"))))
+	{
+		// Minjin
+		// TODO: 스킬컴포넌트 null
+		SkillComponent->LearnSkill(SkillTag);
+	}
+}
+
+void AMJPlayerCharacter::GainExperience(int32 Exp)
+{
+	StatComponent->GainExperience(Exp);
+}
+
 void AMJPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -103,37 +118,15 @@ void AMJPlayerCharacter::PossessedBy(AController* NewController)
 	// 로딩 데이터 있을 시 받아와서 AttributeSet에 적용
 	// 없을 시엔 무시하고 기본 AttributeSet 으로 진행됩니다.
 
-
-	
-	// UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetWorld()->GetGameInstance());
-	//
-	// if (MJGI)
+	// 태관 : MJPlayerState 에서 LoadPlayersessionData 함수가 InitializeStat 을 호출합니다.
+	// if (StatComponent)
 	// {
-	// 	UMJSaveGameSubsystem* MJSaveGameSubsystem = MJGI->GetSubsystem<UMJSaveGameSubsystem>();
-	// 	if (MJSaveGameSubsystem)
-	// 	{
-	// 		MJSaveGameSubsystem->LoadSaveGame(this);
-	// 	}
-	// 	MJ_LOG(LogTG, Log, TEXT("player loaded health : %f"),  GetAbilitySystemComponent()->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));
+	// 	StatComponent->InitializeStat();
 	// }
-	if (StatComponent)
-	{
-		StatComponent->InitializeStat();
-	}
 }
 
 void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
-	
-	// if (UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetGameInstance()))
-	// {
-	// 	UMJSaveGameSubsystem* MJSaveGameSubsystem = MJGI->GetSubsystem<UMJSaveGameSubsystem>();
-	// 	if (MJSaveGameSubsystem)
-	// 	{
-	// 		MJSaveGameSubsystem->SaveGameToSlot(this);
-	// 	}
-	// 	MJ_LOG(LogTG,Log, TEXT("Character Attribute Saved"));
-	// }
 
 }

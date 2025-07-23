@@ -34,6 +34,11 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Stat|Experience")
 	FOnLevelUpDelegate OnLevelUp;
+	
+	FORCEINLINE int32 GetPlayerLevel() const { return PlayerLevel; }
+	FORCEINLINE float GetTotalCumulativeExperience() const { return TotalCumulativeExperience; }
+	FORCEINLINE void SetPlayerLevel(int32 NewPlayerLevel) {PlayerLevel = NewPlayerLevel;}
+	FORCEINLINE void SetTotalCumulativeExperience(float NewExp){ TotalCumulativeExperience = NewExp; }
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
@@ -48,8 +53,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stat|Experience")
 	float ExperienceForNextLevel = 0.0f;
 
-	FORCEINLINE int32 GetPlayerLevel() const { return PlayerLevel; }
-	FORCEINLINE float GetTotalCumulativeExperience() const { return TotalCumulativeExperience; }
 
 private:
 	void CheckForLevelUp();

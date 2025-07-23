@@ -28,7 +28,7 @@ public:
 	FString PlayerName;
 
 	UPROPERTY(BlueprintReadOnly, SaveGame)
-	int32 PlayerLevel;
+	int32 PlayerLevel = 1;
 	
 	UPROPERTY(BlueprintReadOnly, SaveGame)
 	int32 PlayerExp;

@@ -7,7 +7,6 @@
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
 
-// Dongmin: 일단 Aura 샘플 코드 거의 다 배낌. 설명 자신 없어서 더 공부해오겠읍니다
 // TODO: 지금은 주는 순수 데미지만 계산하는데, 버프 디버프 관련 공식은 빠져있다. + 난수도 빠져 있다
 struct FMJEC_SkillDamageStatics
 {
@@ -84,9 +83,8 @@ void UMJEC_SkillDamage::Execute_Implementation(const FGameplayEffectCustomExecut
     float AbilityPowerScaling = 0.0f;
     AbilityPowerScaling = Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AbilityPowerScaling")), true, AbilityPowerScaling);
 
-    float FinalDamage = BaseDamage + (AttackDamageScaling * SourceAttackDamage) + (AbilityPowerScaling * SourceAbilityPower);
+    float FinalDamage = BaseDamage + ((AttackDamageScaling / 100) * SourceAttackDamage) + ((AbilityPowerScaling / 100) * SourceAbilityPower);
 
-   
     bool bIsCritical = FMath::FRandRange(0.f, 100.f) < CriticalChance;
     if (bIsCritical)
     {

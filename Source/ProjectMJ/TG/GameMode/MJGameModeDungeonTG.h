@@ -20,14 +20,14 @@ class PROJECTMJ_API AMJGameModeDungeonTG : public AMJGameModeBase
 
 public:
 	AMJGameModeDungeonTG();
-
+	
+	virtual bool TravelToMapByNode(const FString MapName, const uint8 NodeNum) override;
 
 protected:
 
 	virtual void BeginPlay() override;
 
 	
-	virtual bool TravelToMapByNode(const FString MapName, const uint8 NodeNum) override;
 	
 
 };

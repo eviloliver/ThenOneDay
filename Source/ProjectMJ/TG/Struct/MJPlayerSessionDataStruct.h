@@ -23,10 +23,10 @@ struct FMJPlayerSessionData
 	FString PlayerName;
 	
 	UPROPERTY()
-	int32 PlayerLevel;
+	int32 PlayerLevel = 1;
 
 	UPROPERTY()
-	float PlayerExp;
+	float PlayerExp = 0.0f;
 
 	UPROPERTY()
 	int8 SaveGameSlotNum = -1;

@@ -88,7 +88,8 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 	// Effect 적용 후
 	if (GetHealth() <= 0)
 	{
-		OnDeath.Broadcast();
+		// Minjin: 데미지를 입힌 상대 전달
+		OnDeath.Broadcast(Data.EffectSpec.GetEffectContext().GetEffectCauser());
 	}
 
 	// Jisoo

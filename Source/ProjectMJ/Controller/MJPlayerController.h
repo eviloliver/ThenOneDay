@@ -32,6 +32,7 @@ public:
 	AMJPlayerController();
 
 protected:
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 	virtual void PlayerTick(float DeltaTime) override;
@@ -49,6 +50,8 @@ public:
 	void AbilityInputPressed(FGameplayTag InInputTag);
 	void AbilityInputReleased(FGameplayTag InInputTag);
 
+	void ShiftPressed();
+	void ShiftReleased();
 private:
 	bool bIsLMBPressed = false;
 	bool bIsLMBHolding = false;
@@ -56,6 +59,8 @@ private:
 
 	bool bIsRMBPressed = false;
 	float RMBHoldTime = 0.0f;
+
+	bool bShiftKeyDown = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	float HoldThreshold = 0.0f;
@@ -66,6 +71,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inpur", meta = (AllowPrivateAccess = "true"))
 	UDataAsset_InputConfig* InputConfigDataAsset;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> ShiftAction;
 #pragma region UIPart
 private:
 	bool IsTriggeredForStore = false;
@@ -131,9 +138,22 @@ protected:
 
 	UFUNCTION()
 	void PauseGame();
+
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> DungeonEndMenuWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<UUserWidget> DungeonEndMenuWidgetClass;
+	
 public:
 
 	UFUNCTION()
-	UUserWidget* GetPauseWidget();	
+	UUserWidget* GetPauseWidget();
+
+
+protected:
+	UFUNCTION()
+	void OnDead();
 
 };

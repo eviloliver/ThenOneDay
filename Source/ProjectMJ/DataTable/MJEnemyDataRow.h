@@ -14,6 +14,7 @@
  * Modified Date:
  */
 
+class AMJMonsterAIControllerBase;
 class UCurveTable;
 class USkeletalMesh;
 class UGameplayEffect;
@@ -57,6 +58,21 @@ public:
 
 	// TODO: 사운드나 아이콘 등등
 
+	// Minjin: Animation
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UAnimationAsset> AppearanceAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UAnimationAsset> DeathAnimation;
+	
+	/*
+	 * TODO
+	 * 비헤이비어트리, AIController
+	 */
+	// AIController
+	
+	// BehaviorTree
+	
 	// 초기 세팅값
 	// Initial Section
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
