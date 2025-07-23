@@ -33,7 +33,7 @@ void UMJLoadGameWidget::NativeConstruct()
 				);
 				
 				NewSlotWidget->SetSlotNum(SaveGame->SlotNum);
-				
+				NewSlotWidget->SetPadding(FMargin(20.0f,20.f,20.f,20.f));
 				SavedGameSlotScrollBox->AddChild(NewSlotWidget);
 			}
 		}
