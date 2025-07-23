@@ -431,8 +431,15 @@ void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor*
 			
             IsTriggeredForDialogue = true;
 		}
-		Other->FindComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/UI/WBP/HUD/Inventory/woodcover.woodcover")));
-		Other->FindComponentByClass<UMJInteractionComponent>()->Active("X");
+		if (UMeshComponent* Mesh = Other->FindComponentByClass<UMeshComponent>())
+		{
+			Mesh->SetOverlayMaterial(LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/UI/WBP/HUD/Inventory/woodcover.woodcover")));
+		}
+		if (UMJInteractionComponent* InteractionComp = Other->FindComponentByClass<UMJInteractionComponent>())
+		{
+			InteractionComp->Active("X");
+		}
+				
 	}
 
 	// Store Trigger
@@ -460,10 +467,13 @@ void AMJPlayerController::OnTriggeredOut(UPrimitiveComponent* Overlapped, AActor
 			{
 				MJChar->SetUITarget(nullptr);
 				IsTriggeredForDialogue = false;
-				Other->FindComponentByClass<USkeletalMeshComponent>()->SetOverlayMaterial(nullptr);
+				Other->FindComponentByClass<UMeshComponent>()->SetOverlayMaterial(nullptr);
 			}
 		}
-		Other->FindComponentByClass<UMJInteractionComponent>()->Deactive();
+		if (UMJInteractionComponent* IneteractionComp = Other->FindComponentByClass<UMJInteractionComponent>())
+		{
+			IneteractionComp->Deactive();
+		}
 	}
 
 	if (Other && Other->FindComponentByClass<UMJStoreComponent>())

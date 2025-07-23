@@ -60,7 +60,7 @@ protected:
 
 protected:
 	UFUNCTION()
-	virtual void OnDeath(AActor* InEffectCauser);
+	virtual void OnDead(AActor* InEffectCauser);
 
 	UFUNCTION()
 	void OnDamage(float Magnitude);

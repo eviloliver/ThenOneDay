@@ -146,7 +146,7 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	CharacterAttributeSet->OnDeath.AddDynamic(this, &ThisClass::OnDeath);
+	CharacterAttributeSet->OnDeath.AddDynamic(this, &ThisClass::OnDead);
 	
 	if (ASC)
 	{
@@ -169,7 +169,7 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	// 나중에 DT만들고 집중 안될 때 와서 작업 함
 	//  -동민 -
 	CharacterAttributeSet->OnDamage.AddDynamic(this,&ThisClass::OnDamage);
-	CharacterAttributeSet->OnDeath.AddDynamic(this, &ThisClass::OnDeath);
+	CharacterAttributeSet->OnDeath.AddDynamic(this, &ThisClass::OnDead);
 	// 알겠긔 -민진-
 
 	/*
@@ -221,7 +221,7 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	EnemyBequest.ItemTag = FGameplayTag::EmptyTag;
 }
 
-void AMJMonsterCharacter::OnDeath(AActor* InEffectCauser)
+void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 {
 	MJ_LOG(LogMJ, Warning, TEXT("Death Start"));
 	// TODO:
