@@ -13,7 +13,7 @@ GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeathDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathDelegate, AActor*, InEffectCauser);
 
 /**
  * Class Description: 캐릭터 어트리뷰트 세트
@@ -21,6 +21,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeathDelegate);
  * Created Date: 미상
  * Last Modified By: 신동민
  * Last Modified Date: 2025-06-19
+ * Last Modified By: 김민진
+ * Last Modified Date: (2025.07.22.) FOnDeathDelegate EffectCauser를 전달하게 수정
  */
 UCLASS()
 class PROJECTMJ_API UMJCharacterAttributeSet : public UAttributeSet

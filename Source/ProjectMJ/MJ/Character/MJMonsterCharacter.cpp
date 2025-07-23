@@ -7,6 +7,7 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
+#include "Character/MJPlayerCharacter.h"
 #include "Character/Component/MJEnemyStatComponent.h"
 #include "Character/Component/MJSkillComponentBase.h"
 #include "DataAsset/DataAsset_StartDataBase.h"
@@ -195,7 +196,7 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	DeathAnimation = DataRow->DeathAnimation;
 }
 
-void AMJMonsterCharacter::OnDeath()
+void AMJMonsterCharacter::OnDeath(AActor* InEffectCauser)
 {
 	// TODO:
 	// 애니메이션과 기타 등등 세팅

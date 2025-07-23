@@ -49,7 +49,7 @@ protected:
 
 protected:
 	UFUNCTION()
-	virtual void OnDeath();
+	virtual void OnDeath(AActor* InEffectCauser);
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
