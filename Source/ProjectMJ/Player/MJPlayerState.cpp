@@ -6,6 +6,7 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem//Attributes/MJCharacterAttributeSet.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
+#include "Character/MJPlayerCharacter.h"
 #include "Character/Component/MJPlayerStatComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TG/MJGameInstanceTG.h"
@@ -58,9 +59,16 @@ void AMJPlayerState::LoadFromInstancedPlayerSessionData()
 	PlayerSessionData.PlayerLevel =  GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef().PlayerLevel;
 	PlayerSessionData.PlayerExp = GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef().PlayerExp;
 
-	GetPawn()->FindComponentByClass<UMJPlayerStatComponent>()->SetPlayerLevel(PlayerSessionData.PlayerLevel);
-	GetPawn()->FindComponentByClass<UMJPlayerStatComponent>()->SetTotalCumulativeExperience(PlayerSessionData.PlayerExp);
-	GetPawn()->FindComponentByClass<UMJPlayerStatComponent>()->InitializeStat();
+	if (AMJPlayerCharacter* MJPlayer = Cast<AMJPlayerCharacter>(GetPawn()))
+	{
+		if (UMJPlayerStatComponent* PlayerStatComp = MJPlayer->FindComponentByClass<UMJPlayerStatComponent>())
+		{
+			PlayerStatComp->SetPlayerLevel(PlayerSessionData.PlayerLevel);
+			PlayerStatComp->SetTotalCumulativeExperience(PlayerSessionData.PlayerExp);
+			PlayerStatComp->InitializeStat();
+		}		
+	}
+
 }
 
 void AMJPlayerState::PostInitializeComponents()
