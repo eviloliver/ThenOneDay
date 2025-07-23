@@ -17,6 +17,7 @@
 #include "Player/MJPlayerState.h"
 #include "ProjectMJ.h"
 #include "Character/Component/MJPlayerSkillComponent.h"
+#include "Character/Component/MJPlayerStatComponent.h"
 #include "Engine/DocumentationActor.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
@@ -49,12 +50,8 @@ AMJPlayerController::AMJPlayerController()
 void AMJPlayerController::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
-	AMJPlayerState* MJPS = GetPlayerState<AMJPlayerState>();
-	if (MJPS)
-	{
-		MJPS->GetCharacterAttributeSet()->OnDeath.AddDynamic(this,&AMJPlayerController::OnDead);
-	}
+	
+	
 	
 }
 
@@ -83,7 +80,18 @@ void AMJPlayerController::BeginPlay()
 	PauseWidget->AddToViewport(1);
 	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
 	
-			
+	UMJPlayerStatComponent* MJPlayerStatComp = GetPawn()->FindComponentByClass<UMJPlayerStatComponent>();
+	if (MJPlayerStatComp)
+	{
+		MJPlayerStatComp->OnDeath.AddDynamic(this,&AMJPlayerController::OnDead);
+	}
+
+
+	DungeonEndMenuWidget = CreateWidget(this,DungeonEndMenuWidgetClass);
+	DungeonEndMenuWidget->AddToViewport(1);
+	DungeonEndMenuWidget->SetVisibility(ESlateVisibility::Hidden);
+
+	
 }
 
 void AMJPlayerController::SetupInputComponent()
@@ -540,8 +548,8 @@ UUserWidget* AMJPlayerController::GetPauseWidget()
 void AMJPlayerController::OnDead(AActor* InEffectCauser)
 {
 	// TODO : StatComponent에서 델리게이트 로 호출해서 입력 막고 UI 띄울 예정
-	//DisableInput(this);
+	DisableInput(this);
+	
+	SetPause(true);
 
-	//DungeonEndMenuWidget = CreateWidget(this,DungeonEndMenuWidgetClass);
-	//DungeonEndMenuWidget->AddToViewport(1);
 }

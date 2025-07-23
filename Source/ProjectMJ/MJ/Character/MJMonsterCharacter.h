@@ -109,4 +109,6 @@ protected:
 
 	// Minjin: 죽고 플레이어한테 줘야 하는 정보
 	EnemyTransferData EnemyBequest;
+
+	FTimerHandle DeadTimerHandle;
 };

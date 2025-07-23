@@ -13,7 +13,6 @@ GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathDelegate, AActor*, InEffectCauser);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDamageDelegate, float, Data);
 
 /**
@@ -109,8 +108,7 @@ public:
 	virtual bool PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
-	// 태애애애관 이거 델리게이트 변수명이랑 메서드(OnDeath) 랑 이름 같아서 컴파일러가 징징댄다. 바꿈
-	FOnDeathDelegate OnDeath;
+
 	// mutable FOnDeathDelegate OnDeath;
 	FOnDamageDelegate OnDamage;
 	
