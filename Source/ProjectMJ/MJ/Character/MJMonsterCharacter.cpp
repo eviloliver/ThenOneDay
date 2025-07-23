@@ -14,6 +14,7 @@
 #include "DataTable/MJEnemyDataRow.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MJ/AI/MJMonsterAIControllerBase.h"
+#include "MJ/Drop/MJSkillDropTest.h"
 #include "TG/MJGameInstanceTG.h"
 
 AMJMonsterCharacter::AMJMonsterCharacter()
@@ -234,12 +235,35 @@ void AMJMonsterCharacter::OnDeath(AActor* InEffectCauser)
 		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
 			[&]()
 			{
+				SetActorEnableCollision(false);
+				SetActorHiddenInGame(true);
+				
+				// Minjin: 죽은 이후 활동
+				UWorld* World = GetWorld();
+				FTransform SpawnTransform(GetActorLocation() /*+  FVector(0.0f, 0.0f, 30.0f)*/);
+				AMJSkillDropTest* DropSkill = World->SpawnActorDeferred<AMJSkillDropTest>(AMJSkillDropTest::StaticClass(), SpawnTransform);
+				MJ_LOG(LogMJ, Warning, TEXT("Create DropSkll"));
+				DropSkill->SetSkillTag(EnemyBequest.IdentitySkillTag);
+					
+				DropSkill->FinishSpawning(SpawnTransform);
 				Destroy();
 			}
 		), FinishDelay, false);
 	}
 	else
 	{
+		SetActorEnableCollision(false);
+		SetActorHiddenInGame(true);
+
+		// Minjin: 죽은 이후 활동
+		UWorld* World = GetWorld();
+		FTransform SpawnTransform(GetActorLocation() /*+  FVector(0.0f, 0.0f, 30.0f)*/);
+		AMJSkillDropTest* DropSkill = World->SpawnActorDeferred<AMJSkillDropTest>(AMJSkillDropTest::StaticClass(), SpawnTransform);
+
+		DropSkill->SetSkillTag(EnemyBequest.IdentitySkillTag);
+					
+		DropSkill->FinishSpawning(SpawnTransform);
+		
 		Destroy();
 	}
 }
