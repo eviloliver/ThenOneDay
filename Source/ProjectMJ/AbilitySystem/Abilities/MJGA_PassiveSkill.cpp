@@ -5,7 +5,7 @@
 
 UMJGA_PassiveSkill::UMJGA_PassiveSkill()
 {
-	AbilityActivationPolicy = EMJAbilityActivationPolicy::OnGiven;
+	
 }
 
 void UMJGA_PassiveSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle,

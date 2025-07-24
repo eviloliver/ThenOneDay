@@ -72,13 +72,25 @@ void UMJGA_InstantSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	ApplyCost(Handle, ActorInfo, ActivationInfo);
 
 	ApplyCooldown(Handle, ActorInfo, ActivationInfo);
+
+
+}
+
+void UMJGA_InstantSkill::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+{
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	// 스킬이 끝날 때 적용하는 법
+	//ApplyCooldown(Handle, ActorInfo, ActivationInfo);
+
 }
 
 
 void UMJGA_InstantSkill::ApplyCost(const FGameplayAbilitySpecHandle Handle,
                                    const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
-	if (!CostGameplayEffectClass)
+	if (!CustomCostGameplayEffectClass)
 	{
 		MJ_LOG(LogMJ, Warning, TEXT("Not Exist CostGameplayEffect"));
 		return;
@@ -98,7 +110,7 @@ void UMJGA_InstantSkill::ApplyCost(const FGameplayAbilitySpecHandle Handle,
 		return;
 	}
 
-	FGameplayEffectSpecHandle CostSpecHandle = MakeOutgoingGameplayEffectSpec(CostGameplayEffectClass, 1.0f);
+	FGameplayEffectSpecHandle CostSpecHandle = MakeOutgoingGameplayEffectSpec(CustomCostGameplayEffectClass, 1.0f);
 	if (!CostSpecHandle.Data)
 	{
 		MJ_LOG(LogMJ, Warning, TEXT("Not Exist CostSpecHandle.Data"));
@@ -115,7 +127,7 @@ void UMJGA_InstantSkill::ApplyCost(const FGameplayAbilitySpecHandle Handle,
 void UMJGA_InstantSkill::ApplyCooldown(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
-	if (!CooldownGameplayEffectClass)
+	if (!CustomCooldownGameplayEffectClass)
 	{
 		MJ_LOG(LogMJ, Warning, TEXT("Not Exist CooldownGameplayEffectClass"));
 		return;
@@ -140,7 +152,7 @@ void UMJGA_InstantSkill::ApplyCooldown(const FGameplayAbilitySpecHandle Handle,
 	float CharacterSkillCooldown = CharacterAttributeSet->GetSkillCooldown() * 0.01f;
 	float FinalCooldown = BaseCooldown * (100.f / (100.f + CharacterSkillCooldown));
 	
-	FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(CooldownGameplayEffectClass, 1.f, ASC->MakeEffectContext());
+	FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(CustomCooldownGameplayEffectClass, 1.f, ASC->MakeEffectContext());
 	if (SpecHandle.IsValid())
 	{
 		SpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.Cooldown")), FinalCooldown);
