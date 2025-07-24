@@ -27,7 +27,7 @@ class PROJECTMJ_API UMJLoadGameSlotWidget : public UUserWidget
 public:
 
 	UFUNCTION()
-	void SetText(const FText NewPlayerNameText, const FText NewCreatedDateText, const FText NewRecentPlayedDateText);
+	void SetText(const FText NewSlotNumberText, const FText NewPlayerNameText, const FText NewCreatedDateText,const FText NewRecentPlayedDateText);
 
 	UFUNCTION()
 	void SetSlotNum(int8 InputSlotNum);
@@ -40,14 +40,13 @@ protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;
 	
-
 	virtual FReply NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 
 	UPROPERTY()
 	int8 SlotNum;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UBorder> SlotBox;
+	TObjectPtr<UTextBlock> SlotNumberText;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> CreatedDateText;

@@ -37,9 +37,10 @@ FReply UMJLoadGameSlotWidget::NativeOnMouseButtonDoubleClick(const FGeometry& In
 	
 }
 
-void UMJLoadGameSlotWidget::SetText(const FText NewPlayerNameText, const FText NewCreatedDateText,
+void UMJLoadGameSlotWidget::SetText(const FText NewSlotNumberText, const FText NewPlayerNameText, const FText NewCreatedDateText,
                                     const FText NewRecentPlayedDateText)
 {
+	SlotNumberText->SetText(NewSlotNumberText);
 	PlayerNameText->SetText(NewPlayerNameText);
 	CreatedDateText->SetText(NewCreatedDateText);
 	RecentPlayedDateText->SetText(NewRecentPlayedDateText);

@@ -114,9 +114,5 @@ void UMJSettingsWidget::ComboBox_GraphicsChanged(FString SelectedItem, ESelectIn
 
 void UMJSettingsWidget::OnClicked_Back()
 {
-	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
-	if (PC)
-	{
-		BackToParentWidget();
-	}
+	BackToParentWidget();
 }

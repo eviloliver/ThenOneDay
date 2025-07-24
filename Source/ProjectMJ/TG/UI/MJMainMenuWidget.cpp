@@ -88,5 +88,5 @@ void UMJMainMenuWidget::OnClicked_Settings()
 
 void UMJMainMenuWidget::OnClicked_Quit()
 {
-	UKismetSystemLibrary::QuitGame(this,nullptr,EQuitPreference::Quit,false);
+	UKismetSystemLibrary::QuitGame(GetWorld(),nullptr,EQuitPreference::Quit,false);
 }
