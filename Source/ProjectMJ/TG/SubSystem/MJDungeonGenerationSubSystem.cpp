@@ -194,7 +194,7 @@ void UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 	
 	ConnectNodesByDistance(400.f,4);
 
-	if (CheckHasIterableGraph())
+	if (!CheckHasIterableGraph())
 	{
 		return GenerateDungeonGraph();
 	}
@@ -322,7 +322,7 @@ bool UMJDungeonGenerationSubSystem::CheckHasIterableGraph()
 {
 	const uint8 NodeCount = DungeonGraph.Nodes.Num();
 	const uint8 BossID    = DungeonGraph.BossNodeID;
-	const uint8 StartID   = 0;
+	const uint8 StartID   = DungeonGraph.StartNodeID;
 	
 	TArray<bool> Visited;
 	Visited.Init(false, NodeCount);
