@@ -98,6 +98,9 @@ public:
 	TSubclassOf<UGameplayAbility> SkillAbilityClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UGameplayAbility> PassiveSkillAbilityClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftObjectPtr<UCurveTable> SkillLevelDataTable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
