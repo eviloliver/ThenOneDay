@@ -20,6 +20,8 @@
 #include "UI/World/MJDamageWidget.h"
 #include "UI/MJUIManagerSubsystem.h"
 #include "TG/MJGameInstanceTG.h"
+#include "Character/Component/MJPlayerStatComponent.h"
+
 
 AMJMonsterCharacter::AMJMonsterCharacter()
 {
@@ -249,7 +251,7 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 		AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(InEffectCauser);
 		if (Player)
 		{
-			Player->GainExperience(EnemyBequest.Exp);
+			Player->StatComponent->GainExperience(EnemyBequest.Exp);
 			MJ_LOG(LogMJ, Warning, TEXT("경험치 전달: %d"), EnemyBequest.Exp);
 		}
 		

@@ -6,6 +6,7 @@
 #include "GameplayTagContainer.h"
 #include "Character/MJPlayerCharacter.h"
 #include "Components/BoxComponent.h"
+#include "Character/Component/MJPlayerSkillComponent.h"
 
 // Sets default values
 AMJSkillDropTest::AMJSkillDropTest()
@@ -55,7 +56,7 @@ void AMJSkillDropTest::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 	AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(OtherActor);
 	if (Player)
 	{
-		Player->LearnSkill(SkillTag);
+		Player->SkillComponent->LearnSkill(SkillTag);
 		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("LearnSkill!"));
 		Destroy();	
 	}

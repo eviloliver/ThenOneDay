@@ -85,21 +85,6 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 
 }
 
-void AMJPlayerCharacter::LearnSkill(const FGameplayTag& SkillTag)
-{
-	if(SkillTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Skill"))))
-	{
-		// Minjin
-		// TODO: 스킬컴포넌트 null
-		SkillComponent->LearnSkill(SkillTag);
-	}
-}
-
-void AMJPlayerCharacter::GainExperience(int32 Exp)
-{
-	StatComponent->GainExperience(Exp);
-}
-
 void AMJPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
