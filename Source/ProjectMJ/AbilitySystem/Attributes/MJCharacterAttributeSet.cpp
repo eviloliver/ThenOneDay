@@ -101,11 +101,9 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 				{
 					// Minjin: 데미지를 입힌 상대 전달
 					//StatComp->OnDeath.Broadcast(Data.EffectSpec.GetEffectContext().GetEffectCauser());
-					StatComp->OnDead(Data.EffectSpec.GetEffectContext().GetEffectCauser());
+					StatComp->OnDead(Data.EffectSpec.GetEffectContext().GetEffectCauser());	
 				}			
-		
 		}
-
 
 		// Jisoo
 		if (GetHealth() < GetMaxHealth())
@@ -113,7 +111,4 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 			OnDamage.Broadcast(Data.EvaluatedData.Magnitude);
 		}	
 	}
-
-	
-
 }

@@ -52,7 +52,6 @@ void AMJPlayerController::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	
 	
-	
 }
 
 void AMJPlayerController::BeginPlay()
@@ -79,6 +78,8 @@ void AMJPlayerController::BeginPlay()
 	PauseWidget = CreateWidget(this, PauseWidgetClass);
 	PauseWidget->AddToViewport(1);
 	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
+	
+	FSlateApplication::Get().OnApplicationActivationStateChanged().AddUObject(this, &AMJPlayerController::OnWindowFocusChanged);
 	
 	UMJPlayerStatComponent* MJPlayerStatComp = GetPawn()->FindComponentByClass<UMJPlayerStatComponent>();
 	if (MJPlayerStatComp)
@@ -532,6 +533,19 @@ void AMJPlayerController::PauseGame()
 				SetPause(false);		
 			}
 		}
+	}
+	else
+	{
+		PauseWidget->SetVisibility(ESlateVisibility::Visible);
+		SetPause(true);
+	}
+}
+
+void AMJPlayerController::OnWindowFocusChanged(bool bIsFocused)
+{
+	if (bIsFocused)
+	{
+		
 	}
 	else
 	{

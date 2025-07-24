@@ -139,6 +139,9 @@ protected:
 	UFUNCTION()
 	void PauseGame();
 
+	void OnWindowFocusChanged(bool bIsFocused);
+	
+
 
 	UPROPERTY()
 	TObjectPtr<UUserWidget> DungeonEndMenuWidget;
