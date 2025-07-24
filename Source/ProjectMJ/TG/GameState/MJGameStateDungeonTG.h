@@ -88,8 +88,7 @@ protected:
 	void OnAIDestroy(AActor* DestroyedActor);
 
 	UFUNCTION()
-	void SpawnEndPortal();
-	
+	void SpawnDungeonPortal();
 	
 	// Dungeon Session Section
 	
@@ -143,11 +142,16 @@ protected:
 	FMJAIOnDestroyedSignature OnAIDestroyed;
 	
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AActor> PortalActor;
+	TSubclassOf<AActor> DungeonPortalActorClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> EndPortalActorClass;
+
+	UPROPERTY()
+	TSubclassOf<AActor> TargetPortalToSpawn;
 	
 	UPROPERTY()
-	FTimerHandle EndPortalSpawnTimerHandle;
-
+	FTimerHandle DungeonPortalSpawnTimerHandle;
 
 	// Boss Section
 

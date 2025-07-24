@@ -10,6 +10,7 @@
 #include "Player/MJPlayerState.h"
 #include "TG/MJGameInstanceTG.h"
 #include "TG/Actor/MJDungeonAISpawnPointActor.h"
+#include "TG/Actor/MJPortalToTown.h"
 #include "TG/AI/MJAIBossCharacterTG.h"
 #include "TG/DataTable/MJStaticAISpawnRow.h"
 #include "TG/Interface/MJInstancedActorInterface.h"
@@ -228,7 +229,8 @@ void AMJGameStateDungeonTG::CheckSpawnAICondition()
 			{
 					GetWorldTimerManager().ClearTimer(WaveAISpawn_ConditionCheckTimerHandle);
 					LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
-					GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
+					TargetPortalToSpawn = DungeonPortalActorClass;
+					GetWorldTimerManager().SetTimer(DungeonPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnDungeonPortal, 2.0f, false);
 			}
 		}
 		else
@@ -316,8 +318,9 @@ void AMJGameStateDungeonTG::OnAIDestroy(AActor* DestroyedActor)
 				if (CurrentAISpawnType == EMJAISpawnType::Static && bIsActivatedMap && bIsAllEnemyDied)
 				{
 					LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
+					TargetPortalToSpawn = DungeonPortalActorClass;
 			
-					GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
+					GetWorldTimerManager().SetTimer(DungeonPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnDungeonPortal, 2.0f, false);
 				}
 				else if (CurrentAISpawnType == EMJAISpawnType::Wave && bIsActivatedMap && bIsAllEnemyDied )
 				{
@@ -330,8 +333,8 @@ void AMJGameStateDungeonTG::OnAIDestroy(AActor* DestroyedActor)
 				if (CurrentAISpawnType == EMJAISpawnType::Static && bIsActivatedMap && bIsAllEnemyDied)
 				{
 					LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
-
-					GetWorldTimerManager().SetTimer(EndPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnEndPortal, 2.0f, false);
+					TargetPortalToSpawn = EndPortalActorClass;
+					GetWorldTimerManager().SetTimer(DungeonPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnDungeonPortal, 2.0f, false);
 				}
 			}
 			else if (CurrentNodeType == EMJNodeType::Reward)
@@ -363,7 +366,7 @@ TSubclassOf<AActor> AMJGameStateDungeonTG::GetActorFromPool()
 	return Keys[RandomIndex];
 }
 
-void AMJGameStateDungeonTG::SpawnEndPortal()
+void AMJGameStateDungeonTG::SpawnDungeonPortal()
 {
 	if (LoadedDungeonSessionData.DungeonContext != EMJDungeonContext::Cleared)
 	{
@@ -386,7 +389,7 @@ void AMJGameStateDungeonTG::SpawnEndPortal()
 				FActorSpawnParameters Params;
 				Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 				
-				AActor* Portal = GetWorld()->SpawnActor<AActor>(PortalActor,Location,FRotator(),Params);
+				AActor* Portal = GetWorld()->SpawnActor<AActor>(TargetPortalToSpawn,Location,FRotator(),Params);
 				if (Portal)
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("PortalActor is Successfully Spawned")));
@@ -396,6 +399,7 @@ void AMJGameStateDungeonTG::SpawnEndPortal()
 		
 	}
 }
+
 
 void AMJGameStateDungeonTG::SetDungeonSessionData(FMJDungeonSessionData& DungeonSessionData)
 {
