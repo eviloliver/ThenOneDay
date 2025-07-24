@@ -8,6 +8,7 @@
 #include "MJPlayerController.generated.h"
 
 
+class UMJGameFlowHUDWidget;
 class UDataAsset_InputConfig;
 class UInputAction;
 class UMJUIManagerSubsystem;
@@ -128,31 +129,42 @@ public:
 
 protected:
 	UPROPERTY()
-	TObjectPtr<UUserWidget> PauseWidget;
-
-	UPROPERTY(EditDefaultsOnly, Category = UI)
-	TSubclassOf<UUserWidget> PauseWidgetClass;
+	TObjectPtr<UMJGameFlowHUDWidget> GameFlowHUD;
 	
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<UUserWidget> GameFlowHUDWidgetClass;
+	
+	
+	// UPROPERTY()
+	// TObjectPtr<UUserWidget> PauseWidget;
+	//
+	// UPROPERTY(EditDefaultsOnly, Category = UI)
+	// TSubclassOf<UUserWidget> PauseWidgetClass;
+	//
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = UI)
 	UInputAction* PauseAction;
-
+	//
 	UFUNCTION()
 	void PauseGame();
-
-	void OnWindowFocusChanged(bool bIsFocused);
+	//
+	// void OnWindowFocusChanged(bool bIsFocused);
 	
-
-
-	UPROPERTY()
-	TObjectPtr<UUserWidget> DungeonEndMenuWidget;
-
-	UPROPERTY(EditDefaultsOnly, Category = UI)
-	TSubclassOf<UUserWidget> DungeonEndMenuWidgetClass;
-	
-public:
-
-	UFUNCTION()
-	UUserWidget* GetPauseWidget();
+	// UPROPERTY()
+	// TObjectPtr<UUserWidget> DungeonEndMenuWidget;
+	//
+	// UPROPERTY(EditDefaultsOnly, Category = UI)
+	// TSubclassOf<UUserWidget> DungeonEndMenuWidgetClass;
+	//
+	// UPROPERTY()
+	// TObjectPtr<UUserWidget> ForceExitCautionWidget;
+	//
+	// UPROPERTY(EditDefaultsOnly, Category = UI)
+	// TSubclassOf<UUserWidget> ForceExitCautionWidgetClass;
+// 	
+// public:
+//
+// 	UFUNCTION()
+// 	UUserWidget* GetPauseWidget();
 
 
 protected:

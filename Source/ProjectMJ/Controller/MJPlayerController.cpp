@@ -22,6 +22,7 @@
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "TG/UI/MJGameFlowHUDWidget.h"
 #include "TG/UI/MJPauseMenuWidget.h"
 #include "TG/UI/MJSettingsWidget.h"
 #include "UI/MJHUDWidget.h"
@@ -74,25 +75,19 @@ void AMJPlayerController::BeginPlay()
 	{
 		UIManager->ShowHUD(State, this);
 	}
-	
-	PauseWidget = CreateWidget(this, PauseWidgetClass);
-	PauseWidget->AddToViewport(1);
-	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
-	
-	FSlateApplication::Get().OnApplicationActivationStateChanged().AddUObject(this, &AMJPlayerController::OnWindowFocusChanged);
-	
+
+	GameFlowHUD = CastChecked<UMJGameFlowHUDWidget>(CreateWidget(this, GameFlowHUDWidgetClass));
+	if (GameFlowHUD)
+	{
+		// Do not change order of PC setter. 
+		GameFlowHUD->SetPlayerController(this);
+		GameFlowHUD->AddToViewport(1);
+	}
 	UMJPlayerStatComponent* MJPlayerStatComp = GetPawn()->FindComponentByClass<UMJPlayerStatComponent>();
 	if (MJPlayerStatComp)
 	{
 		MJPlayerStatComp->OnDeath.AddDynamic(this,&AMJPlayerController::OnDead);
 	}
-
-
-	DungeonEndMenuWidget = CreateWidget(this,DungeonEndMenuWidgetClass);
-	DungeonEndMenuWidget->AddToViewport(1);
-	DungeonEndMenuWidget->SetVisibility(ESlateVisibility::Hidden);
-
-	
 }
 
 void AMJPlayerController::SetupInputComponent()
@@ -518,52 +513,11 @@ void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AAc
 
 void AMJPlayerController::PauseGame()
 {
-	if (IsPaused())
-	{
-		if (UMJSettingsWidget* SettingsWidget = Cast<UMJSettingsWidget>((Cast<UMJPauseMenuWidget>(PauseWidget)->GetSettingsWidget())))
-		{
-			if (SettingsWidget->GetVisibility() == ESlateVisibility::Visible)
-			{
-				SettingsWidget->GetParentWidget()->SetVisibility(ESlateVisibility::Visible);
-				SettingsWidget->SetVisibility(ESlateVisibility::Hidden);
-			}
-			else
-			{
-				PauseWidget->SetVisibility(ESlateVisibility::Hidden);
-				SetPause(false);		
-			}
-		}
-	}
-	else
-	{
-		PauseWidget->SetVisibility(ESlateVisibility::Visible);
-		SetPause(true);
-	}
+	GameFlowHUD->PauseGame(); 
 }
-
-void AMJPlayerController::OnWindowFocusChanged(bool bIsFocused)
-{
-	if (bIsFocused)
-	{
-		
-	}
-	else
-	{
-		PauseWidget->SetVisibility(ESlateVisibility::Visible);
-		SetPause(true);
-	}
-}
-
-UUserWidget* AMJPlayerController::GetPauseWidget()
-{
-	return PauseWidget;
-}
-
 void AMJPlayerController::OnDead(AActor* InEffectCauser)
 {
-	// TODO : StatComponent에서 델리게이트 로 호출해서 입력 막고 UI 띄울 예정
+	// TODO 태관 : StatComponent에서 델리게이트 로 호출해서 입력 막고 UI 띄울 예정 
 	DisableInput(this);
-	
 	SetPause(true);
-
 }
