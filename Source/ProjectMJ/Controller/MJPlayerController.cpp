@@ -79,7 +79,7 @@ void AMJPlayerController::BeginPlay()
 	GameFlowHUD = CastChecked<UMJGameFlowHUDWidget>(CreateWidget(this, GameFlowHUDWidgetClass));
 	if (GameFlowHUD)
 	{
-		// Do not change order of PC setter. 
+		// TG : Do not change order of PC setter. 
 		GameFlowHUD->SetPlayerController(this);
 		GameFlowHUD->AddToViewport(1);
 	}

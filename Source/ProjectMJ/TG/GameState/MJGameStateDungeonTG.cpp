@@ -273,7 +273,7 @@ void AMJGameStateDungeonTG::SpawnAI()
 							   		TSubclassOf<AActor> GetActor = GetActorFromPool();
 								    AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(GetActor, AllLocations[i],FRotator(), SpawnParams);
 
-							   		check(NewAIActor);
+							   		//check(NewAIActor);
 							   	
 							   	   if (NewAIActor)
 								   {

@@ -47,7 +47,7 @@ protected:
 
 
 	UFUNCTION(BlueprintCallable)
-	bool GenerateDungeonGraph();
+	void GenerateDungeonGraph();
 
 	
 	UFUNCTION()
