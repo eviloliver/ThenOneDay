@@ -57,11 +57,6 @@ void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJC
 	{
 		StaminaBar->BindToAttributes(ASC,AttributeSet);
 	}
-	
-	if (ExpBar)
-	{
-		ExpBar->BindToAttributes(ASC,AttributeSet);
-	}
 
 	if (StatPanel)
 	{

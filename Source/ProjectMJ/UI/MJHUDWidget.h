@@ -71,6 +71,7 @@ public:
 	void HideDialogue();
 
 	UMJBossHpBarWidget* GetBossHpBarWidget() {return BossHpBar;}
+	UMJExperienceWidget* GetExperienceWidget() {return ExpBar;}
 	UMJInventoryWidget* GetInventoryWidget() {return Inventory;};
 	UMJStoreWidget* GetStoreWidget() {return Store;};
 	UMJDialogueWidget* GetDialogueWidget() {return Dialogue;};

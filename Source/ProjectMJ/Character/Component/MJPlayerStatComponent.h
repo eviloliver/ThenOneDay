@@ -7,7 +7,7 @@
 #include "MJPlayerStatComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLevelUpDelegate, int32, NewLevel);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnExperienceChanged, float, TotalExperience, float, ExpForNextLevel);
 /**
  * Class Description: 플레이어는 GameInstance에 있는 CurveTable을 바로 접근
  * Author: 신동민
@@ -34,12 +34,18 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Stat|Experience")
 	FOnLevelUpDelegate OnLevelUp;
+
+	UPROPERTY(BlueprintAssignable, Category = "Stat|Experience")
+	FOnExperienceChanged OnExperienceChanged;
 	
 	FORCEINLINE int32 GetPlayerLevel() const { return PlayerLevel; }
 	FORCEINLINE float GetTotalCumulativeExperience() const { return TotalCumulativeExperience; }
+	FORCEINLINE float GetExperienceForNextLevel() const { return ExperienceForNextLevel; }
 	FORCEINLINE void SetPlayerLevel(int32 NewPlayerLevel) {PlayerLevel = NewPlayerLevel;}
 	FORCEINLINE void SetTotalCumulativeExperience(float NewExp){ TotalCumulativeExperience = NewExp; }
 
+	FORCEINLINE float GetNumerator();
+	FORCEINLINE float GetDenominator();
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
 	TObjectPtr<UCurveTable> PlayerStatTable;
@@ -53,10 +59,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stat|Experience")
 	float ExperienceForNextLevel = 0.0f;
 
+	float Numerator;
+	float Denominator;
 
+	
 private:
 	void CheckForLevelUp();
-
 	float GetTotalExperienceForLevel(int32 Level) const;
-
 };

@@ -13,6 +13,7 @@
 UMJPlayerStatComponent::UMJPlayerStatComponent()
 {
 	PlayerLevel = 1;
+	
 }
 
 void UMJPlayerStatComponent::InitializeStat()
@@ -74,8 +75,8 @@ void UMJPlayerStatComponent::GainExperience(int32 GainedExp)
 	}
 
 	TotalCumulativeExperience += GainedExp;
-
 	CheckForLevelUp();
+	OnExperienceChanged.Broadcast(GetNumerator() ,GetDenominator());
 }
 
 void UMJPlayerStatComponent::CheckForLevelUp()
@@ -94,6 +95,7 @@ void UMJPlayerStatComponent::CheckForLevelUp()
 		InitializeStat();
 
 		OnLevelUp.Broadcast(PlayerLevel);
+		
 	}
 
 }
@@ -105,4 +107,33 @@ float UMJPlayerStatComponent::GetTotalExperienceForLevel(int32 Level) const
 	float TotalExp = FMath::Pow(Level, 3.0f);
 
 	return TotalExp;
+}
+
+float UMJPlayerStatComponent::GetNumerator()
+{
+	
+	if (PlayerLevel == 1)
+	{
+		Numerator = TotalCumulativeExperience;
+	}
+	else
+	{
+		Numerator = TotalCumulativeExperience - GetTotalExperienceForLevel(PlayerLevel);
+	}
+
+	return Numerator;
+}
+
+float UMJPlayerStatComponent::GetDenominator()
+{
+	Denominator = ExperienceForNextLevel - GetTotalExperienceForLevel(PlayerLevel);
+	if (PlayerLevel == 1)
+	{
+		Denominator = GetTotalExperienceForLevel(PlayerLevel + 1);
+	}
+	else
+	{
+		Denominator = ExperienceForNextLevel - GetTotalExperienceForLevel(PlayerLevel);
+	}
+	return	Denominator;
 }
