@@ -21,6 +21,8 @@ class AMJAIBossCharacterTG;
 class UEnvQuery;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnHealthChangedSignature, float, Delta);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIBossOnSpawnedSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIBossOnDiedSignature);
+
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIOnDestroyedSignature);
 
@@ -52,6 +54,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FMJAIBossOnSpawnedSignature OnAIBossSpawned;
+
+	UPROPERTY(BlueprintAssignable)
+	FMJAIBossOnDiedSignature OnAIBossDied;
 
 
 	UFUNCTION(BlueprintCallable)

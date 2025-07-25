@@ -3,10 +3,13 @@
 
 #include "TG/UI/MJGameFlowHUDWidget.h"
 
+#include "MJBossHpBarWidget.h"
 #include "MJDungeonEndMenuWidget.h"
 #include "MJForceExitCautionWidget.h"
 #include "MJPauseMenuWidget.h"
 #include "MJSettingsWidget.h"
+#include "Kismet/GameplayStatics.h"
+#include "TG/GameState/MJGameStateDungeonTG.h"
 
 
 void UMJGameFlowHUDWidget::NativeConstruct()
@@ -16,9 +19,41 @@ void UMJGameFlowHUDWidget::NativeConstruct()
 	PauseMenu->SetVisibility(ESlateVisibility::Hidden);
 	ForceExitCaution->SetVisibility(ESlateVisibility::Hidden);
 	DungeonEndMenu->SetVisibility(ESlateVisibility::Hidden);
+	BossHpBar->SetVisibility(ESlateVisibility::Hidden);
+
 
 	FSlateApplication::Get().OnApplicationActivationStateChanged().AddUObject(this, &UMJGameFlowHUDWidget::OnWindowFocusChanged);
+
+	AMJGameStateDungeonTG* MJDungeonState = Cast<AMJGameStateDungeonTG>(UGameplayStatics::GetGameState(GetWorld()));
+	if (MJDungeonState)
+	{
+		MJDungeonState->OnAIBossSpawned.AddDynamic(this,&UMJGameFlowHUDWidget::OnBossSpawned);
+		MJDungeonState->OnAIBossDied.AddDynamic(this, &UMJGameFlowHUDWidget::OnBossDied);
+	}
+}
+
+void UMJGameFlowHUDWidget::OnBossSpawned()
+{
+	BossHpBar->SetVisibility(ESlateVisibility::Visible);
+	if (!BossHpFadeIn)
+	{
+		return;
+	}
+	PlayAnimation(BossHpFadeIn);
+}
+
+void UMJGameFlowHUDWidget::OnBossDied()
+{
+	FWidgetAnimationDynamicEvent AnimEndDelgate;
+	AnimEndDelgate.BindDynamic(this,&UMJGameFlowHUDWidget::OnBossHpBarFadeInEnded);
 	
+	PlayAnimation(BossHpFadeIn,0.0f,1,EUMGSequencePlayMode::Type::Reverse);
+	BindToAnimationFinished(BossHpFadeIn,AnimEndDelgate);
+}
+
+void UMJGameFlowHUDWidget::OnBossHpBarFadeInEnded()
+{
+	BossHpBar->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UMJGameFlowHUDWidget::PauseGame()

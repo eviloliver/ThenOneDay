@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MJGameFlowHUDWidget.generated.h"
 
+class UMJBossHpBarWidget;
 class UMJSettingsWidget;
 class UMJDungeonEndMenuWidget;
 class UMJForceExitCautionWidget;
@@ -32,13 +33,22 @@ public:
 
 	void SetPlayerController(APlayerController* InputPC);
 	
+	UFUNCTION()
+	void OnBossSpawned();
+
+	UFUNCTION()
+	void OnBossDied();
+
+	UFUNCTION()
+	void OnBossHpBarFadeInEnded();	
+	
 protected:
 
 	
 	virtual void NativeConstruct() override;
 
-	TWeakObjectPtr<APlayerController> PC;
 
+	TWeakObjectPtr<APlayerController> PC;
 
 	UPROPERTY(meta= (BindWidget))
 	TObjectPtr<UMJPauseMenuWidget> PauseMenu;   
@@ -47,7 +57,14 @@ protected:
 	TObjectPtr<UMJForceExitCautionWidget> ForceExitCaution;
 	
 	UPROPERTY(meta= (BindWidget))
-	TObjectPtr<UMJDungeonEndMenuWidget> DungeonEndMenu;   
+	TObjectPtr<UMJDungeonEndMenuWidget> DungeonEndMenu;
+
+	// Boss Section
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UMJBossHpBarWidget> BossHpBar;
+
+	UPROPERTY(meta=(BindWidgetAnim), Transient)
+	TObjectPtr<UWidgetAnimation> BossHpFadeIn;
 	
 	
 };

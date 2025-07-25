@@ -334,6 +334,8 @@ void AMJGameStateDungeonTG::OnAIDestroy(AActor* DestroyedActor)
 				{
 					LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
 					TargetPortalToSpawn = EndPortalActorClass;
+
+					OnAIBossDied.Broadcast();
 					GetWorldTimerManager().SetTimer(DungeonPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnDungeonPortal, 2.0f, false);
 				}
 			}
