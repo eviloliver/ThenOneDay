@@ -23,6 +23,9 @@ void UMJPlayerSkillComponent::BeginPlay()
 	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
 	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
 
+	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.Test")));
+	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.Test")));
+
 }
 
 void UMJPlayerSkillComponent::ActivateSkillByInputTag(const FGameplayTag InputTag)

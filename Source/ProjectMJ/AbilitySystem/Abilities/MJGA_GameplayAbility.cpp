@@ -7,6 +7,10 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "MJGA_GameplayAbility.h"
 
+#include "ProjectMJ.h"
+#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
+#include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
+
 void UMJGA_GameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	Super::OnGiveAbility(ActorInfo, Spec);
