@@ -19,18 +19,26 @@
 #include "TG/UI/MJGameFlowHUDWidget.h"
 
 
+UMJUIManagerSubsystem::UMJUIManagerSubsystem()
+{
+	static ConstructorHelpers::FClassFinder<UMJDialogueWidget> DialogueWidgetRef(TEXT("/Game/UI/WBP/Dialogue/BP_MJDialogueWidget.BP_MJDialogueWidget_C"));
+	if (DialogueWidgetRef.Succeeded())
+	{
+		DialogueWidgetClass = DialogueWidgetRef.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<UMJHUDWidget> HUDWidgetRef(TEXT("/Game/UI/WBP/HUD/WBP_HUD.WBP_HUD_C"));
+	if (HUDWidgetRef.Succeeded())
+	{
+		HUDWidgetClass = HUDWidgetRef.Class;
+	}
+}
+
 void UMJUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 	
-	DialogueWidgetClass = LoadClass<UMJDialogueWidget>(
-			nullptr,
-			TEXT("/Game/UI/WBP/Dialogue/BP_MJDialogueWidget.BP_MJDialogueWidget_C"));
-
-	HUDWidgetClass = LoadClass<UMJHUDWidget>(
-		nullptr,
-		TEXT("/Game/UI/WBP/HUD/WBP_HUD.WBP_HUD_C"));
-
+	
 	// EnemyHPBarWidgetClass = LoadClass<UMJEnemyHPBar>(
 	// 	nullptr,
 	// 	TEXT("/Game/UI/WBP/World/Bar/WBP_EnemyHPBar.WBP_EnemyHPBar_C"));
