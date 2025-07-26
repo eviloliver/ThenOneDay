@@ -15,13 +15,11 @@
 #include "DataTable/MJEnemyDataRow.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MJ/AI/MJMonsterAIControllerBase.h"
-#include "MJ/Drop/MJSkillDropTest.h"
 #include "Components/WidgetComponent.h"
 #include "UI/World/MJDamageWidget.h"
 #include "UI/MJUIManagerSubsystem.h"
 #include "TG/MJGameInstanceTG.h"
 #include "Character/Component/MJPlayerStatComponent.h"
-
 
 AMJMonsterCharacter::AMJMonsterCharacter()
 {
@@ -235,12 +233,12 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 	{
 		AIController->StopAI();
 	}
+	SetActorEnableCollision(false);
 	
 	if (DeathAnimation)
 	{
 		MJ_LOG(LogMJ, Warning, TEXT("Death"));
 		//StopAnimMontage();
-		// Minjin: 몽타주로 하는 게 좋을까 생각중
 		//GetMesh()->PlayAnimation(DeathAnimation, false);<-이거로 하면 공격 들어갈때마다 애니메이션이 처음부터 재생됨
 		GetMesh()->OverrideAnimationData(DeathAnimation, false);
 
@@ -249,9 +247,8 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 		
 		const float FinishDelay = DeathAnimation->GetPlayLength();
 		FTimerHandle DeadTimerHandle;
-
+		
 		// Minjin: 애니메이션 재생되는 동안 경험치 전달
-		// TODO: 스킬도 애니메이션 재생 때 전달하도록 변경하기
 		AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(InEffectCauser);
 		if (Player)
 		{
@@ -260,37 +257,17 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 		}
 		
 		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
-			[&]()
+			[this]()
 			{
-				SetActorEnableCollision(false);
 				SetActorHiddenInGame(true);
 				
-				// Minjin: 죽은 이후 활동
-				UWorld* World = GetWorld();
-				FTransform SpawnTransform(GetActorLocation() /*+  FVector(0.0f, 0.0f, 30.0f)*/);
-				AMJSkillDropTest* DropSkill = World->SpawnActorDeferred<AMJSkillDropTest>(AMJSkillDropTest::StaticClass(), SpawnTransform);
-				MJ_LOG(LogMJ, Warning, TEXT("Create DropSkll"));
-				DropSkill->SetSkillTag(EnemyBequest.IdentitySkillTag);
-					
-				DropSkill->FinishSpawning(SpawnTransform);
 				Destroy();
 			}
 		), FinishDelay, false);
 	}
 	else
 	{
-		SetActorEnableCollision(false);
 		SetActorHiddenInGame(true);
-
-		// Minjin: 죽은 이후 활동
-		UWorld* World = GetWorld();
-		FTransform SpawnTransform(GetActorLocation() /*+  FVector(0.0f, 0.0f, 30.0f)*/);
-		AMJSkillDropTest* DropSkill = World->SpawnActorDeferred<AMJSkillDropTest>(AMJSkillDropTest::StaticClass(), SpawnTransform);
-
-		DropSkill->SetSkillTag(EnemyBequest.IdentitySkillTag);
-					
-		DropSkill->FinishSpawning(SpawnTransform);
-		
 		Destroy();
 	}
 	DamageIndex = 0;
