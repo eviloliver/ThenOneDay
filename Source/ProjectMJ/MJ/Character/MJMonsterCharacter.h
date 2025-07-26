@@ -8,6 +8,7 @@
 #include "Character/Component/MJPlayerSkillComponent.h"
 #include "MJMonsterCharacter.generated.h"
 
+class UMJItemDataAsset;
 class AMJTargetingProjectileBase;
 class UMJDamageComponent;
 class UWidgetComponent;
@@ -107,6 +108,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UAnimationAsset> DeathAnimation;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	TObjectPtr<UMJItemDataAsset> ItemDataAsset;
 	
 	// Minjin: Ability Tag-안씀
 	FGameplayTag AttackTag;

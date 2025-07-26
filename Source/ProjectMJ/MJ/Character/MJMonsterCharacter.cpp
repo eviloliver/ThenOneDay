@@ -20,6 +20,8 @@
 #include "UI/MJUIManagerSubsystem.h"
 #include "TG/MJGameInstanceTG.h"
 #include "Character/Component/MJPlayerStatComponent.h"
+#include "DataAsset/MJItemDataAsset.h"
+#include "Item/MJItemBase.h"
 
 AMJMonsterCharacter::AMJMonsterCharacter()
 {
@@ -218,7 +220,7 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	EnemyBequest.IdentitySkillTag = DataRow->IdentitySkillTag;
 	EnemyBequest.Exp = ASC->GetSet<UMJCharacterAttributeSet>()->GetDropExperience();
 	// TODO: 테이블에 아이템 태그 설정하기.
-	EnemyBequest.ItemTag = FGameplayTag::EmptyTag;
+	EnemyBequest.ItemTag = DataRow->ItemTag;
 }
 
 void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
@@ -254,6 +256,16 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 		{
 			Player->StatComponent->GainExperience(EnemyBequest.Exp);
 			MJ_LOG(LogMJ, Warning, TEXT("경험치 전달: %d"), EnemyBequest.Exp);
+		}
+
+		if (EnemyBequest.ItemTag.IsValid())
+		{
+			TSubclassOf<AMJItemBase> ItemClass = ItemDataAsset->FindItemClassForTag(EnemyBequest.ItemTag);
+			if (ItemClass)
+			{
+				FTransform SpawnTransform(GetActorLocation());
+				AMJItemBase* Item = GetWorld()->SpawnActor<AMJItemBase>(ItemClass, SpawnTransform);
+			}
 		}
 		
 		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
