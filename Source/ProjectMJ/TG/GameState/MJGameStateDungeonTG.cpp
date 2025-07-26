@@ -93,57 +93,63 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 			
 			for (const auto& Iter : StaticSpawnPointActors)
 			{
-				FVector IterSpawnPoint = Iter->GetActorLocation();
-	
-				FNavLocation ResultLocation;
-	
-				UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
-				
-				if (NavSys)
+				AMJDungeonAISpawnPointActor* SpawnPointActor = Cast<AMJDungeonAISpawnPointActor>(Iter);
+
+				if (IsValid(SpawnPointActor))
 				{
-					int32 CurrentPointSpawnedAINum = 0;
-					while (CurrentPointSpawnedAINum < StaticAISpawnMaxNum)
+					FVector IterSpawnPoint = Iter->GetActorLocation();
+					uint8 IterSpawnAIMaxNum = SpawnPointActor->NumberToSpawn;
+						
+					FNavLocation ResultLocation;
+	
+					UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+				
+					if (NavSys)
 					{
-						TSubclassOf<AActor> WeightedChosenClass;
-
-						float RandWeight = FMath::RandRange(0.0f,TotalWeight);
-
-						float AccumulatedWeight = 0.0f;
-						
-						for (const auto& Row : LoadedAllRows)
+						int32 CurrentPointSpawnedAINum = 0;
+						while (CurrentPointSpawnedAINum < IterSpawnAIMaxNum)
 						{
-							AccumulatedWeight += Row->SpawnWeight;
+							TSubclassOf<AActor> WeightedChosenClass;
 
-							if (AccumulatedWeight >= RandWeight)
+							float RandWeight = FMath::RandRange(0.0f,TotalWeight);
+
+							float AccumulatedWeight = 0.0f;
+						
+							for (const auto& Row : LoadedAllRows)
 							{
-								WeightedChosenClass = Row->EnemyClass;
-								break;
-							}
-						}
-						
-						bool bIsFound = NavSys->GetRandomPointInNavigableRadius(IterSpawnPoint, 1000.f,ResultLocation);
+								AccumulatedWeight += Row->SpawnWeight;
 
-						if (bIsFound)
-						{
-							FActorSpawnParameters SpawnParams;
-							SpawnParams.Owner = this;
-							SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+								if (AccumulatedWeight >= RandWeight)
+								{
+									WeightedChosenClass = Row->EnemyClass;
+									break;
+								}
+							}
+						
+							bool bIsFound = NavSys->GetRandomPointInNavigableRadius(IterSpawnPoint, 1000.f,ResultLocation);
+
+							if (bIsFound)
+							{
+								FActorSpawnParameters SpawnParams;
+								SpawnParams.Owner = this;
+								SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 						
 							
-							AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(WeightedChosenClass,ResultLocation,FRotator(), SpawnParams);
+								AActor* NewAIActor = GetWorld()->SpawnActor<AActor>(WeightedChosenClass,ResultLocation,FRotator(), SpawnParams);
 							
-							check(NewAIActor);
+								check(NewAIActor);
 
-							if (NewAIActor)
-							{
-								NewAIActor->OnDestroyed.AddDynamic(this, &AMJGameStateDungeonTG::OnAIDestroy);
-								SpawnedActorRefs.Add(NewAIActor);
-								++CurrentSpawnedAINum;
-								++CurrentPointSpawnedAINum;
-							}
-							else
-							{
-								GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("AISpawn Failed!!")));
+								if (NewAIActor)
+								{
+									NewAIActor->OnDestroyed.AddDynamic(this, &AMJGameStateDungeonTG::OnAIDestroy);
+									SpawnedActorRefs.Add(NewAIActor);
+									++CurrentSpawnedAINum;
+									++CurrentPointSpawnedAINum;
+								}
+								else
+								{
+									GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("AISpawn Failed!!")));
+								}
 							}
 						}
 					}

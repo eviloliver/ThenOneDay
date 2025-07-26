@@ -8,6 +8,8 @@ AMJDungeonAISpawnPointActor::AMJDungeonAISpawnPointActor()
 
 	// Only Visible in Editor
 	Mesh->SetHiddenInGame(true);
+
+	NumberToSpawn = 0;
 	
 }
 
