@@ -57,7 +57,11 @@ public:
 	TSoftObjectPtr<UCurveTable> AttributeCurve;
 
 	// TODO: 사운드나 아이콘 등등
-
+	
+	// Minjin: DropItem
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Item"))
+	FGameplayTag ItemTag;
+	
 	// Minjin: Animation
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UAnimationAsset> AppearanceAnimation;
