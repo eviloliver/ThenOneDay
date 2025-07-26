@@ -110,7 +110,7 @@ void UMJPauseMenuWidget::OnClicked_MainMenu()
 				AMJGameModeBase* MJGM = GetWorld()->GetAuthGameMode<AMJGameModeBase>();
 				if (MJGM)
 				{
-					MJGM->TravelToMap(TEXT("MainMenu"));
+					MJGM->TravelToMap(TEXT("TG_MainMenu"));
 				}
 			}));
 		}

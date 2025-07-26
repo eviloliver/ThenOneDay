@@ -26,6 +26,7 @@ void UMJMainMenuWidget::NativeConstruct()
 		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockInFullscreen);
    
 		PC->SetInputMode(InputMode);
+		PC->SetShowMouseCursor(true);
 
 		NewGamePopUpWidget = Cast<UMJChildMenuBaseWidget>(CreateWidget(PC, NewGamePopUpWidgetClass));
 		if (NewGamePopUpWidget)
@@ -55,15 +56,8 @@ void UMJMainMenuWidget::NativeConstruct()
 
 void UMJMainMenuWidget::OnClicked_NewGame()
 {
-	
-	
 	SetVisibility(ESlateVisibility::Hidden);
 	NewGamePopUpWidget->SetVisibility(ESlateVisibility::Visible);
-	
-
-	// Move to TG_Town
-	// @fixme : maybe there`s other good method
-	//UGameplayStatics::OpenLevel(this,TEXT("TG_Town"));
 }
 
 void UMJMainMenuWidget::OnClicked_LoadGame()

@@ -104,7 +104,7 @@ void UMJSaveGameSubsystem::SaveGameToCurrentSlotNum()
 	
 }
 
-void UMJSaveGameSubsystem::LoadGameFromSlotNum(int8 SlotNum)
+bool UMJSaveGameSubsystem::LoadGameFromSlotNum(int8 SlotNum)
 {
 	
 	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetGameInstance());
@@ -119,7 +119,9 @@ void UMJSaveGameSubsystem::LoadGameFromSlotNum(int8 SlotNum)
 			MJGI->GetPlayerSessionDataRef().PlayerLevel = SaveGame->PlayerLevel;
 			MJGI->GetPlayerSessionDataRef().PlayerExp = SaveGame->PlayerExp;
 			MJGI->GetPlayerSessionDataRef().SaveGameSlotNum = SaveGame->SlotNum;
-			
+
+			return true;
 		}
 	}
+	return false;
 }

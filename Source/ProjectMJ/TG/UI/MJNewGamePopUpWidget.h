@@ -32,7 +32,13 @@ protected:
 	void OnClicked_ConfirmButton();
 
 	UFUNCTION()
+	void SwitchToInGame();
+
+	UFUNCTION()
 	int8 GetEmptySlotNum();
+
+	UPROPERTY()
+	int8 NextSlotNum;
 	
 	
 	UPROPERTY(meta = (BindWidget))
@@ -43,6 +49,13 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UEditableTextBox> InputPlayerNameTextBox;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USoundWave> SuccessSound;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USoundWave> FailSound;
+
 
 	
 	

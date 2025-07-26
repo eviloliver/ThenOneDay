@@ -42,6 +42,10 @@ protected:
 	
 	virtual FReply NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 
+	UFUNCTION()
+	void SwitchToInGame();
+	
+
 	UPROPERTY()
 	int8 SlotNum;
 
@@ -56,5 +60,11 @@ protected:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> PlayerNameText;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USoundWave> SuccessSound;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USoundWave> FailSound;
 	
 };

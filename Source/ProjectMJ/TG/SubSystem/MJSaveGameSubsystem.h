@@ -39,7 +39,7 @@ public:
 	void SaveGameToCurrentSlotNum();
 
 	UFUNCTION()
-	void LoadGameFromSlotNum(int8 SlotNum);
+	bool LoadGameFromSlotNum(int8 SlotNum);
 
 
 

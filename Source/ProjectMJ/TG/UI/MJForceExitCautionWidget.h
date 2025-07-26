@@ -35,6 +35,9 @@ protected:
 	UFUNCTION()
 	void OnClicked_ConfirmButton();
 
+	UFUNCTION()
+	void ConfirmInternal();
+
 	FOnUserConfirmed CallBackFunc;
 	
 	UPROPERTY(meta = (BindWidget))
@@ -43,6 +46,11 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> ConfirmButton;
 
-	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USoundWave> SuccessSound;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USoundWave> CautionSound;
+
 	
 };
