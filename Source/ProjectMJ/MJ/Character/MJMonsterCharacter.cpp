@@ -243,6 +243,10 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 		// Minjin: 몽타주로 하는 게 좋을까 생각중
 		//GetMesh()->PlayAnimation(DeathAnimation, false);<-이거로 하면 공격 들어갈때마다 애니메이션이 처음부터 재생됨
 		GetMesh()->OverrideAnimationData(DeathAnimation, false);
+
+		// Minin: Target 정보 저장
+		EnemyBequest.Target = InEffectCauser;
+		
 		const float FinishDelay = DeathAnimation->GetPlayLength();
 		FTimerHandle DeadTimerHandle;
 

@@ -8,6 +8,7 @@
 #include "Character/Component/MJPlayerSkillComponent.h"
 #include "MJMonsterCharacter.generated.h"
 
+class AMJTargetingProjectileBase;
 class UMJDamageComponent;
 class UWidgetComponent;
 class UMJEnemyHPBar;
@@ -27,6 +28,7 @@ struct EnemyTransferData
 	FGameplayTag IdentitySkillTag;
 	int32 Exp;
 	FGameplayTag ItemTag;
+	AActor* Target;
 };
 
 UCLASS()
@@ -42,6 +44,8 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	TObjectPtr<UAnimationAsset> GetAppearanceAnimation(){return AppearanceAnimation;}
+
+	const EnemyTransferData& GetEnemyBequest(){return EnemyBequest;}
 	
 protected:
 	virtual void BeginPlay() override;
