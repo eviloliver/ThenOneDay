@@ -6,6 +6,7 @@
 #include "Components/AudioComponent.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 void UMJForceExitCautionWidget::PopUpWithCallback(const FOnUserConfirmed InCallBackFunc)
 {

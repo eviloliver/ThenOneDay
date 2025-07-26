@@ -7,6 +7,7 @@
 #include "Components/Border.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 #include "TG/SubSystem/MJSaveGameSubsystem.h"
 
 

@@ -47,10 +47,10 @@ protected:
 	TObjectPtr<UButton> ConfirmButton;
 
 	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<USoundWave> SuccessSound;
+	TObjectPtr<USoundCue> SuccessSound;
 
 	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<USoundWave> CautionSound;
+	TObjectPtr<USoundCue> CautionSound;
 
 	
 };

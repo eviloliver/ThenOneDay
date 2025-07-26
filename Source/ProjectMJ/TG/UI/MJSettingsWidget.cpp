@@ -5,10 +5,9 @@
 
 #include "Components/Button.h"
 #include "Components/ComboBoxString.h"
+#include "Components/Slider.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Kismet/GameplayStatics.h"
-
-
 
 void UMJSettingsWidget::NativeConstruct()
 {
@@ -18,7 +17,9 @@ void UMJSettingsWidget::NativeConstruct()
 	ComboBox_Resolution->OnSelectionChanged.AddDynamic(this, &UMJSettingsWidget::ComboBox_ResolutionChanged);
 	ComboBox_Graphics->OnSelectionChanged.AddDynamic(this, &UMJSettingsWidget::ComboBox_GraphicsChanged);
 	Button_Back->OnClicked.AddDynamic(this, &UMJSettingsWidget::OnClicked_Back);
-
+	MasterVolumeSlider->OnValueChanged.AddDynamic(this, &UMJSettingsWidget::MasterVolumeValueChanged);
+	MusicVolumeSlider->OnValueChanged.AddDynamic(this,&UMJSettingsWidget::MusicVolumeValueChanged);
+	SFXVolumeSlider->OnValueChanged.AddDynamic(this,&UMJSettingsWidget::UMJSettingsWidget::SFXVolumeValueChanged);
 }
 
 void UMJSettingsWidget::ComboBox_WindowModeChanged(FString SelectedItem, ESelectInfo::Type SelectionType)
@@ -115,4 +116,25 @@ void UMJSettingsWidget::ComboBox_GraphicsChanged(FString SelectedItem, ESelectIn
 void UMJSettingsWidget::OnClicked_Back()
 {
 	BackToParentWidget();
+}
+
+void UMJSettingsWidget::MasterVolumeValueChanged(float NewValue)
+{
+	// Range 0 ~ 2.0	
+	UGameplayStatics::SetSoundMixClassOverride(GetWorld(),SoundMixModifier,MasterSoundClass, NewValue, 1.0f, 0.0f, true);
+	UGameplayStatics::PushSoundMixModifier(GetWorld(), SoundMixModifier);
+}
+
+void UMJSettingsWidget::MusicVolumeValueChanged(float NewValue)
+{
+	// Range 0 ~ 2.0	
+	UGameplayStatics::SetSoundMixClassOverride(GetWorld(),SoundMixModifier,MusicSoundClass, NewValue, 1.0f, 0.0f);
+	UGameplayStatics::PushSoundMixModifier(GetWorld(), SoundMixModifier);
+}
+
+void UMJSettingsWidget::SFXVolumeValueChanged(float NewValue)
+{
+	// Range 0 ~ 2.0	
+	UGameplayStatics::SetSoundMixClassOverride(GetWorld(),SoundMixModifier,SFXSoundClass, NewValue, 1.0f, 0.0f);
+	UGameplayStatics::PushSoundMixModifier(GetWorld(), SoundMixModifier);
 }

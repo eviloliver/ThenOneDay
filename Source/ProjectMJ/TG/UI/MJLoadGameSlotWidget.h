@@ -62,9 +62,9 @@ protected:
 	TObjectPtr<UTextBlock> PlayerNameText;
 
 	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<USoundWave> SuccessSound;
+	TObjectPtr<USoundCue> SuccessSound;
 
 	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<USoundWave> FailSound;
+	TObjectPtr<USoundCue> FailSound;
 	
 };

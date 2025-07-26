@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 #include "TG/MJGameInstanceTG.h"
 #include "TG/Struct/MJSaveGame.h"
 
