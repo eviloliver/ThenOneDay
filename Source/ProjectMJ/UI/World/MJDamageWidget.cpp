@@ -28,6 +28,10 @@ void UMJDamageWidget::PlayAnim()
 	{
 		PlayAnimation(DamageAnim);
 	}
+	else
+	{
+		UE_LOG(LogTemp,Error,TEXT("PlayAnimation damage"));
+	}
 }
 
 void UMJDamageWidget::OnAnimFinished()

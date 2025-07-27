@@ -294,17 +294,19 @@ void AMJMonsterCharacter::OnDamage(float Magnitude)
 {
 	HPBarComponent->SetVisibility(true);
 	
-	{
-		UMJDamageComponent* NewComp = NewObject<UMJDamageComponent>(this);
-		NewComp->RegisterComponent();
-		NewComp->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
-		NewComp->SetWidget();
-		NewComp->SetVisibility(true);
-		DamageComponents.Add(NewComp);
+	UMJDamageComponent* NewComp = NewObject<UMJDamageComponent>(this);
 		
-		Cast<UMJDamageWidget>(DamageComponents[DamageIndex]->GetUserWidgetObject())->PlayAnim();
-		Cast<UMJDamageWidget>(DamageComponents[DamageIndex]->GetUserWidgetObject())->SetDamage(-Magnitude);
+	NewComp->RegisterComponent();
+	NewComp->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+	NewComp->SetDamageWidget();
+	NewComp->SetVisibility(true);
+	DamageComponents.Add(NewComp);
 
-		DamageIndex ++;
+	if (UMJDamageWidget* Widget =Cast<UMJDamageWidget>(NewComp->GetUserWidgetObject()) )
+	{
+		Cast<UMJDamageWidget>(NewComp->GetUserWidgetObject())->SetDamage(-Magnitude);
+		Cast<UMJDamageWidget>(NewComp->GetUserWidgetObject())->PlayAnim();
 	}
+	DamageIndex ++;
+	
 }

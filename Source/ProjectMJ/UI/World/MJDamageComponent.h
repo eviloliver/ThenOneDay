@@ -18,5 +18,5 @@ class PROJECTMJ_API UMJDamageComponent : public UWidgetComponent
 protected:
 	
 public:
-	void SetWidget();
+	void SetDamageWidget();
 };

@@ -93,9 +93,12 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 	}
 
 	// Jisoo
-	if (GetHealth() < GetMaxHealth())
+	if (Data.EvaluatedData.Attribute == GetHealthAttribute()) 
 	{
-		OnDamage.Broadcast(Data.EvaluatedData.Magnitude);
+		if (Data.EvaluatedData.Magnitude < 0.f) //이렇게 하면 힐이 들어와도 ondamage가 실행되는 불상사를 막을 수 있는 거 같다.!
+		{
+			UE_LOG(LogTemp, Display, TEXT("%f, %f"), GetHealth(), GetMaxHealth());
+            OnDamage.Broadcast(Data.EvaluatedData.Magnitude);
+		}
 	}
-
 }
