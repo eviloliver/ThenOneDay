@@ -45,13 +45,30 @@ FGameplayAbilityTargetDataHandle AMJTA_CapsuleTrace::MakeTargetData() const
 
 	TArray<FHitResult> OutHitResults;
 	GetWorld()->SweepMultiByChannel(OutHitResults, Start, End, FQuat::Identity, CCHANNEL_MJAbilityTargetTrace, FCollisionShape::MakeSphere(AttackRadius), Params);
+	
+	/*
+	 * Minjin
+	 * HowTo: 적끼리 공격하지 않는다.
+	 * FGameplayTargetDataFilter 생성, RequiredActorClass로 SourceActor의 C++ 클래스를 설정한다.
+	 * -> 이러면 FilterPassesForActor 중 !ActorToBeFiltered(HitActor를 뜻함)->IsA(RequiredActorClass)에 걸려 false를 리턴: Target 대상에서 제외됨
+	 * => bReverseFilter를 true로 한다...
+	 */
+	// Minjin: 다른 방법이 있다면 알려주세요....
 
-
+	TSubclassOf<AActor> ActorClass = GetParentNativeClass(SourceActor.GetClass());
+	
+	FGameplayTargetDataFilter FilteringData;
+	FilteringData.RequiredActorClass = ActorClass;
+	FilteringData.bReverseFilter = true;
+	FilteringData.InitializeFilterContext(SourceActor);
+	
 	TArray<TWeakObjectPtr<AActor>> HitActors;
 	for (const FHitResult& OutHitResult : OutHitResults)
 	{
 		AActor* HitActor = OutHitResult.GetActor();
-		if (HitActor && !HitActors.Contains(HitActor))
+		
+		// Minjin: Filter를 통과하면(공격대상) HitActor에 추가
+		if (HitActor && !HitActors.Contains(HitActor) && (FilteringData.FilterPassesForActor(HitActor)))
 		{
 			HitActors.Add(HitActor);
 		}
