@@ -4,6 +4,7 @@
 #include "MJ/Drop/MJTargetingProjectileBase.h"
 
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "ProjectMJ.h"
 #include "Character/MJPlayerCharacter.h"
 #include "Character/Component/MJPlayerSkillComponent.h"
@@ -37,11 +38,13 @@ AMJTargetingProjectileBase::AMJTargetingProjectileBase()
 void AMJTargetingProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	UNiagaraComponent* FxComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, MuzzleFX, GetActorLocation());
+
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AMJTargetingProjectileBase::OnSphereOverlap);
 	TargetLocationChanged.BindUObject(this, &AMJTargetingProjectileBase::OnTargetUpdated);
 	
-	// TODO: 플레이어한테 죽었을 때만 생성, Target이 플레이어인지 확인한다.
+
 	// 나이아가라 시스테에 FX 적용?
 	
 	FVector ProjectileLocation = GetActorLocation();
@@ -92,24 +95,37 @@ void AMJTargetingProjectileBase::Tick(float DeltaSeconds)
 void AMJTargetingProjectileBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// HitFX
-	// skill 전달
-	// 나를 때린 애면 성공? 플레이어면 성공?
-	AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(OtherActor);
-	if (Player == nullptr)
+	// Minjin: Target과 같으면 성공
+	if (OtherActor != Target)
 	{
 		return;
+	}
+	
+	// Minjin: 플레이어라면 skill 전달
+	AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(OtherActor);
+	if (Player)
+	{
+		Player->SkillComponent->LearnSkill(SkillTag);
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(
+				-1, 3.f, FColor::Green,TEXT("Learn Skill!"));
+		}
 	}
 	// Minjin: HitFX가 플레이어한테서 일어나야 될 것 같음- 공격이 아니고 흡수라서
 	//NiagaraComponent->SetAsset(HitFX);
 
-	Player->SkillComponent->LearnSkill(SkillTag);
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(
-			-1, 3.f, FColor::Green,TEXT("Learn Skill!"));
-	}
 	
+
+	// UNiagaraComponent* FxComp = UNiagaraFunctionLibrary::SpawnSystemAttached(
+	// HitFX,
+	// OtherComp,
+	// SweepResult.BoneName,
+	// SweepResult.ImpactPoint,            // 시작 위치
+	// FRotator::ZeroRotator,
+	// EAttachLocation::KeepWorldPosition, // 처음 위치는 유지, 이후엔 부모 따라감
+	// true                                // bAutoDestroy
+	// );
 	Destroy();
 }
 
