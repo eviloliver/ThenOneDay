@@ -64,6 +64,19 @@ UMJGE_SetSkillAttributeSet::UMJGE_SetSkillAttributeSet()
         { UMJCharacterSkillAttributeSet::GetMaxStatusEffectChanceAttribute(), FName("Data.Skill.MaxStatusEffectChance") },
         { UMJCharacterSkillAttributeSet::GetStatusEffectDurationAttribute(), FName("Data.Skill.StatusEffectDuration") },
         { UMJCharacterSkillAttributeSet::GetMaxStatusEffectDurationAttribute(), FName("Data.Skill.MaxStatusEffectDuration") },
+        { UMJCharacterSkillAttributeSet::GetStatusBaseDamageAttribute(),     FName("Data.Skill.StatusBaseDamage") },
+        { UMJCharacterSkillAttributeSet::GetMaxStatusBaseDamageAttribute(),  FName("Data.Skill.MaxStatusBaseDamage") },
+        { UMJCharacterSkillAttributeSet::GetStatusEffectADScalingAttribute(),FName("Data.Skill.StatusEffectADScaling") },
+        { UMJCharacterSkillAttributeSet::GetMaxStatusEffectADScalingAttribute(), FName("Data.Skill.MaxStatusEffectADScaling") },
+        { UMJCharacterSkillAttributeSet::GetStatusEffectAPScalingAttribute(), FName("Data.Skill.StatusEffectAPScaling") },
+        { UMJCharacterSkillAttributeSet::GetMaxStatusEffectAPScalingAttribute(), FName("Data.Skill.MaxStatusEffectAPScaling") },
+        { UMJCharacterSkillAttributeSet::GetStatusEffectMaxStackAttribute(), FName("Data.Skill.StatusEffectMaxStack") },
+        { UMJCharacterSkillAttributeSet::GetMaxStatusEffectMaxStackAttribute(), FName("Data.Skill.MaxStatusEffectMaxStack") },
+        { UMJCharacterSkillAttributeSet::GetStatusEffectPeriodAttribute(), FName("Data.Skill.StatusEffectPeriod") },
+        { UMJCharacterSkillAttributeSet::GetMaxStatusEffectPeriodAttribute(),  FName("Data.Skill.MaxStatusEffectPeriod") },
+        { UMJCharacterSkillAttributeSet::GetStatusEffectSlowPercentAttribute(),FName("Data.Skill.StatusEffectSlowPercent") },
+        { UMJCharacterSkillAttributeSet::GetMaxStatusEffectSlowPercentAttribute(),FName("Data.Skill.MaxStatusEffectSlowPercent") },
+
 
         // Projectile
         { UMJCharacterSkillAttributeSet::GetProjectileSpeedAttribute(),      FName("Data.Skill.ProjectileSpeed") },
