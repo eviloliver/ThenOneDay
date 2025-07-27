@@ -15,7 +15,6 @@
  */
 
 class UWidgetComponent;
-class UMJEnemyHPBar;
 class UMJBossHpBarWidget;
 class UMJDialogueWidget;
 class UMJDialogueComponent;
@@ -44,10 +43,6 @@ public:
 	// Store Section
 	void ShowStore();
 
-	// World UI
-	void ResisterWorldUI(UWidgetComponent* WidgetComp,UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet);
-	void UnresisterWorldUI(UWidgetComponent* WidgetComp);
-
 	// BossHpBar Section
 	UFUNCTION()
 	void OnBossSpawned();
@@ -58,10 +53,4 @@ protected:
 
 	UPROPERTY()
 	TSubclassOf<UMJHUDWidget> HUDWidgetClass;
-
-	UPROPERTY()
-	TObjectPtr<UMJEnemyHPBar> EnemyHPBarWidget;
-	
-	UPROPERTY()
-	TArray<TWeakObjectPtr<UWidgetComponent>> WorldUIs;
 };

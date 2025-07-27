@@ -63,27 +63,8 @@ void UMJUIManagerSubsystem::ShowStore()
 	HUDWidget->ShowStore();
 }
 
-// World UI
-void UMJUIManagerSubsystem::ResisterWorldUI(UWidgetComponent* WidgetComp,UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet)
-{
-	if (WidgetComp && !WorldUIs.Contains(WidgetComp))
-	{
-		WorldUIs.Add(WidgetComp);
-		
-		// Enemy HPBar
-		UMJEnemyHPBar* HPBarWidget = Cast<UMJEnemyHPBar>(WidgetComp->GetUserWidgetObject());
-		if (HPBarWidget && ASC && AttributeSet)
-		{
-			HPBarWidget->BindToAttributes(ASC, AttributeSet);
-		}
-	}
-}
+//충돌나면 World UI 부분 없는걸로 선택 ㄱㄱ 지운거맞음
 
-void UMJUIManagerSubsystem::UnresisterWorldUI(UWidgetComponent* WidgetComp)
-{
-	WorldUIs.Remove(WidgetComp);
-	WidgetComp->SetVisibility(false);
-}
 //
 void UMJUIManagerSubsystem::OnBossSpawned()
 {

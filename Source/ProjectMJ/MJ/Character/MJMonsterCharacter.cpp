@@ -20,6 +20,8 @@
 #include "UI/World/MJDamageWidget.h"
 #include "UI/MJUIManagerSubsystem.h"
 #include "TG/MJGameInstanceTG.h"
+#include "UI/Bar/MJEnemyHPBar.h"
+#include "UI/Component/MJHealthBarComponent.h"
 
 AMJMonsterCharacter::AMJMonsterCharacter()
 {
@@ -48,7 +50,7 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	SkillComponent = CreateDefaultSubobject<UMJSkillComponentBase>(TEXT("SkillComponent"));
 
 	// UI Component
-	HPBarComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBarComponent"));
+	HPBarComponent = CreateDefaultSubobject<UMJHealthBarComponent>(TEXT("HPBarComponent"));
 	HPBarComponent->SetupAttachment(GetMesh());
 }
 
@@ -61,15 +63,10 @@ void AMJMonsterCharacter::BeginPlay()
 	SetActorEnableCollision(true);
 	
 	// Jisoo
-	HPBarComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 220.0f));
-	HPBarComponent->SetWidgetSpace(EWidgetSpace::Screen);
-	HPBarComponent->SetDrawSize(FVector2D(100.0f,10.0f));
-	HPBarComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	HPBarComponent->SetVisibility(false);
-
-	UIManager =	GetGameInstance()->GetSubsystem<UMJUIManagerSubsystem>();
-	ensure(UIManager);
-	UIManager->ResisterWorldUI(HPBarComponent,ASC,CharacterAttributeSet);
+	if (UMJEnemyHPBar* EnemyHPBar = Cast<UMJEnemyHPBar>(HPBarComponent->GetUserWidgetObject()))
+	{
+		EnemyHPBar->BindToAttributes(ASC,CharacterAttributeSet);
+	}
 }
 
 float AMJMonsterCharacter::GetAIPatrolRadius()
@@ -295,7 +292,6 @@ void AMJMonsterCharacter::OnDamage(float Magnitude)
 	HPBarComponent->SetVisibility(true);
 	
 	UMJDamageComponent* NewComp = NewObject<UMJDamageComponent>(this);
-		
 	NewComp->RegisterComponent();
 	NewComp->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
 	NewComp->SetDamageWidget();

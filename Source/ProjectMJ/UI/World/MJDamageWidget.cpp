@@ -17,8 +17,6 @@ void UMJDamageWidget::NativeConstruct()
 
 void UMJDamageWidget::SetDamage(float damage)
 {
-	// 이대로 몬스터에 박아넣으면 몬스터의 어택데미지가 들어갈 거 같음
-	// 구현 후 확인할 것
 	Damage->SetText(FText::AsNumber(damage));
 }
 
@@ -36,7 +34,9 @@ void UMJDamageWidget::PlayAnim()
 
 void UMJDamageWidget::OnAnimFinished()
 {
-	RemoveFromParent();
+	// jisoo : 컴포넌트가 사라지면 어차피 widget도 사라지기는 하는데,
+	// 이렇게 하면 나중에 몹이 많을 때 메모리 차지 심해질까봐 그냥 애니메이션 끝나면 위젯 죽어라 하는중입니다.
+	RemoveFromParent(); 
 }
 
 

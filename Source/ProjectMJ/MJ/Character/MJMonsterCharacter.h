@@ -8,6 +8,7 @@
 #include "Character/Component/MJPlayerSkillComponent.h"
 #include "MJMonsterCharacter.generated.h"
 
+class UMJHealthBarComponent;
 class UMJDamageComponent;
 class UWidgetComponent;
 class UMJEnemyHPBar;
@@ -71,7 +72,7 @@ protected:
 	TObjectPtr<UMJUIManagerSubsystem> UIManager;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UWidgetComponent> HPBarComponent;
+	TObjectPtr<UMJHealthBarComponent> HPBarComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
 	TArray<TObjectPtr<UMJDamageComponent>> DamageComponents;
