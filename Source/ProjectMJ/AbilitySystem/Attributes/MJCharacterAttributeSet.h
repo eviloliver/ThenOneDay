@@ -119,6 +119,7 @@ public:
 	// 이거 아니면 접근지정자를 public으로 하는건데 Aura는 Public, 보통은 캡슐화를 위해서 protected(friend 하긴 하지만 그래도 최소한의 캡슐화)
 	friend struct FMJEC_SkillDamageStatics;
 	friend struct FMJEC_DamageOverTimeStatics;
+	friend struct FMJEC_MovementSpeedModifierStatics;
 
 protected:
 

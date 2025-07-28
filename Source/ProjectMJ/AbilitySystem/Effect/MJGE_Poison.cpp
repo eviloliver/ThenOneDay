@@ -14,6 +14,8 @@ UMJGE_Poison::UMJGE_Poison()
 	FGameplayEffectExecutionDefinition ExecutionDefinition;
 	ExecutionDefinition.CalculationClass = UMJEC_DamageOverTime::StaticClass();
 
+	Executions.Add(ExecutionDefinition);
+
     FSetByCallerFloat DurationCaller;
     DurationCaller.DataTag = FGameplayTag::RequestGameplayTag("Data.Skill.StatusEffectDuration");
     DurationMagnitude = FGameplayEffectModifierMagnitude(DurationCaller);
