@@ -36,6 +36,8 @@ void UMJGA_MeleeAttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTarg
 		if (!DamageGameplayEffectClass)
 		{
 			MJ_LOG(LogMJ, Warning, TEXT("Not Exist DamageGameplayEffectClass"));
+
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 			return;
 		}
 
@@ -43,6 +45,8 @@ void UMJGA_MeleeAttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTarg
 		if (!SourceASC)
 		{
 			MJ_LOG(LogMJ, Warning, TEXT("Not Exist SourceASC"));
+
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 			return;
 		}
 
@@ -51,6 +55,8 @@ void UMJGA_MeleeAttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTarg
 		if (!SourceCharacterSkillAttributeSet)
 		{
 			MJ_LOG(LogMJ, Warning, TEXT("Not Exist SourceCharacterSkillAttributeSet"));
+
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 			return;
 		}
 
@@ -78,6 +84,8 @@ void UMJGA_MeleeAttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTarg
 		if (!StatusGameplayEffectClass)
 		{
 			MJ_LOG(LogMJ, Warning, TEXT("Not Exist DamageGameplayEffectClass"));
+
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 			return;
 		}
 		
@@ -86,7 +94,6 @@ void UMJGA_MeleeAttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTarg
 		{
 			float Chance = SourceCharacterSkillAttributeSet->GetStatusEffectChance();
 
-			// TODO: È®·ü °³¼±
 			if (FMath::FRandRange(0.0f, 100.0f) <= Chance)
 			{
 				StatusEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusEffectDuration")), SourceCharacterSkillAttributeSet->GetStatusEffectDuration());
