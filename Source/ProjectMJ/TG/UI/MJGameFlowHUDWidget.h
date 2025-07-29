@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MJGameFlowHUDWidget.generated.h"
 
+class UMJDungeonMapWidget;
 class UMJBossHpBarWidget;
 class UMJSettingsWidget;
 class UMJDungeonEndMenuWidget;
@@ -40,10 +41,12 @@ public:
 	void OnBossDied();
 
 	UFUNCTION()
-	void OnBossHpBarFadeInEnded();	
+	void OnBossHpBarFadeInEnded();
+
+	UFUNCTION(BlueprintCallable)
+	UMJDungeonMapWidget* GetDungeonMapWidget() {return DungeonMap;}
 	
 protected:
-
 	
 	virtual void NativeConstruct() override;
 
@@ -58,6 +61,9 @@ protected:
 	
 	UPROPERTY(meta= (BindWidget))
 	TObjectPtr<UMJDungeonEndMenuWidget> DungeonEndMenu;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJDungeonMapWidget> DungeonMap;
 
 	// Boss Section
 	UPROPERTY(meta=(BindWidget))

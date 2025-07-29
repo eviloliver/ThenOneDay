@@ -14,7 +14,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Inventory/MJInventoryWidget.h"
 #include "Kismet/GameplayStatics.h"
-#include "TG/GameState/MJGameStateDungeonTG.h"
+#include "TG/GameState/MJGameStateDungeon.h"
 #include "TG/UI/MJBossHpBarWidget.h"
 #include "TG/UI/MJGameFlowHUDWidget.h"
 

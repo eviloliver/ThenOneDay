@@ -8,8 +8,8 @@
 #include "Components/Spacer.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/MJPlayerState.h"
-#include "TG/GameMode/MJGameModeDungeonTG.h"
-#include "TG/GameMode/MJGameModeTownTG.h"
+#include "TG/GameMode/MJGameModeDungeon.h"
+#include "TG/GameMode/MJGameModeTown.h"
 #include "TG/SubSystem/MJSaveGameSubsystem.h"
 
 void UMJPauseMenuWidget::NativeOnInitialized()
@@ -47,12 +47,12 @@ void UMJPauseMenuWidget::NativeConstruct()
 			ForceExitCautionWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 
-		if (AMJGameModeTownTG* GMTown = GetWorld()->GetAuthGameMode<AMJGameModeTownTG>())
+		if (AMJGameModeTown* GMTown = GetWorld()->GetAuthGameMode<AMJGameModeTown>())
 		{
 			Spacer_GotoTown->SetVisibility(ESlateVisibility::Collapsed);
 			Button_GotoTown->SetVisibility(ESlateVisibility::Collapsed);
 		}
-		else if (AMJGameModeDungeonTG* GMDungeon = GetWorld()->GetAuthGameMode<AMJGameModeDungeonTG>())
+		else if (AMJGameModeDungeon* GMDungeon = GetWorld()->GetAuthGameMode<AMJGameModeDungeon>())
 		{
 			Spacer_GotoTown->SetVisibility(ESlateVisibility::Visible);
 			Button_GotoTown->SetVisibility(ESlateVisibility::Visible);

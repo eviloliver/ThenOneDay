@@ -1,23 +1,21 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MJGameStateDungeonTG.h"
+#include "MJGameStateDungeon.h"
 
 #include "EngineUtils.h"
 #include "NavigationSystem.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "Kismet/GameplayStatics.h"
-#include "Player/MJPlayerState.h"
 #include "TG/MJGameInstanceTG.h"
 #include "TG/Actor/MJDungeonAISpawnPointActor.h"
-#include "TG/Actor/MJPortalToTown.h"
 #include "TG/AI/MJAIBossCharacterTG.h"
 #include "TG/DataTable/MJStaticAISpawnRow.h"
 #include "TG/Interface/MJInstancedActorInterface.h"
 #include "TG/SubSystem/MJDungeonGenerationSubSystem.h"
 
 
-AMJGameStateDungeonTG::AMJGameStateDungeonTG()
+AMJGameStateDungeon::AMJGameStateDungeon()
 {
 	LoadedDungeonNodeNum = 255;
 
@@ -29,7 +27,7 @@ AMJGameStateDungeonTG::AMJGameStateDungeonTG()
 	CurrentSpawnedAINum = 0;
 }
 
-void AMJGameStateDungeonTG::BeginPlay()
+void AMJGameStateDungeon::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -44,7 +42,7 @@ void AMJGameStateDungeonTG::BeginPlay()
 		
 	if (GS)
 	{
-		EMJNodeType CurrentNodeType = GS->GetDungeonGraph().Nodes[LoadedDungeonSessionData.DungeonNodeNum].NodeType;
+		EMJNodeType CurrentNodeType = GS->GetDungeonGraph()->Nodes[LoadedDungeonSessionData.DungeonNodeNum].NodeType;
 		
 		switch (CurrentNodeType)
 		{
@@ -71,7 +69,7 @@ void AMJGameStateDungeonTG::BeginPlay()
 }
 
 
-void AMJGameStateDungeonTG::Initialize_BattleNode()
+void AMJGameStateDungeon::Initialize_BattleNode()
 {
 	if (LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::InActive)
 	{
@@ -141,7 +139,7 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 
 								if (NewAIActor)
 								{
-									NewAIActor->OnDestroyed.AddDynamic(this, &AMJGameStateDungeonTG::OnAIDestroy);
+									NewAIActor->OnDestroyed.AddDynamic(this, &AMJGameStateDungeon::OnAIDestroy);
 									SpawnedActorRefs.Add(NewAIActor);
 									++CurrentSpawnedAINum;
 									++CurrentPointSpawnedAINum;
@@ -158,7 +156,7 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 		}
 		else if (LoadedDungeonSessionData.AISpawnType == EMJAISpawnType::Wave)
 		{
-			GetWorldTimerManager().SetTimer(WaveAISpawn_ConditionCheckTimerHandle, this, &AMJGameStateDungeonTG::CheckSpawnAICondition,  2.0f, true);
+			GetWorldTimerManager().SetTimer(WaveAISpawn_ConditionCheckTimerHandle, this, &AMJGameStateDungeon::CheckSpawnAICondition,  2.0f, true);
 
 			if (LoadedWaveDataTable)
 			{
@@ -172,14 +170,14 @@ void AMJGameStateDungeonTG::Initialize_BattleNode()
 		
 }
 
-void AMJGameStateDungeonTG::Initialize_BossNode()
+void AMJGameStateDungeon::Initialize_BossNode()
 {
 	if (LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::InActive)
 	{
 		BossAIRef = Cast<AMJAIBossCharacterTG>(UGameplayStatics::GetActorOfClass(GetWorld(),AMJAIBossCharacterTG::StaticClass()));
 		if (BossAIRef)
 		{
-			BossAIRef->OnDestroyed.AddDynamic(this ,&AMJGameStateDungeonTG::OnAIDestroy);
+			BossAIRef->OnDestroyed.AddDynamic(this ,&AMJGameStateDungeon::OnAIDestroy);
 			SpawnedActorRefs.Add(BossAIRef);
 			CurrentSpawnedAINum++;
 			GetWorldTimerManager().SetTimer(OnBossSpawnedBroadCastTimerHandle,this, &ThisClass::PublishOnBossSpawned,3.0f);
@@ -188,12 +186,12 @@ void AMJGameStateDungeonTG::Initialize_BossNode()
 	}
 }
 
-void AMJGameStateDungeonTG::Initialize_RewardNode()
+void AMJGameStateDungeon::Initialize_RewardNode()
 {
 	
 }
 
-bool AMJGameStateDungeonTG::GetWaveDataRowByIndex(int32 InputWaveRowNum)
+bool AMJGameStateDungeon::GetWaveDataRowByIndex(int32 InputWaveRowNum)
 {
 	// Hard coded wave name for now
 	FName Name = *FString::Printf(TEXT("Wave%d"), InputWaveRowNum);
@@ -212,7 +210,7 @@ bool AMJGameStateDungeonTG::GetWaveDataRowByIndex(int32 InputWaveRowNum)
 
 
 
-void AMJGameStateDungeonTG::CheckSpawnAICondition()
+void AMJGameStateDungeon::CheckSpawnAICondition()
 {
 	if (LoadedDungeonSessionData.DungeonContext != EMJDungeonContext::Activated)
 	{
@@ -236,7 +234,7 @@ void AMJGameStateDungeonTG::CheckSpawnAICondition()
 					GetWorldTimerManager().ClearTimer(WaveAISpawn_ConditionCheckTimerHandle);
 					LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
 					TargetPortalToSpawn = DungeonPortalActorClass;
-					GetWorldTimerManager().SetTimer(DungeonPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnDungeonPortal, 2.0f, false);
+					GetWorldTimerManager().SetTimer(DungeonPortalSpawnTimerHandle, this, &AMJGameStateDungeon::SpawnDungeonPortal, 2.0f, false);
 			}
 		}
 		else
@@ -246,7 +244,7 @@ void AMJGameStateDungeonTG::CheckSpawnAICondition()
 	}
 }
 
-void AMJGameStateDungeonTG::SpawnAI()
+void AMJGameStateDungeon::SpawnAI()
 {
 	if (LoadedDungeonSessionData.DungeonContext != EMJDungeonContext::Activated)
 	{
@@ -287,7 +285,7 @@ void AMJGameStateDungeonTG::SpawnAI()
 								   {
 										
 							   		   // Add Delegate when it`s spawned by GameState
-									   NewAIActor->OnDestroyed.AddDynamic(this, &AMJGameStateDungeonTG::OnAIDestroy);
+									   NewAIActor->OnDestroyed.AddDynamic(this, &AMJGameStateDungeon::OnAIDestroy);
 									   SpawnedActorRefs.Add(NewAIActor);
 									   ++CurrentSpawnedAINum;
 									   --LoadedWaveDataRow.EnemyCount;
@@ -303,7 +301,7 @@ void AMJGameStateDungeonTG::SpawnAI()
 	}
 }
 
-void AMJGameStateDungeonTG::OnAIDestroy(AActor* DestroyedActor)
+void AMJGameStateDungeon::OnAIDestroy(AActor* DestroyedActor)
 {
 	if (DestroyedActor->IsPendingKillPending())
 	{
@@ -313,7 +311,7 @@ void AMJGameStateDungeonTG::OnAIDestroy(AActor* DestroyedActor)
 		check(GS);
 		if (GS)
 		{
-			EMJNodeType CurrentNodeType = GS->GetDungeonGraph().Nodes[LoadedDungeonSessionData.DungeonNodeNum].NodeType;
+			EMJNodeType CurrentNodeType = GS->GetDungeonGraph()->Nodes[LoadedDungeonSessionData.DungeonNodeNum].NodeType;
 
 			EMJAISpawnType CurrentAISpawnType = LoadedDungeonSessionData.AISpawnType;
 			bool bIsActivatedMap = (LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::Activated);
@@ -326,7 +324,7 @@ void AMJGameStateDungeonTG::OnAIDestroy(AActor* DestroyedActor)
 					LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Cleared;
 					TargetPortalToSpawn = DungeonPortalActorClass;
 			
-					GetWorldTimerManager().SetTimer(DungeonPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnDungeonPortal, 2.0f, false);
+					GetWorldTimerManager().SetTimer(DungeonPortalSpawnTimerHandle, this, &AMJGameStateDungeon::SpawnDungeonPortal, 2.0f, false);
 				}
 				else if (CurrentAISpawnType == EMJAISpawnType::Wave && bIsActivatedMap && bIsAllEnemyDied )
 				{
@@ -342,7 +340,7 @@ void AMJGameStateDungeonTG::OnAIDestroy(AActor* DestroyedActor)
 					TargetPortalToSpawn = EndPortalActorClass;
 
 					OnAIBossDied.Broadcast();
-					GetWorldTimerManager().SetTimer(DungeonPortalSpawnTimerHandle, this, &AMJGameStateDungeonTG::SpawnDungeonPortal, 2.0f, false);
+					GetWorldTimerManager().SetTimer(DungeonPortalSpawnTimerHandle, this, &AMJGameStateDungeon::SpawnDungeonPortal, 2.0f, false);
 				}
 			}
 			else if (CurrentNodeType == EMJNodeType::Reward)
@@ -353,7 +351,7 @@ void AMJGameStateDungeonTG::OnAIDestroy(AActor* DestroyedActor)
 	}
 }
 
-TSubclassOf<AActor> AMJGameStateDungeonTG::GetActorFromPool()
+TSubclassOf<AActor> AMJGameStateDungeon::GetActorFromPool()
 {
 	// pick Actor class randomly
 	TArray<TSubclassOf<AActor>> Keys;
@@ -374,7 +372,7 @@ TSubclassOf<AActor> AMJGameStateDungeonTG::GetActorFromPool()
 	return Keys[RandomIndex];
 }
 
-void AMJGameStateDungeonTG::SpawnDungeonPortal()
+void AMJGameStateDungeon::SpawnDungeonPortal()
 {
 	if (LoadedDungeonSessionData.DungeonContext != EMJDungeonContext::Cleared)
 	{
@@ -409,12 +407,12 @@ void AMJGameStateDungeonTG::SpawnDungeonPortal()
 }
 
 
-void AMJGameStateDungeonTG::SetDungeonSessionData(FMJDungeonSessionData& DungeonSessionData)
+void AMJGameStateDungeon::SetDungeonSessionData(const FMJDungeonSessionData& DungeonSessionData)
 {
 	LoadedDungeonSessionData = DungeonSessionData;
 }
 
-void AMJGameStateDungeonTG::SaveToInstancedDungeonSessionData(uint8 SaveToNum)
+void AMJGameStateDungeon::SaveToInstancedDungeonSessionData(uint8 SaveToNum)
 {
 	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
 
@@ -438,7 +436,7 @@ void AMJGameStateDungeonTG::SaveToInstancedDungeonSessionData(uint8 SaveToNum)
 	} 
 }
 
-void AMJGameStateDungeonTG::LoadFromInstancedDungeonSessionData(uint8 LoadFromNum)
+void AMJGameStateDungeon::LoadFromInstancedDungeonSessionData(uint8 LoadFromNum)
 {
 	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
 
@@ -460,7 +458,7 @@ void AMJGameStateDungeonTG::LoadFromInstancedDungeonSessionData(uint8 LoadFromNu
 }
 
 
-void AMJGameStateDungeonTG::PublishOnBossSpawned()
+void AMJGameStateDungeon::PublishOnBossSpawned()
 {
 	OnAIBossSpawned.Broadcast();
 }

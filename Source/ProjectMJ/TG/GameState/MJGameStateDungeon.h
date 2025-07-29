@@ -7,7 +7,7 @@
 #include "TG/Interface/MJBossEventManagerTG.h"
 #include "TG/DataTable/MJWaveAISpawnRow.h"
 #include "TG/Struct/MJDungeonSessionDataStruct.h"
-#include "MJGameStateDungeonTG.generated.h"
+#include "MJGameStateDungeon.generated.h"
 
 /**
  * Class Description: 던전의 상태를 저장할 GameState
@@ -27,19 +27,19 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIBossOnDiedSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIOnDestroyedSignature);
 
 UCLASS()
-class PROJECTMJ_API AMJGameStateDungeonTG : public AGameStateBase, public IMJBossEventManagerTG
+class PROJECTMJ_API AMJGameStateDungeon : public AGameStateBase, public IMJBossEventManagerTG
 {
 	GENERATED_BODY()
 	
 public:
 	// Initialize Section
 
-	AMJGameStateDungeonTG();
+	AMJGameStateDungeon();
 
 	virtual void BeginPlay() override;
 	
 	UFUNCTION(BlueprintCallable)
-	void SetDungeonSessionData(FMJDungeonSessionData& DungeonSessionData);
+	void SetDungeonSessionData(const FMJDungeonSessionData& DungeonSessionData);
 	
 	UFUNCTION(BlueprintCallable)
 	void SaveToInstancedDungeonSessionData(uint8 SaveToNum);
@@ -114,7 +114,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	int32 StaticAISpawnMaxNum;
 	
-
 	// Wave Section
 	
 	UPROPERTY()
@@ -165,11 +164,5 @@ protected:
 
 	UPROPERTY()
 	FTimerHandle OnBossSpawnedBroadCastTimerHandle;
-
-	
-	
-
-
-
 	
 };

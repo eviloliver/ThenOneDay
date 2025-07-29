@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameMode/MJGameModeBase.h"
-#include "MJGameModeDungeonTG.generated.h"
+#include "MJGameModeDungeon.generated.h"
 
 /**
  * Class Description: Dungeon`s Gamemode
@@ -14,12 +14,12 @@
  * Last Modified Date: 2025-06-14
  */
 UCLASS()
-class PROJECTMJ_API AMJGameModeDungeonTG : public AMJGameModeBase
+class PROJECTMJ_API AMJGameModeDungeon : public AMJGameModeBase
 {
 	GENERATED_BODY()
 
 public:
-	AMJGameModeDungeonTG();
+	AMJGameModeDungeon();
 	
 	virtual bool TravelToMapByNode(const FString MapName, const uint8 NodeNum) override;
 

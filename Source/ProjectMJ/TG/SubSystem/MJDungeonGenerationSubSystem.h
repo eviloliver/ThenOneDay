@@ -25,9 +25,13 @@ public:
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
+	UFUNCTION(BlueprintCallable)
+	bool CheckHasRoute(uint8 CurrentNodeNum, uint8 DestNodeNum);
 	
 	UFUNCTION(BlueprintCallable)
-	const FMJDungeonGraph& GetDungeonGraph() const { return DungeonGraph; }
+	void GetDungeonGraphOut(FMJDungeonGraph& OutGraph) const { OutGraph = DungeonGraph;}
+	
+	FMJDungeonGraph* GetDungeonGraph()  { return &DungeonGraph; }
 
 	UFUNCTION(BlueprintCallable, Category="Dungeon")
 	uint8 GetMaxNodeNum() const;
@@ -70,8 +74,7 @@ protected:
 	void DFS(uint8 CurrentNode, const uint8 BossID, TArray<bool>& Visited);
 	
 	
-	UFUNCTION(BlueprintCallable)
-	bool CheckHasRoute(uint8 CurrentNodeNum, uint8 DestNodeNum);
+	
 
 	
 	

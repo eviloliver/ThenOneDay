@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameMode/MJGameModeBase.h"
-#include "MJGameModeTownTG.generated.h"
+#include "MJGameModeTown.generated.h"
 
 /**
  * Class Description: Town`s Gamemode
@@ -14,12 +14,12 @@
  * Last Modified Date: 2025-06-11
  */
 UCLASS()
-class PROJECTMJ_API AMJGameModeTownTG : public AMJGameModeBase
+class PROJECTMJ_API AMJGameModeTown : public AMJGameModeBase
 {
 	GENERATED_BODY()
 
 public:
-	AMJGameModeTownTG();
+	AMJGameModeTown();
 
 	virtual void BeginPlay() override;
 	

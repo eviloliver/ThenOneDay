@@ -5,11 +5,12 @@
 
 #include "MJBossHpBarWidget.h"
 #include "MJDungeonEndMenuWidget.h"
+#include "MJDungeonMapWidget.h"
 #include "MJForceExitCautionWidget.h"
 #include "MJPauseMenuWidget.h"
 #include "MJSettingsWidget.h"
 #include "Kismet/GameplayStatics.h"
-#include "TG/GameState/MJGameStateDungeonTG.h"
+#include "TG/GameState/MJGameStateDungeon.h"
 
 
 void UMJGameFlowHUDWidget::NativeConstruct()
@@ -20,11 +21,12 @@ void UMJGameFlowHUDWidget::NativeConstruct()
 	ForceExitCaution->SetVisibility(ESlateVisibility::Hidden);
 	DungeonEndMenu->SetVisibility(ESlateVisibility::Hidden);
 	BossHpBar->SetVisibility(ESlateVisibility::Hidden);
+	//DungeonMap->SetVisibility(ESlateVisibility::Hidden);
 
 
 	FSlateApplication::Get().OnApplicationActivationStateChanged().AddUObject(this, &UMJGameFlowHUDWidget::OnWindowFocusChanged);
 
-	AMJGameStateDungeonTG* MJDungeonState = Cast<AMJGameStateDungeonTG>(UGameplayStatics::GetGameState(GetWorld()));
+	AMJGameStateDungeon* MJDungeonState = Cast<AMJGameStateDungeon>(UGameplayStatics::GetGameState(GetWorld()));
 	if (MJDungeonState)
 	{
 		MJDungeonState->OnAIBossSpawned.AddDynamic(this,&UMJGameFlowHUDWidget::OnBossSpawned);
