@@ -52,6 +52,9 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	// UI Component
 	HPBarComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBarComponent"));
 	HPBarComponent->SetupAttachment(GetMesh());
+
+	// Minjin: ID 설정
+	ID = ETeam_ID::MONSTER;
 }
 
 void AMJMonsterCharacter::BeginPlay()

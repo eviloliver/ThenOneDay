@@ -53,7 +53,6 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	//Add FadeComponent
 	//FadeComponent = CreateDefaultSubobject<UMJFadeObjectComponent>(TEXT("FadeComponent"));
 	// Minjin: AI Perception-캐릭터를 StimuliSource로 등록(AI가 감지)
-	
 	PerceptionStimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("AIPerceptionStimuliSourceComponent"));
 	if (nullptr!= PerceptionStimuliSourceComponent)
 	{
@@ -83,6 +82,8 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	// Effect Component
 	EffectComponent = CreateDefaultSubobject<UMJPlayerEffectComponent>(TEXT("EffectComponent"));
 
+	// Minjin: ID 설정
+	ID = ETeam_ID::PLAYER;
 }
 
 void AMJPlayerCharacter::BeginPlay()
