@@ -25,6 +25,10 @@ public:
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
+	
+	UFUNCTION(BlueprintCallable)
+	void GenerateDungeonGraph();
+	
 	UFUNCTION(BlueprintCallable)
 	bool CheckHasRoute(uint8 CurrentNodeNum, uint8 DestNodeNum);
 	
@@ -50,8 +54,6 @@ protected:
 	uint8 MaxNodeNum;
 
 
-	UFUNCTION(BlueprintCallable)
-	void GenerateDungeonGraph();
 
 	
 	UFUNCTION()
