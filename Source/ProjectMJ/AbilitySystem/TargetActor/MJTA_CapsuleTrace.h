@@ -10,9 +10,9 @@
  * Class Description: 캡슐 모양 Trace
  * Author: 신동민
  * Created Date: 2025.07.18
- * Description of Change:
- * Modified By:
- * Modified Date:
+ * Description of Change: 같은 클래스끼리 공격 못하도록 수정
+ * Modified By: 김민진
+ * Modified Date: 2025.07.27.
  */
 UCLASS()
 class PROJECTMJ_API AMJTA_CapsuleTrace : public AMJTA_Trace
