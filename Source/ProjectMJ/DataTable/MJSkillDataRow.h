@@ -92,17 +92,8 @@ public:
 	ESkillTargetType SkillTargetType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UGameplayAbility> SkillActionAbilityClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UGameplayAbility> SkillAbilityClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UGameplayAbility> PassiveSkillAbilityClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftObjectPtr<UCurveTable> SkillLevelDataTable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FSkillAssetDataByLevel> AssetTagDataByLevel;
+	TSoftObjectPtr<UDataTable> SkillLevelAbilityTable;
 };

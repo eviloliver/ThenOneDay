@@ -9,7 +9,6 @@
 #include "AbilitySystem/Actor/MJProjectileBase.h"
 #include "Character/MJCharacterBase.h"
 #include "Character/Component/MJSkillComponentBase.h"
-#include "DataAsset/MJProjectileDataAsset.h"
 
 UMJGA_SpawnProjectile::UMJGA_SpawnProjectile()
 {
@@ -88,7 +87,6 @@ void UMJGA_SpawnProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Han
         return;
     }
 
-    TSubclassOf<AMJProjectileBase> ProjectileClass = ProjectileDataAsset->FindProjectileClassForTag(ProjectileTagToSpawn);
     if (!ProjectileClass)
     {
         EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
@@ -97,7 +95,8 @@ void UMJGA_SpawnProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
     FMJSkillProjectileParams ProjectileParams;
     ProjectileParams.SourceASC = SourceASC;
-    ProjectileParams.GameplayEffects = GameplayEffectClasses;
+    ProjectileParams.DamageGameplayEffectClass = DamageGameplayEffectClass;
+    // StatusEffectClass 추가할것
     ProjectileParams.BaseDamage = SkillAttributeSet->GetBaseDamage();
     ProjectileParams.AttackDamageScaling = SkillAttributeSet->GetAttackDamageScaling();
     ProjectileParams.AbilityPowerScaling = SkillAttributeSet->GetAbilityPowerScaling();

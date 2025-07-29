@@ -51,7 +51,9 @@ void AMJProjectileBase::ApplyGameplayEffects(UAbilitySystemComponent* Target, co
 	ProjectileParams.TargetASC = Target;
 
 	// 이펙트 하나여야 하는데
-	for (const TSubclassOf<UGameplayEffect> EffectClass : ProjectileParams.GameplayEffects)
+	const TSubclassOf<UGameplayEffect> EffectClass = ProjectileParams.DamageGameplayEffectClass;
+
+	if(ProjectileParams.DamageGameplayEffectClass)
 	{
 		if (EffectClass)
 		{
