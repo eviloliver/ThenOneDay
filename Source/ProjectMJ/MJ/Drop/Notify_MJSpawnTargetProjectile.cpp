@@ -42,7 +42,9 @@ void UNotify_MJSpawnTargetProjectile::Notify(USkeletalMeshComponent* MeshComp, U
 			// Minjin: 필요할진 모르겠지만 놔둬봅니다.
 			if (TargetingProjectile)
 			{
-				FTransform SpawnTransform(Player->GetActorLocation());
+				FVector SpawnLocation = Player->GetActorLocation();
+				SpawnLocation.Z = 0.0f;
+				FTransform SpawnTransform(SpawnLocation);
 				AMJTargetingProjectileBase* Projectile = Player->GetWorld()->SpawnActorDeferred<AMJTargetingProjectileBase>(TargetingProjectile, SpawnTransform/*, this, this, ESpawnActorCollisionHandlingMethod::AlwaysSpawn*/);
 				MJ_LOG(LogMJ, Warning, TEXT("Create TargetProjectile"));
 	
@@ -65,8 +67,9 @@ void UNotify_MJSpawnTargetProjectile::Notify(USkeletalMeshComponent* MeshComp, U
 					MJ_LOG(LogMJ, Warning, TEXT("SkillTage is not valid"));
 					return;
 				}
-				
-				FTransform SpawnTransform(Enemy->GetActorLocation());
+				FVector SpawnLocation = Enemy->GetActorLocation();
+				SpawnLocation.Z = 0.0f;
+				FTransform SpawnTransform(SpawnLocation);
 				AMJTargetingProjectileBase* Projectile = Enemy->GetWorld()->SpawnActorDeferred<AMJTargetingProjectileBase>(TargetingProjectile, SpawnTransform/*, this, this, ESpawnActorCollisionHandlingMethod::AlwaysSpawn*/);
 				MJ_LOG(LogMJ, Warning, TEXT("Create TargetProjectile"));
 				
