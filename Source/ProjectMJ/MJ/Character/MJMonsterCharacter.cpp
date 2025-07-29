@@ -51,7 +51,7 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 
 	// UI Component
 	HPBarComponent = CreateDefaultSubobject<UMJHealthBarComponent>(TEXT("HPBarComponent"));
-	HPBarComponent->SetupAttachment(GetMesh());
+	HPBarComponent->SetupAttachment(GetRootComponent());
 }
 
 void AMJMonsterCharacter::BeginPlay()
@@ -293,8 +293,7 @@ void AMJMonsterCharacter::OnDamage(float Magnitude)
 	
 	UMJDamageComponent* NewComp = NewObject<UMJDamageComponent>(this);
 	NewComp->RegisterComponent();
-	NewComp->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
-	NewComp->SetDamageWidget();
+	NewComp->SetDamageWidget(this->GetActorLocation());
 	NewComp->SetVisibility(true);
 	DamageComponents.Add(NewComp);
 

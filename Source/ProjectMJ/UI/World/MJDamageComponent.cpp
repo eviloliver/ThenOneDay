@@ -15,12 +15,12 @@ UMJDamageComponent::UMJDamageComponent()
 	}
 }
 
-void UMJDamageComponent::SetDamageWidget()
+void UMJDamageComponent::SetDamageWidget(FVector CharacterLocation)
 {
 	// 기타 세팅
-	SetRelativeLocation(FVector(0.0f, 0.0f, 220.0f));
 	SetWidgetSpace(EWidgetSpace::Screen);
-	SetDrawSize(FVector2D(20.0f,20.0f));
+	SetWorldLocation(CharacterLocation + FVector(0, 0, 220));
+	SetDrawSize(FVector2D(30.0f,30.0f));
 	SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SetVisibility(false);
 }
