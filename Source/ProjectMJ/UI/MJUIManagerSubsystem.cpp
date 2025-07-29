@@ -48,6 +48,11 @@ void UMJUIManagerSubsystem::ShowHUD(AMJPlayerState* PlayerState, AMJPlayerContro
 	}
 }
 
+void UMJUIManagerSubsystem::SetDialogueVisibility()
+{
+	HUDWidget->SetDialogueVisibility();
+}
+
 void UMJUIManagerSubsystem::ShowStatPanel()
 {
 	HUDWidget->ShowStatPanel();

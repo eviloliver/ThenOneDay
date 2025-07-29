@@ -67,8 +67,8 @@ public:
 	void ShowStore();
 	void HideBossHpBar();
 	void ShowBossHpBar();
-	void ShowDialogue();
-	void HideDialogue();
+	void SetDialogueVisibility();
+
 
 	UMJBossHpBarWidget* GetBossHpBarWidget() {return BossHpBar;}
 	UMJExperienceWidget* GetExperienceWidget() {return ExpBar;}

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "UI/Component/MJInteractComponent.h"
 #include "MJStoreComponent.generated.h"
 
 /*
@@ -35,12 +36,11 @@ struct FStoreData
 	
 };
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PROJECTMJ_API UMJStoreComponent : public UActorComponent
+class PROJECTMJ_API UMJStoreComponent : public UMJInteractComponent
 {
 	GENERATED_BODY()
 
 public:
-	UMJStoreComponent();
 	
 protected:
 	int32 SlotCount;

@@ -100,15 +100,27 @@ public:
 	TObjectPtr<UMJUIManagerSubsystem> UIManager;
 
 	//Dialogue
-	void ChangeToIMCDialogue();
-	void ChangeToIMCDefault();
-	void ProceedDialogue();
+	UFUNCTION()
+	void StartDialogue();
 
-	//Store
-	void VisitStore(); // 아이템 정보를 넘길 요량 // 인스턴스 > 캐릭터 > 트리거 시 npc 정보를 가져와서
+	UFUNCTION()
+	void ChangeToIMCDialogue();
+
+	UFUNCTION()
+	void ChangeToIMCDefault();
 	
+
+	UFUNCTION()
+	void ProceedDialogue();
+	
+	UFUNCTION()
+	void SetDialogueVisibility();
+	// Store
+	UFUNCTION()
+	void SetStoreVisibility();
+		
 	// Show Widget
-	// void ShowBacklog();
+	void ShowBacklog();
 	void ShowStatPanel();
 	void ShowInventory();
 	

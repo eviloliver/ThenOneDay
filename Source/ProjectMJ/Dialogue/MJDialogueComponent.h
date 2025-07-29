@@ -16,7 +16,6 @@
  */
 
 class UMJDialogueWidget;
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTMJ_API UMJDialogueComponent : public UActorComponent
 {
@@ -37,12 +36,15 @@ public:
 	
 	// Refactoring
 	void FloatLine();
+
+	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	void TurnOver();
+	
+	void UpdateBacklog();
 
 	void SetIndex(int index) {CurrentIndex = index;}
 	
 	const FMJDialogueRow* GetCurrentRow() const;
 	const FMJDialogueRow* GetPreviousRow() const;
 	UMJDialogueWidget* GetDialogueWidget();
-
 };

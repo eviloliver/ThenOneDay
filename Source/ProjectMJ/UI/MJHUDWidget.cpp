@@ -110,12 +110,15 @@ void UMJHUDWidget::ShowBossHpBar()
 	BossHpBar->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UMJHUDWidget::ShowDialogue()
+void UMJHUDWidget::SetDialogueVisibility()
 {
-	Dialogue->SetVisibility(ESlateVisibility::Visible);
+	if (Dialogue->GetVisibility() == ESlateVisibility::Visible)
+	{
+		Dialogue->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else if (Dialogue->GetVisibility() == ESlateVisibility::Hidden)
+	{
+		Dialogue->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 
-void UMJHUDWidget::HideDialogue()
-{
-	Dialogue->SetVisibility(ESlateVisibility::Hidden);
-}

@@ -18,7 +18,8 @@ class PROJECTMJ_API UMJInteractionComponent : public UWidgetComponent
 	UMJInteractionComponent();
 	
 public:
-	void SetWidget();
+	void SetInteractionWidget();
 	void Active(FString key);
 	void Deactive();
+	
 };

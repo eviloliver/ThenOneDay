@@ -33,6 +33,9 @@ public:
 	// HUD
 	void ShowHUD(class AMJPlayerState* PlayerState, class AMJPlayerController* PC);
 	UMJHUDWidget* GetHUDWidget() {return HUDWidget;}
+
+	// Dialouge Section
+	void SetDialogueVisibility();
 	
 	// StatPanel Section
 	void ShowStatPanel();

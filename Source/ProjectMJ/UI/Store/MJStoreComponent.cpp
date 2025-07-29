@@ -10,11 +10,6 @@
 #include "UI/Inventory/ItemDataRow.h"
 
 // Sets default values for this component's properties
-UMJStoreComponent::UMJStoreComponent()
-{
-
-}
-
 void UMJStoreComponent::UpdateStore()
 {
 	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();

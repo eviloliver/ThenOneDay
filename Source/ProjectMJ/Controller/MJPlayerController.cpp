@@ -17,6 +17,7 @@
 #include "Player/MJPlayerState.h"
 #include "ProjectMJ.h"
 #include "Character/Component/MJPlayerSkillComponent.h"
+#include "Dialogue/MJDialogueWidget.h"
 #include "Engine/DocumentationActor.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
@@ -28,6 +29,7 @@
 #include "UI/World/MJInteractionComponent.h"
 #include "UI/Store/MJStoreComponent.h"
 #include "UI/Store/MJStoreWidget.h"
+#include "InputMappingContext.h"
 
 // TODO: Input 관련한 로직들 Component로 따로 빼기 - 동민 - 
 
@@ -83,8 +85,6 @@ void AMJPlayerController::BeginPlay()
 	PauseWidget = CreateWidget(this, PauseWidgetClass);
 	PauseWidget->AddToViewport(1);
 	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
-	
-			
 }
 
 void AMJPlayerController::SetupInputComponent()
@@ -104,16 +104,14 @@ void AMJPlayerController::SetupInputComponent()
 	MJInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AMJPlayerController::ShiftReleased);
 
 	//Dialogue Input
-	MJInputComponent->BindAction(ChangeIMCAction, ETriggerEvent::Triggered, this, &ThisClass::ChangeToIMCDialogue);
+	MJInputComponent->BindAction(ChangeIMCAction, ETriggerEvent::Triggered, this, &ThisClass::StartDialogue);
 	MJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
-	//MJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
+	MJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
 
 	// UI Input
 	MJInputComponent->BindAction(ShowInventoryAction, ETriggerEvent::Triggered, this, &ThisClass::ShowInventory);
 	MJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowStatPanel);
-
-	MJInputComponent->BindAction(ShowStoreAction, ETriggerEvent::Triggered, this, &ThisClass::VisitStore);
-
+	
 	MJInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &ThisClass::PauseGame);
 }
 
@@ -340,22 +338,41 @@ void AMJPlayerController::ShiftReleased()
 	bShiftKeyDown = false;
 }
 
+void AMJPlayerController::StartDialogue()// x키를 눌렀을 때 실행되는 함수
+{
+	if (!IsInteracted) return; 
+	
+	AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
+	if (!MyChar) return;
+	
+	if (UMJInteractComponent* InteractComp = MyChar->GetUITarget()->FindComponentByClass<UMJInteractComponent>())
+	{
+		ChangeToIMCDialogue();
+		InteractComp->StartInteraction();
+		
+		switch (InteractComp->CurrentType)
+		{
+		case EMJInteractionType::Dialogue:
+			UIManager->GetHUDWidget()->SetDialogueVisibility();
+			break;
+
+		case EMJInteractionType::Store:
+			UIManager->ShowStore();
+			break;
+
+		default:
+			break;
+		}
+	}	
+}
+
 void AMJPlayerController::ChangeToIMCDialogue()
 {
-	if (IsInteracted)
-	{
-		AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
-		if (!MyChar) return;
-
-		UIManager->GetHUDWidget()->ShowDialogue();
-		MyChar->GetUITarget()->FindComponentByClass<UMJDialogueComponent>()->FloatLine();
-		
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-        {
-			Subsystem->AddMappingContext(InputConfigDataAsset->GetDialogueMappingContext(), 0);
-			Subsystem->RemoveMappingContext(InputConfigDataAsset->GetDefaultMappingContext());
-        }
-	}
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+    {
+		Subsystem->AddMappingContext(InputConfigDataAsset->GetDialogueMappingContext(), 0);
+   		Subsystem->RemoveMappingContext(InputConfigDataAsset->GetDefaultMappingContext());
+    }
 }
 
 void AMJPlayerController::ChangeToIMCDefault() 
@@ -367,43 +384,43 @@ void AMJPlayerController::ChangeToIMCDefault()
 	}
 }
 
-void AMJPlayerController::ProceedDialogue() 
+void AMJPlayerController::ProceedDialogue()
 {
-	if (IsInteracted)
+	AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
+	if (!MyChar)
 	{
-		AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
-		if (!MyChar) return;
-		UMJDialogueComponent* DialogueComp = MyChar->GetUITarget()->FindComponentByClass<UMJDialogueComponent>();
-		if (!DialogueComp) return;
-		
-		if (DialogueComp->IsDialogueEnd()) // 이거가 안들어지는거 확인하면 됨
-        {
-			UE_LOG(LogTemp, Display, TEXT("Dialogue End"));
-        	ChangeToIMCDefault();
-			DialogueComp->SetIndex(0);
-			return;
-        }
-		
-		DialogueComp->TurnOver();
+		return;
 	}
+	if (!MyChar->GetUITarget())
+	{
+		return;
+	}
+	
+	UMJInteractComponent* InteractComp = MyChar->GetUITarget()->FindComponentByClass<UMJInteractComponent>();
+	if (!InteractComp)
+	{
+		return;
+	}
+	InteractComp->ProceedInteraction();
 }
 
-void AMJPlayerController::VisitStore()
+void AMJPlayerController::SetDialogueVisibility()
 {
-	if (IsInteracted)
-	{
-		UIManager->ShowStore();
-		AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
-		MyChar->GetUITarget()->GetComponentByClass<UMJStoreComponent>()->UpdateStore();
-		UIManager->GetHUDWidget()->GetStoreWidget()->ShowMerchandiseSlots(MyChar->GetUITarget()->GetComponentByClass<UMJStoreComponent>()->GetSlotCount());
-		UE_LOG(LogTemp,Error,TEXT("%d"),MyChar->GetUITarget()->GetComponentByClass<UMJStoreComponent>()->GetSlotCount());
-	}
+	ChangeToIMCDefault();
+	UIManager->SetDialogueVisibility();
 }
 
-// void AMJPlayerController::ShowBacklog()
-// {
-// 	UIManager->ShowBacklog();
-// }
+void AMJPlayerController::SetStoreVisibility()
+{
+	ChangeToIMCDefault();
+	UE_LOG(LogTemp,Error,TEXT("imc 전환됨"));
+	UIManager->ShowStore();
+}
+
+void AMJPlayerController::ShowBacklog()
+{
+	UIManager->GetHUDWidget()->GetDialogueWidget()->ShowBacklog();
+}
 
 void AMJPlayerController::ShowStatPanel()
 {
@@ -418,21 +435,22 @@ void AMJPlayerController::ShowInventory()
 void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
                                                 int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (Other && Other->FindComponentByClass<UMJInteractComponent>())
+	if (Other)
 	{
-		IsInteracted = true;
-		
-		if (AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn()))
+		if (UMJInteractComponent* InteractComp = Other->FindComponentByClass<UMJInteractComponent>())
 		{
-			MJChar->SetUITarget(Other);
-		}
-		
-		if (UMeshComponent* Mesh = Other->FindComponentByClass<UMeshComponent>())
-		{
-			Mesh->SetOverlayMaterial(LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/UI/WBP/HUD/Inventory/woodcover.woodcover")));
-			if (UMJInteractionComponent* InteractionComp = Other->FindComponentByClass<UMJInteractionComponent>())
+			IsInteracted = true;
+			InteractComp->OnBeginInteract();
+			
+			InteractComp->OndialogueEnd.RemoveDynamic(this, &AMJPlayerController::SetDialogueVisibility);
+			InteractComp->OndialogueEnd.AddDynamic(this, &AMJPlayerController::SetDialogueVisibility);
+
+			InteractComp->OnstoreEnd.RemoveDynamic(this, &AMJPlayerController::SetStoreVisibility);
+			InteractComp->OnstoreEnd.AddDynamic(this, &AMJPlayerController::SetStoreVisibility);
+			
+			if (AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn()))
 			{
-				InteractionComp->Active("X"); // 잠시 X로 고정함 // TODO : 어떤 키인지 STRING을 받아올 수 있도록하기!
+				MJChar->SetUITarget(Other);
 			}
 		}
 	}
@@ -441,35 +459,19 @@ void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor*
 void AMJPlayerController::OnTriggeredOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex)
 {
-	if (Other && Other->FindComponentByClass<UMJInteractComponent>())
+	if (Other)
 	{
-		IsInteracted = false;
-		if (UMeshComponent* Mesh = Other->FindComponentByClass<UMeshComponent>())
+		if (UMJInteractComponent* InteractComp = Other->FindComponentByClass<UMJInteractComponent>())
 		{
-			Mesh->SetOverlayMaterial(nullptr);
-			if (UMJInteractionComponent* InteractionComp = Other->FindComponentByClass<UMJInteractionComponent>())
+			IsInteracted = false;
+			InteractComp->OnEndInteract();
+
+			if (AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn()))
 			{
-				InteractionComp->Deactive();
+				MJChar->SetUITarget(nullptr);
 			}
 		}
 	}
-	// if (Other && Other->FindComponentByClass<UMJDialogueComponent>())
-	// {
-	// 	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
-	// 	if (MJChar)
-	// 	{
-	// 		if (MJChar->GetUITarget() == Other)
-	// 		{
-	// 			MJChar->SetUITarget(nullptr);
-	// 			IsTriggeredForDialogue = false;
-	// 			Other->FindComponentByClass<UMeshComponent>()->SetOverlayMaterial(nullptr);
-	// 		}
-	// 	}
-	// 	if (UMJInteractionComponent* IneteractionComp = Other->FindComponentByClass<UMJInteractionComponent>())
-	// 	{
-	// 		IneteractionComp->Deactive();
-	// 	}
-	// }
 }
 
 void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AActor* Other,

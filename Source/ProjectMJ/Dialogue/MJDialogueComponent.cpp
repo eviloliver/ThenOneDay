@@ -29,22 +29,22 @@ void UMJDialogueComponent::TurnOver() // x키가 눌리면 이 함수가 실행�
 	// Next Script
 	++ CurrentIndex;
 	
-	if (IsDialogueEnd())
-    {
-    	GetWorld()->GetGameInstance<UMJGameInstanceTG>()->GetSubsystem<UMJUIManagerSubsystem>()
-    	->GetHUDWidget()->HideDialogue();
+	if (!IsDialogueEnd())
+	{
+		FloatLine();
+        GetDialogueWidget()->SetImageOpacity(GetCurrentRow()->Speaker);
+        
+        UpdateBacklog();
+	}
+}
+
+void UMJDialogueComponent::UpdateBacklog()
+{
+	if (!GetDialogueWidget()->GetBacklogWidget())
+	{
 		return;
-    }
-	
-	FloatLine();
-	GetDialogueWidget()->SetImageOpacity(GetCurrentRow()->Speaker);
-	
-	// // BackLog
-	// if (!GetDialogueWidget()->GetBacklogWidget())
-	// {
-	// 	return;
-	// }
-	// GetDialogueWidget()->GetBacklogWidget()->AddLine(*GetPreviousRow());
+	}
+	GetDialogueWidget()->GetBacklogWidget()->AddLine(*GetPreviousRow());
 }
 
 bool UMJDialogueComponent::IsDialogueEnd() const
