@@ -19,7 +19,7 @@ void UMJHealthBarWidget::BindToAttributes(UMJAbilitySystemComponent* ASC, UMJCha
 	CurrentHealth = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute());
 	// 데이터가 실제로 변할 때마다, GAS가 자동 호출
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this,&UMJHealthBarWidget::OnHealthChanged);
-	
+	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxHealthAttribute()).AddUObject(this,&UMJHealthBarWidget::OnMaxHealthChanged);
 	InitializeWidget();
 }
 
@@ -45,8 +45,19 @@ void UMJHealthBarWidget::InitializeWidget()
 void UMJHealthBarWidget::OnHealthChanged(const FOnAttributeChangeData& Data)
 {
 	CurrentHealth = Data.NewValue; // 바뀐 데이터로 갱신할 수 있는? 근데 이게 있으면 시작할 땐 currentHealth가 0이 되넴
-	
 	TargetPercent = (MaxHealth > 0.f) ? CurrentHealth / MaxHealth : 0.f; // 바 퍼센트 갱신
+
+	if (Percent)
+	{
+		CurrentHealth = CurrentHealth < 0.f ? 0.f : CurrentHealth;
+		Percent->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), CurrentHealth, MaxHealth)));
+	}
+}
+
+void UMJHealthBarWidget::OnMaxHealthChanged(const FOnAttributeChangeData& Data)
+{
+	MaxHealth = Data.NewValue; 
+	TargetPercent = (MaxHealth > 0.f) ? CurrentHealth / MaxHealth : 0.f; 
 
 	if (Percent)
 	{

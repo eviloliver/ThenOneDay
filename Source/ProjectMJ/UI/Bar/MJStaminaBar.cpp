@@ -20,7 +20,8 @@ void UMJStaminaBar::BindToAttributes(class UMJAbilitySystemComponent* ASC, class
 	CurrentStamina = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetStaminaAttribute());
 	// 데이터가 실제로 변할 때마다, GAS가 자동 호출
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetStaminaAttribute()).AddUObject(this,&UMJStaminaBar::OnStaminaChanged);
-
+	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxStaminaAttribute()).AddUObject(this,&UMJStaminaBar::OnMaxStaminaChanged);
+	
 	InitializeWidget();
 }
 
@@ -42,6 +43,20 @@ void UMJStaminaBar::InitializeWidget()
 void UMJStaminaBar::OnStaminaChanged(const FOnAttributeChangeData& Data)
 {
 	CurrentStamina = Data.NewValue;
+	
+	TargetPercent = (MaxStamina > 0.f) ? CurrentStamina / MaxStamina : 0.f;
+	
+	if (Percent)
+	{
+		CurrentStamina = CurrentStamina < 0.f ? 0.f : CurrentStamina;
+		Percent->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), CurrentStamina, MaxStamina)));
+	}
+}
+
+void UMJStaminaBar::OnMaxStaminaChanged(const FOnAttributeChangeData& Data)
+{
+	MaxStamina = Data.NewValue;
+	
 	TargetPercent = (MaxStamina > 0.f) ? CurrentStamina / MaxStamina : 0.f;
 	
 	if (Percent)

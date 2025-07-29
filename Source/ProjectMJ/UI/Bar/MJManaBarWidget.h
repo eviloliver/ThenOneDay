@@ -41,6 +41,7 @@ public:
 	void BindToAttributes(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet);
 	void InitializeWidget();
 	void OnManaChanged(const FOnAttributeChangeData& Data);
+	void OnMaxManaChanged(const FOnAttributeChangeData& Data);
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 };
 
