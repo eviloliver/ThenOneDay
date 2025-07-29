@@ -44,11 +44,9 @@ void AMJTargetingProjectileBase::BeginPlay()
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AMJTargetingProjectileBase::OnSphereOverlap);
 	TargetLocationChanged.BindUObject(this, &AMJTargetingProjectileBase::OnTargetUpdated);
 	
-
-	// 나이아가라 시스테에 FX 적용?
-	
 	FVector ProjectileLocation = GetActorLocation();
 	CurrentTargetLocation = Target->GetActorLocation();
+
 	PreTargetLocation = CurrentTargetLocation;
 	FRotator GoalRotation = UKismetMathLibrary::FindLookAtRotation(ProjectileLocation, CurrentTargetLocation);
 	
@@ -77,19 +75,14 @@ void AMJTargetingProjectileBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	
-	if (Target->GetActorLocation() != CurrentTargetLocation)
+	FVector TargetLocation = Target->GetActorLocation();
+	if (TargetLocation != CurrentTargetLocation)
 	{
 		PreTargetLocation = CurrentTargetLocation;
-		CurrentTargetLocation = Target->GetActorLocation();
-	
+		CurrentTargetLocation = TargetLocation;
+		
 		TargetLocationChanged.ExecuteIfBound();
 	}
-
-	// if (GEngine)
-	// {
-	// 	GEngine->AddOnScreenDebugMessage(
-	// 		-1, 3.f, FColor::Green,FString::Printf(TEXT("Velocity> %ls"), *ProjectileMovement->Velocity.ToString()));
-	// }
 }
 
 void AMJTargetingProjectileBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -105,36 +98,37 @@ void AMJTargetingProjectileBase::OnSphereOverlap(UPrimitiveComponent* Overlapped
 	AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(OtherActor);
 	if (Player)
 	{
-		Player->SkillComponent->LearnSkill(SkillTag);
-		if (GEngine)
+		if (SkillTag.IsValid())
 		{
-			GEngine->AddOnScreenDebugMessage(
-				-1, 3.f, FColor::Green,TEXT("Learn Skill!"));
+			Player->SkillComponent->LearnSkill(SkillTag);
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(
+					-1, 3.f, FColor::Green,TEXT("Learn Skill!"));
+			}
 		}
 	}
-	// Minjin: HitFX가 플레이어한테서 일어나야 될 것 같음- 공격이 아니고 흡수라서
-	//NiagaraComponent->SetAsset(HitFX);
-
 	
+	UNiagaraComponent* FxComp = UNiagaraFunctionLibrary::SpawnSystemAttached(
+	HitFX,
+	Player->GetMesh(),
+	FName("Aim_Target")/*SweepResult.BoneName*/,
+	FVector::ZeroVector,            // 시작 위치
+	FRotator::ZeroRotator,
+	EAttachLocation::Type::SnapToTarget, // 처음 위치는 유지, 이후엔 부모 따라감
+	true,                                // bAutoDestroy
+	true,
+	ENCPoolMethod::None,
+	true
+	);
 
-	// UNiagaraComponent* FxComp = UNiagaraFunctionLibrary::SpawnSystemAttached(
-	// HitFX,
-	// OtherComp,
-	// SweepResult.BoneName,
-	// SweepResult.ImpactPoint,            // 시작 위치
-	// FRotator::ZeroRotator,
-	// EAttachLocation::KeepWorldPosition, // 처음 위치는 유지, 이후엔 부모 따라감
-	// true                                // bAutoDestroy
-	// );
 	Destroy();
 }
 
 void AMJTargetingProjectileBase::OnTargetUpdated()
 {
 	FVector ProjectileLocation = GetActorLocation();
-	FVector PlayerLocation = Target->GetActorLocation();
-	
-	FRotator GoalRotation = UKismetMathLibrary::FindLookAtRotation(ProjectileLocation, PlayerLocation);
+	FRotator GoalRotation = UKismetMathLibrary::FindLookAtRotation(ProjectileLocation, CurrentTargetLocation);
 	
 	SetActorRotation(GoalRotation);
 
