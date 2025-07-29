@@ -8,6 +8,8 @@
 #include "Character/Component/MJPlayerSkillComponent.h"
 #include "MJMonsterCharacter.generated.h"
 
+class AMJItemBase;
+class UMJDropItemsDataAsset;
 class UMJItemDataAsset;
 class AMJTargetingProjectileBase;
 class UMJDamageComponent;
@@ -64,6 +66,9 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 
 protected:
+	UFUNCTION()
+	virtual void GiveDeathRewardTo();
+
 	UFUNCTION()
 	virtual void OnDead(AActor* InEffectCauser);
 

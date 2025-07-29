@@ -22,6 +22,8 @@
 #include "Character/Component/MJPlayerStatComponent.h"
 #include "DataAsset/MJItemDataAsset.h"
 #include "Item/MJItemBase.h"
+#include "MJ/DataAssetMJ/MJDropItemsDataAsset.h"
+#include "UI/Inventory/ItemDataRow.h"
 
 AMJMonsterCharacter::AMJMonsterCharacter()
 {
@@ -222,8 +224,48 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	// Minjin: 죽었을 때 전달할 정보 Setting
 	EnemyBequest.IdentitySkillTag = DataRow->IdentitySkillTag;
 	EnemyBequest.Exp = ASC->GetSet<UMJCharacterAttributeSet>()->GetDropExperience();
-	// TODO: 테이블에 아이템 태그 설정하기.
-	EnemyBequest.ItemTag = DataRow->ItemTag;
+
+	// Minjin: 지정한 확률로 아이템 태그를 얻음
+	EnemyBequest.ItemTag = DataRow->DropItems->TryDropItem();
+}
+
+void AMJMonsterCharacter::GiveDeathRewardTo()
+{
+	// Minjin: 애니메이션 재생되는 동안 경험치 전달
+	AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(EnemyBequest.Target);
+	if (Player)
+	{
+		Player->StatComponent->GainExperience(EnemyBequest.Exp);
+		MJ_LOG(LogMJ, Warning, TEXT("경험치 전달: %d"), EnemyBequest.Exp);
+	}
+
+	if (EnemyBequest.ItemTag.IsValid())
+	{
+		UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+		if (!GI || !GI->ItemDataTable)
+		{
+			MJ_LOG(LogMJ, Error, TEXT("Not Exist GI or ItemDataTable"));
+			return;
+		}
+
+		const FItemDataRow* DataRow = GI->ItemDataTable->FindRow<FItemDataRow>(EnemyBequest.ItemTag.GetTagName(), TEXT("Find ItemData"));
+		if (!DataRow)
+		{
+			MJ_LOG(LogMJ, Error, TEXT("Not Exist DataRow"));
+			return;
+		}
+
+		TSubclassOf<AMJItemBase> ItemClass = DataRow->ItemClass;
+		if (ItemClass)
+		{
+			FVector SpawnLocation = GetActorLocation();
+			SpawnLocation.Z = 0.0f;
+			FTransform SpawnTransform(SpawnLocation);
+			AMJItemBase* Item = GetWorld()->SpawnActorDeferred<AMJItemBase>(ItemClass, SpawnTransform);
+			// Item->SetActorEnableCollision(false);
+			Item->FinishSpawning(SpawnTransform);
+		}
+	}
 }
 
 void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
@@ -253,28 +295,13 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 		const float FinishDelay = DeathAnimation->GetPlayLength();
 		FTimerHandle DeadTimerHandle;
 		
-		// Minjin: 애니메이션 재생되는 동안 경험치 전달
-		AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(InEffectCauser);
-		if (Player)
-		{
-			Player->StatComponent->GainExperience(EnemyBequest.Exp);
-			MJ_LOG(LogMJ, Warning, TEXT("경험치 전달: %d"), EnemyBequest.Exp);
-		}
-
-		if (EnemyBequest.ItemTag.IsValid())
-		{
-			TSubclassOf<AMJItemBase> ItemClass = ItemDataAsset->FindItemClassForTag(EnemyBequest.ItemTag);
-			if (ItemClass)
-			{
-				FTransform SpawnTransform(GetActorLocation());
-				AMJItemBase* Item = GetWorld()->SpawnActor<AMJItemBase>(ItemClass, SpawnTransform);
-			}
-		}
-		
 		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
 			[this]()
 			{
 				SetActorHiddenInGame(true);
+
+				// Minjin: 경험치 전달, 아이템 스폰
+				GiveDeathRewardTo();
 				
 				Destroy();
 			}
@@ -283,6 +310,10 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 	else
 	{
 		SetActorHiddenInGame(true);
+
+		// Minjin: 경험치 전달, 아이템 스폰
+		GiveDeathRewardTo();
+		
 		Destroy();
 	}
 	DamageIndex = 0;
