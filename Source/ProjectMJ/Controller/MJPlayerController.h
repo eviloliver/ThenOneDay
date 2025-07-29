@@ -127,6 +127,11 @@ public:
 #pragma endregion
 
 
+public:
+
+	UFUNCTION(BlueprintCallable)
+	UMJGameFlowHUDWidget* GetGameFlowHUD() {return GameFlowHUD; }
+
 protected:
 	UPROPERTY()
 	TObjectPtr<UMJGameFlowHUDWidget> GameFlowHUD;
@@ -134,37 +139,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = UI)
 	TSubclassOf<UUserWidget> GameFlowHUDWidgetClass;
 	
-	
-	// UPROPERTY()
-	// TObjectPtr<UUserWidget> PauseWidget;
-	//
-	// UPROPERTY(EditDefaultsOnly, Category = UI)
-	// TSubclassOf<UUserWidget> PauseWidgetClass;
-	//
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = UI)
 	UInputAction* PauseAction;
 	//
 	UFUNCTION()
 	void PauseGame();
-	//
-	// void OnWindowFocusChanged(bool bIsFocused);
-	
-	// UPROPERTY()
-	// TObjectPtr<UUserWidget> DungeonEndMenuWidget;
-	//
-	// UPROPERTY(EditDefaultsOnly, Category = UI)
-	// TSubclassOf<UUserWidget> DungeonEndMenuWidgetClass;
-	//
-	// UPROPERTY()
-	// TObjectPtr<UUserWidget> ForceExitCautionWidget;
-	//
-	// UPROPERTY(EditDefaultsOnly, Category = UI)
-	// TSubclassOf<UUserWidget> ForceExitCautionWidgetClass;
-// 	
-// public:
-//
-// 	UFUNCTION()
-// 	UUserWidget* GetPauseWidget();
+
 
 
 protected:
