@@ -107,6 +107,9 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	bool bIsDead;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
+	bool bIsDying = false;
+
 	// Minjin: Animation
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UAnimationAsset> AppearanceAnimation;

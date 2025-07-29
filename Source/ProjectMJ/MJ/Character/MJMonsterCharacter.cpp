@@ -270,11 +270,18 @@ void AMJMonsterCharacter::GiveDeathRewardTo()
 
 void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 {
-	MJ_LOG(LogMJ, Warning, TEXT("Death Start"));
+	if (bIsDying)
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("%s: 죽는 중..."), *GetName());
+		return;
+	}
+	
+	MJ_LOG(LogMJ, Warning, TEXT("%s: Death Start"), *GetName());
 	// TODO:
 	// 애니메이션과 기타 등등 세팅
 	// - 동민 -
 
+	bIsDying = true;
 	AMJMonsterAIControllerBase* AIController = Cast<AMJMonsterAIControllerBase>(GetController());
 	if (AIController)
 	{
@@ -284,7 +291,7 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 	
 	if (DeathAnimation)
 	{
-		MJ_LOG(LogMJ, Warning, TEXT("Death"));
+		MJ_LOG(LogMJ, Warning, TEXT("%s: Play Death Animation"), *GetName());
 		//StopAnimMontage();
 		//GetMesh()->PlayAnimation(DeathAnimation, false);<-이거로 하면 공격 들어갈때마다 애니메이션이 처음부터 재생됨
 		GetMesh()->OverrideAnimationData(DeathAnimation, false);
