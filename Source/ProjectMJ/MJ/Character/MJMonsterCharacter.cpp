@@ -9,8 +9,8 @@
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
 #include "Character/MJPlayerCharacter.h"
+#include "Character/Component/MJEnemySkillComponent.h"
 #include "Character/Component/MJEnemyStatComponent.h"
-#include "Character/Component/MJSkillComponentBase.h"
 #include "DataAsset/DataAsset_StartDataBase.h"
 #include "DataTable/MJEnemyDataRow.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -51,7 +51,7 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	CharacterSkillAttributeSet = CreateDefaultSubobject<UMJCharacterSkillAttributeSet>(TEXT("CharacterSkillAttributeSet"));
 
 	// Skill Component
-	SkillComponent = CreateDefaultSubobject<UMJSkillComponentBase>(TEXT("SkillComponent"));
+	SkillComponent = CreateDefaultSubobject<UMJEnemySkillComponent>(TEXT("SkillComponent"));
 
 	// UI Component
 	HPBarComponent = CreateDefaultSubobject<UMJHealthBarComponent>(TEXT("HPBarComponent"));

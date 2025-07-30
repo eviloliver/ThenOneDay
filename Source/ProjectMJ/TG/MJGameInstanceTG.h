@@ -47,7 +47,10 @@ public:
 	TArray<FMJDungeonSessionData>& GetDungeonSessionDataRef();
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UDataTable> SkillDataTable;
+	TObjectPtr<UDataTable> PlayerSkillDataTable;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UDataTable> EnemySkillDataTable;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TObjectPtr<UDataTable> ItemDataTable;
