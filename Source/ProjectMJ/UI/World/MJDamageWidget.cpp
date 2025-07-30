@@ -15,9 +15,18 @@ void UMJDamageWidget::NativeConstruct()
 }
 
 
-void UMJDamageWidget::SetDamage(float damage)
+void UMJDamageWidget::SetDamage(float damage, bool IsCritical)
 {
 	Damage->SetText(FText::AsNumber(damage));
+
+	if (IsCritical)
+	{
+		Damage->SetColorAndOpacity( FSlateColor(FLinearColor::Red));
+	}
+	else
+	{
+		Damage->SetColorAndOpacity( FSlateColor(FLinearColor::White));
+	}
 }
 
 void UMJDamageWidget::PlayAnim()

@@ -29,7 +29,7 @@ protected:
 	void OnAnimFinished();
 public:
 	virtual void NativeConstruct() override;
-	void SetDamage(float damage);
+	void SetDamage(float damage, bool IsCritical);
 	void PlayAnim();
 
 	FWidgetAnimationDynamicEvent AnimFinishedDelegate;

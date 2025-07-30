@@ -90,7 +90,12 @@ void UMJEC_SkillDamage::Execute_Implementation(const FGameplayEffectCustomExecut
     {
         FinalDamage *= (1.0f + CriticalDamage / 100.0f);
         // TODO:크리티컬 연출/태그 등 처리
+    	
     }
+
+	FGameplayEffectSpec& NonConstSpec = const_cast<FGameplayEffectSpec&>(Spec); // Spec이 const라서 cast
+	NonConstSpec.SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Character.IsCritical")), bIsCritical ? 1.f : 0.f);
+	
      // TODO: 난수 추가
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UMJCharacterAttributeSet::GetHealthAttribute(), EGameplayModOp::Additive, -FinalDamage));
 

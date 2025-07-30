@@ -287,7 +287,7 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 	DamageIndex = 0;
 }
 
-void AMJMonsterCharacter::OnDamage(float Magnitude)
+void AMJMonsterCharacter::OnDamage(float Magnitude, bool bIsCritical)
 {
 	HPBarComponent->SetVisibility(true);
 	
@@ -299,9 +299,8 @@ void AMJMonsterCharacter::OnDamage(float Magnitude)
 
 	if (UMJDamageWidget* Widget =Cast<UMJDamageWidget>(NewComp->GetUserWidgetObject()) )
 	{
-		Cast<UMJDamageWidget>(NewComp->GetUserWidgetObject())->SetDamage(-Magnitude);
-		Cast<UMJDamageWidget>(NewComp->GetUserWidgetObject())->PlayAnim();
+		Widget->SetDamage(-Magnitude, bIsCritical);
+		Widget->PlayAnim();
 	}
 	DamageIndex ++;
-	
 }

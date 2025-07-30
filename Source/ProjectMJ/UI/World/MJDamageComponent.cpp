@@ -22,7 +22,6 @@ void UMJDamageComponent::SetDamageWidget(FVector CharacterLocation)
 	SetWorldLocation(CharacterLocation + FVector(0, 0, 220));
 	SetDrawSize(FVector2D(30.0f,30.0f));
 	SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	SetVisibility(false);
 }
 
 

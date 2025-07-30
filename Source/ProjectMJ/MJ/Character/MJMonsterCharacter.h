@@ -64,7 +64,7 @@ protected:
 	virtual void OnDead(AActor* InEffectCauser);
 
 	UFUNCTION()
-	void OnDamage(float Magnitude);
+	void OnDamage(float Magnitude, bool bIsCritical);
 
 protected:
 	// Jisoo : UI Section
