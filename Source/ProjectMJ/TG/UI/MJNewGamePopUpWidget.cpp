@@ -58,11 +58,12 @@ void UMJNewGamePopUpWidget::OnClicked_ConfirmButton()
 	}
 
 	// Switch to InGame When sound play end
-	UAudioComponent* AudioComp = UGameplayStatics::SpawnSound2D(GetWorld(),SuccessSound);
-	if (AudioComp)
-	{
-		AudioComp->OnAudioFinished.AddDynamic(this, &UMJNewGamePopUpWidget::SwitchToInGame);
-	}
+	// UAudioComponent* AudioComp = UGameplayStatics::SpawnSound2D(GetWorld(),SuccessSound);
+	// if (AudioComp)
+	// {
+	// 	AudioComp->OnAudioFinished.AddDynamic(this, &UMJNewGamePopUpWidget::SwitchToInGame);
+	// }
+	SwitchToInGame();
 }
 
 void UMJNewGamePopUpWidget::SwitchToInGame()

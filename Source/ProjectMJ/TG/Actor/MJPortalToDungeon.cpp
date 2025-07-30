@@ -36,10 +36,10 @@ void AMJPortalToDungeon::GotoDungeon(UPrimitiveComponent* OverlappedComponent, A
 		SubSystem->GenerateDungeonGraph();
 	}
 
-	UAudioComponent* AudioComp = UGameplayStatics::SpawnSound2D(GetWorld(),CollisionSFX);
-
-	AudioComp->OnAudioFinished.AddDynamic(this, &AMJPortalToDungeon::OnAudioFinish);
-
+	// UAudioComponent* AudioComp = UGameplayStatics::SpawnSound2D(GetWorld(),CollisionSFX);
+	//
+	// AudioComp->OnAudioFinished.AddDynamic(this, &AMJPortalToDungeon::OnAudioFinish);
+	OnAudioFinish();
 }
 
 void AMJPortalToDungeon::OnAudioFinish()

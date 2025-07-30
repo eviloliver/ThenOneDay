@@ -31,11 +31,12 @@ FReply UMJLoadGameSlotWidget::NativeOnMouseButtonDoubleClick(const FGeometry& In
 		
 		if (bLoadSlotSucceeded)
 		{
-			UAudioComponent* AudioComp = UGameplayStatics::SpawnSound2D(GetWorld(),SuccessSound);
-			if (AudioComp)
-			{
-				AudioComp->OnAudioFinished.AddDynamic(this, &UMJLoadGameSlotWidget::SwitchToInGame);
-			}	
+			// UAudioComponent* AudioComp = UGameplayStatics::SpawnSound2D(GetWorld(),SuccessSound);
+			// if (AudioComp)
+			// {
+			// 	AudioComp->OnAudioFinished.AddDynamic(this, &UMJLoadGameSlotWidget::SwitchToInGame);
+			// }
+			SwitchToInGame();
 			return FReply::Handled();
 		}
 	}
