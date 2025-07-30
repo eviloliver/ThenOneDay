@@ -7,7 +7,7 @@
 #include "TG/Interface/MJBossEventManagerTG.h"
 #include "TG/DataTable/MJWaveAISpawnRow.h"
 #include "TG/Struct/MJDungeonSessionDataStruct.h"
-#include "MJGameStateDungeonTG.generated.h"
+#include "MJGameStateDungeon.generated.h"
 
 /**
  * Class Description: 던전의 상태를 저장할 GameState
@@ -21,23 +21,25 @@ class AMJAIBossCharacterTG;
 class UEnvQuery;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnHealthChangedSignature, float, Delta);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIBossOnSpawnedSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIBossOnDiedSignature);
+
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIOnDestroyedSignature);
 
 UCLASS()
-class PROJECTMJ_API AMJGameStateDungeonTG : public AGameStateBase, public IMJBossEventManagerTG
+class PROJECTMJ_API AMJGameStateDungeon : public AGameStateBase, public IMJBossEventManagerTG
 {
 	GENERATED_BODY()
 	
 public:
 	// Initialize Section
 
-	AMJGameStateDungeonTG();
+	AMJGameStateDungeon();
 
 	virtual void BeginPlay() override;
 	
 	UFUNCTION(BlueprintCallable)
-	void SetDungeonSessionData(FMJDungeonSessionData& DungeonSessionData);
+	void SetDungeonSessionData(const FMJDungeonSessionData& DungeonSessionData);
 	
 	UFUNCTION(BlueprintCallable)
 	void SaveToInstancedDungeonSessionData(uint8 SaveToNum);
@@ -52,6 +54,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FMJAIBossOnSpawnedSignature OnAIBossSpawned;
+
+	UPROPERTY(BlueprintAssignable)
+	FMJAIBossOnDiedSignature OnAIBossDied;
 
 
 	UFUNCTION(BlueprintCallable)
@@ -88,8 +93,7 @@ protected:
 	void OnAIDestroy(AActor* DestroyedActor);
 
 	UFUNCTION()
-	void SpawnEndPortal();
-	
+	void SpawnDungeonPortal();
 	
 	// Dungeon Session Section
 	
@@ -110,7 +114,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	int32 StaticAISpawnMaxNum;
 	
-
 	// Wave Section
 	
 	UPROPERTY()
@@ -143,11 +146,16 @@ protected:
 	FMJAIOnDestroyedSignature OnAIDestroyed;
 	
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AActor> PortalActor;
+	TSubclassOf<AActor> DungeonPortalActorClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> EndPortalActorClass;
+
+	UPROPERTY()
+	TSubclassOf<AActor> TargetPortalToSpawn;
 	
 	UPROPERTY()
-	FTimerHandle EndPortalSpawnTimerHandle;
-
+	FTimerHandle DungeonPortalSpawnTimerHandle;
 
 	// Boss Section
 
@@ -156,11 +164,5 @@ protected:
 
 	UPROPERTY()
 	FTimerHandle OnBossSpawnedBroadCastTimerHandle;
-
-	
-	
-
-
-
 	
 };

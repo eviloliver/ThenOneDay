@@ -24,11 +24,12 @@ public:
 
 	UFUNCTION()
 	UUserWidget* GetParentWidget();
+	
+	UFUNCTION(BlueprintCallable)
+	void BackToParentWidget();
 
 protected:
 
-	UFUNCTION(BlueprintCallable)
-	void BackToParentWidget();
 	
 	UPROPERTY()
 	TObjectPtr<UUserWidget> ParentWidget;

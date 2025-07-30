@@ -3,9 +3,11 @@
 
 #include "TG/UI/MJLoadGameSlotWidget.h"
 
+#include "Components/AudioComponent.h"
 #include "Components/Border.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 #include "TG/SubSystem/MJSaveGameSubsystem.h"
 
 
@@ -20,26 +22,38 @@ void UMJLoadGameSlotWidget::NativeConstruct()
 	Super::NativeConstruct();
 }
 
-FReply UMJLoadGameSlotWidget::NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry,
-	const FPointerEvent& InMouseEvent)
+FReply UMJLoadGameSlotWidget::NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	UMJSaveGameSubsystem* SGSS = GetGameInstance()->GetSubsystem<UMJSaveGameSubsystem>();
 	if (SGSS)
 	{
-		SGSS->LoadGameFromSlotNum(SlotNum);
+		bool bLoadSlotSucceeded  = SGSS->LoadGameFromSlotNum(SlotNum);
 		
-		UGameplayStatics::OpenLevel(this,TEXT("TG_Town"));
-	
-		return FReply::Handled();
+		if (bLoadSlotSucceeded)
+		{
+			UAudioComponent* AudioComp = UGameplayStatics::SpawnSound2D(GetWorld(),SuccessSound);
+			if (AudioComp)
+			{
+				AudioComp->OnAudioFinished.AddDynamic(this, &UMJLoadGameSlotWidget::SwitchToInGame);
+			}	
+			return FReply::Handled();
+		}
 	}
-
-	return FReply::Unhandled();
 	
+	UGameplayStatics::SpawnSound2D(GetWorld(),FailSound);
+	
+	return FReply::Unhandled();
 }
 
-void UMJLoadGameSlotWidget::SetText(const FText NewPlayerNameText, const FText NewCreatedDateText,
+void UMJLoadGameSlotWidget::SwitchToInGame()
+{
+	UGameplayStatics::OpenLevel(this,TEXT("TG_Town"));
+}
+
+void UMJLoadGameSlotWidget::SetText(const FText NewSlotNumberText, const FText NewPlayerNameText, const FText NewCreatedDateText,
                                     const FText NewRecentPlayedDateText)
 {
+	SlotNumberText->SetText(NewSlotNumberText);
 	PlayerNameText->SetText(NewPlayerNameText);
 	CreatedDateText->SetText(NewCreatedDateText);
 	RecentPlayedDateText->SetText(NewRecentPlayedDateText);

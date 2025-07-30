@@ -1,20 +1,20 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MJGameModeDungeonTG.h"
+#include "MJGameModeDungeon.h"
 
 #include "ProjectMJ.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/MJPlayerState.h"
 #include "TG/MJGameInstanceTG.h"
-#include "TG/GameState/MJGameStateDungeonTG.h"
+#include "TG/GameState/MJGameStateDungeon.h"
 
 
-AMJGameModeDungeonTG::AMJGameModeDungeonTG()
+AMJGameModeDungeon::AMJGameModeDungeon()
 {
 }
 
-void AMJGameModeDungeonTG::BeginPlay()
+void AMJGameModeDungeon::BeginPlay()
 {
 	Super::BeginPlay();
 	
@@ -27,7 +27,7 @@ void AMJGameModeDungeonTG::BeginPlay()
 	
 }
 
-bool AMJGameModeDungeonTG::TravelToMapByNode(const FString MapName, const uint8 NodeNum)
+bool AMJGameModeDungeon::TravelToMapByNode(const FString MapName, const uint8 NodeNum)
 {
 
 	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
@@ -37,7 +37,7 @@ bool AMJGameModeDungeonTG::TravelToMapByNode(const FString MapName, const uint8 
 		
 		MJGI->GetPlayerSessionDataRef().CurrentDungeonMapNum = NodeNum;
 		
-		AMJGameStateDungeonTG* MJGS = GetGameState<AMJGameStateDungeonTG>();
+		AMJGameStateDungeon* MJGS = GetGameState<AMJGameStateDungeon>();
 		
 		if (MJGS )
 		{

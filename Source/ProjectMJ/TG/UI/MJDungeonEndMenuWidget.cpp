@@ -3,11 +3,13 @@
 
 #include "TG/UI/MJDungeonEndMenuWidget.h"
 
+#include "Character/MJPlayerCharacter.h"
+#include "Character/Component/MJPlayerStatComponent.h"
 #include "Components/Button.h"
 #include "GameMode/MJGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
-#include "Player/MJPlayerState.h"
 
+class UMJPlayerStatComponent;
 class AMJPlayerState;
 
 void UMJDungeonEndMenuWidget::NativeConstruct()
@@ -19,10 +21,12 @@ void UMJDungeonEndMenuWidget::NativeConstruct()
 
 	Button_TryAgain->OnClicked.AddDynamic(this,&UMJDungeonEndMenuWidget::OnClicked_TryAgain);
 
-	AMJPlayerState* MJPS = Cast<AMJPlayerState>(UGameplayStatics::GetPlayerState(this,0));
-	if (MJPS)
+	
+	UMJPlayerStatComponent* MJPlayerStatComp = (Cast<AMJPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this,0))
+		->FindComponentByClass<UMJPlayerStatComponent>());
+	if (MJPlayerStatComp)
 	{
-		MJPS->GetCharacterAttributeSet()->OnDeath.AddDynamic(this,&UMJDungeonEndMenuWidget::OnDead);
+		MJPlayerStatComp->OnDeath.AddDynamic(this,&::UMJDungeonEndMenuWidget::OnDead);
 	}
 
 	SetVisibility(ESlateVisibility::Hidden);

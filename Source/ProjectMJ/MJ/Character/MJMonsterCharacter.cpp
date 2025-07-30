@@ -70,6 +70,8 @@ void AMJMonsterCharacter::BeginPlay()
 	UIManager =	GetGameInstance()->GetSubsystem<UMJUIManagerSubsystem>();
 	ensure(UIManager);
 	UIManager->ResisterWorldUI(HPBarComponent,ASC,CharacterAttributeSet);
+	// 게임 종료 후 Try again을 눌러 다시 시작하면 람다로 보내놓았던 Tick 이 비동기적으로 다시 실행될 것. 따라서 처음에 ClearTimer 해줌. (태관)
+	GetWorldTimerManager().ClearTimer(DeadTimerHandle);
 }
 
 float AMJMonsterCharacter::GetAIPatrolRadius()
@@ -146,7 +148,6 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	CharacterAttributeSet->OnDeath.AddDynamic(this, &ThisClass::OnDead);
 	
 	if (ASC)
 	{
@@ -169,7 +170,7 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	// 나중에 DT만들고 집중 안될 때 와서 작업 함
 	//  -동민 -
 	CharacterAttributeSet->OnDamage.AddDynamic(this,&ThisClass::OnDamage);
-	CharacterAttributeSet->OnDeath.AddDynamic(this, &ThisClass::OnDead);
+	StatComponent->OnDeath.AddDynamic(this, &ThisClass::OnDead);
 	// 알겠긔 -민진-
 
 	/*
@@ -242,8 +243,8 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 		//GetMesh()->PlayAnimation(DeathAnimation, false);<-이거로 하면 공격 들어갈때마다 애니메이션이 처음부터 재생됨
 		GetMesh()->OverrideAnimationData(DeathAnimation, false);
 		const float FinishDelay = DeathAnimation->GetPlayLength();
-		FTimerHandle DeadTimerHandle;
-
+		//FTimerHandle DeadTimerHandle; -> 멤버변수로 뺌  BeginPlay 주석 참고 (태관, 25.07.23)
+		
 		// Minjin: 애니메이션 재생되는 동안 경험치 전달
 		// TODO: 스킬도 애니메이션 재생 때 전달하도록 변경하기
 		AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(InEffectCauser);

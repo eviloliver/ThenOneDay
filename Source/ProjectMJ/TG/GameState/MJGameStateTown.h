@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
-#include "MJGameStateTownTG.generated.h"
+#include "MJGameStateTown.generated.h"
 
 /**
  * Class Description: 마을의 상태를 저장할 GameState
@@ -14,12 +14,12 @@
  * Last Modified Date: 2025-06-14
  */
 UCLASS()
-class PROJECTMJ_API AMJGameStateTownTG : public AGameStateBase
+class PROJECTMJ_API AMJGameStateTown : public AGameStateBase
 {
 	GENERATED_BODY()
 
 public:
-	AMJGameStateTownTG();
+	AMJGameStateTown();
 	
 	
 protected:

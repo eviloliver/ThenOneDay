@@ -3,9 +3,11 @@
 
 #include "TG/UI/MJNewGamePopUpWidget.h"
 
+#include "Components/AudioComponent.h"
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 #include "TG/MJGameInstanceTG.h"
 #include "TG/Struct/MJSaveGame.h"
 
@@ -16,6 +18,8 @@ void UMJNewGamePopUpWidget::NativeConstruct()
 
 	BackButton->OnClicked.AddDynamic(this, &UMJNewGamePopUpWidget::OnClicked_BackButton);
 	ConfirmButton->OnClicked.AddDynamic(this, &UMJNewGamePopUpWidget::OnClicked_ConfirmButton);
+
+	NextSlotNum = -1; 
 	
 }
 
@@ -29,17 +33,14 @@ void UMJNewGamePopUpWidget::OnClicked_ConfirmButton()
 	if (InputPlayerNameTextBox->GetText().IsEmpty())
 	{
 		InputPlayerNameTextBox->SetHintText(FText::FromString(TEXT("Please Enter Valid Player Name!!")));
-	
+
+		UGameplayStatics::SpawnSound2D(GetWorld(),FailSound);
 		return;
 	}
 	
-	int8 NextSlotNum = GetEmptySlotNum();
-
-	if (NextSlotNum == -1)
-	{
-		
-	}
-	else
+	bool bHasValidSlot = (NextSlotNum = GetEmptySlotNum()) != -1;
+	
+	if (bHasValidSlot)
 	{
 		UMJSaveGame* NewSave = Cast<UMJSaveGame>(UGameplayStatics::CreateSaveGameObject(UMJSaveGame::StaticClass()));
 		NewSave->SlotNum = NextSlotNum;
@@ -51,7 +52,21 @@ void UMJNewGamePopUpWidget::OnClicked_ConfirmButton()
 		
 		UGameplayStatics::SaveGameToSlot(NewSave, SlotName, 0);
 	}
+	else
+	{
+		InputPlayerNameTextBox->SetHintText(FText::FromString(TEXT("### Has No Valid Slot!! ###")));
+	}
 
+	// Switch to InGame When sound play end
+	UAudioComponent* AudioComp = UGameplayStatics::SpawnSound2D(GetWorld(),SuccessSound);
+	if (AudioComp)
+	{
+		AudioComp->OnAudioFinished.AddDynamic(this, &UMJNewGamePopUpWidget::SwitchToInGame);
+	}
+}
+
+void UMJNewGamePopUpWidget::SwitchToInGame()
+{
 	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
 	if (MJGI)
 	{
@@ -59,14 +74,12 @@ void UMJNewGamePopUpWidget::OnClicked_ConfirmButton()
 		MJGI->GetPlayerSessionDataRef().SaveGameSlotNum = NextSlotNum;
 	}
 	
-	
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0))
 	{
 		FInputModeGameAndUI InputModeGameAndUI;
 		PC->SetInputMode(InputModeGameAndUI);
 	}
-	
-	//OpenLevel
+	// OpenLevel
 	
 	UGameplayStatics::OpenLevel(this,TEXT("TG_Town"));
 }
@@ -81,6 +94,5 @@ int8 UMJNewGamePopUpWidget::GetEmptySlotNum()
 			return i;
 		}
 	}
-
 	return -1;
 }

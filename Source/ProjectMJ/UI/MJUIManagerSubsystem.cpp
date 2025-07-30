@@ -14,22 +14,31 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Inventory/MJInventoryWidget.h"
 #include "Kismet/GameplayStatics.h"
-#include "TG/GameState/MJGameStateDungeonTG.h"
+#include "TG/GameState/MJGameStateDungeon.h"
 #include "TG/UI/MJBossHpBarWidget.h"
+#include "TG/UI/MJGameFlowHUDWidget.h"
 
+
+UMJUIManagerSubsystem::UMJUIManagerSubsystem()
+{
+	static ConstructorHelpers::FClassFinder<UMJDialogueWidget> DialogueWidgetRef(TEXT("/Game/UI/WBP/Dialogue/BP_MJDialogueWidget.BP_MJDialogueWidget_C"));
+	if (DialogueWidgetRef.Succeeded())
+	{
+		DialogueWidgetClass = DialogueWidgetRef.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<UMJHUDWidget> HUDWidgetRef(TEXT("/Game/UI/WBP/HUD/WBP_HUD.WBP_HUD_C"));
+	if (HUDWidgetRef.Succeeded())
+	{
+		HUDWidgetClass = HUDWidgetRef.Class;
+	}
+}
 
 void UMJUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 	
-	DialogueWidgetClass = LoadClass<UMJDialogueWidget>(
-			nullptr,
-			TEXT("/Game/UI/WBP/Dialogue/BP_MJDialogueWidget.BP_MJDialogueWidget_C"));
-
-	HUDWidgetClass = LoadClass<UMJHUDWidget>(
-		nullptr,
-		TEXT("/Game/UI/WBP/HUD/WBP_HUD.WBP_HUD_C"));
-
+	
 	// EnemyHPBarWidgetClass = LoadClass<UMJEnemyHPBar>(
 	// 	nullptr,
 	// 	TEXT("/Game/UI/WBP/World/Bar/WBP_EnemyHPBar.WBP_EnemyHPBar_C"));
@@ -48,12 +57,6 @@ void UMJUIManagerSubsystem::ShowHUD(AMJPlayerState* PlayerState, AMJPlayerContro
 		{
 			auto* MJASC = Cast<UMJAbilitySystemComponent>(PlayerState->GetAbilitySystemComponent());
 			HUDWidget->BindAtrributesToChildren(MJASC,PlayerState->GetCharacterAttributeSet());
-		}
-
-		AMJGameStateDungeonTG* MJDungeonState = Cast<AMJGameStateDungeonTG>(UGameplayStatics::GetGameState(GetWorld()));
-		if (MJDungeonState)
-		{
-			MJDungeonState->OnAIBossSpawned.AddDynamic(this,&UMJUIManagerSubsystem::OnBossSpawned);
 		}
 	}
 }
@@ -166,10 +169,4 @@ void UMJUIManagerSubsystem::UnresisterWorldUI(UWidgetComponent* WidgetComp)
 {
 	WorldUIs.Remove(WidgetComp);
 	WidgetComp->SetVisibility(false);
-}
-//
-void UMJUIManagerSubsystem::OnBossSpawned()
-{
-	HUDWidget->GetBossHpBarWidget()->BindToAttributes();
-	HUDWidget->ShowBossHpBar();
 }

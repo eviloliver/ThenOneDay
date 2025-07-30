@@ -6,6 +6,7 @@
 #include "MJChildMenuBaseWidget.h"
 #include "MJSettingsWidget.generated.h"
 
+class USlider;
 class UButton;
 class UComboBoxString;
 
@@ -37,6 +38,27 @@ protected:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_Back;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USlider> MasterVolumeSlider;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USlider> MusicVolumeSlider;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<USlider> SFXVolumeSlider;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USoundClass> MasterSoundClass;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USoundClass> MusicSoundClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USoundClass> SFXSoundClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USoundMix> SoundMixModifier;
 	
 
 	UFUNCTION()
@@ -51,6 +73,15 @@ protected:
 	UFUNCTION()
 	void OnClicked_Back();
 
+	UFUNCTION()
+	void MasterVolumeValueChanged(float NewValue);
+
+	UFUNCTION()
+	void MusicVolumeValueChanged(float NewValue);
+	
+	UFUNCTION()
+	void SFXVolumeValueChanged(float NewValue);
+	
 
 
 
