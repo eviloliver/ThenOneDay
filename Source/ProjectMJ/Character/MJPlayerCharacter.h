@@ -92,6 +92,7 @@ protected:
 	TObjectPtr<UMJFadeObjectComponent>FadeComponent;*/
 #pragma endregion
 
+public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Skill", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UMJPlayerSkillComponent> SkillComponent;
 

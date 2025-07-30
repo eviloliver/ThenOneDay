@@ -47,10 +47,6 @@ public:
 
 	// Store Section
 	void ShowStore();
-
-	// World UI
-	void ResisterWorldUI(UWidgetComponent* WidgetComp,UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet);
-	void UnresisterWorldUI(UWidgetComponent* WidgetComp);
 	
 protected:
 	UPROPERTY()

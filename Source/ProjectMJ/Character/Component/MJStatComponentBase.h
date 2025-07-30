@@ -43,6 +43,6 @@ protected:
 	UPROPERTY()
 	bool bIsDead = false;
 	
-	bool bIsInitializingStats = true;
+	bool bIsInitializingStats = false;
 	
 };

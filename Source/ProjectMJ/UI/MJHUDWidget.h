@@ -62,10 +62,8 @@ public:
 	void ShowStatPanel();
 	void ShowInventory();
 	void ShowStore();
-	void HideBossHpBar();
-	void ShowBossHpBar();
+	void SetDialogueVisibility();
 
-	UMJBossHpBarWidget* GetBossHpBarWidget() {return BossHpBar;}
 	UMJInventoryWidget* GetInventoryWidget() {return Inventory;};
 	UMJStoreWidget* GetStoreWidget() {return Store;};
 	UMJDialogueWidget* GetDialogueWidget() {return Dialogue;};

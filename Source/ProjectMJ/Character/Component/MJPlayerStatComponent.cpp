@@ -19,6 +19,8 @@ UMJPlayerStatComponent::UMJPlayerStatComponent()
 void UMJPlayerStatComponent::InitializeStat()
 {
 	// 다음 필요 경험치 계산
+	bIsInitializingStats = true;
+
 	ExperienceForNextLevel = GetTotalExperienceForLevel(PlayerLevel + 1);
 
 	if (!PlayerStatTable)
@@ -64,6 +66,8 @@ void UMJPlayerStatComponent::InitializeStat()
 	}
 	ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 	OwnerCharacter->GetCharacterMovement()->MaxWalkSpeed = ASC->GetSet<UMJCharacterAttributeSet>()->GetMaxMovementSpeed();
+
+	bIsInitializingStats = false;
 }
 
 void UMJPlayerStatComponent::GainExperience(int32 GainedExp)

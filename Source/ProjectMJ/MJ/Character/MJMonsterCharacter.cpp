@@ -302,7 +302,7 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 		AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(InEffectCauser);
 		if (Player)
 		{
-			Player->GainExperience(EnemyBequest.Exp);
+			Player->StatComponent->GainExperience(EnemyBequest.Exp);
 			MJ_LOG(LogMJ, Warning, TEXT("경험치 전달: %d"), EnemyBequest.Exp);
 		}
 		

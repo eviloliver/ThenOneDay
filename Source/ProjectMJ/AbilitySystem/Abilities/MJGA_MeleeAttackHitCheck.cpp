@@ -83,7 +83,7 @@ void UMJGA_MeleeAttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTarg
 
 		if (!StatusGameplayEffectClass)
 		{
-			MJ_LOG(LogMJ, Warning, TEXT("Not Exist DamageGameplayEffectClass"));
+			MJ_LOG(LogMJ, Warning, TEXT("Not Exist StatusGameplayEffectClass"));
 
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 			return;

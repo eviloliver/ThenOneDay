@@ -19,13 +19,9 @@
 #include "TG/UI/MJGameFlowHUDWidget.h"
 
 
+
 UMJUIManagerSubsystem::UMJUIManagerSubsystem()
 {
-	static ConstructorHelpers::FClassFinder<UMJDialogueWidget> DialogueWidgetRef(TEXT("/Game/UI/WBP/Dialogue/BP_MJDialogueWidget.BP_MJDialogueWidget_C"));
-	if (DialogueWidgetRef.Succeeded())
-	{
-		DialogueWidgetClass = DialogueWidgetRef.Class;
-	}
 
 	static ConstructorHelpers::FClassFinder<UMJHUDWidget> HUDWidgetRef(TEXT("/Game/UI/WBP/HUD/WBP_HUD.WBP_HUD_C"));
 	if (HUDWidgetRef.Succeeded())
@@ -81,10 +77,3 @@ void UMJUIManagerSubsystem::ShowStore()
 	HUDWidget->ShowStore();
 }
 
-//충돌나면 World UI 부분 없는걸로 선택 ㄱㄱ 지운거맞음
-
-void UMJUIManagerSubsystem::UnresisterWorldUI(UWidgetComponent* WidgetComp)
-{
-	WorldUIs.Remove(WidgetComp);
-	WidgetComp->SetVisibility(false);
-}
