@@ -10,8 +10,6 @@
 #include "Component/Input/MJInputComponent.h"
 #include "Character/MJPlayerCharacter.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "AbilitySystem/MJAbilitySystemComponent.h"
-#include "Dialogue/MJDialogueComponent.h"
 #include "Components/SphereComponent.h"
 #include "UI/MJUIManagerSubsystem.h"
 #include "Player/MJPlayerState.h"
@@ -19,19 +17,12 @@
 #include "Character/Component/MJPlayerSkillComponent.h"
 #include "Dialogue/MJDialogueWidget.h"
 #include "Character/Component/MJPlayerStatComponent.h"
-#include "Engine/DocumentationActor.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
-#include "Kismet/GameplayStatics.h"
 #include "TG/UI/MJGameFlowHUDWidget.h"
-#include "TG/UI/MJPauseMenuWidget.h"
-#include "TG/UI/MJSettingsWidget.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/Component/MJInteractComponent.h"
-#include "UI/World/MJInteractionComponent.h"
-#include "UI/Store/MJStoreComponent.h"
-#include "UI/Store/MJStoreWidget.h"
-#include "InputMappingContext.h"
+
 
 // TODO: Input 관련한 로직들 Component로 따로 빼기 - 동민 - 
 
@@ -359,7 +350,7 @@ void AMJPlayerController::StartDialogue()// x키를 눌렀을 때 실행되는 �
 		switch (InteractComp->CurrentType)
 		{
 		case EMJInteractionType::Dialogue:
-			UIManager->GetHUDWidget()->SetDialogueVisibility();
+			UIManager->SetDialogueVisibility();
 			break;
 
 		case EMJInteractionType::Store:
