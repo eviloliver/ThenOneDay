@@ -3,7 +3,7 @@
 
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
 
-UMJCharacterSkillAttributeSet::UMJCharacterSkillAttributeSet() 
+UMJCharacterSkillAttributeSet::UMJCharacterSkillAttributeSet()
     : SkillLevel(0.0f)
     , MaxSkillLevel(0.0f)
 
@@ -47,11 +47,21 @@ UMJCharacterSkillAttributeSet::UMJCharacterSkillAttributeSet()
     , EffectDuration(0.0f)
     , MaxEffectDuration(0.0f)
 
-    // Status effect
+    // Status Effect
     , StatusEffectChance(0.0f)
     , MaxStatusEffectChance(0.0f)
     , StatusEffectDuration(0.0f)
     , MaxStatusEffectDuration(0.0f)
+    , StatusEffectADScaling(0.0f)
+    , MaxStatusEffectADScaling(0.0f)
+    , StatusEffectAPScaling(0.0f)
+    , MaxStatusEffectAPScaling(0.0f)
+    , StatusEffectMaxStack(0.0f)
+    , MaxStatusEffectMaxStack(0.0f)
+    , StatusEffectPeriod(0.0f)
+    , MaxStatusEffectPeriod(0.0f)
+    , StatusEffectSlowPercent(0.0f)
+    , MaxStatusEffectSlowPercent(0.0f)
 
     // Projectile
     , ProjectileSpeed(0.0f)

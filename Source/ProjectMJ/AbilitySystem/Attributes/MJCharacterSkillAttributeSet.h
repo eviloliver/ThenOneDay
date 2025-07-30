@@ -16,16 +16,17 @@
 /**
  * Class Description: 스킬 어트리뷰트 세트
  * Author: 신동민
- * Created Date: 2025_06_18
- * Last Modified By: 신동민
- * Last Modified Date: 2025_06_19
+ * Created Date: 2025.06.18
+ * Description of Change: 상태이상 값 추가
+ * Modified By: 신동민
+ * Modified Date: 2025.07.28
  */
 UCLASS()
 class PROJECTMJ_API UMJCharacterSkillAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
 
-public:
+	public:
 	UMJCharacterSkillAttributeSet();
 
 	// Level
@@ -90,6 +91,24 @@ public:
 
 	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, StatusEffectDuration)
 	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxStatusEffectDuration)
+
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, StatusBaseDamage)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxStatusBaseDamage)
+
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, StatusEffectADScaling)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxStatusEffectADScaling)
+
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, StatusEffectAPScaling)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxStatusEffectAPScaling)
+
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, StatusEffectMaxStack)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxStatusEffectMaxStack)
+
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, StatusEffectPeriod)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxStatusEffectPeriod)
+
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, StatusEffectSlowPercent);
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxStatusEffectSlowPercent);
 
 	// Projectile
 	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, ProjectileSpeed)
@@ -204,6 +223,37 @@ protected:
 	FGameplayAttributeData StatusEffectDuration;
 	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData MaxStatusEffectDuration;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData StatusEffectADScaling;
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxStatusEffectADScaling;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData StatusBaseDamage;
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxStatusBaseDamage;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData StatusEffectAPScaling;
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxStatusEffectAPScaling;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData StatusEffectMaxStack;
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxStatusEffectMaxStack;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData StatusEffectPeriod;
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxStatusEffectPeriod;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData StatusEffectSlowPercent;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|StatusEffect", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxStatusEffectSlowPercent;
 
 	// Projectile
 	UPROPERTY(BlueprintReadOnly, Category = "Skill|Projectile", Meta = (AllowPrivateAccess = true))
