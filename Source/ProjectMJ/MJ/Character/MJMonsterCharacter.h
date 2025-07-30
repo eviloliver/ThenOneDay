@@ -8,6 +8,10 @@
 #include "Character/Component/MJPlayerSkillComponent.h"
 #include "MJMonsterCharacter.generated.h"
 
+class AMJItemBase;
+class UMJDropItemsDataAsset;
+class UMJItemDataAsset;
+class AMJTargetingProjectileBase;
 class UMJHealthBarComponent;
 class UMJDamageComponent;
 class UWidgetComponent;
@@ -28,6 +32,7 @@ struct EnemyTransferData
 	FGameplayTag IdentitySkillTag;
 	int32 Exp;
 	FGameplayTag ItemTag;
+	AActor* Target;
 };
 
 UCLASS()
@@ -43,6 +48,8 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	TObjectPtr<UAnimationAsset> GetAppearanceAnimation(){return AppearanceAnimation;}
+
+	const EnemyTransferData& GetEnemyBequest(){return EnemyBequest;}
 	
 protected:
 	virtual void BeginPlay() override;
@@ -60,6 +67,9 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 
 protected:
+	UFUNCTION()
+	virtual void GiveDeathRewardTo();
+
 	UFUNCTION()
 	virtual void OnDead(AActor* InEffectCauser);
 
@@ -98,16 +108,24 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	bool bIsDead;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
+	bool bIsDying = false;
+
 	// Minjin: Animation
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UAnimationAsset> AppearanceAnimation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UAnimationAsset> DeathAnimation;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Item")
+	TObjectPtr<UMJItemDataAsset> ItemDataAsset;
 	
 	// Minjin: Ability Tag-안씀
 	FGameplayTag AttackTag;
 
 	// Minjin: 죽고 플레이어한테 줘야 하는 정보
 	EnemyTransferData EnemyBequest;
+
+	FTimerHandle DeadTimerHandle;
 };

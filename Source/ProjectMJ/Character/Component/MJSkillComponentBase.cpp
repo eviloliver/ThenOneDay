@@ -10,6 +10,7 @@
 #include "AbilitySystem/Effect/MJGE_SetSkillAttributeSet.h"
 #include "Character/MJCharacterBase.h"
 #include "DataTable/MJSkillDataRow.h"
+#include "DataTable/MJSkillLevelAbilityRow.h"
 #include "TG/MJGameInstanceTG.h"
 
 // Sets default values for this component's properties
@@ -225,46 +226,37 @@ void UMJSkillComponentBase::GiveAbilityToASC(const FGameplayTag& SkillTag)
 	RemoveAbility(SkillTag);
 
 	int32 SkillLevel = OwnedSkillMap[SkillTag].Level;
+	FName RowName = FName(*FString::FromInt(SkillLevel));
 
-	const FSkillAssetDataByLevel* FoundAssetData = nullptr;
-	for (int32 i = DataRow->AssetTagDataByLevel.Num() - 1; i >= 0; --i)
+	UDataTable* SkillLevelAbilityTable = DataRow->SkillLevelAbilityTable.LoadSynchronous();
+	if (!SkillLevelAbilityTable)
 	{
-		const FSkillAssetDataByLevel& AssetData = DataRow->AssetTagDataByLevel[i];
-		if (SkillLevel >= AssetData.MinimumLevel)
-		{
-			FoundAssetData = &AssetData;
-			break;
-		}
+		MJ_LOG(LogMJ, Log, TEXT("Not Exist SkillLevelAbilityTable"));
+		return;
 	}
 
-	if (DataRow->SkillActionAbilityClass)
+	const FMJSkillLevelAbilityRow* LevelAbilityRow = SkillLevelAbilityTable->FindRow<FMJSkillLevelAbilityRow>(RowName, TEXT("SkillLevelAbility"));
+	
+	if (LevelAbilityRow->ActionSkillAbilityClass)
 	{
-		FGameplayAbilitySpec ActionAbilitySpec(DataRow->SkillActionAbilityClass, SkillLevel, INDEX_NONE, OwnerCharacter);
-		if (FoundAssetData && FoundAssetData->AnimationTag.IsValid())
-		{
-			ActionAbilitySpec.DynamicAbilityTags.AddTag(FoundAssetData->AnimationTag);
-		}
+		FGameplayAbilitySpec ActionAbilitySpec(LevelAbilityRow->ActionSkillAbilityClass, SkillLevel, INDEX_NONE, OwnerCharacter);
 		FGameplayAbilitySpecHandle ActionHandle = ASC->GiveAbility(ActionAbilitySpec);
 		GivenActionAbilityHandles.Add(SkillTag, ActionHandle);
 	}
 
-	if (DataRow->SkillAbilityClass)
+	if (LevelAbilityRow->SkillAbilityClass)
 	{
-		FGameplayAbilitySpec SkillAbilitySpec(DataRow->SkillAbilityClass, SkillLevel, INDEX_NONE, OwnerCharacter);
-		if (FoundAssetData && OwnedSkillMap.Contains(SkillTag))
-		{
-			OwnedSkillMap[SkillTag].ProjectileTag = FoundAssetData->ProjectileTag;
-		}
+		FGameplayAbilitySpec SkillAbilitySpec(LevelAbilityRow->SkillAbilityClass, SkillLevel, INDEX_NONE, OwnerCharacter);
+
 		FGameplayAbilitySpecHandle SkillHandle = ASC->GiveAbility(SkillAbilitySpec);
 		GivenSkillAbilityHandles.Add(SkillTag, SkillHandle);
 	}
 
-	if (DataRow->PassiveSkillAbilityClass)
+	if (LevelAbilityRow->PassiveSkillAbilityClass)
 	{
-		FGameplayAbilitySpec PassiveSkillAbilitySpec(DataRow->PassiveSkillAbilityClass, SkillLevel, INDEX_NONE, OwnerCharacter);
+		FGameplayAbilitySpec PassiveSkillAbilitySpec(LevelAbilityRow->PassiveSkillAbilityClass, SkillLevel, INDEX_NONE, OwnerCharacter);
 		FGameplayAbilitySpecHandle PassiveSkillHandle = ASC->GiveAbility(PassiveSkillAbilitySpec);
 		GivenPassiveAbilityHandles.Add(SkillTag, PassiveSkillHandle);
-		
 	}
 }
 

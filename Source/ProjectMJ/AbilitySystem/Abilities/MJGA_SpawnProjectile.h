@@ -11,8 +11,9 @@
  * Class Description: Spawn Projectile Ability
  * Author: 신동민
  * Created Date: 2025.07.03
- * Last Modified By:
- * Last Modified Date:
+ * Description of Change:
+ * Modified By:
+ * Modified Date:
  */
 
 class UMJProjectileDataAsset;
@@ -34,10 +35,13 @@ protected:
 	//UPROPERTY(EditDefaultsOnly, Category = "Projectile")
 	//TSubclassOf<AMJProjectileBase> ProjectileClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Projectile");
-	TArray<TSubclassOf<UGameplayEffect>> GameplayEffectClasses;
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Effects")
+	TSubclassOf<UGameplayEffect> DamageGameplayEffectClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Effects")
+	TSubclassOf<UGameplayEffect> StatusGameplayEffectClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
-	TObjectPtr<UMJProjectileDataAsset> ProjectileDataAsset;
+	TSubclassOf<AMJProjectileBase> ProjectileClass;
 
 };

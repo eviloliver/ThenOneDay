@@ -26,13 +26,14 @@ void UMJLoadGameWidget::NativeConstruct()
 			if (SaveGame)
 			{
 				UMJLoadGameSlotWidget* NewSlotWidget = CreateWidget<UMJLoadGameSlotWidget>(this, LoadGameSlotWidgetClass);
-				NewSlotWidget->SetText(FText::FromString(SaveGame->PlayerName),
-					FText::FromString(SaveGame->SaveGameCreatedDateTime.ToString(TEXT("%Y/%m/%d %H:%M"))),
-					FText::FromString(SaveGame->RecentPlayedDateTime.ToString(TEXT("%Y/%m/%d %H:%M")))
-					
-				);
 				
 				NewSlotWidget->SetSlotNum(SaveGame->SlotNum);
+				NewSlotWidget->SetText(FText::FromString(FString::FromInt(SaveGame->SlotNum)),
+					FText::FromString(SaveGame->PlayerName),
+					FText::FromString(SaveGame->SaveGameCreatedDateTime.ToString(TEXT("%Y/%m/%d %H:%M"))),
+					FText::FromString(SaveGame->RecentPlayedDateTime.ToString(TEXT("%Y/%m/%d %H:%M")))
+				);
+				
 				NewSlotWidget->SetPadding(FMargin(20.0f,20.f,20.f,20.f));
 				SavedGameSlotScrollBox->AddChild(NewSlotWidget);
 			}

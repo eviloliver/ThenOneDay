@@ -3,15 +3,20 @@
 
 #include "TG/UI/MJPauseMenuWidget.h"
 
-#include "MJSettingsWidget.h"
+#include "MJForceExitCautionWidget.h"
 #include "Components/Button.h"
 #include "Components/Spacer.h"
-#include "Controller/MJPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/MJPlayerState.h"
-#include "TG/GameMode/MJGameModeDungeonTG.h"
-#include "TG/GameMode/MJGameModeTownTG.h"
+#include "TG/GameMode/MJGameModeDungeon.h"
+#include "TG/GameMode/MJGameModeTown.h"
 #include "TG/SubSystem/MJSaveGameSubsystem.h"
+
+void UMJPauseMenuWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	
+}
 
 void UMJPauseMenuWidget::NativeConstruct()
 {
@@ -24,10 +29,9 @@ void UMJPauseMenuWidget::NativeConstruct()
 	Button_GotoTown->OnClicked.AddDynamic(this,&UMJPauseMenuWidget::OnClicked_GotoTown);
 	Button_QuitGame->OnClicked.AddDynamic(this, &UMJPauseMenuWidget::OnClicked_QuitGame);
 
-	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
-	if (PC)
+	if (PC.IsValid())
 	{
-		SettingsWidget = Cast<UMJChildMenuBaseWidget>(CreateWidget(PC, SettingsWidgetClass));
+		SettingsWidget = Cast<UMJChildMenuBaseWidget>(CreateWidget(this, SettingsWidgetClass));
 		if (SettingsWidget)
 		{		
 			SettingsWidget->SetParentWidget(this);
@@ -35,46 +39,43 @@ void UMJPauseMenuWidget::NativeConstruct()
 			SettingsWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 
-		if (AMJGameModeTownTG* GMTown = GetWorld()->GetAuthGameMode<AMJGameModeTownTG>())
+		ForceExitCautionWidget = Cast<UMJChildMenuBaseWidget>(CreateWidget(this,ForceExitCautionWidgetClass));
+		if (ForceExitCautionWidget)
+		{
+			ForceExitCautionWidget->SetParentWidget(this);
+			ForceExitCautionWidget->AddToViewport(2);
+			ForceExitCautionWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
+
+		if (AMJGameModeTown* GMTown = GetWorld()->GetAuthGameMode<AMJGameModeTown>())
 		{
 			Spacer_GotoTown->SetVisibility(ESlateVisibility::Collapsed);
 			Button_GotoTown->SetVisibility(ESlateVisibility::Collapsed);
 		}
-		else if (AMJGameModeDungeonTG* GMDungeon = GetWorld()->GetAuthGameMode<AMJGameModeDungeonTG>())
+		else if (AMJGameModeDungeon* GMDungeon = GetWorld()->GetAuthGameMode<AMJGameModeDungeon>())
 		{
 			Spacer_GotoTown->SetVisibility(ESlateVisibility::Visible);
 			Button_GotoTown->SetVisibility(ESlateVisibility::Visible);
 		}
-		
 	}
 }
 
 void UMJPauseMenuWidget::OnClicked_Resume()
 {
-	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
-	if (PC)
+	if (PC.IsValid())
 	{
-		AMJPlayerController* MJPC = Cast<AMJPlayerController>(PC);
-		if (MJPC)
+		SetVisibility(ESlateVisibility::Hidden);
+			
+		if (PC->IsPaused())
 		{
-			UUserWidget* PauseWidget = MJPC->GetPauseWidget();
-			if (PauseWidget)
-			{
-				PauseWidget->SetVisibility(ESlateVisibility::Hidden);
-				
-				if (PC->IsPaused())
-				{
-					PC->SetPause(false);
-				}		
-			}
-		}
+			PC->SetPause(false);
+		}		
 	}
 }
 
 void UMJPauseMenuWidget::OnClicked_SaveGame()
 {
-	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
-	if (PC)
+	if (PC.IsValid())
 	{
 		AMJPlayerState* PS = PC->GetPlayerState<AMJPlayerState>();
 		if (PS)
@@ -87,46 +88,89 @@ void UMJPauseMenuWidget::OnClicked_SaveGame()
 
 void UMJPauseMenuWidget::OnClicked_Settings()
 {
-	UMJSettingsWidget* MJSettingsWidget = Cast<UMJSettingsWidget>(SettingsWidget);
-	if (MJSettingsWidget)
+	if (SettingsWidget)
 	{
 		SetVisibility(ESlateVisibility::Hidden);
-		MJSettingsWidget->SetParentWidget(this);
-		MJSettingsWidget->SetVisibility(ESlateVisibility::Visible);
+		SettingsWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
 void UMJPauseMenuWidget::OnClicked_MainMenu()
 {
-	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
-	if (PC)
+	if (PC.IsValid())
 	{
-		RemoveFromParent();
-		UGameplayStatics::OpenLevel(GetWorld(),TEXT("TG_MainMenu"));
+		
+		SetVisibility(ESlateVisibility::Hidden);
+		UMJForceExitCautionWidget* CastedWidget = Cast<UMJForceExitCautionWidget>(ForceExitCautionWidget);
+		
+		if (CastedWidget)
+		{
+			CastedWidget->PopUpWithCallback(FOnUserConfirmed::CreateLambda([this]
+			{
+				AMJGameModeBase* MJGM = GetWorld()->GetAuthGameMode<AMJGameModeBase>();
+				if (MJGM)
+				{
+					MJGM->TravelToMap(TEXT("TG_MainMenu"));
+				}
+			}));
+		}
 	}
 }
 
 void UMJPauseMenuWidget::OnClicked_GotoTown()
 {
-	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(),0);
-	if (PC)
+	if (PC.IsValid())
 	{
-		RemoveFromParent();
-		AMJGameModeBase* MJGM = GetWorld()->GetAuthGameMode<AMJGameModeBase>();
-		if (MJGM)
+
+		SetVisibility(ESlateVisibility::Hidden);
+		UMJForceExitCautionWidget* CastedWidget = Cast<UMJForceExitCautionWidget>(ForceExitCautionWidget);
+		
+		if (CastedWidget)
 		{
-			MJGM->TravelToMap(TEXT("TG_Town"));
+			CastedWidget->PopUpWithCallback(FOnUserConfirmed::CreateLambda([this]
+			{
+				AMJGameModeBase* MJGM = GetWorld()->GetAuthGameMode<AMJGameModeBase>();
+				if (MJGM)
+				{
+					MJGM->TravelToMap(TEXT("TG_Town"));
+				}
+			}));
 		}
+		
 	}
 }
 
 void UMJPauseMenuWidget::OnClicked_QuitGame()
 {
-	UKismetSystemLibrary::QuitGame(this,nullptr,EQuitPreference::Quit,false);
+	if (IsValid(ForceExitCautionWidget))
+	{
+		SetVisibility(ESlateVisibility::Hidden);
+		UMJForceExitCautionWidget* CastedWidget = Cast<UMJForceExitCautionWidget>(ForceExitCautionWidget);
+		
+		if (CastedWidget)
+		{
+			CastedWidget->PopUpWithCallback(FOnUserConfirmed::CreateLambda([this]
+			{
+				UKismetSystemLibrary::QuitGame(GetWorld(),nullptr,EQuitPreference::Quit,false);
+			}));
+		}
+	}
 }
-
 
 UUserWidget* UMJPauseMenuWidget::GetSettingsWidget()
 {
 	return SettingsWidget;	
+}
+
+UUserWidget* UMJPauseMenuWidget::GetForceExitCautionWidget()
+{
+	return ForceExitCautionWidget;
+}
+
+void UMJPauseMenuWidget::SetPlayerController(APlayerController* InputPC)	
+{
+	if (IsValid(InputPC))
+	{
+		PC = InputPC;
+	}
 }

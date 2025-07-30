@@ -30,11 +30,6 @@ void UMJHUDWidget::NativeConstruct()
 		Store->SetVisibility(ESlateVisibility::Hidden);
 	}
 
-	if (BossHpBar)
-	{
-		BossHpBar->SetVisibility(ESlateVisibility::Hidden);
-	}
-
 	if (Dialogue)
 	{
 		Dialogue->SetVisibility(ESlateVisibility::Hidden);
@@ -98,16 +93,6 @@ void UMJHUDWidget::ShowStore()
 	{
 		Store->SetVisibility(ESlateVisibility::Visible);
 	}
-}
-
-void UMJHUDWidget::HideBossHpBar()
-{
-	BossHpBar->SetVisibility(ESlateVisibility::Hidden);
-}
-
-void UMJHUDWidget::ShowBossHpBar()
-{
-	BossHpBar->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UMJHUDWidget::SetDialogueVisibility()

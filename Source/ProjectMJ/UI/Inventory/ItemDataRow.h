@@ -4,12 +4,15 @@
 #include "Engine/DataTable.h"
 #include "GameplayTagContainer.h"
 #include "ItemDataRow.generated.h"
+class AMJItemBase;
 /**
  * Class Description: Item DataTable Base
  * Author: 이지수
  * Created Date: ?
  * Last Modified By: 이지수
- * Last Modified Date: 2025.07.15 / Add 
+ * Last Modified Date: 2025.07.15 / Add
+ * Last Modified By: 김민진
+ * Last Modified Date: 2025.07.29 / Add ItemClass
  */
 UENUM(BlueprintType)
 enum class EItemType : uint8
@@ -64,5 +67,7 @@ struct FItemDataRow : public FTableRowBase // 안바뀌는값 // 아이템 고�
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsMerchandise;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AMJItemBase> ItemClass;
+	
 };

@@ -53,7 +53,6 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	//Add FadeComponent
 	//FadeComponent = CreateDefaultSubobject<UMJFadeObjectComponent>(TEXT("FadeComponent"));
 	// Minjin: AI Perception-캐릭터를 StimuliSource로 등록(AI가 감지)
-	
 	PerceptionStimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("AIPerceptionStimuliSourceComponent"));
 	if (nullptr!= PerceptionStimuliSourceComponent)
 	{
@@ -83,21 +82,8 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	// Effect Component
 	EffectComponent = CreateDefaultSubobject<UMJPlayerEffectComponent>(TEXT("EffectComponent"));
 
-}
-
-void AMJPlayerCharacter::LearnSkill(const FGameplayTag& SkillTag)
-{
-	if(SkillTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Skill"))))
-	{
-		// Minjin
-		// TODO: 스킬컴포넌트 null
-		SkillComponent->LearnSkill(SkillTag);
-	}
-}
-
-void AMJPlayerCharacter::GainExperience(int32 Exp)
-{
-	StatComponent->GainExperience(Exp);
+	// Minjin: ID 설정
+	ID = ETeam_ID::PLAYER;
 }
 
 void AMJPlayerCharacter::BeginPlay()

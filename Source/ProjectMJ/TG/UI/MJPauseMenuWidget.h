@@ -24,18 +24,32 @@ public:
 
 	UFUNCTION()
 	UUserWidget* GetSettingsWidget();
+
+	UFUNCTION()
+	UUserWidget* GetForceExitCautionWidget();
+
+	void SetPlayerController(APlayerController* PC);
 	
 
 protected:
-
-	virtual void NativeConstruct() override;
+	virtual void NativeOnInitialized() override;
 	
+	virtual void NativeConstruct() override;
+
+	// WeakPtr of MJPC
+	TWeakObjectPtr<APlayerController> PC;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> SettingsWidgetClass;
 
 	UPROPERTY()
 	TObjectPtr<UMJChildMenuBaseWidget> SettingsWidget;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> ForceExitCautionWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UMJChildMenuBaseWidget> ForceExitCautionWidget;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_Resume;
@@ -66,17 +80,16 @@ protected:
 
 	UFUNCTION()
 	void OnClicked_Settings();
-
 	
 	UFUNCTION()
 	void OnClicked_GotoTown();
-
 	
 	UFUNCTION()
 	void OnClicked_MainMenu();
 
 	UFUNCTION()
 	void OnClicked_QuitGame();
+
 	
 	
 };

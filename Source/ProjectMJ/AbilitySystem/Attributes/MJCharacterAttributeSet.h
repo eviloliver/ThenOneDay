@@ -109,8 +109,7 @@ public:
 	virtual bool PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
-	// 태애애애관 이거 델리게이트 변수명이랑 메서드(OnDeath) 랑 이름 같아서 컴파일러가 징징댄다. 바꿈
-	FOnDeathDelegate OnDeath;
+
 	// mutable FOnDeathDelegate OnDeath;
 	FOnDamageDelegate OnDamage;
 	
@@ -118,6 +117,8 @@ public:
 	// EC에서 접근하게 해주기 위해서
 	// 이거 아니면 접근지정자를 public으로 하는건데 Aura는 Public, 보통은 캡슐화를 위해서 protected(friend 하긴 하지만 그래도 최소한의 캡슐화)
 	friend struct FMJEC_SkillDamageStatics;
+	friend struct FMJEC_DamageOverTimeStatics;
+	friend struct FMJEC_MovementSpeedModifierStatics;
 
 protected:
 

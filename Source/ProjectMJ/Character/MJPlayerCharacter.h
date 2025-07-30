@@ -27,6 +27,9 @@ class UMJFadeObjectComponent;
  * Modified By: 신동민
  * Modified Date: 2025.07.08
  * Modified Description: Add SkillComponent
+ * Modified By: 김민진
+ * Modified Date: 2025.07.29.
+ * Modified Description: Add ID
  */
 UCLASS()
 class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase, public IMJInventoryInterface
@@ -35,10 +38,7 @@ class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase, public IMJInve
 	
 public:
 	AMJPlayerCharacter();
-
-	// TODO: 일단 이렇게 해봄
-	void LearnSkill(const FGameplayTag& SkillTag);
-	void GainExperience(int32 Exp);
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController)override;
@@ -72,6 +72,10 @@ public:
 	AActor* GetUITarget() {return UITarget;}
 	USphereComponent* GetUITrigger() {return UITrigger;}
 	UMJInventoryComponent* GetInventoryComponent() {return InventoryComponent;}
+
+
+	//태관  25.07.23 add protected:
+protected:
 	
 #pragma endregion
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="Camera",meta=(AllowPrivateAccess=true))

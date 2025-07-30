@@ -52,9 +52,6 @@ private:
 	TObjectPtr<UMJStoreWidget> Store;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UMJBossHpBarWidget> BossHpBar;
-
-	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJDialogueWidget> Dialogue;
 
 public:
@@ -67,11 +64,8 @@ public:
 	void ShowStore();
 	void HideBossHpBar();
 	void ShowBossHpBar();
-	void SetDialogueVisibility();
-
 
 	UMJBossHpBarWidget* GetBossHpBarWidget() {return BossHpBar;}
-	UMJExperienceWidget* GetExperienceWidget() {return ExpBar;}
 	UMJInventoryWidget* GetInventoryWidget() {return Inventory;};
 	UMJStoreWidget* GetStoreWidget() {return Store;};
 	UMJDialogueWidget* GetDialogueWidget() {return Dialogue;};

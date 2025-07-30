@@ -12,7 +12,7 @@ class UBoxComponent;
  * Author: Lee JuHyeon
  * Created Date: 2025_06_18
  * Last Modified By:Lee Ju Hyeon
- * Last Modified Date: Remove Collision
+ * Last Modified Date: 2025_07_26
 */
 UCLASS()
 class PROJECTMJ_API AMJWeaponBase : public AActor
@@ -27,6 +27,7 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Mesh")
 	TObjectPtr<UStaticMeshComponent>WeaponMesh;
-	
-
+	// Sword RootComponent Change
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,Category="Mesh")
+	TObjectPtr<USceneComponent>Body;
 };

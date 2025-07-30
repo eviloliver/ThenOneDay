@@ -14,6 +14,8 @@
  * Modified Date:
  */
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathDelegate, AActor*, InEffectCauser);
+
 class UGameplayEffect;
 
 UCLASS( ClassGroup=(Stat), meta=(BlueprintSpawnableComponent) )
@@ -25,4 +27,22 @@ public:
 	UMJStatComponentBase();
 
 	virtual void InitializeStat() {};
+
+	FORCEINLINE void SetbIsDead(bool NewbIsDead) {bIsDead = NewbIsDead;}
+	FORCEINLINE bool GetbIsDead() const { return bIsDead; }
+	
+	FORCEINLINE void SetbbIsInitializingStats(bool NewbIsInitializingStats) {bIsInitializingStats = NewbIsInitializingStats;}
+	FORCEINLINE bool GetbIsInitializingStats() const { return bIsInitializingStats; }
+
+	virtual void OnDead(AActor* InEffectCauser);
+
+	FOnDeathDelegate OnDeath;
+
+protected:
+
+	UPROPERTY()
+	bool bIsDead = false;
+	
+	bool bIsInitializingStats = true;
+	
 };

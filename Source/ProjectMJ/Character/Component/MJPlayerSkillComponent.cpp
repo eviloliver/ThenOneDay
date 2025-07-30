@@ -16,6 +16,9 @@ void UMJPlayerSkillComponent::BeginPlay()
 	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirArrow")));
 	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirArrow")));
 
+	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.PoisonSlash")));
+	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.PoisonSlash")));
+
 	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.Catastrophe")));
 	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.Catastrophe")));
 	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.Catastrophe")));

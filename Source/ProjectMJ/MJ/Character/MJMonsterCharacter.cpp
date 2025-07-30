@@ -15,11 +15,15 @@
 #include "DataTable/MJEnemyDataRow.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MJ/AI/MJMonsterAIControllerBase.h"
-#include "MJ/Drop/MJSkillDropTest.h"
 #include "Components/WidgetComponent.h"
 #include "UI/World/MJDamageWidget.h"
 #include "UI/MJUIManagerSubsystem.h"
 #include "TG/MJGameInstanceTG.h"
+#include "Character/Component/MJPlayerStatComponent.h"
+#include "DataAsset/MJItemDataAsset.h"
+#include "Item/MJItemBase.h"
+#include "MJ/DataAssetMJ/MJDropItemsDataAsset.h"
+#include "UI/Inventory/ItemDataRow.h"
 #include "UI/Bar/MJEnemyHPBar.h"
 #include "UI/Component/MJHealthBarComponent.h"
 
@@ -52,6 +56,9 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	// UI Component
 	HPBarComponent = CreateDefaultSubobject<UMJHealthBarComponent>(TEXT("HPBarComponent"));
 	HPBarComponent->SetupAttachment(GetRootComponent());
+
+	// Minjin: ID 설정
+	ID = ETeam_ID::MONSTER;
 }
 
 void AMJMonsterCharacter::BeginPlay()
@@ -143,7 +150,6 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	CharacterAttributeSet->OnDeath.AddDynamic(this, &ThisClass::OnDead);
 	
 	if (ASC)
 	{
@@ -166,7 +172,7 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	// 나중에 DT만들고 집중 안될 때 와서 작업 함
 	//  -동민 -
 	CharacterAttributeSet->OnDamage.AddDynamic(this,&ThisClass::OnDamage);
-	CharacterAttributeSet->OnDeath.AddDynamic(this, &ThisClass::OnDead);
+	StatComponent->OnDeath.AddDynamic(this, &ThisClass::OnDead);
 	// 알겠긔 -민진-
 
 	/*
@@ -214,32 +220,82 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	// Minjin: 죽었을 때 전달할 정보 Setting
 	EnemyBequest.IdentitySkillTag = DataRow->IdentitySkillTag;
 	EnemyBequest.Exp = ASC->GetSet<UMJCharacterAttributeSet>()->GetDropExperience();
-	// TODO: 테이블에 아이템 태그 설정하기.
-	EnemyBequest.ItemTag = FGameplayTag::EmptyTag;
+
+	// Minjin: 지정한 확률로 아이템 태그를 얻음
+	EnemyBequest.ItemTag = DataRow->DropItems->TryDropItem();
+}
+
+void AMJMonsterCharacter::GiveDeathRewardTo()
+{
+	// Minjin: 애니메이션 재생되는 동안 경험치 전달
+	AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(EnemyBequest.Target);
+	if (Player)
+	{
+		Player->StatComponent->GainExperience(EnemyBequest.Exp);
+		MJ_LOG(LogMJ, Warning, TEXT("경험치 전달: %d"), EnemyBequest.Exp);
+	}
+
+	if (EnemyBequest.ItemTag.IsValid())
+	{
+		UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+		if (!GI || !GI->ItemDataTable)
+		{
+			MJ_LOG(LogMJ, Error, TEXT("Not Exist GI or ItemDataTable"));
+			return;
+		}
+
+		const FItemDataRow* DataRow = GI->ItemDataTable->FindRow<FItemDataRow>(EnemyBequest.ItemTag.GetTagName(), TEXT("Find ItemData"));
+		if (!DataRow)
+		{
+			MJ_LOG(LogMJ, Error, TEXT("Not Exist DataRow"));
+			return;
+		}
+
+		TSubclassOf<AMJItemBase> ItemClass = DataRow->ItemClass;
+		if (ItemClass)
+		{
+			FVector SpawnLocation = GetActorLocation();
+			SpawnLocation.Z = 0.0f;
+			FTransform SpawnTransform(SpawnLocation);
+			AMJItemBase* Item = GetWorld()->SpawnActorDeferred<AMJItemBase>(ItemClass, SpawnTransform);
+			// Item->SetActorEnableCollision(false);
+			Item->FinishSpawning(SpawnTransform);
+		}
+	}
 }
 
 void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 {
-	MJ_LOG(LogMJ, Warning, TEXT("Death Start"));
+	if (bIsDying)
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("%s: 죽는 중..."), *GetName());
+		return;
+	}
+	
+	MJ_LOG(LogMJ, Warning, TEXT("%s: Death Start"), *GetName());
 	// TODO:
 	// 애니메이션과 기타 등등 세팅
 	// - 동민 -
 
+	bIsDying = true;
 	AMJMonsterAIControllerBase* AIController = Cast<AMJMonsterAIControllerBase>(GetController());
 	if (AIController)
 	{
 		AIController->StopAI();
 	}
+	SetActorEnableCollision(false);
 	
 	if (DeathAnimation)
 	{
-		MJ_LOG(LogMJ, Warning, TEXT("Death"));
+		MJ_LOG(LogMJ, Warning, TEXT("%s: Play Death Animation"), *GetName());
 		//StopAnimMontage();
-		// Minjin: 몽타주로 하는 게 좋을까 생각중
 		//GetMesh()->PlayAnimation(DeathAnimation, false);<-이거로 하면 공격 들어갈때마다 애니메이션이 처음부터 재생됨
 		GetMesh()->OverrideAnimationData(DeathAnimation, false);
+
+		// Minin: Target 정보 저장
+		EnemyBequest.Target = InEffectCauser;
+		
 		const float FinishDelay = DeathAnimation->GetPlayLength();
-		FTimerHandle DeadTimerHandle;
 
 		// Minjin: 애니메이션 재생되는 동안 경험치 전달
 		// TODO: 스킬도 애니메이션 재생 때 전달하도록 변경하기
@@ -251,36 +307,23 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 		}
 		
 		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
-			[&]()
+			[this]()
 			{
-				SetActorEnableCollision(false);
 				SetActorHiddenInGame(true);
+
+				// Minjin: 경험치 전달, 아이템 스폰
+				GiveDeathRewardTo();
 				
-				// Minjin: 죽은 이후 활동
-				UWorld* World = GetWorld();
-				FTransform SpawnTransform(GetActorLocation() /*+  FVector(0.0f, 0.0f, 30.0f)*/);
-				AMJSkillDropTest* DropSkill = World->SpawnActorDeferred<AMJSkillDropTest>(AMJSkillDropTest::StaticClass(), SpawnTransform);
-				MJ_LOG(LogMJ, Warning, TEXT("Create DropSkll"));
-				DropSkill->SetSkillTag(EnemyBequest.IdentitySkillTag);
-					
-				DropSkill->FinishSpawning(SpawnTransform);
 				Destroy();
 			}
 		), FinishDelay, false);
 	}
 	else
 	{
-		SetActorEnableCollision(false);
 		SetActorHiddenInGame(true);
 
-		// Minjin: 죽은 이후 활동
-		UWorld* World = GetWorld();
-		FTransform SpawnTransform(GetActorLocation() /*+  FVector(0.0f, 0.0f, 30.0f)*/);
-		AMJSkillDropTest* DropSkill = World->SpawnActorDeferred<AMJSkillDropTest>(AMJSkillDropTest::StaticClass(), SpawnTransform);
-
-		DropSkill->SetSkillTag(EnemyBequest.IdentitySkillTag);
-					
-		DropSkill->FinishSpawning(SpawnTransform);
+		// Minjin: 경험치 전달, 아이템 스폰
+		GiveDeathRewardTo();
 		
 		Destroy();
 	}
