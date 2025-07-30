@@ -13,7 +13,7 @@ GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDamageDelegate, float, Data);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDamageDelegate, float, Data, bool, IsCritical);
 
 /**
  * Class Description: 캐릭터 어트리뷰트 세트
@@ -110,7 +110,7 @@ public:
 
 
 	// mutable FOnDeathDelegate OnDeath;
-	FOnDamageDelegate OnDamage;
+	mutable FOnDamageDelegate OnDamage;
 	
 
 	// EC에서 접근하게 해주기 위해서

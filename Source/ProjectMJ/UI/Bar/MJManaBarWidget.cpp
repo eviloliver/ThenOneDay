@@ -19,7 +19,7 @@ void UMJManaBarWidget::BindToAttributes(class UMJAbilitySystemComponent* ASC,
 	CurrentMana= ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetManaAttribute());
 	// 데이터가 실제로 변할 때마다, GAS가 자동 호출
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetManaAttribute()).AddUObject(this,&UMJManaBarWidget::OnManaChanged);
-
+	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxManaAttribute()).AddUObject(this,&UMJManaBarWidget::OnMaxManaChanged);
 	InitializeWidget();
 }
 
@@ -40,6 +40,20 @@ void UMJManaBarWidget::InitializeWidget()
 void UMJManaBarWidget::OnManaChanged(const FOnAttributeChangeData& Data)
 {
 	CurrentMana = Data.NewValue;
+	
+	TargetPercent = (MaxMana > 0.f) ? CurrentMana / MaxMana : 0.f;
+	
+	if (Percent)
+	{
+		CurrentMana = CurrentMana < 0.f ? 0.f : CurrentMana;
+		Percent->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), CurrentMana, MaxMana)));
+	}
+}
+
+void UMJManaBarWidget::OnMaxManaChanged(const FOnAttributeChangeData& Data)
+{
+	MaxMana = Data.NewValue;
+	
 	TargetPercent = (MaxMana > 0.f) ? CurrentMana / MaxMana : 0.f;
 	
 	if (Percent)

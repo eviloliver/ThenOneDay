@@ -66,7 +66,6 @@ void AMJPlayerState::LoadFromInstancedPlayerSessionData()
 			PlayerStatComp->SetPlayerLevel(PlayerSessionData.PlayerLevel);
 			PlayerStatComp->SetTotalCumulativeExperience(PlayerSessionData.PlayerExp);
 			PlayerStatComp->InitializeStat();
-			PlayerStatComp->SetbbIsInitializingStats(false);
 		}		
 	}
 

@@ -26,7 +26,7 @@ private:
 
 	float TargetPercent;
 	float CurrentPercent;
-	float LerpSpeed = 1.5f;
+	float LerpSpeed = 2.5f;
 	
 	float MaxStamina;
 	float CurrentStamina;
@@ -37,5 +37,6 @@ public:
 	void BindToAttributes(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet);
 	void InitializeWidget();
 	void OnStaminaChanged(const FOnAttributeChangeData& Data);
+	void OnMaxStaminaChanged(const FOnAttributeChangeData& Data);
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 };

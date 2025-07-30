@@ -17,6 +17,7 @@ void UMJEnemyHPBar::BindToAttributes(UMJAbilitySystemComponent* ASC, UMJCharacte
 	CurrentHP = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute());
 	// 데이터가 실제로 변할 때마다, GAS가 자동 호출
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this, &UMJEnemyHPBar::OnHealthChanged);
+	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxHealthAttribute()).AddUObject(this, &UMJEnemyHPBar::OnMaxHealthChanged);
 	
 	InitializeWidget();
 }
@@ -35,6 +36,12 @@ void UMJEnemyHPBar::InitializeWidget()
 void UMJEnemyHPBar::OnHealthChanged(const FOnAttributeChangeData& Data)
 {
 	CurrentHP = Data.NewValue;
+	TargetPercent = (MaxHP > 0.f) ? CurrentHP / MaxHP : 0.f;
+}
+
+void UMJEnemyHPBar::OnMaxHealthChanged(const FOnAttributeChangeData& Data)
+{
+	MaxHP = Data.NewValue;
 	TargetPercent = (MaxHP > 0.f) ? CurrentHP / MaxHP : 0.f;
 }
 

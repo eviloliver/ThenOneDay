@@ -40,10 +40,10 @@ struct FItemDataRow : public FTableRowBase // 안바뀌는값 // 아이템 고�
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,  meta = (Categories = "Item"))
 	FGameplayTag ItemTag;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,  meta = (Categories = "Monster")) 
 	FGameplayTag DropMonsterTag;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

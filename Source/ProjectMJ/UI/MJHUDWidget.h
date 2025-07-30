@@ -14,6 +14,7 @@
  * Last Modified Date: 
  */
 
+class UMJDialogueWidget;
 class UMJBossHpBarWidget;
 class UMJHealthBarWidget;
 class UMJManaBarWidget;
@@ -50,6 +51,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJStoreWidget> Store;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJDialogueWidget> Dialogue;
+
 public:
 	UFUNCTION()
 	virtual void NativeConstruct() override;
@@ -58,8 +62,10 @@ public:
 	void ShowStatPanel();
 	void ShowInventory();
 	void ShowStore();
+	void SetDialogueVisibility();
 
 	UMJInventoryWidget* GetInventoryWidget() {return Inventory;};
 	UMJStoreWidget* GetStoreWidget() {return Store;};
+	UMJDialogueWidget* GetDialogueWidget() {return Dialogue;};
 
 };

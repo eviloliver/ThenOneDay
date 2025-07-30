@@ -6,6 +6,7 @@
 #include "Bar/MJManaBarWidget.h"
 #include "Bar/MJStaminaBar.h"
 #include "Bar/MJExperienceWidget.h"
+#include "Dialogue/MJDialogueWidget.h"
 #include "World/MJStatWidget.h"
 #include "Inventory/MJInventoryWidget.h"
 #include "Store/MJStoreWidget.h"
@@ -28,6 +29,11 @@ void UMJHUDWidget::NativeConstruct()
 	{
 		Store->SetVisibility(ESlateVisibility::Hidden);
 	}
+
+	if (Dialogue)
+	{
+		Dialogue->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet)
@@ -45,11 +51,6 @@ void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJC
 	if (StaminaBar)
 	{
 		StaminaBar->BindToAttributes(ASC,AttributeSet);
-	}
-	
-	if (ExpBar)
-	{
-		ExpBar->BindToAttributes(ASC,AttributeSet);
 	}
 
 	if (StatPanel)
@@ -93,3 +94,16 @@ void UMJHUDWidget::ShowStore()
 		Store->SetVisibility(ESlateVisibility::Visible);
 	}
 }
+
+void UMJHUDWidget::SetDialogueVisibility()
+{
+	if (Dialogue->GetVisibility() == ESlateVisibility::Visible)
+	{
+		Dialogue->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else if (Dialogue->GetVisibility() == ESlateVisibility::Hidden)
+	{
+		Dialogue->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+

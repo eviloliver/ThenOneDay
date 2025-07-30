@@ -12,6 +12,7 @@ class AMJItemBase;
 class UMJDropItemsDataAsset;
 class UMJItemDataAsset;
 class AMJTargetingProjectileBase;
+class UMJHealthBarComponent;
 class UMJDamageComponent;
 class UWidgetComponent;
 class UMJEnemyHPBar;
@@ -73,7 +74,7 @@ protected:
 	virtual void OnDead(AActor* InEffectCauser);
 
 	UFUNCTION()
-	void OnDamage(float Magnitude);
+	void OnDamage(float Magnitude, bool bIsCritical);
 
 protected:
 	// Jisoo : UI Section
@@ -81,7 +82,7 @@ protected:
 	TObjectPtr<UMJUIManagerSubsystem> UIManager;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UWidgetComponent> HPBarComponent;
+	TObjectPtr<UMJHealthBarComponent> HPBarComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
 	TArray<TObjectPtr<UMJDamageComponent>> DamageComponents;

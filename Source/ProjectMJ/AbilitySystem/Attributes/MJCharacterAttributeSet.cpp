@@ -87,28 +87,34 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 {
 	Super::PostGameplayEffectExecute(Data);
 	// Effect 적용 후
-	
+
 	if (UMJStatComponentBase* StatComp = Data.Target.GetAvatarActor()->FindComponentByClass<UMJStatComponentBase>())
 	{
 		if (StatComp->GetbIsInitializingStats())
 		{
 			return;
 		}
-		
+
 		if (GetHealth() <= 0)
 		{
-				if (!StatComp->GetbIsDead())
-				{
-					// Minjin: 데미지를 입힌 상대 전달
-					//StatComp->OnDeath.Broadcast(Data.EffectSpec.GetEffectContext().GetEffectCauser());
-					StatComp->OnDead(Data.EffectSpec.GetEffectContext().GetEffectCauser());	
-				}			
+			if (!StatComp->GetbIsDead())
+			{
+				// Minjin: 데미지를 입힌 상대 전달
+				//StatComp->OnDeath.Broadcast(Data.EffectSpec.GetEffectContext().GetEffectCauser());
+				StatComp->OnDead(Data.EffectSpec.GetEffectContext().GetEffectCauser());
+			}
 		}
 
 		// Jisoo
-		if (GetHealth() < GetMaxHealth())
+		if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 		{
-			OnDamage.Broadcast(Data.EvaluatedData.Magnitude);
-		}	
+			if (Data.EvaluatedData.Magnitude < 0.f) //이렇게 하면 힐이 들어와도 ondamage가 실행되는 불상사를 막을 수 있는 거 같다.!
+			{
+				const FGameplayEffectSpec& Spec = Data.EffectSpec;
+				float IsCritical = Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Character.IsCritical")), false, 0.f);
+				bool bIsCritical = (IsCritical > 0.5f); // 크리티컬이면 1이 들어가게 설정해둠
+				OnDamage.Broadcast(Data.EvaluatedData.Magnitude, bIsCritical);
+			}
+		}
 	}
 }

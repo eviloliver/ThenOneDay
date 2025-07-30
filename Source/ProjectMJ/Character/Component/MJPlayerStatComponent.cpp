@@ -13,11 +13,14 @@
 UMJPlayerStatComponent::UMJPlayerStatComponent()
 {
 	PlayerLevel = 1;
+	
 }
 
 void UMJPlayerStatComponent::InitializeStat()
 {
 	// 다음 필요 경험치 계산
+	bIsInitializingStats = true;
+
 	ExperienceForNextLevel = GetTotalExperienceForLevel(PlayerLevel + 1);
 
 	if (!PlayerStatTable)
@@ -63,6 +66,8 @@ void UMJPlayerStatComponent::InitializeStat()
 	}
 	ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 	OwnerCharacter->GetCharacterMovement()->MaxWalkSpeed = ASC->GetSet<UMJCharacterAttributeSet>()->GetMaxMovementSpeed();
+
+	bIsInitializingStats = false;
 }
 
 void UMJPlayerStatComponent::GainExperience(int32 GainedExp)
@@ -74,8 +79,8 @@ void UMJPlayerStatComponent::GainExperience(int32 GainedExp)
 	}
 
 	TotalCumulativeExperience += GainedExp;
-
 	CheckForLevelUp();
+	OnExperienceChanged.Broadcast(GetNumerator() ,GetDenominator());
 }
 
 void UMJPlayerStatComponent::CheckForLevelUp()
@@ -94,6 +99,7 @@ void UMJPlayerStatComponent::CheckForLevelUp()
 		InitializeStat();
 
 		OnLevelUp.Broadcast(PlayerLevel);
+		
 	}
 
 }
@@ -105,4 +111,33 @@ float UMJPlayerStatComponent::GetTotalExperienceForLevel(int32 Level) const
 	float TotalExp = FMath::Pow(Level, 3.0f);
 
 	return TotalExp;
+}
+
+float UMJPlayerStatComponent::GetNumerator()
+{
+	
+	if (PlayerLevel == 1)
+	{
+		Numerator = TotalCumulativeExperience;
+	}
+	else
+	{
+		Numerator = TotalCumulativeExperience - GetTotalExperienceForLevel(PlayerLevel);
+	}
+
+	return Numerator;
+}
+
+float UMJPlayerStatComponent::GetDenominator()
+{
+	Denominator = ExperienceForNextLevel - GetTotalExperienceForLevel(PlayerLevel);
+	if (PlayerLevel == 1)
+	{
+		Denominator = GetTotalExperienceForLevel(PlayerLevel + 1);
+	}
+	else
+	{
+		Denominator = ExperienceForNextLevel - GetTotalExperienceForLevel(PlayerLevel);
+	}
+	return	Denominator;
 }

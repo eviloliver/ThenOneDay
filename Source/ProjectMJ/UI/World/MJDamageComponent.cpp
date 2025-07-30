@@ -7,24 +7,21 @@
 
 UMJDamageComponent::UMJDamageComponent()
 {
-	SetWidget();
-}
-
-void UMJDamageComponent::SetWidget()
-{
 	static ConstructorHelpers::FClassFinder<UMJDamageWidget> DamageWidgetRef(TEXT("/Game/UI/WBP/World/WBP_Damage.WBP_Damage_C"));
 
 	if (DamageWidgetRef.Class)
 	{
 		SetWidgetClass(DamageWidgetRef.Class);
-
-		// 기타 세팅
-		SetRelativeLocation(FVector(0.0f, 0.0f, 220.0f));
-		SetWidgetSpace(EWidgetSpace::Screen);
-		SetDrawSize(FVector2D(20.0f,20.0f));
-		SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		SetVisibility(false);
 	}
+}
+
+void UMJDamageComponent::SetDamageWidget(FVector CharacterLocation)
+{
+	// 기타 세팅
+	SetWidgetSpace(EWidgetSpace::Screen);
+	SetWorldLocation(CharacterLocation + FVector(0, 0, 220));
+	SetDrawSize(FVector2D(30.0f,30.0f));
+	SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 

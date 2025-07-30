@@ -39,8 +39,13 @@ private:
 	
 public:
 	UFUNCTION()
-	void BindToAttributes(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet);
-	void InitializeWidget();
-	void OnExpChanged(const FOnAttributeChangeData& Data);
+	virtual void NativeConstruct() override;
+
+	UFUNCTION()
+	void InitializeWidget(float Current, float ExpForNextLevel);
+	
+	UFUNCTION()
+	void OnExperienceChanged(float Current, float ExpForNextLevel);
+	
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 };

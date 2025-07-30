@@ -12,7 +12,7 @@ void UMJBacklogWidget::AddLine(const FMJDialogueRow& Row) // 함수명 수정하
 {
 	if (!BacklogScrollBox) return;
 	
-	FString Line = Row.Speaker + TEXT(" : ") + Row.Text;
+	FString Line = Row.Speaker + TEXT(" : ") + Row.Script;
 	UTextBlock* NewTextBlock = NewObject<UTextBlock>(BacklogScrollBox);
 	
 	if (NewTextBlock)

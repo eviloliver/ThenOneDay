@@ -15,7 +15,6 @@
  */
 
 class UWidgetComponent;
-class UMJEnemyHPBar;
 class UMJBossHpBarWidget;
 class UMJDialogueWidget;
 class UMJDialogueComponent;
@@ -36,17 +35,10 @@ public:
 	// HUD
 	void ShowHUD(class AMJPlayerState* PlayerState, class AMJPlayerController* PC);
 	UMJHUDWidget* GetHUDWidget() {return HUDWidget;}
-	
-	// Dialogue Section
-	void ShowDialogue(UMJDialogueComponent* DialogueComp);
-	void NextDialogue(UMJDialogueComponent* DialogueComp);
-	void HideDialogue();
-	
-	void SetDialogue(const UMJDialogueComponent* DialogueComp) const;
-	
-	//BackLog Section
-	void ShowBacklog();
 
+	// Dialouge Section
+	void SetDialogueVisibility();
+	
 	// StatPanel Section
 	void ShowStatPanel();
 
@@ -55,29 +47,11 @@ public:
 
 	// Store Section
 	void ShowStore();
-
-	// World UI
-	void ResisterWorldUI(UWidgetComponent* WidgetComp,UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet);
-	void UnresisterWorldUI(UWidgetComponent* WidgetComp);
 	
 protected:
-	UPROPERTY()
-	TObjectPtr<UMJDialogueWidget> DialogueWidget;
-
-	UPROPERTY()
-	TSubclassOf<UMJDialogueWidget> DialogueWidgetClass;
-
-	bool bIsDialogueActive;
-
 	UPROPERTY()
 	TObjectPtr<UMJHUDWidget> HUDWidget;
 
 	UPROPERTY()
 	TSubclassOf<UMJHUDWidget> HUDWidgetClass;
-
-	UPROPERTY()
-	TObjectPtr<UMJEnemyHPBar> EnemyHPBarWidget;
-	
-	UPROPERTY()
-	TArray<TWeakObjectPtr<UWidgetComponent>> WorldUIs;
 };

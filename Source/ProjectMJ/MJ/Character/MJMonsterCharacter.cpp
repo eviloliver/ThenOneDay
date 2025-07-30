@@ -24,6 +24,8 @@
 #include "Item/MJItemBase.h"
 #include "MJ/DataAssetMJ/MJDropItemsDataAsset.h"
 #include "UI/Inventory/ItemDataRow.h"
+#include "UI/Bar/MJEnemyHPBar.h"
+#include "UI/Component/MJHealthBarComponent.h"
 
 AMJMonsterCharacter::AMJMonsterCharacter()
 {
@@ -52,8 +54,8 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	SkillComponent = CreateDefaultSubobject<UMJSkillComponentBase>(TEXT("SkillComponent"));
 
 	// UI Component
-	HPBarComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBarComponent"));
-	HPBarComponent->SetupAttachment(GetMesh());
+	HPBarComponent = CreateDefaultSubobject<UMJHealthBarComponent>(TEXT("HPBarComponent"));
+	HPBarComponent->SetupAttachment(GetRootComponent());
 
 	// Minjin: ID 설정
 	ID = ETeam_ID::MONSTER;
@@ -68,17 +70,10 @@ void AMJMonsterCharacter::BeginPlay()
 	SetActorEnableCollision(true);
 	
 	// Jisoo
-	HPBarComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 220.0f));
-	HPBarComponent->SetWidgetSpace(EWidgetSpace::Screen);
-	HPBarComponent->SetDrawSize(FVector2D(100.0f,10.0f));
-	HPBarComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	HPBarComponent->SetVisibility(false);
-
-	UIManager =	GetGameInstance()->GetSubsystem<UMJUIManagerSubsystem>();
-	ensure(UIManager);
-	UIManager->ResisterWorldUI(HPBarComponent,ASC,CharacterAttributeSet);
-	// 게임 종료 후 Try again을 눌러 다시 시작하면 람다로 보내놓았던 Tick 이 비동기적으로 다시 실행될 것. 따라서 처음에 ClearTimer 해줌. (태관)
-	GetWorldTimerManager().ClearTimer(DeadTimerHandle);
+	if (UMJEnemyHPBar* EnemyHPBar = Cast<UMJEnemyHPBar>(HPBarComponent->GetUserWidgetObject()))
+	{
+		EnemyHPBar->BindToAttributes(ASC,CharacterAttributeSet);
+	}
 }
 
 float AMJMonsterCharacter::GetAIPatrolRadius()
@@ -307,7 +302,7 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 		AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(InEffectCauser);
 		if (Player)
 		{
-			Player->GainExperience(EnemyBequest.Exp);
+			Player->StatComponent->GainExperience(EnemyBequest.Exp);
 			MJ_LOG(LogMJ, Warning, TEXT("경험치 전달: %d"), EnemyBequest.Exp);
 		}
 		
@@ -335,21 +330,20 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 	DamageIndex = 0;
 }
 
-void AMJMonsterCharacter::OnDamage(float Magnitude)
+void AMJMonsterCharacter::OnDamage(float Magnitude, bool bIsCritical)
 {
 	HPBarComponent->SetVisibility(true);
 	
-	{
-		UMJDamageComponent* NewComp = NewObject<UMJDamageComponent>(this);
-		NewComp->RegisterComponent();
-		NewComp->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
-		NewComp->SetWidget();
-		NewComp->SetVisibility(true);
-		DamageComponents.Add(NewComp);
-		
-		Cast<UMJDamageWidget>(DamageComponents[DamageIndex]->GetUserWidgetObject())->PlayAnim();
-		Cast<UMJDamageWidget>(DamageComponents[DamageIndex]->GetUserWidgetObject())->SetDamage(-Magnitude);
+	UMJDamageComponent* NewComp = NewObject<UMJDamageComponent>(this);
+	NewComp->RegisterComponent();
+	NewComp->SetDamageWidget(this->GetActorLocation());
+	NewComp->SetVisibility(true);
+	DamageComponents.Add(NewComp);
 
-		DamageIndex ++;
+	if (UMJDamageWidget* Widget =Cast<UMJDamageWidget>(NewComp->GetUserWidgetObject()) )
+	{
+		Widget->SetDamage(-Magnitude, bIsCritical);
+		Widget->PlayAnim();
 	}
+	DamageIndex ++;
 }

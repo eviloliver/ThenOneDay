@@ -25,7 +25,4 @@ void UMJStoreWidget::NativeConstruct()
     }
 }
 
-void UMJStoreWidget::ShowMerchandiseSlots(int32 SlotCount) // 업데이트 할라면 nativeConstruct에 있으면 안될 것 같음..
-{
 
-}

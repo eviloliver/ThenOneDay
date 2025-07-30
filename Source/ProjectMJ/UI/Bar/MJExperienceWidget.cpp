@@ -2,54 +2,59 @@
 
 
 #include "UI/Bar/MJExperienceWidget.h"
+
+#include "NiagaraCommon.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
-#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
+#include "Character/MJPlayerCharacter.h"
+#include "Character/Component/MJPlayerStatComponent.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "Kismet/GameplayStatics.h"
 
-void UMJExperienceWidget::BindToAttributes(UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet)
+void UMJExperienceWidget::NativeConstruct()
 {
-	if (!ASC || !AttributeSet)
-	{
-		return;
-	}
-	
-	MaxExp = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxExperienceAttribute());
-	CurrentExp = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetExperienceAttribute());
-	// 데이터가 실제로 변할 때마다, GAS가 자동 호출
-	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetExperienceAttribute()).AddUObject(this,&UMJExperienceWidget::OnExpChanged);
+	Super::NativeConstruct();
 
-	InitializeWidget();
+	if (AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0)))
+	{
+		if (UMJPlayerStatComponent* StatComponent = Player->FindComponentByClass<UMJPlayerStatComponent>())
+		{
+			StatComponent->OnExperienceChanged.AddDynamic(this, &UMJExperienceWidget::OnExperienceChanged);
+			InitializeWidget(StatComponent->GetNumerator(), StatComponent->GetDenominator());
+		}
+	}
 }
 
-void UMJExperienceWidget::InitializeWidget()
+void UMJExperienceWidget::InitializeWidget(float Current, float ExpForNextLevel)
 {
-	// 초기화
+	CurrentExp = Current;
+	MaxExp = ExpForNextLevel;
+	
 	CurrentPercent= (MaxExp > 0.f) ? CurrentExp / MaxExp : 0.f;
 	TargetPercent = (MaxExp > 0.f) ? CurrentExp / MaxExp : 0.f;
+	
 	if (ExpBar)
 	{
 		ExpBar->SetPercent(CurrentPercent);
 	}
 	if (Percent)
 	{
-		Percent->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), CurrentExp, MaxExp)));
+		float percent = CurrentPercent * 100.f;
+		Percent->SetText(FText::FromString(FString::Printf(TEXT("%.1f%%( %f / %f )"),percent, CurrentExp , MaxExp)));
 	}
 }
 
-void UMJExperienceWidget::OnExpChanged(const FOnAttributeChangeData& Data)
+void UMJExperienceWidget::OnExperienceChanged(float Current, float ExpForNextLevel)
 {
-	CurrentExp = Data.NewValue;
-	float Percentage = (MaxExp > 0.f) ? CurrentExp / MaxExp : 0.f;
-
-	if (ExpBar)
-	{
-		ExpBar->SetPercent(Percentage);
-	}
+	CurrentExp = Current;
+	MaxExp = ExpForNextLevel;
+	
+	TargetPercent = (MaxExp > 0.f) ? CurrentExp / MaxExp : 0.f;
+	
 	if (Percent)
 	{
-		float curExp = CurrentExp < 0.f ? 0.f : CurrentExp;
-		Percent->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), curExp, MaxExp)));
+		float percent = CurrentPercent * 100.f;
+		Percent->SetText(FText::FromString(FString::Printf(TEXT("%.1f%%( %f / %f )"),percent, CurrentExp , MaxExp)));
 	}
 }
 
