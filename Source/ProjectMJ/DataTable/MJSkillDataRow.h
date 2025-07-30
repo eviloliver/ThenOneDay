@@ -63,6 +63,7 @@ struct FSkillAssetDataByLevel
 	// TODO: 이펙트 관련 + 위에 있는 투사체 관련한 내용이 이걸로 바뀔 가능성이 있기도 함
 	// UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "GameplayCue"))
 	// FGameplayTag VFXTag;
+	// 20250724 -> 이거 그냥 태그 하나로 AnimMontage랑 Projectile Cue 다 처리하는 DA 만들껄 싶음
 };
 
 USTRUCT(BlueprintType)
@@ -95,6 +96,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UGameplayAbility> SkillAbilityClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UGameplayAbility> PassiveSkillAbilityClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftObjectPtr<UCurveTable> SkillLevelDataTable;

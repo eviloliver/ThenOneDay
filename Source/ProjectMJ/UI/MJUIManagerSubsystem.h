@@ -29,6 +29,8 @@ class PROJECTMJ_API UMJUIManagerSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 
 public:
+	UMJUIManagerSubsystem();
+	
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 	// HUD
@@ -57,10 +59,6 @@ public:
 	// World UI
 	void ResisterWorldUI(UWidgetComponent* WidgetComp,UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet);
 	void UnresisterWorldUI(UWidgetComponent* WidgetComp);
-
-	// BossHpBar Section
-	UFUNCTION()
-	void OnBossSpawned();
 	
 protected:
 	UPROPERTY()

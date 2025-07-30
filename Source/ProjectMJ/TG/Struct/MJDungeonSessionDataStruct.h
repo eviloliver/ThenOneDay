@@ -48,13 +48,13 @@ struct FMJDungeonSessionData
 	EMJDungeonContext DungeonContext = EMJDungeonContext::InActive;
 	
 	UPROPERTY(BlueprintReadOnly)
-	uint8 DungeonNodeNum;
+	uint8 DungeonNodeNum = 0;
 
 	UPROPERTY(BlueprintReadOnly)
-	EMJAISpawnType AISpawnType;
+	EMJAISpawnType AISpawnType = EMJAISpawnType::Static;
 
 	UPROPERTY(BlueprintReadOnly)
-	FString MapName;
+	FString MapName = TEXT("");
 
 	UPROPERTY(BlueprintReadOnly)
 	TArray<FMJDungeonActorInfo> SpawnInfos;

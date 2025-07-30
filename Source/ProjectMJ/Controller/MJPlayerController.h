@@ -8,6 +8,7 @@
 #include "MJPlayerController.generated.h"
 
 
+class UMJGameFlowHUDWidget;
 class UDataAsset_InputConfig;
 class UInputAction;
 class UMJUIManagerSubsystem;
@@ -126,30 +127,24 @@ public:
 #pragma endregion
 
 
+public:
+
+	UFUNCTION(BlueprintCallable)
+	UMJGameFlowHUDWidget* GetGameFlowHUD() {return GameFlowHUD; }
+
 protected:
 	UPROPERTY()
-	TObjectPtr<UUserWidget> PauseWidget;
-
+	TObjectPtr<UMJGameFlowHUDWidget> GameFlowHUD;
+	
 	UPROPERTY(EditDefaultsOnly, Category = UI)
-	TSubclassOf<UUserWidget> PauseWidgetClass;
+	TSubclassOf<UUserWidget> GameFlowHUDWidgetClass;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = UI)
 	UInputAction* PauseAction;
-
+	//
 	UFUNCTION()
 	void PauseGame();
 
-
-	UPROPERTY()
-	TObjectPtr<UUserWidget> DungeonEndMenuWidget;
-
-	UPROPERTY(EditDefaultsOnly, Category = UI)
-	TSubclassOf<UUserWidget> DungeonEndMenuWidgetClass;
-	
-public:
-
-	UFUNCTION()
-	UUserWidget* GetPauseWidget();
 
 
 protected:

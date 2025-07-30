@@ -72,6 +72,10 @@ public:
 	AActor* GetUITarget() {return UITarget;}
 	USphereComponent* GetUITrigger() {return UITrigger;}
 	UMJInventoryComponent* GetInventoryComponent() {return InventoryComponent;}
+
+
+	//태관  25.07.23 add protected:
+protected:
 	
 #pragma endregion
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="Camera",meta=(AllowPrivateAccess=true))

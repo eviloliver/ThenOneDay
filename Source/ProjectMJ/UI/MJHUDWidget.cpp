@@ -28,11 +28,6 @@ void UMJHUDWidget::NativeConstruct()
 	{
 		Store->SetVisibility(ESlateVisibility::Hidden);
 	}
-
-	if (BossHpBar)
-	{
-		BossHpBar->SetVisibility(ESlateVisibility::Hidden);
-	}
 }
 
 void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet)
@@ -97,14 +92,4 @@ void UMJHUDWidget::ShowStore()
 	{
 		Store->SetVisibility(ESlateVisibility::Visible);
 	}
-}
-
-void UMJHUDWidget::HideBossHpBar()
-{
-	BossHpBar->SetVisibility(ESlateVisibility::Hidden);
-}
-
-void UMJHUDWidget::ShowBossHpBar()
-{
-	BossHpBar->SetVisibility(ESlateVisibility::Visible);
 }

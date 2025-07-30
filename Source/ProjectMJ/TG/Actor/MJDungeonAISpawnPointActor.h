@@ -21,6 +21,9 @@ class PROJECTMJ_API AMJDungeonAISpawnPointActor : public AActor
 public:	
 	AMJDungeonAISpawnPointActor();
 
+	UPROPERTY(EditAnywhere)
+	uint8 NumberToSpawn;
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly)

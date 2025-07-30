@@ -8,7 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Player/MJPlayerState.h"
 #include "TG/MJGameInstanceTG.h"
-#include "TG/GameState/MJGameStateDungeonTG.h"
+#include "TG/GameState/MJGameStateDungeon.h"
 
 AMJGameModeBase::AMJGameModeBase()
 {

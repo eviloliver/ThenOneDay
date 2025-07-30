@@ -4,6 +4,7 @@
 #include "MJCharacterAttributeSet.h"
 #include "GameplayEffectExtension.h"
 #include "ProjectMJ.h"
+#include "Character/Component/MJStatComponentBase.h"
 
 UMJCharacterAttributeSet::UMJCharacterAttributeSet()
     :Level(1.0f)
@@ -86,16 +87,28 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 {
 	Super::PostGameplayEffectExecute(Data);
 	// Effect 적용 후
-	if (GetHealth() <= 0)
+	
+	if (UMJStatComponentBase* StatComp = Data.Target.GetAvatarActor()->FindComponentByClass<UMJStatComponentBase>())
 	{
-		// Minjin: 데미지를 입힌 상대 전달
-		OnDeath.Broadcast(Data.EffectSpec.GetEffectContext().GetEffectCauser());
-	}
+		if (StatComp->GetbIsInitializingStats())
+		{
+			return;
+		}
+		
+		if (GetHealth() <= 0)
+		{
+				if (!StatComp->GetbIsDead())
+				{
+					// Minjin: 데미지를 입힌 상대 전달
+					//StatComp->OnDeath.Broadcast(Data.EffectSpec.GetEffectContext().GetEffectCauser());
+					StatComp->OnDead(Data.EffectSpec.GetEffectContext().GetEffectCauser());	
+				}			
+		}
 
-	// Jisoo
-	if (GetHealth() < GetMaxHealth())
-	{
-		OnDamage.Broadcast(Data.EvaluatedData.Magnitude);
+		// Jisoo
+		if (GetHealth() < GetMaxHealth())
+		{
+			OnDamage.Broadcast(Data.EvaluatedData.Magnitude);
+		}	
 	}
-
 }

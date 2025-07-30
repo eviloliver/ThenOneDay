@@ -15,20 +15,23 @@ void UMJDungeonGenerationSubSystem::Initialize(FSubsystemCollectionBase& Collect
 {
 	Super::Initialize(Collection);
 	
-	do
-	{
-		GenerateDungeonGraph();
-	}
-	while (!CheckHasIterableGraph());
+	// do
+	// {
+	// 	GenerateDungeonGraph();
+	// }
+	// while (!CheckHasIterableGraph());
 
 }
 
-bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
+void UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 {
 	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetGameInstance());
 	
 	check(MJGI);
+
+	// Initialize Data
 	DungeonGraph = FMJDungeonGraph();
+	MJGI->GetDungeonSessionDataRef().Empty();
 	
 	FVector2D StartPoint;
 	FVector2D EndPoint;
@@ -182,6 +185,7 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 
 	if (MJGI)
 	{
+		
 		MJGI->GetPlayerSessionDataRef().CurrentDungeonMapNum = DungeonGraph.StartNodeID;
 		
 	}
@@ -189,8 +193,11 @@ bool UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 	ConnectNodesByMST(FVector2D::Distance(FVector2D(0.0f,0.0f), ViewportSize));
 	
 	ConnectNodesByDistance(400.f,4);
-	
-	return true;
+
+	if (!CheckHasIterableGraph())
+	{
+		return GenerateDungeonGraph();
+	}
 }
 
 
@@ -315,7 +322,7 @@ bool UMJDungeonGenerationSubSystem::CheckHasIterableGraph()
 {
 	const uint8 NodeCount = DungeonGraph.Nodes.Num();
 	const uint8 BossID    = DungeonGraph.BossNodeID;
-	const uint8 StartID   = 0;
+	const uint8 StartID   = DungeonGraph.StartNodeID;
 	
 	TArray<bool> Visited;
 	Visited.Init(false, NodeCount);
