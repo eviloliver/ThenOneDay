@@ -10,7 +10,9 @@ AMJWeaponBase::AMJWeaponBase()
 	PrimaryActorTick.bCanEverTick = false;
 
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
-	SetRootComponent(WeaponMesh);
+	Body = CreateDefaultSubobject<USceneComponent>(TEXT("Body"));
+	SetRootComponent(Body);
+	WeaponMesh->SetupAttachment(GetRootComponent());
 
 	
 }
