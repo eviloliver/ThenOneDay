@@ -7,6 +7,13 @@
 #include "GameFramework/Actor.h"
 #include "MJSkillDropTest.generated.h"
 
+/**
+ * Class Description: SkillDropTest-테스트용
+ * Author: Kim Minjin
+ * Created Date: 2025.07.
+ * Last Modified By: (Last Modifier)
+ * Last Modified Date: (Last Modified Date)
+ */
 UCLASS()
 class PROJECTMJ_API AMJSkillDropTest : public AActor
 {

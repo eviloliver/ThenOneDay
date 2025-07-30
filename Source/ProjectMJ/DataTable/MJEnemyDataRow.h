@@ -14,6 +14,7 @@
  * Modified Date:
  */
 
+class UMJDropItemsDataAsset;
 class AMJMonsterAIControllerBase;
 class UCurveTable;
 class USkeletalMesh;
@@ -57,7 +58,15 @@ public:
 	TSoftObjectPtr<UCurveTable> AttributeCurve;
 
 	// TODO: 사운드나 아이콘 등등
+	
+	// Minjin: DropItem-삭제 예정
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Item"))
+	FGameplayTag ItemTag;
 
+	// Minjin: DropItems
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UMJDropItemsDataAsset> DropItems;
+	
 	// Minjin: Animation
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UAnimationAsset> AppearanceAnimation;
