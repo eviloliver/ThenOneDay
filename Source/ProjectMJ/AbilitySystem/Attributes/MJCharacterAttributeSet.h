@@ -33,9 +33,6 @@ public:
 	UMJCharacterAttributeSet();
 
 	// Level
-	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, Level)
-	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxLevel)
-
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, Experience)
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxExperience)
 
@@ -100,9 +97,6 @@ public:
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MovementSpeed)
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxMovementSpeed)
 
-	// --- Damage ---
-	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, Damage)
-
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
 	virtual bool PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data) override;
@@ -122,11 +116,6 @@ public:
 protected:
 
 	// Level
-	UPROPERTY(BlueprintReadOnly, Category = "Stat|Level", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData Level;
-	UPROPERTY(BlueprintReadOnly, Category = "Stat|Level", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxLevel;
-
 	UPROPERTY(BlueprintReadOnly, Category = "Stat|Level", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Experience;
 	UPROPERTY(BlueprintReadOnly, Category = "Stat|Level", Meta = (AllowPrivateAccess = true))
@@ -230,8 +219,4 @@ protected:
 	FGameplayAttributeData MaxMovementSpeed;
 
 	// Penetration (For future implementation)
-
-	// --- Damage ---
-	UPROPERTY(BlueprintReadOnly, Category = "Damage", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData Damage;
 };

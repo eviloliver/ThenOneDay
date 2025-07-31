@@ -30,48 +30,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
-	void OnStatusTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
-
-	void ApplyPoisonEffect();
-	void RemovePoisonEffect();
-	void ApplyStunEffect();
-	void RemoveStunEffect();
-	void ApplyBurningEffect();
-	void RemoveBurningEffect();
-	void ApplyFrozenEffect();
-	void RemoveFrozenEffect();
-
 protected:
-
-	// Status Section
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "VFX|StatusEffects")
-	TObjectPtr<UNiagaraSystem> PoisonVFX;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SFX|StatusEffects")
-	TObjectPtr<USoundBase> PoisonSFX;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "VFX|StatusEffects")
-	TObjectPtr<UNiagaraSystem> StunVFX;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SFX|StatusEffects")
-	TObjectPtr<USoundBase> StunSFX;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "VFX|StatusEffects")
-	TObjectPtr<UNiagaraSystem> BurningVFX;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SFX|StatusEffects")
-	TObjectPtr<USoundBase> BurningSFX;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "VFX|StatusEffects")
-	TObjectPtr<UNiagaraSystem> FrozenVFX;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "SFX|StatusEffects")
-	TObjectPtr<USoundBase> FrozenSFX;
-
-	UPROPERTY()
-	TObjectPtr<UNiagaraComponent> ActivePoisonVFX;
-	UPROPERTY()
-	TObjectPtr<UNiagaraComponent> ActiveStunVFX;
-	UPROPERTY()
-	TObjectPtr<UNiagaraComponent> ActiveBurningVFX;
-	UPROPERTY()
-	TObjectPtr<UNiagaraComponent> ActiveFrozenVFX;
 		
 };
