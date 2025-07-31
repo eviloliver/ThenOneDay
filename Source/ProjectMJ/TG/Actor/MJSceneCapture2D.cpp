@@ -27,14 +27,7 @@ AMJSceneCapture2D::AMJSceneCapture2D()
 void AMJSceneCapture2D::BeginPlay()
 {
 	Super::BeginPlay();	
- 
-	// Player = UGameplayStatics::GetPlayerCharacter(GetWorld(),0);
-	//
-	// ACharacter* Character = Cast<ACharacter>(Player);
-	// if (Character)
-	// {
-	// 	GetCaptureComponent2D()->ShowOnlyActors.Add(Character);
-	// }
+	
 
 	AMJGameStateDungeon* GSDungeon = Cast<AMJGameStateDungeon>(UGameplayStatics::GetGameState(GetWorld()));
 	if (GSDungeon)
@@ -46,10 +39,10 @@ void AMJSceneCapture2D::BeginPlay()
 	Player = TWeakObjectPtr<ACharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
 	if (Player.IsValid())
 	{
-		UPrimitiveComponent* MiniMapMesh = Cast<UPrimitiveComponent>(Player->FindComponentByClass<UMJMiniMapIconMeshComponent>());
-		if (MiniMapMesh)
+		UPrimitiveComponent* PlayerMiniMapMeshComp = Cast<UPrimitiveComponent>(Player->FindComponentByClass<UMJMiniMapIconMeshComponent>());
+		if (PlayerMiniMapMeshComp)
 		{
-			GetCaptureComponent2D()->ShowOnlyComponents.Add(MiniMapMesh);
+			GetCaptureComponent2D()->ShowOnlyComponents.Add(PlayerMiniMapMeshComp);
 		}
 	}
 	

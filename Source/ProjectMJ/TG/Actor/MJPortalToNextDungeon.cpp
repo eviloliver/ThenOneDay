@@ -15,7 +15,7 @@ AMJPortalToNextDungeon::AMJPortalToNextDungeon()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
 
-	RootComponent = Mesh;
+	//RootComponent = Mesh;
 	SphereCollision->SetupAttachment(Mesh);
 
 	MiniMapIconMesh = CreateDefaultSubobject<UMJMiniMapIconMeshComponent>(TEXT("MiniMapIcon"));

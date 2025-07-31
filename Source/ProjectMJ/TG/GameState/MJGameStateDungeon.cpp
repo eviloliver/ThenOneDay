@@ -404,6 +404,8 @@ void AMJGameStateDungeon::SpawnDungeonPortal()
 				if (Portal)
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("PortalActor is Successfully Spawned")));
+
+					OnAISpawned.Broadcast(Portal);
 				}
 			}
 		}));

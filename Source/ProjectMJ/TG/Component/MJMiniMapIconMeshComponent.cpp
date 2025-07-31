@@ -23,6 +23,11 @@ UMJMiniMapIconMeshComponent::UMJMiniMapIconMeshComponent()
 	{
 		EnemyIcon = EnemyMesh.Object;
 	}
+	ConstructorHelpers::FObjectFinder<UStaticMesh> PortalMesh(TEXT("/Game/TG/StaticMesh/SM_MJPortal.SM_MJPortal"));
+	if (PortalMesh.Succeeded())
+	{
+		PortalIcon = PortalMesh.Object;
+	}
 }
 
 void UMJMiniMapIconMeshComponent::BeginPlay()
@@ -41,7 +46,11 @@ void UMJMiniMapIconMeshComponent::BeginPlay()
 	}
 	else if (AMJPortalToNextDungeon* PortalToNextDungeon = Cast<AMJPortalToNextDungeon>(GetOwner()))
 	{
+		SetRelativeLocation(FVector(0.0f,0.f,0.f));
+		SetRelativeRotation(FRotator(0.0f,90.0f,0.0f));
+		SetRelativeScale3D(FVector( 2.0f,2.0f,2.0f));
 		
+		SetStaticMesh(PortalIcon);
 	}
 	else if (AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(GetOwner()))
 	{

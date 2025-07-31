@@ -29,5 +29,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UStaticMesh> EnemyIcon;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UStaticMesh> PortalIcon;
+	
 	
 };
