@@ -13,6 +13,22 @@ UMJProjectileMovementLinear::UMJProjectileMovementLinear()
 void UMJProjectileMovementLinear::InitMovement(AMJProjectileBase* InProjectile)
 {
 	OwnerProjectile = InProjectile;
+
+	if (!OwnerProjectile)
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("Not Exist OwnerProjectile"));
+		return;
+	}
+
+	const FVector TargetLocation = OwnerProjectile->ProjectileParams.TargetLocation;
+	if (TargetLocation != FVector::ZeroVector)
+	{
+		MoveDirection = (TargetLocation - OwnerProjectile->GetActorLocation()).GetSafeNormal();
+	}
+	else
+	{
+		MoveDirection = OwnerProjectile->GetActorForwardVector();
+	}
 }
 
 void UMJProjectileMovementLinear::Move(AMJProjectileBase* InProjectile, float DeltaSeconds)
@@ -24,6 +40,6 @@ void UMJProjectileMovementLinear::Move(AMJProjectileBase* InProjectile, float De
 	}
 
 	const float MoveSpeed = OwnerProjectile->ProjectileParams.ProjectileSpeed;
-	const FVector NewLocation = OwnerProjectile->GetActorLocation() + OwnerProjectile->GetActorForwardVector() * MoveSpeed * DeltaSeconds;
+	const FVector NewLocation = OwnerProjectile->GetActorLocation() + MoveDirection * MoveSpeed * DeltaSeconds;
 	OwnerProjectile->SetActorLocation(NewLocation);
 }

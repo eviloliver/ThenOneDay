@@ -20,6 +20,9 @@ struct FMJSkillProjectileParams
 	GENERATED_BODY()
 
 	FMJSkillProjectileParams() {};
+    // Target
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FVector TargetLocation = FVector::ZeroVector;
 
 	// Damage/Scaling
     UPROPERTY(EditAnywhere, BlueprintReadWrite)

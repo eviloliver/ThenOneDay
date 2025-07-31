@@ -32,4 +32,7 @@ public:
 protected:
 	UPROPERTY()
 	TObjectPtr<AMJProjectileBase> OwnerProjectile;
+
+	UPROPERTY()
+	FVector MoveDirection;
 };
