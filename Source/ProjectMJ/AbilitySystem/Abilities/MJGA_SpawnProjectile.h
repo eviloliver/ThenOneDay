@@ -16,7 +16,8 @@
  * Modified Date:
  */
 
-class UMJProjectileDataAsset;
+class UMJProjectileMovementBehaviorBase;
+class UMJProjectileReactionBehaviorBase;
 class AMJProjectileBase;
 
 UCLASS()
@@ -27,13 +28,9 @@ class PROJECTMJ_API UMJGA_SpawnProjectile : public UMJGA_GameplayAbility
 public:
 	UMJGA_SpawnProjectile();
 
-
 protected:
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-
-	//UPROPERTY(EditDefaultsOnly, Category = "Projectile")
-	//TSubclassOf<AMJProjectileBase> ProjectileClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "GAS|Effects")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffectClass;
@@ -41,10 +38,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "GAS|Effects")
 	TSubclassOf<UGameplayEffect> StatusGameplayEffectClass;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Effects")
 	TSubclassOf<UGameplayEffect> ExplosionDamageGameplayEffectClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
 	TSubclassOf<AMJProjectileBase> ProjectileClass;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Behavior")
+	TSubclassOf<UMJProjectileMovementBehaviorBase> MovementBehavior;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Behavior")
+	TArray<TSubclassOf<UMJProjectileReactionBehaviorBase>> ReactionBehaviors;
 };

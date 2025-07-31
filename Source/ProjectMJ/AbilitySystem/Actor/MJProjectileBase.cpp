@@ -22,8 +22,8 @@ AMJProjectileBase::AMJProjectileBase()
 	Sphere->SetCollisionProfileName(CRPOFILE_MJPROJECTILE);
 
 	// Movement Section
-	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
-	ProjectileMovement->ProjectileGravityScale = 0.0f;
+	// ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
+	// ProjectileMovement->ProjectileGravityScale = 0.0f;
 
 	// Niagara Section
 	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>("NiagaraComponent");
@@ -31,14 +31,23 @@ AMJProjectileBase::AMJProjectileBase()
 
 }
 
-void AMJProjectileBase::InitProjectileParams(const FMJSkillProjectileParams& InParams)
+void AMJProjectileBase::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	// TODO: Movement Behavior
+}
+
+void AMJProjectileBase::InitProjectile(const FMJSkillProjectileParams& InParams,
+	TSubclassOf<UMJProjectileMovementBehaviorBase> InMovementBehaviorClass,
+	const TArray<TSubclassOf<UMJProjectileReactionBehaviorBase>>& InReactionBehaviorClasses)
 {
 	ProjectileParams = InParams;
 
 	if (ProjectileParams.ProjectileSpeed > 0.0f)
 	{
-		ProjectileMovement->InitialSpeed = ProjectileParams.ProjectileSpeed;
-		ProjectileMovement->MaxSpeed = ProjectileParams.ProjectileSpeed;
+		// ProjectileMovement->InitialSpeed = ProjectileParams.ProjectileSpeed;
+		// ProjectileMovement->MaxSpeed = ProjectileParams.ProjectileSpeed;
 	}
 	if (ProjectileParams.SkillRadius > 0.0f)
 	{
@@ -123,11 +132,4 @@ void AMJProjectileBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent
 
 	ApplyGameplayEffects(TargetASC, SweepResult);
 
-	// HandleProjectileDestroy();
-
-	// TODO: 나중에 통과하는 투사체인지 결정
-	// TODO: 투사체 갯수는 생성하는 쪽에서 결정할 거 같긴 한데 이거 어떻게 하면 좋을지
-	// 벽이나 다른 곳에 닿으면 사라지게? 아니면 그냥 시간 지나면 사라지게
-
-	// Destroyed();
 }

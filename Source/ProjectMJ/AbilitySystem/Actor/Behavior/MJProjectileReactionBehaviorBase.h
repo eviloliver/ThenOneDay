@@ -19,9 +19,9 @@ UCLASS(Abstract)
 class PROJECTMJ_API UMJProjectileReactionBehaviorBase : public UObject
 {
 	GENERATED_BODY()
+
 public:
-	
-	virtual void OnProjectileReact(AMJProjectileBase* Projectile, AActor* HitActor, const FHitResult& Hit) {};
-	virtual void InitReaction(AMJProjectileBase* Projectile) {};
+	virtual void OnProjectileReact(AMJProjectileBase* Projectile, AActor* HitActor, const FHitResult& Hit) PURE_VIRTUAL(UMJProjectileReactionBehaviorBase::OnProjectileReact, );
+	virtual void InitReaction(AMJProjectileBase* Projectile) PURE_VIRTUAL(UMJProjectileReactionBehaviorBase::InitReaction, );
 	
 };

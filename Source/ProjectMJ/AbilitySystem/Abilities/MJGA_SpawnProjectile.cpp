@@ -50,9 +50,6 @@ void UMJGA_SpawnProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Han
         return;
     }
 
-    // Dongmin: 이동훈 팀장님이 추천해주신거? -> 없으면 그냥 크래쉬 터트리기였나 + 이거 하려면 위에 OwnerCharacter 검사까지 안해버려야 했던거 같음
-    // UMJSkillComponent* SkillComponent = OwnerCharacter ? OwnerCharacter->FindComponentByClass<UMJSkillComponent>() : nullptr;
-
     UMJSkillComponentBase* SkillComponent = OwnerCharacter->FindComponentByClass<UMJSkillComponentBase>();
     if (!SkillComponent)
     {
@@ -116,10 +113,8 @@ void UMJGA_SpawnProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	AMJProjectileBase* Projectile = GetWorld()->SpawnActorDeferred<AMJProjectileBase>(ProjectileClass, FTransform(SpawnRotator,SpawnLocation), GetOwningActorFromActorInfo(), OwnerCharacter, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	if (Projectile)
     {
-		Projectile->InitProjectileParams(ProjectileParams);
+		Projectile->InitProjectile(ProjectileParams, MovementBehavior, ReactionBehaviors);
 		Projectile->FinishSpawning(FTransform(SpawnRotator, SpawnLocation));
     }
     EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
-    MJ_LOG(LogMJ, Log, TEXT("10"));
-
 }

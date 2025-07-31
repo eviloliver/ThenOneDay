@@ -16,6 +16,8 @@
  * Last Modified Date:
  */
 
+class UMJProjectileReactionBehaviorBase;
+class UMJProjectileMovementBehaviorBase;
 class UNiagaraComponent;
 class UProjectileMovementComponent;
 class USphereComponent;
@@ -29,22 +31,34 @@ class PROJECTMJ_API AMJProjectileBase : public AActor
 	
 public:	
 	AMJProjectileBase();
-	
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
 
-	UPROPERTY(BlueprintReadWrite)
-	FMJSkillProjectileParams ProjectileParams;
+	virtual void Tick(float DeltaSeconds) override;
 
-	void InitProjectileParams(const FMJSkillProjectileParams& InParams);
+	void InitProjectile(const FMJSkillProjectileParams& InParams, TSubclassOf<UMJProjectileMovementBehaviorBase> InMovementBehaviorClass, const TArray<TSubclassOf<UMJProjectileReactionBehaviorBase>>& InReactionBehaviorClasses);
 
-	void ApplyGameplayEffects(UAbilitySystemComponent* TargetASC, const FHitResult& HitResult);
+	// UPROPERTY(VisibleAnywhere)
+	// TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+
+	virtual void ApplyGameplayEffects(UAbilitySystemComponent* TargetASC, const FHitResult& HitResult);
+
+	FORCEINLINE USphereComponent* GetSphere() const { return Sphere; }
 
 protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+public:
+	UPROPERTY(BlueprintReadWrite)
+	FMJSkillProjectileParams ProjectileParams;
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Behavior")
+	TObjectPtr<UMJProjectileMovementBehaviorBase> MovementBehavior;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Behavior")
+	TArray<TObjectPtr<UMJProjectileReactionBehaviorBase>> ReactionBehaviors;
 
 private:
 	UPROPERTY()
