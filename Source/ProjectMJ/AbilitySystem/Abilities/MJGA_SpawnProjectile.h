@@ -40,6 +40,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "GAS|Effects")
 	TSubclassOf<UGameplayEffect> StatusGameplayEffectClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UGameplayEffect> ExplosionDamageGameplayEffectClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
 	TSubclassOf<AMJProjectileBase> ProjectileClass;

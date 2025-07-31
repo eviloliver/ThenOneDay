@@ -20,6 +20,9 @@
  * Description of Change: 상태이상 값 추가
  * Modified By: 신동민
  * Modified Date: 2025.07.28
+ * * Description of Change: 투사체 값 추가
+ * Modified By: 신동민
+ * Modified Date: 2025.07.31
  */
 UCLASS()
 class PROJECTMJ_API UMJCharacterSkillAttributeSet : public UAttributeSet
@@ -116,6 +119,25 @@ class PROJECTMJ_API UMJCharacterSkillAttributeSet : public UAttributeSet
 
 	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, ProjectileCount)
 	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxProjectileCount)
+
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, ProjectileLifeSpan)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxProjectileLifeSpan)
+
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, ProjectilePierceCount)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxProjectilePierceCount)
+
+	// Explosion
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, ExplosionRadius)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxExplosionRadius)
+
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, ExplosionBaseDamage)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxExplosionBaseDamage)
+
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, ExplosionADScaling)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxExplosionADScaling)
+
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, ExplosionAPScaling)
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxExplosionAPScaling)
 
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
@@ -265,5 +287,36 @@ protected:
 	FGameplayAttributeData ProjectileCount;
 	UPROPERTY(BlueprintReadOnly, Category = "Skill|Projectile", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData MaxProjectileCount;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Projectile", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData ProjectileLifeSpan;
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Projectile", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxProjectileLifeSpan;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Projectile", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData ProjectilePierceCount;
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Projectile", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxProjectilePierceCount;
+
+	// Explosion
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Explosion", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData ExplosionRadius;
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Explosion", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxExplosionRadius;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Explosion", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData ExplosionBaseDamage;
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Explosion", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxExplosionBaseDamage;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Explosion", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData ExplosionADScaling;
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Explosion", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxExplosionADScaling;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Explosion", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData ExplosionAPScaling;
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Explosion", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData MaxExplosionAPScaling;
 
 };

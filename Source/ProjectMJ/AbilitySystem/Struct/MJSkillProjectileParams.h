@@ -6,7 +6,7 @@
 /**
 * Class Description : Projectile Param
 * Author : 신동민
-* Created Date : 2025.07.03
+* Created Date : 2025.07.31
 * Last Modified By :
 * Last Modified Date :
 */
@@ -23,37 +23,71 @@ struct FMJSkillProjectileParams
 
 	// Damage/Scaling
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float BaseDamage = 0.f;
+    float BaseDamage = 0.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float AttackDamageScaling = 1.f;
+    float AttackDamageScaling = 0.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float AbilityPowerScaling = 1.f;
+    float AbilityPowerScaling = 0.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float LifeSteal = 0.f;
+    float LifeSteal = 0.0f;
 
     // Range
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float SkillRadius = 0.f;
+    float SkillRadius = 0.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float SkillRange = 0.f;
+    float SkillRange = 0.0f;
 
     // Status Effect
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float StatusEffectChance = 0.f;
+    float StatusEffectChance = 0.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float StatusEffectDuration = 0.f;
+    float StatusEffectDuration = 0.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float StatusEffectBaseDamage = 0.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float StatusEffectADScaling = 0.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float StatusEffectAPScaling = 0.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float StatusEffectMaxStack = 0.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float StatusEffectPeriod = 0.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float StatusEffectSlowPercent = 0.f;
+
+    // Explosion
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float ExplosionRadius = 0.0f;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float ExplosionBaseDamage = 0.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float ExplosionADScaling = 0.f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float ExplosionAPScaling = 0.f;
 
     // Projectile
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float ProjectileSpeed = 0.f;
+    float ProjectileSpeed = 0.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float ProjectileCount = 1.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int32 PierceCount = 0;
 
     // ASC
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -68,5 +102,8 @@ struct FMJSkillProjectileParams
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSubclassOf<UGameplayEffect> StatusGameplayEffectClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSubclassOf<UGameplayEffect> ExplosionDamageGameplayEffectClass;
 
 };

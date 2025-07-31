@@ -68,6 +68,20 @@ UMJCharacterSkillAttributeSet::UMJCharacterSkillAttributeSet()
     , MaxProjectileSpeed(0.0f)
     , ProjectileCount(0.0f)
     , MaxProjectileCount(0.0f)
+	, ProjectileLifeSpan(0.0f)
+	, MaxProjectileLifeSpan(0.0f)
+    , ProjectilePierceCount(0.0f)
+    , MaxProjectilePierceCount(0.0f)
+
+    // Explosion
+	, ExplosionRadius(0.0f)
+	, MaxExplosionRadius(0.0f)
+    , ExplosionBaseDamage(0.0f)
+    , MaxExplosionBaseDamage(0.0f)
+    , ExplosionADScaling(0.0f)
+    , MaxExplosionADScaling(0.0f)
+    , ExplosionAPScaling(0.0f)
+    , MaxExplosionAPScaling(0.0f)
 {
 
 }
