@@ -21,7 +21,7 @@ void UMJGameFlowHUDWidget::NativeConstruct()
 	ForceExitCaution->SetVisibility(ESlateVisibility::Hidden);
 	DungeonEndMenu->SetVisibility(ESlateVisibility::Hidden);
 	BossHpBar->SetVisibility(ESlateVisibility::Hidden);
-	//DungeonMap->SetVisibility(ESlateVisibility::Hidden);
+	MiniMap->SetVisibility(ESlateVisibility::Hidden);
 
 
 	FSlateApplication::Get().OnApplicationActivationStateChanged().AddUObject(this, &UMJGameFlowHUDWidget::OnWindowFocusChanged);
@@ -31,6 +31,8 @@ void UMJGameFlowHUDWidget::NativeConstruct()
 	{
 		MJDungeonState->OnAIBossSpawned.AddDynamic(this,&UMJGameFlowHUDWidget::OnBossSpawned);
 		MJDungeonState->OnAIBossDied.AddDynamic(this, &UMJGameFlowHUDWidget::OnBossDied);
+
+		MiniMap->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
