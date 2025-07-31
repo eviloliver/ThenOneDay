@@ -143,6 +143,8 @@ void AMJGameStateDungeon::Initialize_BattleNode()
 									SpawnedActorRefs.Add(NewAIActor);
 									++CurrentSpawnedAINum;
 									++CurrentPointSpawnedAINum;
+
+									OnAISpawned.Broadcast(NewAIActor);
 								}
 								else
 								{
@@ -290,6 +292,9 @@ void AMJGameStateDungeon::SpawnAI()
 									   ++CurrentSpawnedAINum;
 									   --LoadedWaveDataRow.EnemyCount;
 									   ++i;
+
+							   	   	OnAISpawned.Broadcast(NewAIActor);
+							   	   	
 								   }
 								   else
 								   {

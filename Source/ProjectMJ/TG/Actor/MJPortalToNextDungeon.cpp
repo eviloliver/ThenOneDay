@@ -6,6 +6,7 @@
 #include "Controller/MJPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include "TG/Component/MJMiniMapIconMeshComponent.h"
 #include "TG/UI/MJDungeonMapWidget.h"
 #include "TG/UI/MJGameFlowHUDWidget.h"
 
@@ -16,6 +17,9 @@ AMJPortalToNextDungeon::AMJPortalToNextDungeon()
 
 	RootComponent = Mesh;
 	SphereCollision->SetupAttachment(Mesh);
+
+	MiniMapIconMesh = CreateDefaultSubobject<UMJMiniMapIconMeshComponent>(TEXT("MiniMapIcon"));
+	MiniMapIconMesh->SetupAttachment(Mesh);
 }
 
 void AMJPortalToNextDungeon::PostInitializeComponents()
