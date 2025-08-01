@@ -8,3 +8,11 @@ AMJForestCreatureCharacter::AMJForestCreatureCharacter()
 {
 
 }
+
+void AMJForestCreatureCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
+}

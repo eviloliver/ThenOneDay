@@ -17,7 +17,7 @@ class PROJECTMJ_API AMJForestCreatureCharacter : public AMJMonsterCharacter
 public:
 	AMJForestCreatureCharacter();
 
-
+	virtual void BeginPlay() override;
 
 
 private:
