@@ -15,6 +15,7 @@
  * Last Modified Date: 2025.06.12
  */
 
+struct FMJDialogueChoiceRow;
 class UMJDialogueWidget;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECTMJ_API UMJDialogueComponent : public UActorComponent
@@ -27,12 +28,19 @@ public:
 protected:	
 	// UDataTable 이 들어올 수 있는 방 -> 세입자를 넣어 줘야함 (포인터 == 누군가를 가리킬 수 있음)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue Component")
-	UDataTable* DialogueTable;
+	TObjectPtr<UDataTable> DialogueTable;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Dialogue")
 	int32 CurrentIndex;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dialogue")
+	int32 CurrentNodeID;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dialogue")
+	int32 SelectedNodeID;
+	
 public:
-	bool IsDialogueEnd() const;
+	virtual bool IsDialogueEnd() const;
 	
 	// Refactoring
 	void FloatLine();
@@ -41,10 +49,14 @@ public:
 	void TurnOver();
 	
 	void UpdateBacklog();
+	void UpdateChoice();
 
+	
 	void SetIndex(int index) {CurrentIndex = index;}
 	
 	const FMJDialogueRow* GetCurrentRow() const;
 	const FMJDialogueRow* GetPreviousRow() const;
 	UMJDialogueWidget* GetDialogueWidget();
+	bool bIsFirstIndex();
+
 };
