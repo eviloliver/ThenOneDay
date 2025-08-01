@@ -9,6 +9,7 @@
 #include "MJ/AI/AIPerceptionInfo.h"
 #include "MJCharacterBase.generated.h"
 
+class UMJAbilityContextComponent;
 class UMJAbilitySystemComponent;
 class UMJAttributeSet;
 class UDataAsset_StartDataBase;
@@ -53,6 +54,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation")
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GAS")
+	TObjectPtr<UMJAbilityContextComponent> AbilityContextComponent;
 
 	FGenericTeamId TeamId;
 };

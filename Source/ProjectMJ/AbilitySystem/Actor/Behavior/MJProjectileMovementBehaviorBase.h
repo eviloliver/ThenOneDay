@@ -17,14 +17,14 @@
 
 class AMJProjectileBase;
 
-UCLASS()
+UCLASS(Abstract)
 class PROJECTMJ_API UMJProjectileMovementBehaviorBase : public UObject
 {
 	GENERATED_BODY()
 
 public:
 
-	virtual void InitMovement(AMJProjectileBase* InProjectile) PURE_VIRTUAL(UMJProjectileMovementBehaviorBase::InitMovement, );
+	virtual void InitMovement(AMJProjectileBase* InProjectile, const FTransform& SpawnTransform) PURE_VIRTUAL(UMJProjectileMovementBehaviorBase::InitMovement, );
 	virtual void Move(AMJProjectileBase* InProjectile, float DeltaSeconds) PURE_VIRTUAL(UMJProjectileMovementBehaviorBase::Move, );
 
 };

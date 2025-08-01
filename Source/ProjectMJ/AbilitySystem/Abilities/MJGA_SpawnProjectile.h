@@ -32,6 +32,7 @@ protected:
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
+protected:
 	UPROPERTY(EditDefaultsOnly, Category = "GAS|Effects")
 	TSubclassOf<UGameplayEffect> DamageGameplayEffectClass;
 
@@ -42,11 +43,15 @@ protected:
 	TSubclassOf<UGameplayEffect> ExplosionDamageGameplayEffectClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
+	FName SpawnSocketName;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
 	TSubclassOf<AMJProjectileBase> ProjectileClass;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Behavior")
+	UPROPERTY(EditDefaultsOnly, Category = "Behavior")
 	TSubclassOf<UMJProjectileMovementBehaviorBase> MovementBehavior;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Behavior")
+	UPROPERTY(EditDefaultsOnly, Category = "Behavior")
 	TArray<TSubclassOf<UMJProjectileReactionBehaviorBase>> ReactionBehaviors;
+
 };

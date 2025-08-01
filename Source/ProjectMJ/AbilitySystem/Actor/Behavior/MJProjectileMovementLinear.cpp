@@ -10,7 +10,7 @@ UMJProjectileMovementLinear::UMJProjectileMovementLinear()
 {
 }
 
-void UMJProjectileMovementLinear::InitMovement(AMJProjectileBase* InProjectile)
+void UMJProjectileMovementLinear::InitMovement(AMJProjectileBase* InProjectile, const FTransform& SpawnTransform)
 {
 	OwnerProjectile = InProjectile;
 

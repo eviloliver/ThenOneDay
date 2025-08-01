@@ -34,12 +34,7 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 
-	void InitProjectile(const FMJSkillProjectileParams& InParams, TSubclassOf<UMJProjectileMovementBehaviorBase> InMovementBehaviorClass, const TArray<TSubclassOf<UMJProjectileReactionBehaviorBase>>& InReactionBehaviorClasses);
-
-	// UPROPERTY(VisibleAnywhere)
-	// TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
-
-	virtual void ApplyGameplayEffects(UAbilitySystemComponent* TargetASC, const FHitResult& HitResult);
+	void InitProjectile(const FTransform& SpawnTransform, const FMJSkillProjectileParams& InParams, TSubclassOf<UMJProjectileMovementBehaviorBase> InMovementBehaviorClass, const TArray<TSubclassOf<UMJProjectileReactionBehaviorBase>>& InReactionBehaviorClasses);
 
 	FORCEINLINE USphereComponent* GetSphere() const { return Sphere; }
 
@@ -61,7 +56,7 @@ protected:
 	TArray<TObjectPtr<UMJProjectileReactionBehaviorBase>> ReactionBehaviors;
 
 private:
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
 	TObjectPtr<USphereComponent> Sphere;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile", meta = (Categories = "GameplayCue"))

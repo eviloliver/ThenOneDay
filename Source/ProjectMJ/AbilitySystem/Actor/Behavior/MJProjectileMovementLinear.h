@@ -26,7 +26,7 @@ public:
 	UMJProjectileMovementLinear();
 
 public:
-	virtual void InitMovement(AMJProjectileBase* InProjectile) override;
+	virtual void InitMovement(AMJProjectileBase* InProjectile, const FTransform& SpawnTransform) override;
 	virtual void Move(AMJProjectileBase* InProjectile, float DeltaSeconds) override;
 	
 protected:
