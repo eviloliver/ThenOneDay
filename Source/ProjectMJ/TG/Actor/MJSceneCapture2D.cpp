@@ -25,17 +25,23 @@ AMJSceneCapture2D::AMJSceneCapture2D()
 	//ProceduralMeshComponent->SetupAttachment(RootComponent);
 }
 
+void AMJSceneCapture2D::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	
+	AMJGameStateDungeon* GSDungeon = Cast<AMJGameStateDungeon>(UGameplayStatics::GetGameState(GetWorld()));
+	if (GSDungeon)
+	{
+		GSDungeon->OnActorSpawned.AddDynamic(this, &AMJSceneCapture2D::OnActorSpawned);
+	}
+}
+
 void AMJSceneCapture2D::BeginPlay()
 {
 	Super::BeginPlay();	
 	
 
-	AMJGameStateDungeon* GSDungeon = Cast<AMJGameStateDungeon>(UGameplayStatics::GetGameState(GetWorld()));
-	if (GSDungeon)
-	{
-		GSDungeon->OnActorSpawned.AddDynamic(this, &AMJSceneCapture2D::OnActorSpawned );
-		
-	}
+	
 
 	Player = TWeakObjectPtr<ACharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
 	if (Player.IsValid())

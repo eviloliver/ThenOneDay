@@ -13,6 +13,7 @@
  * Last Modified By: Cha Tae Gwan
  * Last Modified Date: 2025-06-20
  */
+
 UCLASS()
 class PROJECTMJ_API UMJSaveGameSubsystem : public UGameInstanceSubsystem
 {
@@ -28,20 +29,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UMJSaveGame* GetSaveGameData();
 
-	UFUNCTION(BlueprintCallable)
-	FString GetSaveSlotName() const;
-
-	UFUNCTION(BlueprintCallable)
-	int32 GetUserIndex() const;
-
-
 	UFUNCTION()
 	void SaveGameToCurrentSlotNum();
 
 	UFUNCTION()
 	bool LoadGameFromSlotNum(int8 SlotNum);
-
-
 
 	// Loading Screen Section
 	
@@ -50,16 +42,12 @@ public:
 	UFUNCTION()
 	virtual void EndLoadingScreen(UWorld* InLoadedWorld);
 
-	UPROPERTY(VisibleAnywhere)
-	TSubclassOf<UUserWidget> LoadingScreen;
 	
 protected:
 	
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UMJSaveGame> SaveGameData;
-	
-	const FString SaveSlotName = TEXT("DefaultSaveGameSlot");
+	TSubclassOf<UUserWidget> LoadingScreen;
 
-	const int32 UserIndex = 0;
-	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UMJSaveGame> SaveGameData;
 };

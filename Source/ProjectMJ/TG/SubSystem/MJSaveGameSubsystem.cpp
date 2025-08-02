@@ -59,16 +59,6 @@ UMJSaveGame* UMJSaveGameSubsystem::GetSaveGameData()
 	return SaveGameData;	
 }
 
-FString UMJSaveGameSubsystem::GetSaveSlotName() const
-{
-	return SaveSlotName;
-}
-
-int32 UMJSaveGameSubsystem::GetUserIndex() const
-{
-	return UserIndex;
-}
-
 void UMJSaveGameSubsystem::SaveGameToCurrentSlotNum()
 {
 
