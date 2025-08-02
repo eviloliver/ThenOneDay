@@ -4,6 +4,8 @@
 #include "Character/Component/MJPlayerSkillComponent.h"
 
 #include "ProjectMJ.h"
+#include "DataTable/MJSkillDataRow.h"
+#include "TG/MJGameInstanceTG.h"
 
 UMJPlayerSkillComponent::UMJPlayerSkillComponent()
 {
@@ -13,15 +15,11 @@ void UMJPlayerSkillComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirArrow")));
-	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirArrow")));
-
 	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.PoisonSlash")));
 	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.PoisonSlash")));
 
-	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.Catastrophe")));
-	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.Catastrophe")));
-	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.Catastrophe")));
+	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirSwordAura")));
+	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirSwordAura")));
 
 	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
 	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
@@ -29,6 +27,23 @@ void UMJPlayerSkillComponent::BeginPlay()
 	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.Test")));
 	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.Test")));
 
+}
+
+UDataTable* UMJPlayerSkillComponent::GetSkillDataTable() const
+{
+	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+	if (!GI)
+	{
+		MJ_LOG(LogMJ, Log, TEXT("Not Exist GI"));
+		return nullptr;
+	}
+	UDataTable* SkillDataTable = GI->PlayerSkillDataTable;
+	if (!SkillDataTable)
+	{
+		MJ_LOG(LogMJ, Log, TEXT("Not Exist SkillDataTable"));
+		return nullptr;
+	}
+	return SkillDataTable;
 }
 
 void UMJPlayerSkillComponent::ActivateSkillByInputTag(const FGameplayTag InputTag)

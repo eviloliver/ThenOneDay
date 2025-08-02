@@ -31,11 +31,12 @@ void UMJForceExitCautionWidget::OnClicked_BackButton()
 
 void UMJForceExitCautionWidget::OnClicked_ConfirmButton()
 {
-	UAudioComponent* AudioComp = UGameplayStatics::SpawnSound2D(GetWorld(), SuccessSound);
-	if (AudioComp)
-	{
-		AudioComp->OnAudioFinished.AddDynamic(this, &UMJForceExitCautionWidget::ConfirmInternal);
-	}
+	// UAudioComponent* AudioComp = UGameplayStatics::SpawnSound2D(GetWorld(), SuccessSound);
+	// if (AudioComp)
+	// {
+	// 	AudioComp->OnAudioFinished.AddDynamic(this, &UMJForceExitCautionWidget::ConfirmInternal);
+	// }
+	ConfirmInternal();
 }
 
 void UMJForceExitCautionWidget::ConfirmInternal()

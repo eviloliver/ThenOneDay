@@ -40,8 +40,6 @@ void AMJPlayerState::SaveToInstancedPlayerSessionData()
 {
 	FMJPlayerSessionData& MJGIPlayerSessionData = GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef();
 	
-	MJGIPlayerSessionData.CharacterAttribute = *CharacterAttributeSet;
-	MJGIPlayerSessionData.CharacterSkillAttribute = *CharacterSkillAttributeSet;
 	UMJPlayerStatComponent* PlayerStatComp = GetPawn()->FindComponentByClass<UMJPlayerStatComponent>();
 	if (PlayerStatComp)
 	{
@@ -54,8 +52,6 @@ void AMJPlayerState::SaveToInstancedPlayerSessionData()
 void AMJPlayerState::LoadFromInstancedPlayerSessionData()
 {
 	PlayerSessionData = GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef();
-	PlayerSessionData.CharacterAttribute.ApplyToAttributeSet(*CharacterAttributeSet);
-	PlayerSessionData.CharacterSkillAttribute.ApplyToAttributeSet(*CharacterSkillAttributeSet);
 	PlayerSessionData.PlayerLevel =  GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef().PlayerLevel;
 	PlayerSessionData.PlayerExp = GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef().PlayerExp;
 

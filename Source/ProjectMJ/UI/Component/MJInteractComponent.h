@@ -14,7 +14,8 @@
  */
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDialogueEnd);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStoreEnd);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStoreOpen);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStoreClose);
 
 UENUM(BlueprintType)
 enum class EMJInteractionType : uint8
@@ -61,5 +62,6 @@ public:
 	EMJInteractionType CurrentType;
 
 	FOnDialogueEnd OndialogueEnd;
-	FOnStoreEnd OnstoreEnd;
+	FOnStoreOpen OnstoreOpen;
+	FOnStoreClose OnstoreClose;
 };

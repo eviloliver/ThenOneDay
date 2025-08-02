@@ -16,9 +16,6 @@ UMJGE_SetCharacterAttributeSet::UMJGE_SetCharacterAttributeSet()
 
     const FAttributeSetter Attributes[] = {
         // Level
-        { UMJCharacterAttributeSet::GetLevelAttribute(),            FName("Data.Character.Level") },
-        { UMJCharacterAttributeSet::GetMaxLevelAttribute(),         FName("Data.Character.MaxLevel") },
-
         { UMJCharacterAttributeSet::GetExperienceAttribute(),       FName("Data.Character.Experience") },
         { UMJCharacterAttributeSet::GetMaxExperienceAttribute(),    FName("Data.Character.MaxExperience") },
 
@@ -83,8 +80,6 @@ UMJGE_SetCharacterAttributeSet::UMJGE_SetCharacterAttributeSet()
         { UMJCharacterAttributeSet::GetMovementSpeedAttribute(),    FName("Data.Character.MovementSpeed") },
         { UMJCharacterAttributeSet::GetMaxMovementSpeedAttribute(), FName("Data.Character.MaxMovementSpeed") },
 
-        // Damage
-        { UMJCharacterAttributeSet::GetDamageAttribute(),           FName("Data.Character.Damage") }
     };
 
     for (const auto& Iter : Attributes)

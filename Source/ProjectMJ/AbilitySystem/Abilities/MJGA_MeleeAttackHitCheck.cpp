@@ -60,54 +60,52 @@ void UMJGA_MeleeAttackHitCheck::OnTraceResultCallback(const FGameplayAbilityTarg
 			return;
 		}
 
-		FGameplayEffectSpecHandle EffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffectClass);
-		if (EffectSpecHandle.IsValid())
+		if (DamageGameplayEffectClass)
 		{
-			EffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.BaseDamage")), SourceCharacterSkillAttributeSet->GetBaseDamage());
-			EffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AttackDamageScaling")), SourceCharacterSkillAttributeSet->GetAttackDamageScaling());
-			EffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AbilityPowerScaling")), SourceCharacterSkillAttributeSet->GetAbilityPowerScaling());
-
-			ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, EffectSpecHandle, TargetDataHandle);
-
-			for (AActor* HitActor : HitActors)
+			FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffectClass);
+			if (DamageEffectSpecHandle.IsValid())
 			{
-				UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitActor);
-				if (TargetASC)
+				DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.BaseDamage")), SourceCharacterSkillAttributeSet->GetBaseDamage());
+				DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AttackDamageScaling")), SourceCharacterSkillAttributeSet->GetAttackDamageScaling());
+				DamageEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AbilityPowerScaling")), SourceCharacterSkillAttributeSet->GetAbilityPowerScaling());
+
+				ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, DamageEffectSpecHandle, TargetDataHandle);
+
+				for (AActor* HitActor : HitActors)
 				{
-					FGameplayCueParameters CueParams;
-					CueParams.EffectContext = UAbilitySystemBlueprintLibrary::GetEffectContext(EffectSpecHandle);
-					TargetASC->ExecuteGameplayCue(GameplayCueTag, CueParams);
+					UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitActor);
+					if (TargetASC)
+					{
+						FGameplayCueParameters CueParams;
+						CueParams.EffectContext = UAbilitySystemBlueprintLibrary::GetEffectContext(DamageEffectSpecHandle);
+						TargetASC->ExecuteGameplayCue(GameplayCueTag, CueParams);
+					}
 				}
 			}
 		}
 
-		if (!StatusGameplayEffectClass)
+		if (StatusGameplayEffectClass)
 		{
-			MJ_LOG(LogMJ, Warning, TEXT("Not Exist StatusGameplayEffectClass"));
-
-			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-			return;
-		}
-		
-		FGameplayEffectSpecHandle StatusEffectSpecHandle = MakeOutgoingGameplayEffectSpec(StatusGameplayEffectClass);
-		if (StatusEffectSpecHandle.IsValid())
-		{
-			float Chance = SourceCharacterSkillAttributeSet->GetStatusEffectChance();
-
-			if (FMath::FRandRange(0.0f, 100.0f) <= Chance)
+			FGameplayEffectSpecHandle StatusEffectSpecHandle = MakeOutgoingGameplayEffectSpec(StatusGameplayEffectClass);
+			if (StatusEffectSpecHandle.IsValid())
 			{
-				StatusEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusEffectDuration")), SourceCharacterSkillAttributeSet->GetStatusEffectDuration());
+				float Chance = SourceCharacterSkillAttributeSet->GetStatusEffectChance();
 
-				StatusEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusBaseDamage")), SourceCharacterSkillAttributeSet->GetStatusBaseDamage());
-				StatusEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusEffectADScaling")), SourceCharacterSkillAttributeSet->GetStatusEffectADScaling());
-				StatusEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusEffectAPScaling")), SourceCharacterSkillAttributeSet->GetStatusEffectAPScaling());
+				if (FMath::FRandRange(0.0f, 100.0f) <= Chance)
+				{
+					StatusEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusEffectDuration")), SourceCharacterSkillAttributeSet->GetStatusEffectDuration());
 
-				StatusEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusEffectMaxStack")), SourceCharacterSkillAttributeSet->GetStatusEffectMaxStack());
-				StatusEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusEffectPeriod")), SourceCharacterSkillAttributeSet->GetStatusEffectPeriod());
+					StatusEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusBaseDamage")), SourceCharacterSkillAttributeSet->GetStatusBaseDamage());
+					StatusEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusEffectADScaling")), SourceCharacterSkillAttributeSet->GetStatusEffectADScaling());
+					StatusEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusEffectAPScaling")), SourceCharacterSkillAttributeSet->GetStatusEffectAPScaling());
 
-				StatusEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusEffectSlowPercent")), SourceCharacterSkillAttributeSet->GetStatusEffectSlowPercent());
+					StatusEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusEffectMaxStack")), SourceCharacterSkillAttributeSet->GetStatusEffectMaxStack());
+					StatusEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusEffectPeriod")), SourceCharacterSkillAttributeSet->GetStatusEffectPeriod());
 
-				ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, StatusEffectSpecHandle, TargetDataHandle);
+					StatusEffectSpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusEffectSlowPercent")), SourceCharacterSkillAttributeSet->GetStatusEffectSlowPercent());
+
+					ApplyGameplayEffectSpecToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, StatusEffectSpecHandle, TargetDataHandle);
+				}
 			}
 		}
 	}

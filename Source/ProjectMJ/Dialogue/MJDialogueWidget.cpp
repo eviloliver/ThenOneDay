@@ -18,6 +18,7 @@ void UMJDialogueWidget::NativeConstruct()
 
 void UMJDialogueWidget::SetTextBlock(const FString& InText,const FString& speaker)
 {
+	// 여기서 크래시가 난다면 component에 DT를 넣었는지 확인해보세요
 	if (Text)
 	{
 		Text->SetText(FText::FromString(InText));

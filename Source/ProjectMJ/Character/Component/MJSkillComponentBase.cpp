@@ -11,7 +11,6 @@
 #include "Character/MJCharacterBase.h"
 #include "DataTable/MJSkillDataRow.h"
 #include "DataTable/MJSkillLevelAbilityRow.h"
-#include "TG/MJGameInstanceTG.h"
 
 // Sets default values for this component's properties
 UMJSkillComponentBase::UMJSkillComponentBase()
@@ -39,18 +38,20 @@ void UMJSkillComponentBase::LearnSkill(const FGameplayTag& SkillTag)
 	}
 	else
 	{
-		UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
-		if (!GI || !GI->SkillDataTable)
-		{
-			return;
-		}
 		FName RowName = SkillTag.GetTagName();
-		const FMJSkillDataRow* DataRow = GI->SkillDataTable->FindRow<FMJSkillDataRow>(RowName, TEXT(""));
+		UDataTable* SkillDataTable = GetSkillDataTable();
+		const FMJSkillDataRow* DataRow = SkillDataTable->FindRow<FMJSkillDataRow>(RowName, TEXT(""));
 		if (DataRow)
 		{
 			FSkillData NewSkillData;
 			NewSkillData.SkillDefaultTag = SkillTag;
-			NewSkillData.SkillTypeTag = SkillTag.GetGameplayTagParents().GetByIndex(1);
+			int32 TagLength = SkillTag.GetGameplayTagParents().Num();
+			if (TagLength < 2)
+			{
+				MJ_LOG(LogMJ, Warning, TEXT("Tag is too short"));
+				return;
+			}
+			NewSkillData.SkillTypeTag = SkillTag.GetGameplayTagParents().GetByIndex(TagLength - 2);
 			OwnedSkillMap.Add(SkillTag, NewSkillData);
 		}
 	}
@@ -126,14 +127,8 @@ void UMJSkillComponentBase::ActivateSkill(const FGameplayTag& SkillTag)
 		return;
 	}
 
-	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
-	if (!GI || !GI->SkillDataTable)
-	{
-		MJ_LOG(LogMJ, Log, TEXT("Not Exist GI or SkillDataTable"));
-		return;
-	}
-
-	const FMJSkillDataRow* DataRow = GI->SkillDataTable->FindRow<FMJSkillDataRow>(SkillTag.GetTagName(), TEXT("ActivateSkill"));
+	UDataTable* SkillDataTable = GetSkillDataTable();
+	const FMJSkillDataRow* DataRow = SkillDataTable->FindRow<FMJSkillDataRow>(SkillTag.GetTagName(), TEXT("ActivateSkill"));
 	if (!DataRow)
 	{
 		MJ_LOG(LogMJ, Log, TEXT("Not Exist DataRow"));
@@ -186,6 +181,7 @@ void UMJSkillComponentBase::ActivateSkill(const FGameplayTag& SkillTag)
 
 	FGameplayAbilitySpecHandle Handle = GivenActionAbilityHandles[SkillTag];
 	ASC->TryActivateAbility(Handle);
+
 }
 
 void UMJSkillComponentBase::GiveAbilityToASC(const FGameplayTag& SkillTag)
@@ -209,14 +205,8 @@ void UMJSkillComponentBase::GiveAbilityToASC(const FGameplayTag& SkillTag)
 		return;
 	}
 
-	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
-	if (!GI || !GI->SkillDataTable)
-	{
-		MJ_LOG(LogMJ, Error, TEXT("Not Exist GI or SkillDataTable"));
-		return;
-	}
-
-	const FMJSkillDataRow* DataRow = GI->SkillDataTable->FindRow<FMJSkillDataRow>(SkillTag.GetTagName(), TEXT("GiveAbility"));
+	UDataTable* SkillDataTable = GetSkillDataTable();
+	const FMJSkillDataRow* DataRow = SkillDataTable->FindRow<FMJSkillDataRow>(SkillTag.GetTagName(), TEXT("GiveAbility"));
 	if (!DataRow)
 	{
 		MJ_LOG(LogMJ, Error, TEXT("Not Exist DataRow"));
@@ -227,7 +217,7 @@ void UMJSkillComponentBase::GiveAbilityToASC(const FGameplayTag& SkillTag)
 
 	int32 SkillLevel = OwnedSkillMap[SkillTag].Level;
 	FName RowName = FName(*FString::FromInt(SkillLevel));
-
+	// Minjin TODO: SkillLevelAbilityTable 넣어주기.
 	UDataTable* SkillLevelAbilityTable = DataRow->SkillLevelAbilityTable.LoadSynchronous();
 	if (!SkillLevelAbilityTable)
 	{

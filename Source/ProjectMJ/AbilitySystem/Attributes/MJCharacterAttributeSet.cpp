@@ -7,9 +7,7 @@
 #include "Character/Component/MJStatComponentBase.h"
 
 UMJCharacterAttributeSet::UMJCharacterAttributeSet()
-    :Level(1.0f)
-	, MaxLevel(99.0f)
-	, Experience(0.0f)
+    : Experience(0.0f)
 	, MaxExperience(999999.0f)
 	, DropExperience(0.0f)
 	, MaxDropExperience(999.0f)
@@ -53,7 +51,6 @@ UMJCharacterAttributeSet::UMJCharacterAttributeSet()
 	, MovementSpeed(600.0f)
 	, MaxMovementSpeed(1200.0f)
 
-	, Damage(0.0f)
 {
 	InitHealth(GetMaxHealth());
 	InitStamina(GetMaxStamina());

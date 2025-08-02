@@ -9,6 +9,7 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "AbilitySystem/AbilityTasks/MJAT_GetMousePosition.h"
 #include "Character/MJCharacterBase.h"
+#include "Character/Component/MJAbilityContextComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -63,6 +64,12 @@ void UMJGA_PlayerActionInstantSkill::OnMousePositionReady(const FVector& MouseLo
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		return;
+	}
+
+	UMJAbilityContextComponent* MJAbilityContextComponent = AMJCharacter->FindComponentByClass<UMJAbilityContextComponent>();
+	if (MJAbilityContextComponent)
+	{
+		MJAbilityContextComponent->LastTargetedMouseLocation = MouseLocation;
 	}
 
 	FVector CharacterLocation = AMJCharacter->GetActorLocation();

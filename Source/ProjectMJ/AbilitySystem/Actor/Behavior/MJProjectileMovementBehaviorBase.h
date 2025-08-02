@@ -14,9 +14,19 @@
  * Modified By:
  * Modified Date:
  */
-UCLASS()
+
+class UGameplayAbility;
+class AMJProjectileBase;
+
+UCLASS(Abstract)
 class PROJECTMJ_API UMJProjectileMovementBehaviorBase : public UObject
 {
 	GENERATED_BODY()
-	
+
+public:
+
+	virtual FTransform CalculateSpawnTransform(UGameplayAbility* OwningAbility, const FVector& TargetLocation, FName SpawnSocketName) PURE_VIRTUAL(UMJProjectileMovementBehaviorBase::CalculateSpawnTransform, return FTransform::Identity;);
+	virtual void InitMovement(AMJProjectileBase* InProjectile) PURE_VIRTUAL(UMJProjectileMovementBehaviorBase::InitMovement, );
+	virtual void Move(AMJProjectileBase* InProjectile, float DeltaSeconds) PURE_VIRTUAL(UMJProjectileMovementBehaviorBase::Move, );
+
 };

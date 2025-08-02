@@ -29,10 +29,9 @@ public:
 	void BackToParentWidget();
 
 protected:
-
 	
 	UPROPERTY()
-	TObjectPtr<UUserWidget> ParentWidget;
+	TWeakObjectPtr<UUserWidget> ParentWidget;
 
 	
 	

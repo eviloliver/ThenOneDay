@@ -5,8 +5,10 @@
 #include "CoreMinimal.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
+#include "TG/Interface/MJInstancedActorInterface.h"
 #include "MJPortalToNextDungeon.generated.h"
 
+class UMJMiniMapIconMeshComponent;
 /**
  * Class Description: (currently not using) PortalToNextDungeon
  * Author: Cha Tae Gwan
@@ -15,7 +17,7 @@
  * Last Modified Date: 2025_07_29
  */
 UCLASS()
-class PROJECTMJ_API AMJPortalToNextDungeon : public AActor
+class PROJECTMJ_API AMJPortalToNextDungeon : public AActor, public IMJInstancedActorInterface
 {
 	GENERATED_BODY()
 	
@@ -25,6 +27,9 @@ public:
 protected:
 	virtual void PostInitializeComponents() override;
 
+	UFUNCTION()
+	void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UStaticMeshComponent> Mesh;
 
@@ -33,9 +38,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USoundCue> CollisionSFX;
-	
-	UFUNCTION()
-	void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UMJMiniMapIconMeshComponent> MiniMapIconMesh;
+	
+	
 	
 };

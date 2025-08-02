@@ -13,7 +13,6 @@ void UMJStatWidget::BindToAttribute(UMJAbilitySystemComponent* ASC, UMJCharacter
 		return;
 	}
 	
-	Level = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxLevelAttribute());
 	Health = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxHealthAttribute());
 	AttackPower = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxAttackDamageAttribute());
 	SpellPower = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxAbilityPowerAttribute());
@@ -22,7 +21,6 @@ void UMJStatWidget::BindToAttribute(UMJAbilitySystemComponent* ASC, UMJCharacter
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxHealthAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxAttackDamageAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxAbilityPowerAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
-	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxLevelAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxMovementSpeedAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
 	
 	UpdateStat(FOnAttributeChangeData{});

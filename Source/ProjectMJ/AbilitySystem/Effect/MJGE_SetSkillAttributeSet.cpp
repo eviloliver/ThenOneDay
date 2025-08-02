@@ -77,12 +77,26 @@ UMJGE_SetSkillAttributeSet::UMJGE_SetSkillAttributeSet()
         { UMJCharacterSkillAttributeSet::GetStatusEffectSlowPercentAttribute(),FName("Data.Skill.StatusEffectSlowPercent") },
         { UMJCharacterSkillAttributeSet::GetMaxStatusEffectSlowPercentAttribute(),FName("Data.Skill.MaxStatusEffectSlowPercent") },
 
-
         // Projectile
         { UMJCharacterSkillAttributeSet::GetProjectileSpeedAttribute(),      FName("Data.Skill.ProjectileSpeed") },
         { UMJCharacterSkillAttributeSet::GetMaxProjectileSpeedAttribute(),   FName("Data.Skill.MaxProjectileSpeed") },
         { UMJCharacterSkillAttributeSet::GetProjectileCountAttribute(),      FName("Data.Skill.ProjectileCount") },
-        { UMJCharacterSkillAttributeSet::GetMaxProjectileCountAttribute(),   FName("Data.Skill.MaxProjectileCount") }
+        { UMJCharacterSkillAttributeSet::GetMaxProjectileCountAttribute(),   FName("Data.Skill.MaxProjectileCount") },
+        { UMJCharacterSkillAttributeSet::GetProjectileLifeSpanAttribute(),   FName("Data.Skill.ProjectileLifeSpan") },
+        { UMJCharacterSkillAttributeSet::GetMaxProjectileLifeSpanAttribute(),   FName("Data.Skill.MaxProjectileLifeSpan") },
+        { UMJCharacterSkillAttributeSet::GetProjectilePierceCountAttribute(),   FName("Data.Skill.ProjectilePierceCount") },
+        { UMJCharacterSkillAttributeSet::GetMaxProjectilePierceCountAttribute(),   FName("Data.Skill.MaxProjectilePierceCount") },
+
+    	// Explosion
+        { UMJCharacterSkillAttributeSet::GetExplosionRadiusAttribute(), FName("Data.Skill.ExplosionRadius") },
+        { UMJCharacterSkillAttributeSet::GetMaxExplosionRadiusAttribute(), FName("Data.Skill.MaxExplosionRadius") },
+        { UMJCharacterSkillAttributeSet::GetExplosionBaseDamageAttribute(), FName("Data.Skill.ExplosionBaseDamage") },
+        { UMJCharacterSkillAttributeSet::GetMaxExplosionBaseDamageAttribute(), FName("Data.Skill.MaxExplosionBaseDamage") },
+        { UMJCharacterSkillAttributeSet::GetExplosionADScalingAttribute(), FName("Data.Skill.ExplosionADScaling") },
+        { UMJCharacterSkillAttributeSet::GetMaxExplosionADScalingAttribute(), FName("Data.Skill.MaxExplosionADScaling") },
+        { UMJCharacterSkillAttributeSet::GetExplosionAPScalingAttribute(), FName("Data.Skill.ExplosionAPScaling") },
+    	{ UMJCharacterSkillAttributeSet::GetMaxExplosionAPScalingAttribute(), FName("Data.Skill.MaxExplosionAPScaling") }
+
     };
 
     for (const auto& Iter : Attributes)

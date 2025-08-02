@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MJCharacterAttributeSaveDataStruct.h"
 #include "GameFramework/SaveGame.h"
 #include "MJSaveGame.generated.h"
 

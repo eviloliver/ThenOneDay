@@ -61,6 +61,9 @@ public:
 	TMap<FGameplayTag, FSkillData> GetOwnedSkillMap() const { return OwnedSkillMap; }
 	TMap<FGameplayTag, FGameplayTag> GetEquippedSkillMap() const {return EquippedSkillMap;}
 
+	virtual UDataTable* GetSkillDataTable() const PURE_VIRTUAL(UMJSkillComponentBase::GetSkillDataTable, return nullptr;);
+
+
 protected:	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FSkillData> OwnedSkillMap;

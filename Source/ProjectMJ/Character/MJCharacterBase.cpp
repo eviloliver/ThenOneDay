@@ -9,6 +9,9 @@
 #include "Physics/MJCollision.h"
 #include "Player/MJPlayerState.h"
 #include "MotionWarpingComponent.h"
+#include "Component/MJAbilityContextComponent.h"
+#include "TG/Component/MJMiniMapIconMeshComponent.h"
+
 
 // Sets default values
 AMJCharacterBase::AMJCharacterBase()
@@ -25,6 +28,14 @@ AMJCharacterBase::AMJCharacterBase()
 
 	// MotionWarpingComponent Section
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
+
+	// AbilityContextComponent Section
+	AbilityContextComponent = CreateDefaultSubobject<UMJAbilityContextComponent>(TEXT("AbilityContextComponent"));
+
+	// TG : MiniMapIconMeshComponent 
+	MiniMapIconMeshComponent = CreateDefaultSubobject<UMJMiniMapIconMeshComponent>(TEXT("MiniMapIconMeshComponent"));
+	MiniMapIconMeshComponent->SetupAttachment(GetMesh());
+  
 }
 
 UAbilitySystemComponent* AMJCharacterBase::GetAbilitySystemComponent() const

@@ -21,4 +21,5 @@ class PROJECTMJ_API UMJProjectileExplodeReaction : public UMJProjectileReactionB
 	GENERATED_BODY()
 public:
 	virtual void OnProjectileReact(AMJProjectileBase* Projectile, AActor* HitActor, const FHitResult& Hit) override;
+	virtual void InitReaction(AMJProjectileBase* Projectile) override;
 };

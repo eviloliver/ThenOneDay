@@ -9,8 +9,8 @@
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
 #include "Character/MJPlayerCharacter.h"
+#include "Character/Component/MJEnemySkillComponent.h"
 #include "Character/Component/MJEnemyStatComponent.h"
-#include "Character/Component/MJSkillComponentBase.h"
 #include "DataAsset/DataAsset_StartDataBase.h"
 #include "DataTable/MJEnemyDataRow.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -20,7 +20,6 @@
 #include "UI/MJUIManagerSubsystem.h"
 #include "TG/MJGameInstanceTG.h"
 #include "Character/Component/MJPlayerStatComponent.h"
-#include "DataAsset/MJItemDataAsset.h"
 #include "Item/MJItemBase.h"
 #include "MJ/DataAssetMJ/MJDropItemsDataAsset.h"
 #include "UI/Inventory/ItemDataRow.h"
@@ -51,7 +50,7 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	CharacterSkillAttributeSet = CreateDefaultSubobject<UMJCharacterSkillAttributeSet>(TEXT("CharacterSkillAttributeSet"));
 
 	// Skill Component
-	SkillComponent = CreateDefaultSubobject<UMJSkillComponentBase>(TEXT("SkillComponent"));
+	SkillComponent = CreateDefaultSubobject<UMJEnemySkillComponent>(TEXT("SkillComponent"));
 
 	// UI Component
 	HPBarComponent = CreateDefaultSubobject<UMJHealthBarComponent>(TEXT("HPBarComponent"));
@@ -194,14 +193,6 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 		return;
 	}
 	
-	// Minjin: 기본 공격
-	//SkillComponent->LearnSkill(DataRow->NormalAttackTag);
-	//SkillComponent->EquipSkill(DataRow->NormalAttackTag);
-
-	// Minjin: 특수 공격 -> 드랍하는 스킬
-	SkillComponent->LearnSkill(DataRow->IdentitySkillTag);
-	SkillComponent->EquipSkill(DataRow->IdentitySkillTag);
-	
 	// Minjin: Attribute Setting
 	UCurveTable* AttributeCurve = DataRow->AttributeCurve.LoadSynchronous();
 	if (!AttributeCurve)
@@ -213,12 +204,14 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	StatComponent->SetStatTable(AttributeCurve);
 	StatComponent->InitializeStat();
 
+	SkillComponent->InitializeComponent();
+	
 	// Minjin: Animation Setting
 	AppearanceAnimation = DataRow->AppearanceAnimation;
 	DeathAnimation = DataRow->DeathAnimation;
 
-	// Minjin: 죽었을 때 전달할 정보 Setting
-	EnemyBequest.IdentitySkillTag = DataRow->IdentitySkillTag;
+	// // Minjin: 죽었을 때 전달할 정보 Setting-SkillComponent에서 얻어온다.
+	EnemyBequest.IdentitySkillTag = SkillComponent->TryGiveMemory();
 	EnemyBequest.Exp = ASC->GetSet<UMJCharacterAttributeSet>()->GetDropExperience();
 
 	// Minjin: 지정한 확률로 아이템 태그를 얻음
