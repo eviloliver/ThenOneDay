@@ -32,7 +32,7 @@ void AMJSceneCapture2D::BeginPlay()
 	AMJGameStateDungeon* GSDungeon = Cast<AMJGameStateDungeon>(UGameplayStatics::GetGameState(GetWorld()));
 	if (GSDungeon)
 	{
-		GSDungeon->OnAISpawned.AddDynamic(this, &AMJSceneCapture2D::OnAISpawned );
+		GSDungeon->OnActorSpawned.AddDynamic(this, &AMJSceneCapture2D::OnAISpawned );
 		
 	}
 

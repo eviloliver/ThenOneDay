@@ -25,7 +25,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnHealthChangedSignature, f
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIBossOnSpawnedSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIBossOnDiedSignature);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAISpawnedSignature, AActor*, Actor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJActorSpawnedSignature, AActor*, Actor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIOnDestroyedSignature);
 
 UCLASS()
@@ -55,7 +55,7 @@ public:
 	FMJAIBossOnHealthChangedSignature OnAIBossHealthChanged;
 
 	UPROPERTY(BlueprintAssignable)
-	FMJAISpawnedSignature OnAISpawned;
+	FMJActorSpawnedSignature OnActorSpawned;
 
 	UPROPERTY(BlueprintAssignable)
 	FMJAIBossOnSpawnedSignature OnAIBossSpawned;

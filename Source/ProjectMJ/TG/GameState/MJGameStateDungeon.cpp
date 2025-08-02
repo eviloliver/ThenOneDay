@@ -144,7 +144,7 @@ void AMJGameStateDungeon::Initialize_BattleNode()
 									++CurrentSpawnedAINum;
 									++CurrentPointSpawnedAINum;
 
-									OnAISpawned.Broadcast(NewAIActor);
+									OnActorSpawned.Broadcast(NewAIActor);
 								}
 								else
 								{
@@ -293,7 +293,7 @@ void AMJGameStateDungeon::SpawnAI()
 									   --LoadedWaveDataRow.EnemyCount;
 									   ++i;
 
-							   	   	OnAISpawned.Broadcast(NewAIActor);
+							   	   	OnActorSpawned.Broadcast(NewAIActor);
 							   	   	
 								   }
 								   else
@@ -405,7 +405,7 @@ void AMJGameStateDungeon::SpawnDungeonPortal()
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("PortalActor is Successfully Spawned")));
 
-					OnAISpawned.Broadcast(Portal);
+					OnActorSpawned.Broadcast(Portal);
 				}
 			}
 		}));
@@ -458,7 +458,14 @@ void AMJGameStateDungeon::LoadFromInstancedDungeonSessionData(uint8 LoadFromNum)
 				iter.ActorClass.LoadSynchronous();
 				UClass* LoadedClass = iter.ActorClass.Get();
 				FActorSpawnParameters Params;
-				GetWorld()->SpawnActor<AActor>(LoadedClass,iter.Transform,Params);	
+				Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+				
+				AActor* SavedActor = GetWorld()->SpawnActor<AActor>(LoadedClass,iter.Transform,Params);
+				
+				if (SavedActor)
+				{
+					OnActorSpawned.Broadcast(SavedActor);
+				}
 			}
 		}
 	}
