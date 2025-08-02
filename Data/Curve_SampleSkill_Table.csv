@@ -51,3 +51,15 @@ ProjectileSpeed,0,0,0,0,0,0,0,0,0
 MaxProjectileSpeed,0,0,0,0,0,0,0,0,0
 ProjectileCount,0,0,0,0,0,0,0,0,0
 MaxProjectileCount,0,0,0,0,0,0,0,0,0
+ProjectileLifeSpan,0,0,0,0,0,0,0,0,0
+MaxProjectileLifeSpan,0,0,0,0,0,0,0,0,0
+ProjectilePierceCount,0,0,0,0,0,0,0,0,0
+MaxProjectilePierceCount,0,0,0,0,0,0,0,0,0
+ExplosionRadius,0,0,0,0,0,0,0,0,0
+MaxExplosionRadius,0,0,0,0,0,0,0,0,0
+ExplosionBaseDamage,0,0,0,0,0,0,0,0,0
+MaxExplosionBaseDamage,0,0,0,0,0,0,0,0,0
+ExplosionADScaling,0,0,0,0,0,0,0,0,0
+MaxExplosionADScaling,0,0,0,0,0,0,0,0,0
+ExplosionAPScaling,0,0,0,0,0,0,0,0,0
+MaxExplosionAPScaling,0,0,0,0,0,0,0,0,0

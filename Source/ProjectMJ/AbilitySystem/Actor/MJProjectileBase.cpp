@@ -6,14 +6,15 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "Components/SphereComponent.h"
-#include "GameFramework/ProjectileMovementComponent.h"
 #include "Physics/MJCollision.h"
 #include "GameplayTagContainer.h"
 #include "NiagaraComponent.h"
+#include "Behavior/MJProjectileReactionBehaviorBase.h"
+#include "Behavior/MJProjectileMovementBehaviorBase.h"
 
 AMJProjectileBase::AMJProjectileBase()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	// Sphere Section
 	Sphere = CreateDefaultSubobject<USphereComponent>("Projectile");
@@ -21,69 +22,53 @@ AMJProjectileBase::AMJProjectileBase()
 	Sphere->SetCollisionObjectType(CCHANNEL_MJPROJECTILE);
 	Sphere->SetCollisionProfileName(CRPOFILE_MJPROJECTILE);
 
-	// Movement Section
-	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
-	ProjectileMovement->ProjectileGravityScale = 0.0f;
-
 	// Niagara Section
 	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>("NiagaraComponent");
 	NiagaraComponent->SetupAttachment(RootComponent);
 
 }
 
-void AMJProjectileBase::InitProjectileParams(const FMJSkillProjectileParams& InParams)
+void AMJProjectileBase::Tick(float DeltaSeconds)
 {
-	ProjectileParams = InParams;
+	Super::Tick(DeltaSeconds);
 
-	if (ProjectileParams.ProjectileSpeed > 0.0f)
+	if (MovementBehavior)
 	{
-		ProjectileMovement->InitialSpeed = ProjectileParams.ProjectileSpeed;
-		ProjectileMovement->MaxSpeed = ProjectileParams.ProjectileSpeed;
-	}
-	if (ProjectileParams.SkillRadius > 0.0f)
-	{
-		Sphere->SetSphereRadius(ProjectileParams.SkillRadius);
+		MovementBehavior->Move(this, DeltaSeconds);
 	}
 }
 
-void AMJProjectileBase::ApplyGameplayEffects(UAbilitySystemComponent* Target, const FHitResult& HitResult)
+void AMJProjectileBase::InitProjectile(const FMJSkillProjectileParams& InParams,
+	TSubclassOf<UMJProjectileMovementBehaviorBase> InMovementBehaviorClass,
+	const TArray<TSubclassOf<UMJProjectileReactionBehaviorBase>>& InReactionBehaviorClasses)
 {
-	ProjectileParams.TargetASC = Target;
+	ProjectileParams = InParams;
 
-	// 이펙트 하나여야 하는데
-	const TSubclassOf<UGameplayEffect> EffectClass = ProjectileParams.DamageGameplayEffectClass;
-
-	if(ProjectileParams.DamageGameplayEffectClass)
+	if (InMovementBehaviorClass)
 	{
-		if (EffectClass)
+		MovementBehavior = NewObject<UMJProjectileMovementBehaviorBase>(this, InMovementBehaviorClass);
+		if (MovementBehavior)
 		{
-			FGameplayEffectContextHandle EffectContext = ProjectileParams.SourceASC->MakeEffectContext();
-			EffectContext.AddSourceObject(this);
+			MovementBehavior->InitMovement(this);
+		}
+	}
 
-			FGameplayEffectSpecHandle SpecHandle = ProjectileParams.SourceASC->MakeOutgoingSpec(EffectClass, 1.0f, EffectContext);
-			if (SpecHandle.IsValid())
+	for (const auto& ReactionBehaviorClass : InReactionBehaviorClasses)
+	{
+		if (ReactionBehaviorClass)
+		{
+			UMJProjectileReactionBehaviorBase* ReactionBehavior = NewObject<UMJProjectileReactionBehaviorBase>(this, ReactionBehaviorClass);
+			if (ReactionBehavior)
 			{
-				SpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.BaseDamage")), ProjectileParams.BaseDamage);
-				SpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AttackDamageScaling")), ProjectileParams.AttackDamageScaling);
-				SpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.AbilityPowerScaling")), ProjectileParams.AbilityPowerScaling);
-				SpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.MaxLifeSteal")), ProjectileParams.LifeSteal);
-				SpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusEffectChance")), ProjectileParams.StatusEffectChance);
-				SpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.StatusEffectDuration")), ProjectileParams.StatusEffectDuration);
-
-				ProjectileParams.SourceASC->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), ProjectileParams.TargetASC);
-			}
-
-			if (HitGameplayCueTag.IsValid())
-			{
-				FGameplayEffectContextHandle CueContextHandle = UAbilitySystemBlueprintLibrary::GetEffectContext(SpecHandle);
-				CueContextHandle.AddHitResult(HitResult);
-
-				FGameplayCueParameters CueParams;
-				CueParams.EffectContext = CueContextHandle;
-
-				Target->ExecuteGameplayCue(HitGameplayCueTag, CueParams);
+				ReactionBehavior->InitReaction(this);
+				ReactionBehaviors.Add(ReactionBehavior);
 			}
 		}
+	}
+
+	if (ProjectileParams.SkillRadius > 0.0f)
+	{
+		Sphere->SetSphereRadius(ProjectileParams.SkillRadius);
 	}
 }
 
@@ -97,37 +82,11 @@ void AMJProjectileBase::BeginPlay()
 void AMJProjectileBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!OtherActor || !ProjectileParams.SourceASC)
+	for (const TObjectPtr <UMJProjectileReactionBehaviorBase> ReactionBehavior : ReactionBehaviors)
 	{
-		return;
+		if (ReactionBehavior)
+		{
+			ReactionBehavior->OnProjectileReact(this, OtherActor, SweepResult);
+		}
 	}
-
-	if (OtherActor == ProjectileParams.SourceASC->GetAvatarActor())
-	{
-		// 콜리전 프로파일에 설정해줬지만 그래도 걸어두기
-		// I've set it up in the collisions profile, but I'm still dealing with exceptions
-		return;
-	}
-
-	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
-	if (!TargetASC)
-	{
-		return;
-	}
-
-	FVector EffectLocation = SweepResult.ImpactPoint;
-	if (EffectLocation.IsNearlyZero())
-	{
-		EffectLocation = GetActorLocation(); // or TargetActor->GetActorLocation()
-	}
-
-	ApplyGameplayEffects(TargetASC, SweepResult);
-
-	// HandleProjectileDestroy();
-
-	// TODO: 나중에 통과하는 투사체인지 결정
-	// TODO: 투사체 갯수는 생성하는 쪽에서 결정할 거 같긴 한데 이거 어떻게 하면 좋을지
-	// 벽이나 다른 곳에 닿으면 사라지게? 아니면 그냥 시간 지나면 사라지게
-
-	// Destroyed();
 }

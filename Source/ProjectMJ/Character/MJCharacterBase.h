@@ -9,6 +9,7 @@
 #include "MJ/AI/AIPerceptionInfo.h"
 #include "MJCharacterBase.generated.h"
 
+class UMJAbilityContextComponent;
 class UMJMiniMapIconMeshComponent;
 class AMJMiniMapIconActor;
 class UMJAbilitySystemComponent;
@@ -49,10 +50,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ID")
 	ETeam_ID ID = ETeam_ID::NONE;
 	
-protected:
-
-	virtual void BeginPlay() override;
-	virtual void PossessedBy(AController* NewController)override;
+public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
 	TObjectPtr<UMJAbilitySystemComponent> ASC;
 
@@ -62,8 +60,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation")
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GAS")
+	TObjectPtr<UMJAbilityContextComponent> AbilityContextComponent;
+  
+protected:
+
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TObjectPtr<UMJMiniMapIconMeshComponent> MiniMapIconMeshComponent;
+  
+	virtual void BeginPlay() override;
+	virtual void PossessedBy(AController* NewController)override;
 
 	FGenericTeamId TeamId;
 };

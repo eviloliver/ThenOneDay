@@ -11,35 +11,9 @@ auto UMJProjectileExplodeReaction::OnProjectileReact(AMJProjectileBase* Projecti
 {
 	Super::OnProjectileReact(Projectile, HitActor, Hit);
 
-    //if (!Projectile)
-    //{
-    //    return;
+}
 
-    //}
-
-    //FVector ExplosionCenter = Projectile->GetActorLocation();
-
-
-    //TArray<AActor*> OverlappedActors;
-    //UGameplayStatics::GetAllActorsOfClass(Projectile->GetWorld(), AActor::StaticClass(), OverlappedActors);
-
-    //for (AActor* OtherActor : OverlappedActors)
-    //{
-    //    if (!OtherActor || OtherActor == Projectile)
-    //    {
-    //        continue;
-    //    }
-
-    //    float Distance = FVector::Dist(OtherActor->GetActorLocation(), ExplosionCenter);
-    //    if (Distance > 100.0f)
-    //    {
-    //        continue;
-    //    }
-
-    //}
-
-    //// TODO: VFX
-
-    //Projectile->Destroy();
-
+void UMJProjectileExplodeReaction::InitReaction(AMJProjectileBase* Projectile)
+{
+	Super::InitReaction(Projectile);
 }
