@@ -4,6 +4,7 @@
 #include "Dialogue/MJDialogueComponent.h"
 
 #include "MJBacklogWidget.h"
+#include "MJDialogueChoiceWidget.h"
 #include "MJDialogueWidget.h"
 #include "TG/MJGameInstanceTG.h"
 #include "UI/MJHUDWidget.h"
@@ -13,8 +14,6 @@ UMJDialogueComponent::UMJDialogueComponent()
 {
 	DialogueTable = nullptr; // 내가 블프에서 직접 넣어줘야 함
 	CurrentIndex = 0;
-	
-	// 생성될 때는 인덱스 0의 대사를 띄워줘야겠제
 }
 
 void UMJDialogueComponent::TurnOver() // x키가 눌리면 이 함수가 실행되어야 함
@@ -34,8 +33,9 @@ void UMJDialogueComponent::TurnOver() // x키가 눌리면 이 함수가 실행�
 		FloatLine();
         GetDialogueWidget()->SetImageOpacity(GetCurrentRow()->Speaker);
         
-        UpdateBacklog();
+        UpdateBacklog();		
 	}
+	
 }
 
 void UMJDialogueComponent::UpdateBacklog()
@@ -45,6 +45,18 @@ void UMJDialogueComponent::UpdateBacklog()
 		return;
 	}
 	GetDialogueWidget()->GetBacklogWidget()->AddLine(*GetPreviousRow());
+}
+
+void UMJDialogueComponent::UpdateChoice()
+{
+	if (!GetDialogueWidget()->GetDialogueChoiceWidget())
+	{
+		return;
+	}
+	if (GetCurrentRow()->Choices.IsValidIndex(CurrentIndex))
+	{
+	//	GetDialogueWidget()->GetDialogueChoiceWidget()->SetTextBlock();
+	}
 }
 
 bool UMJDialogueComponent::IsDialogueEnd() const
@@ -87,3 +99,21 @@ UMJDialogueWidget* UMJDialogueComponent::GetDialogueWidget()
 	}
 	return nullptr;
 }
+
+void UMJDialogueComponent::SkipTyping()
+{
+	if (GetDialogueWidget()->GetIsTyping())
+	{
+		GetDialogueWidget()->SkipTyping();
+	}
+}
+
+bool UMJDialogueComponent::bIsFirstIndex()
+{
+	return CurrentIndex == 0;
+}
+
+
+
+
+

@@ -143,6 +143,8 @@ void AMJGameStateDungeon::Initialize_BattleNode()
 									SpawnedActorRefs.Add(NewAIActor);
 									++CurrentSpawnedAINum;
 									++CurrentPointSpawnedAINum;
+
+									OnActorSpawned.Broadcast(NewAIActor);
 								}
 								else
 								{
@@ -181,6 +183,8 @@ void AMJGameStateDungeon::Initialize_BossNode()
 			SpawnedActorRefs.Add(BossAIRef);
 			CurrentSpawnedAINum++;
 			GetWorldTimerManager().SetTimer(OnBossSpawnedBroadCastTimerHandle,this, &ThisClass::PublishOnBossSpawned,3.0f);
+
+			OnActorSpawned.Broadcast(BossAIRef);
 		}
 		LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Activated;
 	}
@@ -290,6 +294,9 @@ void AMJGameStateDungeon::SpawnAI()
 									   ++CurrentSpawnedAINum;
 									   --LoadedWaveDataRow.EnemyCount;
 									   ++i;
+
+							   	   	OnActorSpawned.Broadcast(NewAIActor);
+							   	   	
 								   }
 								   else
 								   {
@@ -399,6 +406,8 @@ void AMJGameStateDungeon::SpawnDungeonPortal()
 				if (Portal)
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, FString::Printf(TEXT("PortalActor is Successfully Spawned")));
+
+					OnActorSpawned.Broadcast(Portal);
 				}
 			}
 		}));
@@ -451,7 +460,14 @@ void AMJGameStateDungeon::LoadFromInstancedDungeonSessionData(uint8 LoadFromNum)
 				iter.ActorClass.LoadSynchronous();
 				UClass* LoadedClass = iter.ActorClass.Get();
 				FActorSpawnParameters Params;
-				GetWorld()->SpawnActor<AActor>(LoadedClass,iter.Transform,Params);	
+				Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+				
+				AActor* SavedActor = GetWorld()->SpawnActor<AActor>(LoadedClass,iter.Transform,Params);
+				
+				if (SavedActor)
+				{
+					OnActorSpawned.Broadcast(SavedActor);
+				}
 			}
 		}
 	}

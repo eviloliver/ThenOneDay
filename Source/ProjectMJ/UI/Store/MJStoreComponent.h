@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "UI/Component/MJInteractComponent.h"
+#include "Dialogue/MJDialogueComponent.h"
 #include "MJStoreComponent.generated.h"
 
 /*
@@ -36,22 +36,39 @@ struct FStoreData
 	
 };
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PROJECTMJ_API UMJStoreComponent : public UMJInteractComponent
+class PROJECTMJ_API UMJStoreComponent : public UMJDialogueComponent
 {
 	GENERATED_BODY()
 
-public:
-	
 protected:
 	int32 SlotCount;
+	bool bIsOpened = false;
+	bool bIsStoreRoot = false;
 	
 	UPROPERTY(BlueprintAssignable, Category = "EventDispatchers")
 	FOnStoreUpdatedEvent OnStoreUpdated;
 
-public:	
+public:
 	void UpdateStore(); // 바인딩했던 슬롯들 정보 채우기용
 
-	int32 GetSlotCount() const {return SlotCount;};
+	int32 GetSlotCount() const {return SlotCount;}
 
-		
+	bool GetIsOpened() const {return bIsOpened;}
+	void SetbIsOpened(bool bValue) {bIsOpened = bValue;}
+	bool GetIsStoreRoot() const {return bIsStoreRoot;}
+	void SetbIsStoreRoot(bool bValue) {bIsStoreRoot = bValue;}
+
+	// 선택지 기능 추가를 위한 함수
+	UFUNCTION()
+	void BindButtons();
+	UFUNCTION()
+	void ShowStory();
+	UFUNCTION()
+	void ShowStore();
+	UFUNCTION()
+	void ExitDialogue();
+	UFUNCTION()
+	void DialogueEnd();
+	UFUNCTION()
+	void SetChoiceWidgetText();
 };

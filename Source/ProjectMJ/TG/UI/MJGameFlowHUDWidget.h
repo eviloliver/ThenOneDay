@@ -64,6 +64,9 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJDungeonMapWidget> DungeonMap;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UUserWidget> MiniMap;
 
 	// Boss Section
 	UPROPERTY(meta=(BindWidget))

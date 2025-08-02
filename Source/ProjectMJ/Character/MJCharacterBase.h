@@ -10,12 +10,14 @@
 #include "MJCharacterBase.generated.h"
 
 class UMJAbilityContextComponent;
+class UMJMiniMapIconMeshComponent;
+class AMJMiniMapIconActor;
 class UMJAbilitySystemComponent;
 class UMJAttributeSet;
 class UDataAsset_StartDataBase;
 class UMotionWarpingComponent;
 /**
- * Class Description: CharacterBase
+ * Class Description: CharacterBased
  * Author: Lee JuHyeon
  * Created Date: 2025_06_11
  * Modified By: Lee JuHyeon / Kim Minjin
@@ -24,6 +26,10 @@ class UMotionWarpingComponent;
  * Description of Change: 모션 워핑 컴포넌트 추가
  * Modified By: 신동민	
  * Modified Date: 2025.07.19
+ * 
+ * Description of Change: add MiniMapIconMeshComponent 
+ * Modified By: CTG	
+ * Modified Date: 2025.07.31
  */
 UCLASS()
 class PROJECTMJ_API AMJCharacterBase : public ACharacter , public IAbilitySystemInterface, public IGenericTeamAgentInterface
@@ -36,16 +42,15 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	UMJMiniMapIconMeshComponent* GetMiniMapIconMeshComponent() {return MiniMapIconMeshComponent;}
+
 	// GenericTeamAgentInterface 구현
 	virtual FGenericTeamId GetGenericTeamId() const override {return TeamId;}
 	// 에디터에서 ID 설정
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="ID")
 	ETeam_ID ID = ETeam_ID::NONE;
 	
-protected:
-
-	virtual void BeginPlay() override;
-	virtual void PossessedBy(AController* NewController)override;
+public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "GAS")
 	TObjectPtr<UMJAbilitySystemComponent> ASC;
 
@@ -57,6 +62,14 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GAS")
 	TObjectPtr<UMJAbilityContextComponent> AbilityContextComponent;
+  
+protected:
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TObjectPtr<UMJMiniMapIconMeshComponent> MiniMapIconMeshComponent;
+  
+	virtual void BeginPlay() override;
+	virtual void PossessedBy(AController* NewController)override;
 
 	FGenericTeamId TeamId;
 };

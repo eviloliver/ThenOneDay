@@ -105,12 +105,16 @@ void UMJPauseMenuWidget::OnClicked_MainMenu()
 		
 		if (CastedWidget)
 		{
-			CastedWidget->PopUpWithCallback(FOnUserConfirmed::CreateLambda([this]
+			TWeakObjectPtr<UMJPauseMenuWidget> WeakThis = this;
+			CastedWidget->PopUpWithCallback(FOnUserConfirmed::CreateLambda([WeakThis]
 			{
-				AMJGameModeBase* MJGM = GetWorld()->GetAuthGameMode<AMJGameModeBase>();
-				if (MJGM)
+				if (WeakThis.IsValid())
 				{
-					MJGM->TravelToMap(TEXT("TG_MainMenu"));
+					AMJGameModeBase* MJGM = WeakThis->GetWorld()->GetAuthGameMode<AMJGameModeBase>();
+					if (MJGM)
+					{
+						MJGM->TravelToMap(TEXT("TG_MainMenu"));
+					}
 				}
 			}));
 		}
@@ -127,12 +131,16 @@ void UMJPauseMenuWidget::OnClicked_GotoTown()
 		
 		if (CastedWidget)
 		{
-			CastedWidget->PopUpWithCallback(FOnUserConfirmed::CreateLambda([this]
+			TWeakObjectPtr<UMJPauseMenuWidget> WeakThis = this;
+			CastedWidget->PopUpWithCallback(FOnUserConfirmed::CreateLambda([WeakThis]
 			{
-				AMJGameModeBase* MJGM = GetWorld()->GetAuthGameMode<AMJGameModeBase>();
-				if (MJGM)
+				if (WeakThis.IsValid())
 				{
-					MJGM->TravelToMap(TEXT("TG_Town"));
+					AMJGameModeBase* MJGM = WeakThis->GetWorld()->GetAuthGameMode<AMJGameModeBase>();
+					if (MJGM)
+					{
+						MJGM->TravelToMap(TEXT("TG_Town"));
+					}
 				}
 			}));
 		}
@@ -149,9 +157,10 @@ void UMJPauseMenuWidget::OnClicked_QuitGame()
 		
 		if (CastedWidget)
 		{
-			CastedWidget->PopUpWithCallback(FOnUserConfirmed::CreateLambda([this]
+			TWeakObjectPtr<UMJPauseMenuWidget> WeakThis = this;
+			CastedWidget->PopUpWithCallback(FOnUserConfirmed::CreateLambda([WeakThis]
 			{
-				UKismetSystemLibrary::QuitGame(GetWorld(),nullptr,EQuitPreference::Quit,false);
+				UKismetSystemLibrary::QuitGame(WeakThis->GetWorld(),nullptr,EQuitPreference::Quit,false);
 			}));
 		}
 	}

@@ -6,6 +6,7 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "ProjectMJ.h"
+#include "AbilitySystem/Actor/MJProjectileBase.h"
 #include "Character/MJPlayerCharacter.h"
 #include "Character/Component/MJPlayerSkillComponent.h"
 #include "Components/SphereComponent.h"
@@ -39,7 +40,7 @@ void AMJTargetingProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UNiagaraComponent* FxComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, MuzzleFX, GetActorLocation());
+	UNiagaraComponent* MuzzleFxComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, MuzzleFX, GetActorLocation());
 
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AMJTargetingProjectileBase::OnSphereOverlap);
 	TargetLocationChanged.BindUObject(this, &AMJTargetingProjectileBase::OnTargetUpdated);
@@ -56,14 +57,15 @@ void AMJTargetingProjectileBase::BeginPlay()
 	FVector Velocity = GetVelocity();
 	double Length = Velocity.Length();
 	FVector NewVelocity = UKismetMathLibrary::CreateVectorFromYawPitch(ProjectileRotation.Yaw, ProjectileRotation.Pitch, Length);
-
 	ProjectileMovement->Velocity = NewVelocity;
+	
+	ProjectileMovement->InitialSpeed = 300.0f; 
+	ProjectileMovement->MaxSpeed = 600.0f;
 	
 	ProjectileMovement->bIsHomingProjectile = true;
 	ProjectileMovement->HomingAccelerationMagnitude = 300.0f;
 	ProjectileMovement->HomingTargetComponent = Target->GetRootComponent();
-
-	// Minjin: 지금은 HomingTargetComponent없으면 Projectile이 안 움직임(velocity 문제)
+	
 	if(!ProjectileMovement->HomingTargetComponent.IsValid())
 	{
 		MJ_LOG(LogMJ, Warning, TEXT("HomingTarget is not Valid."));
@@ -83,10 +85,19 @@ void AMJTargetingProjectileBase::Tick(float DeltaSeconds)
 		
 		TargetLocationChanged.ExecuteIfBound();
 	}
+
+	float Distance = GetDistanceTo(Target);
+	ProjectileMovement->MaxSpeed = FMath::GetMappedRangeValueClamped(FVector2D(0.0f, 600.0f), FVector2D(1.0f, 600.0f), Distance);
+	// MJ_LOG(LogMJ, Warning, TEXT("MaxSpeed: %f"), ProjectileMovement->MaxSpeed);
+	
+	// if (GEngine)
+	// {
+	// 	GEngine->AddOnScreenDebugMessage(
+	// 		-1, 3.f, FColor::Green,FString::Printf(TEXT("Velocity> %f"), ProjectileMovement->Velocity.Size()));
+	// }
 }
 
-void AMJTargetingProjectileBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AMJTargetingProjectileBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// Minjin: Target과 같으면 성공
 	if (OtherActor != Target)
@@ -108,7 +119,7 @@ void AMJTargetingProjectileBase::OnSphereOverlap(UPrimitiveComponent* Overlapped
 			}
 		}
 	}
-	
+
 	UNiagaraComponent* FxComp = UNiagaraFunctionLibrary::SpawnSystemAttached(
 	HitFX,
 	Player->GetMesh(),
@@ -121,6 +132,7 @@ void AMJTargetingProjectileBase::OnSphereOverlap(UPrimitiveComponent* Overlapped
 	ENCPoolMethod::None,
 	true
 	);
+	//FxComp->OnSystemFinished.AddDynamic(this, &AMJTargetingProjectileBase::OnEnded);;
 
 	Destroy();
 }
@@ -138,10 +150,11 @@ void AMJTargetingProjectileBase::OnTargetUpdated()
 	
 	FVector NewVelocity = UKismetMathLibrary::CreateVectorFromYawPitch(ProjectileRotation.Yaw, ProjectileRotation.Pitch, Length);
 	ProjectileMovement->Velocity = NewVelocity;
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(
-			-1, 3.f, FColor::Green,FString::Printf(TEXT("NewVelocity.Size()> %f"), NewVelocity.Size()));
-	}
+}
+
+void AMJTargetingProjectileBase::OnEnded(UNiagaraComponent* PSystem)
+{
+	MJ_LOG(LogMJ, Warning, TEXT("Projectile is Destroyed"));
+	Destroy();
 }
 

@@ -7,6 +7,7 @@
 #include "Components/Image.h"
 #include "MJDialogueWidget.generated.h"
 
+class UMJDialogueChoiceWidget;
 class UMJBacklogWidget;
 /**
  * Class Description: 다이어로그 위젯을 화면에 띄우기 위한 클래스 / BP_DialogueWidget의 부모 클래스로, 그래프에서 데이터 테이블 연동해줘야 함
@@ -40,7 +41,10 @@ public:
 
 	
 	bool GetIsTyping() {return bIsTyping;}
+
+	// Getter
 	UMJBacklogWidget* GetBacklogWidget() {return BacklogWidget;}
+	UMJDialogueChoiceWidget* GetDialogueChoiceWidget() {return DialogueChoice;}
 
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -60,6 +64,9 @@ protected:
 		
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJBacklogWidget> BacklogWidget;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UMJDialogueChoiceWidget> DialogueChoice;
 	
 	FTimerHandle TypingTimerHandle;
 	FString FullText;

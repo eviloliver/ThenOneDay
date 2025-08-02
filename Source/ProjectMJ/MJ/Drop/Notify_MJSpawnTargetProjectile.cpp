@@ -18,24 +18,17 @@ void UNotify_MJSpawnTargetProjectile::Notify(USkeletalMeshComponent* MeshComp, U
 	Super::Notify(MeshComp, Animation, EventReference);
 	if (MeshComp)
 	{
-		/*
-		 * TODO
-		 * 아이템 스폰
-		 * 아이템 BP 클래스는 여기서 설정해주면 될듯(변수로 받아서)
-		 */
-		// Minjin: 스켈레탈의 가운데에서 스폰? 우선 그렇게,,,
 		// TODO: Get Bone Location by Name 알아보기
 		// FTransform SpawnTransform(MeshComp->GetSkeletalCenterOfMass());
-
-		// 클래스 정보 가져와야 됨.(EnemyBequest 접근 위함)
+		
 		AActor* OwnerActor = MeshComp->GetOwner();
 		if (OwnerActor == nullptr)
 		{
 			// Minjin: Actor로 사용한다면 수정하면 될 것 같슴니다.
 			return;
 		}
-
-		// Minjin: PlayerCharacter
+		
+		// Minjin: PlayerCharacter일 때
 		AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(OwnerActor);
 		if (Player)
 		{
@@ -52,6 +45,7 @@ void UNotify_MJSpawnTargetProjectile::Notify(USkeletalMeshComponent* MeshComp, U
 			}
 		}
 
+		// Minjin: Enemy일 때
 		AMJMonsterCharacter* Enemy = Cast<AMJMonsterCharacter>(OwnerActor);
 		if (Enemy)
 		{

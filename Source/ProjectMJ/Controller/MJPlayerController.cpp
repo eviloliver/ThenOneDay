@@ -354,7 +354,7 @@ void AMJPlayerController::StartDialogue()// x키를 눌렀을 때 실행되는 �
 			break;
 
 		case EMJInteractionType::Store:
-			UIManager->ShowStore();
+			UIManager->SetDialogueVisibility();
 			break;
 
 		default:
@@ -407,11 +407,17 @@ void AMJPlayerController::SetDialogueVisibility()
 	UIManager->SetDialogueVisibility();
 }
 
-void AMJPlayerController::SetStoreVisibility()
+void AMJPlayerController::ShowStore()
 {
-	ChangeToIMCDefault();
-	UE_LOG(LogTemp,Error,TEXT("imc 전환됨"));
+	UIManager->SetDialogueVisibility();
+ 	UIManager->ShowStore();
+}
+
+void AMJPlayerController::HideStore()
+{
 	UIManager->ShowStore();
+	ChangeToIMCDefault();
+	UE_LOG(LogTemp, Display, TEXT("AMJPlayerController::HideStore"));
 }
 
 void AMJPlayerController::ShowBacklog()
@@ -442,8 +448,11 @@ void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor*
 			InteractComp->OndialogueEnd.RemoveDynamic(this, &AMJPlayerController::SetDialogueVisibility);
 			InteractComp->OndialogueEnd.AddDynamic(this, &AMJPlayerController::SetDialogueVisibility);
 
-			InteractComp->OnstoreEnd.RemoveDynamic(this, &AMJPlayerController::SetStoreVisibility);
-			InteractComp->OnstoreEnd.AddDynamic(this, &AMJPlayerController::SetStoreVisibility);
+			InteractComp->OnstoreOpen.RemoveDynamic(this, &AMJPlayerController::ShowStore);
+			InteractComp->OnstoreOpen.AddDynamic(this, &AMJPlayerController::ShowStore);
+			
+			InteractComp->OnstoreClose.RemoveDynamic(this, &AMJPlayerController::HideStore);
+			InteractComp->OnstoreClose.AddDynamic(this, &AMJPlayerController::HideStore);
 			
 			if (AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn()))
 			{
