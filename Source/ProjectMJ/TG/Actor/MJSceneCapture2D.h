@@ -35,16 +35,13 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 	UFUNCTION()
-	void OnAISpawned(AActor* InputActor);
+	void OnActorSpawned(AActor* InputActor);
 
 	UFUNCTION()
-	void OnAIDestroyed(AActor* InputActor);
+	void OnActorDestroyed(AActor* InputActor);
 	
 	UPROPERTY()
 	TWeakObjectPtr<ACharacter> Player;
-
-	UPROPERTY(EditDefaultsOnly)
-	float CaptureHeight;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UProceduralMeshComponent> ProceduralMeshComponent;

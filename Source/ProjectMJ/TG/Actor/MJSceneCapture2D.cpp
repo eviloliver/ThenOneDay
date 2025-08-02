@@ -17,8 +17,7 @@ AMJSceneCapture2D::AMJSceneCapture2D()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	
-	CaptureHeight = 1000.f;
-	SetActorLocation(FVector(0.0f,0.0f,CaptureHeight));
+	SetActorLocation(FVector(0.0f,0.0f,GetActorLocation().Z));
 	SetActorRotation(FRotator3d(-90.0f,0.0f,0.0f));
 	ProceduralMeshComponent = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("ProceduralMeshComponent"));
 	//ProceduralMeshComponent->SetupAttachment(RootComponent);
@@ -32,7 +31,7 @@ void AMJSceneCapture2D::BeginPlay()
 	AMJGameStateDungeon* GSDungeon = Cast<AMJGameStateDungeon>(UGameplayStatics::GetGameState(GetWorld()));
 	if (GSDungeon)
 	{
-		GSDungeon->OnActorSpawned.AddDynamic(this, &AMJSceneCapture2D::OnAISpawned );
+		GSDungeon->OnActorSpawned.AddDynamic(this, &AMJSceneCapture2D::OnActorSpawned );
 		
 	}
 
@@ -119,30 +118,6 @@ void AMJSceneCapture2D::BeginPlay()
 			}
 		}
 	}
-
-	// TArray<AActor*> FoundLandscapes;
-	// UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALandscape::StaticClass(), FoundLandscapes);
-	//
-	// for (AActor* LandscapeActor : FoundLandscapes)
-	// {
-	// 	ALandscape* Landscape = Cast<ALandscape>(LandscapeActor);
-	// 	if (Landscape)
-	// 	{
-	// 		TArray<USceneComponent*> LandscapeComponents;
-	// 		Landscape->GetComponents(ULandscapeComponent::StaticClass(), LandscapeComponents);
-	//
-	// 		for (USceneComponent* Comp : LandscapeComponents)
-	// 		{
-	// 			ULandscapeComponent* LandscapeComp = Cast<ULandscapeComponent>(Comp);
-	// 			if (LandscapeComp)
-	// 			{
-	// 				GetCaptureComponent2D()->ShowOnlyComponents.Add(LandscapeComp);
-	// 			}
-	// 		}
-	// 	}
-	// }
-	
-	
 }
 
 void AMJSceneCapture2D::Tick(float DeltaSeconds)
@@ -153,11 +128,11 @@ void AMJSceneCapture2D::Tick(float DeltaSeconds)
 	{
 		FVector3d PlayerLoc = Player->GetActorLocation();
 
-		SetActorLocation(FVector3d(PlayerLoc.X,PlayerLoc.Y, CaptureHeight));
+		SetActorLocation(FVector3d(PlayerLoc.X,PlayerLoc.Y, GetActorLocation().Z));
 	}
 }
 
-void AMJSceneCapture2D::OnAISpawned(AActor* InputActor)
+void AMJSceneCapture2D::OnActorSpawned(AActor* InputActor)
 {
 	if (IsValid(InputActor))
 	{
@@ -166,13 +141,13 @@ void AMJSceneCapture2D::OnAISpawned(AActor* InputActor)
 		{
 			GetCaptureComponent2D()->ShowOnlyComponents.Add(MiniMapIconMeshComponent);
 
-			InputActor->OnDestroyed.AddDynamic(this, &AMJSceneCapture2D::OnAIDestroyed);
+			InputActor->OnDestroyed.AddDynamic(this, &AMJSceneCapture2D::OnActorDestroyed);
 			
 		}
 	}	
 }
 
-void AMJSceneCapture2D::OnAIDestroyed(AActor* InputActor)
+void AMJSceneCapture2D::OnActorDestroyed(AActor* InputActor)
 {
 	if (IsValid(InputActor))
 	{

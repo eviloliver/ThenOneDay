@@ -183,6 +183,8 @@ void AMJGameStateDungeon::Initialize_BossNode()
 			SpawnedActorRefs.Add(BossAIRef);
 			CurrentSpawnedAINum++;
 			GetWorldTimerManager().SetTimer(OnBossSpawnedBroadCastTimerHandle,this, &ThisClass::PublishOnBossSpawned,3.0f);
+
+			OnActorSpawned.Broadcast(BossAIRef);
 		}
 		LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Activated;
 	}
