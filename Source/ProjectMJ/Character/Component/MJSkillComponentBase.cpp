@@ -45,7 +45,13 @@ void UMJSkillComponentBase::LearnSkill(const FGameplayTag& SkillTag)
 		{
 			FSkillData NewSkillData;
 			NewSkillData.SkillDefaultTag = SkillTag;
-			NewSkillData.SkillTypeTag = SkillTag.GetGameplayTagParents().GetByIndex(1);
+			int32 TagLength = SkillTag.GetGameplayTagParents().Num();
+			if (TagLength < 2)
+			{
+				MJ_LOG(LogMJ, Warning, TEXT("Tag is too short"));
+				return;
+			}
+			NewSkillData.SkillTypeTag = SkillTag.GetGameplayTagParents().GetByIndex(TagLength - 2);
 			OwnedSkillMap.Add(SkillTag, NewSkillData);
 		}
 	}
@@ -94,6 +100,7 @@ void UMJSkillComponentBase::ActivateSkill(const FGameplayTag& SkillTag)
 		return;
 	}
 
+	// Minjin TODO: 여기서 리턴됨. 알아보기
 	if (!GivenActionAbilityHandles.Contains(SkillTag))
 	{
 		MJ_LOG(LogMJ, Error, TEXT("Not Exist GivenActionAbilityHandles(EquippedSlotSkill)"));
@@ -211,7 +218,7 @@ void UMJSkillComponentBase::GiveAbilityToASC(const FGameplayTag& SkillTag)
 
 	int32 SkillLevel = OwnedSkillMap[SkillTag].Level;
 	FName RowName = FName(*FString::FromInt(SkillLevel));
-
+	// Minjin TODO: SkillLevelAbilityTable 넣어주기.
 	UDataTable* SkillLevelAbilityTable = DataRow->SkillLevelAbilityTable.LoadSynchronous();
 	if (!SkillLevelAbilityTable)
 	{
