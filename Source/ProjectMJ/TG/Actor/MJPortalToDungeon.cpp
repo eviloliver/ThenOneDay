@@ -10,6 +10,7 @@
 #include "TG/MJGameInstanceTG.h"
 #include "TG/GameMode/MJGameModeTown.h"
 #include "TG/SubSystem/MJDungeonGenerationSubSystem.h"
+#include "TG/SubSystem/MJSaveGameSubsystem.h"
 
 AMJPortalToDungeon::AMJPortalToDungeon()
 {
@@ -66,6 +67,10 @@ void AMJPortalToDungeon::OnAudioFinish()
 			MapName = TEXT("Dungeon_Chunk_Reward");
 			break;
 		}
+		
+		// GameSaveTiming
+
+		GetGameInstance()->GetSubsystem<UMJSaveGameSubsystem>()->SaveGameToCurrentSlotNum();
 					
 		GMTown->TravelToMapByNode(MapName, NodeId);
 		
