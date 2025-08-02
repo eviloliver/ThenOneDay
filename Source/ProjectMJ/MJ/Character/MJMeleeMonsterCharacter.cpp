@@ -12,10 +12,9 @@ void AMJMeleeMonsterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Minjin: 기본 공격 스킬 추가
-	AttackTag = FGameplayTag::RequestGameplayTag(FName("Skill.Instant.BasicMeleeAttack"));
-	SkillComponent->LearnSkill(AttackTag);
-	SkillComponent->EquipSkill(AttackTag);
+	// // Minjin: 기본 공격 스킬 추가
+	// AttackTag = FGameplayTag::RequestGameplayTag(FName("Skill.Instant.BasicMeleeAttack"));
+
 }
 
 float AMJMeleeMonsterCharacter::GetAIMaximumAttackRange()
@@ -30,8 +29,8 @@ float AMJMeleeMonsterCharacter::GetAIMinimumAttackRange()
 
 void AMJMeleeMonsterCharacter::AttackByAI()
 {
-	// Minjin: Skill 공격
-	SkillComponent->ActivateSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.BasicMeleeAttack")));
+	// // Minjin: Skill 공격
+	// SkillComponent->ActivateSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.BasicMeleeAttack")));
 
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("MeleeMonster: 공격"));
 }

@@ -47,6 +47,9 @@ protected:
 
 	UFUNCTION()
 	virtual void OnTargetUpdated();
+
+	UFUNCTION()
+	virtual void OnEnded(UNiagaraComponent* PSystem);
 	
 	UPROPERTY()
 	TObjectPtr<USphereComponent> Sphere;

@@ -7,8 +7,8 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbility.h"
-#include "Character/Component/MJSkillComponentBase.h"
 #include "ProjectMJ.h"
+#include "Character/Component/MJEnemySkillComponent.h"
 
 UBTTask_MJChargeAttack::UBTTask_MJChargeAttack()
 {
@@ -30,7 +30,7 @@ EBTNodeResult::Type UBTTask_MJChargeAttack::ExecuteTask(UBehaviorTreeComponent& 
 	}
 
 	UAbilitySystemComponent* ASC = Monster->GetAbilitySystemComponent();
-	UMJSkillComponentBase* SkillComponent = Monster->GetSkillComponent();
+	UMJEnemySkillComponent* SkillComponent = Monster->GetSkillComponent();
 	
 	FGameplayTag SkillTypeTag = FGameplayTag::RequestGameplayTag(FName("Skill.Charge"));
 	FGameplayTag AttackTag = SkillComponent->GetEquippedSkillMap()[SkillTypeTag];
