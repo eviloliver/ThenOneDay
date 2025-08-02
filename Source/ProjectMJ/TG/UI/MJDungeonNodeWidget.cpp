@@ -26,7 +26,7 @@ FReply UMJDungeonNodeWidget::NativeOnMouseButtonDoubleClick(const FGeometry& InG
 		const FMJDungeonGraph* DungeonGraph = DGSubSystem->GetDungeonGraph();
 
 		uint8 NodeNumber;
-		EMJNodeType NodeType;
+		EMJNodeType NodeType = EMJNodeType::Battle;
 		FMJDungeonNode Node;
 		FString MapName;
 		
@@ -45,6 +45,7 @@ FReply UMJDungeonNodeWidget::NativeOnMouseButtonDoubleClick(const FGeometry& InG
 
 				if (true)//GetGameInstance()->GetSubsystem<UMJDungeonGenerationSubSystem>()->CheckHasRoute(CurrentPlayerMapNum, NodeNumber))
 				{
+					
 					switch (NodeType)
 					{
 					case EMJNodeType::Battle:

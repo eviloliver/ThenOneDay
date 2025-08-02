@@ -7,6 +7,7 @@
 #include "MJPortalToDungeon.generated.h"
 
 class USphereComponent;
+class USoundCue;
 UCLASS()
 class PROJECTMJ_API AMJPortalToDungeon : public AActor
 {

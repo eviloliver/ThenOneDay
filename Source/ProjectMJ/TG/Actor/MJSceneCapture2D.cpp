@@ -16,8 +16,10 @@
 AMJSceneCapture2D::AMJSceneCapture2D()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	CameraHeight = 3000.f;
 	
-	SetActorLocation(FVector(0.0f,0.0f,GetActorLocation().Z));
+	SetActorLocation(FVector(0.0f,0.0f,CameraHeight));
 	SetActorRotation(FRotator3d(-90.0f,0.0f,0.0f));
 	ProceduralMeshComponent = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("ProceduralMeshComponent"));
 	//ProceduralMeshComponent->SetupAttachment(RootComponent);
@@ -128,7 +130,7 @@ void AMJSceneCapture2D::Tick(float DeltaSeconds)
 	{
 		FVector3d PlayerLoc = Player->GetActorLocation();
 
-		SetActorLocation(FVector3d(PlayerLoc.X,PlayerLoc.Y, GetActorLocation().Z));
+		SetActorLocation(FVector3d(PlayerLoc.X,PlayerLoc.Y, CameraHeight));
 	}
 }
 

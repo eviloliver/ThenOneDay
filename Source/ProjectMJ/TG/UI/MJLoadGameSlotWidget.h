@@ -18,6 +18,7 @@ class UHorizontalBox;
 class UVerticalBox;
 class UTextBlock;
 class UBorder;
+class USoundCue;
 
 UCLASS()
 class PROJECTMJ_API UMJLoadGameSlotWidget : public UUserWidget

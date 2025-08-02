@@ -17,6 +17,7 @@
 DECLARE_DELEGATE(FOnUserConfirmed)
 
 class UButton;
+class USoundCue;
 UCLASS()
 class PROJECTMJ_API UMJForceExitCautionWidget : public UMJChildMenuBaseWidget
 {

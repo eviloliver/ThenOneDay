@@ -16,7 +16,7 @@
 
 class UEditableTextBox;
 class UButton;
-
+class USoundCue;
 UCLASS()
 class PROJECTMJ_API UMJNewGamePopUpWidget : public UMJChildMenuBaseWidget
 {

@@ -9,6 +9,7 @@
 #include "MJPortalToNextDungeon.generated.h"
 
 class UMJMiniMapIconMeshComponent;
+class USoundCue;
 /**
  * Class Description: (currently not using) PortalToNextDungeon
  * Author: Cha Tae Gwan

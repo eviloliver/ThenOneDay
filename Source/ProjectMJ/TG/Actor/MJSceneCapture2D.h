@@ -44,6 +44,9 @@ protected:
 	TWeakObjectPtr<ACharacter> Player;
 
 	UPROPERTY(EditDefaultsOnly)
+	float CameraHeight;
+
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UProceduralMeshComponent> ProceduralMeshComponent;
 
 	UPROPERTY(EditDefaultsOnly)

@@ -42,10 +42,11 @@ public:
 	FORCEINLINE float GetTotalCumulativeExperience() const { return TotalCumulativeExperience; }
 	FORCEINLINE float GetExperienceForNextLevel() const { return ExperienceForNextLevel; }
 	FORCEINLINE void SetPlayerLevel(int32 NewPlayerLevel) {PlayerLevel = NewPlayerLevel;}
-	FORCEINLINE void SetTotalCumulativeExperience(float NewExp){ TotalCumulativeExperience = NewExp; }
+	FORCEINLINE void SetTotalCumulativeExperience(float NewExp){ TotalCumulativeExperience = NewExp;}
 
-	FORCEINLINE float GetNumerator();
-	FORCEINLINE float GetDenominator();
+	float GetNumerator();
+	float GetDenominator();
+	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
 	TObjectPtr<UCurveTable> PlayerStatTable;
