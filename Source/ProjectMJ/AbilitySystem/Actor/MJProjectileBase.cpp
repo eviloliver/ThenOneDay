@@ -38,8 +38,7 @@ void AMJProjectileBase::Tick(float DeltaSeconds)
 	}
 }
 
-void AMJProjectileBase::InitProjectile(const FTransform& SpawnTransform,
-	const FMJSkillProjectileParams& InParams,
+void AMJProjectileBase::InitProjectile(const FMJSkillProjectileParams& InParams,
 	TSubclassOf<UMJProjectileMovementBehaviorBase> InMovementBehaviorClass,
 	const TArray<TSubclassOf<UMJProjectileReactionBehaviorBase>>& InReactionBehaviorClasses)
 {
@@ -50,7 +49,7 @@ void AMJProjectileBase::InitProjectile(const FTransform& SpawnTransform,
 		MovementBehavior = NewObject<UMJProjectileMovementBehaviorBase>(this, InMovementBehaviorClass);
 		if (MovementBehavior)
 		{
-			MovementBehavior->InitMovement(this, SpawnTransform);
+			MovementBehavior->InitMovement(this);
 		}
 	}
 

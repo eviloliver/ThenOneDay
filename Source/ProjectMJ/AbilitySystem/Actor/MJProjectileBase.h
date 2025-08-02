@@ -34,7 +34,7 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 
-	void InitProjectile(const FTransform& SpawnTransform, const FMJSkillProjectileParams& InParams, TSubclassOf<UMJProjectileMovementBehaviorBase> InMovementBehaviorClass, const TArray<TSubclassOf<UMJProjectileReactionBehaviorBase>>& InReactionBehaviorClasses);
+	void InitProjectile(const FMJSkillProjectileParams& InParams, TSubclassOf<UMJProjectileMovementBehaviorBase> InMovementBehaviorClass, const TArray<TSubclassOf<UMJProjectileReactionBehaviorBase>>& InReactionBehaviorClasses);
 
 	FORCEINLINE USphereComponent* GetSphere() const { return Sphere; }
 

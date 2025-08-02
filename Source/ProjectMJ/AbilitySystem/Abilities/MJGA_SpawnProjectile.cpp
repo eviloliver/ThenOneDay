@@ -7,6 +7,7 @@
 #include "ProjectMJ.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
 #include "AbilitySystem/Actor/MJProjectileBase.h"
+#include "AbilitySystem/Actor/Behavior/MJProjectileMovementBehaviorBase.h"
 #include "Character/MJCharacterBase.h"
 #include "Character/Component/MJAbilityContextComponent.h"
 #include "Character/Component/MJSkillComponentBase.h"
@@ -27,6 +28,7 @@ void UMJGA_SpawnProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Han
     AMJCharacterBase* OwnerCharacter = Cast<AMJCharacterBase>(GetAvatarActorFromActorInfo());
     if (!OwnerCharacter)
     {
+        MJ_LOG(LogMJ, Warning, TEXT("Not Exist OwnerCharacter"));
         EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
         return;
     }
@@ -34,6 +36,7 @@ void UMJGA_SpawnProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Han
     UAbilitySystemComponent* SourceASC = GetAbilitySystemComponentFromActorInfo();
     if (!SourceASC)
     {
+        MJ_LOG(LogMJ, Warning, TEXT("Not Exist SourceASC"));
         EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
         return;
     }
@@ -41,6 +44,7 @@ void UMJGA_SpawnProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Han
     const UMJCharacterSkillAttributeSet* SkillAttributeSet = SourceASC->GetSet<UMJCharacterSkillAttributeSet>();
     if (!SkillAttributeSet)
     {
+        MJ_LOG(LogMJ, Warning, TEXT("Not Exist SkillAttributeSet"));
         EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
         return;
     }
@@ -48,11 +52,27 @@ void UMJGA_SpawnProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Han
     const FGameplayAbilitySpec* CurrentAbilitySpec = GetCurrentAbilitySpec();
     if (!CurrentAbilitySpec)
     {
+        MJ_LOG(LogMJ, Warning, TEXT("Not Exist CurrentAbilitySpec"));
         EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
         return;
     }
 
     if (!ProjectileClass)
+    {
+        MJ_LOG(LogMJ, Warning, TEXT("Not Exist ProjectileClass"));
+        EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+        return;
+    }
+
+    if (!MovementBehavior)
+    {
+        MJ_LOG(LogMJ, Warning, TEXT("Not Exist MovementBehavior"));
+        EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+        return;
+    }
+
+    UMJProjectileMovementBehaviorBase* MovementStrategy = MovementBehavior->GetDefaultObject <UMJProjectileMovementBehaviorBase>();
+    if (!MovementStrategy)
     {
         EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
         return;
@@ -70,19 +90,7 @@ void UMJGA_SpawnProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Han
         MouseLocation = OwnerCharacter->GetActorLocation() + OwnerCharacter->GetActorForwardVector() * 1000.f;
     }
 
-    FVector SpawnLocation = FVector::ZeroVector;
-    USkeletalMeshComponent* CharacterMesh = OwnerCharacter->GetMesh();
-    if (SpawnSocketName != NAME_None && CharacterMesh && CharacterMesh->DoesSocketExist(SpawnSocketName))
-    {
-        SpawnLocation = CharacterMesh->GetSocketLocation(SpawnSocketName);
-    }
-    else
-    {
-        SpawnLocation = OwnerCharacter->GetActorLocation() + OwnerCharacter->GetActorForwardVector() * 100.0f;
-    }
-
-    const FRotator SpawnRotation = (MouseLocation - SpawnLocation).Rotation();
-    const FTransform SpawnTransform = FTransform(SpawnRotation, SpawnLocation);
+    const FTransform SpawnTransform = MovementStrategy->CalculateSpawnTransform(this, MouseLocation, SpawnSocketName);
 
     AMJProjectileBase* Projectile = GetWorld()->SpawnActorDeferred<AMJProjectileBase>(ProjectileClass, SpawnTransform, GetOwningActorFromActorInfo(), OwnerCharacter, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
@@ -123,7 +131,7 @@ void UMJGA_SpawnProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
         ProjectileParams.PierceCount = SkillAttributeSet->GetProjectilePierceCount();
 
-        Projectile->InitProjectile(SpawnTransform, ProjectileParams, MovementBehavior, ReactionBehaviors);
+        Projectile->InitProjectile(ProjectileParams, MovementBehavior, ReactionBehaviors);
 
         UGameplayStatics::FinishSpawningActor(Projectile, SpawnTransform);
 
