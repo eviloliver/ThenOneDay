@@ -4,10 +4,14 @@
 #include "UI/Store/MJStoreComponent.h"
 #include "MJMerchandiseSlot.h"
 #include "MJStoreWidget.h"
+#include "Components/Button.h"
+#include "Dialogue/MJDialogueChoiceWidget.h"
+#include "Dialogue/MJDialogueWidget.h"
 #include "TG/MJGameInstanceTG.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/MJUIManagerSubsystem.h"
 #include "UI/Inventory/ItemDataRow.h"
+
 
 // Sets default values for this component's properties
 void UMJStoreComponent::UpdateStore()
@@ -33,7 +37,7 @@ void UMJStoreComponent::UpdateStore()
 			return;
 		}
 	}
-
+	
 	TArray<FName> MerchandiseRow;
 	TArray<FName> Rownames = GI->ItemDataTable->GetRowNames();
 
@@ -56,3 +60,60 @@ void UMJStoreComponent::UpdateStore()
 		MerSlot[i]->SetPrice(GI->ItemDataTable->FindRow<FItemDataRow>(MerchandiseRow[i], TEXT(""))->Price);
 	}
 }
+
+void UMJStoreComponent::DialogueEnd()
+{
+	SetIndex(0);
+	bIsOpened = true;
+}
+
+void UMJStoreComponent::SetChoiceWidgetText()
+{
+	GetDialogueWidget()->GetDialogueChoiceWidget()->SetTextBlock(
+     	GetCurrentRow()->Choices[0].ChoiceText,
+     	GetCurrentRow()->Choices[1].ChoiceText,
+     	GetCurrentRow()->Choices[2].ChoiceText);
+
+}
+
+void UMJStoreComponent::BindButtons()
+{
+	if (CurrentIndex == 0)
+	{
+		GetDialogueWidget()->GetDialogueChoiceWidget()->GetQuestButton()->OnClicked.AddDynamic(this, &UMJStoreComponent::ShowStory);
+		GetDialogueWidget()->GetDialogueChoiceWidget()->GetPointButton()->OnClicked.AddDynamic(this, &UMJStoreComponent::ShowStore);
+		GetDialogueWidget()->GetDialogueChoiceWidget()->GetExitButton()->OnClicked.AddDynamic(this, &UMJStoreComponent::ExitDialogue);
+	}
+	SetChoiceWidgetText();
+}
+
+void UMJStoreComponent::ShowStory() // Story 클릭 시 
+{
+	++ CurrentIndex;
+	if (!IsDialogueEnd())
+	{
+		FloatLine();
+		GetDialogueWidget()->SetImageOpacity(GetCurrentRow()->Speaker);
+	}
+	GetDialogueWidget()->GetDialogueChoiceWidget()->SetVisibility(ESlateVisibility::Hidden);
+}
+
+void UMJStoreComponent::ShowStore()
+{
+	CurrentIndex = DialogueTable->GetRowNames().Num() - 1; 
+	GetDialogueWidget()->SetTextBlock(GetCurrentRow()->ScriptForStore, GetCurrentRow()->Speaker);
+	GetDialogueWidget()->StartTyping(GetCurrentRow()->ScriptForStore,0.05);
+	GetDialogueWidget()->GetDialogueChoiceWidget()->SetVisibility(ESlateVisibility::Hidden);
+	//CurrentIndex = DialogueTable->GetRowNames().Num();
+	bIsStoreRoot = true;
+}
+
+void UMJStoreComponent::ExitDialogue()
+{
+	CurrentIndex =  DialogueTable->GetRowNames().Num() -1;
+	GetDialogueWidget()->SetTextBlock(GetCurrentRow()->ScriptForExit, GetCurrentRow()->Speaker);
+	GetDialogueWidget()->StartTyping(GetCurrentRow()->ScriptForExit,0.05);
+	GetDialogueWidget()->GetDialogueChoiceWidget()->SetVisibility(ESlateVisibility::Hidden);
+}
+
+

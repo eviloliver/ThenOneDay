@@ -118,7 +118,9 @@ public:
 	void SetDialogueVisibility();
 	// Store
 	UFUNCTION()
-	void SetStoreVisibility();
+	void ShowStore();
+	UFUNCTION()
+	void HideStore();
 		
 	// Show Widget
 	void ShowBacklog();
