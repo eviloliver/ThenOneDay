@@ -87,9 +87,14 @@ void UMJStoreComponent::BindButtons()
 	SetChoiceWidgetText();
 }
 
-void UMJStoreComponent::ShowStory()
+void UMJStoreComponent::ShowStory() // Story 클릭 시 
 {
-	TurnOver();
+	++ CurrentIndex;
+	if (!IsDialogueEnd())
+	{
+		FloatLine();
+		GetDialogueWidget()->SetImageOpacity(GetCurrentRow()->Speaker);
+	}
 	GetDialogueWidget()->GetDialogueChoiceWidget()->SetVisibility(ESlateVisibility::Hidden);
 }
 
@@ -99,7 +104,7 @@ void UMJStoreComponent::ShowStore()
 	GetDialogueWidget()->SetTextBlock(GetCurrentRow()->ScriptForStore, GetCurrentRow()->Speaker);
 	GetDialogueWidget()->StartTyping(GetCurrentRow()->ScriptForStore,0.05);
 	GetDialogueWidget()->GetDialogueChoiceWidget()->SetVisibility(ESlateVisibility::Hidden);
-	CurrentIndex = DialogueTable->GetRowNames().Num();
+	//CurrentIndex = DialogueTable->GetRowNames().Num();
 	bIsStoreRoot = true;
 }
 

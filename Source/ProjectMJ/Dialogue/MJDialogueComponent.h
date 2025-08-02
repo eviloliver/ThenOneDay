@@ -57,6 +57,7 @@ public:
 	const FMJDialogueRow* GetCurrentRow() const;
 	const FMJDialogueRow* GetPreviousRow() const;
 	UMJDialogueWidget* GetDialogueWidget();
+	void SkipTyping();
 	bool bIsFirstIndex();
 
 };

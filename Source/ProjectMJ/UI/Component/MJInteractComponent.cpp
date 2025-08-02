@@ -110,6 +110,7 @@ void UMJInteractComponent::ProceedInteraction()
 	{
 		if (StoreComponent->bIsFirstIndex()) 
 		{
+			StoreComponent->SkipTyping();
 			if (StoreComponent->GetIsOpened()) // 열려있으니까
 			{
          		OnstoreClose.Broadcast(); // 닫을거임
@@ -136,8 +137,10 @@ void UMJInteractComponent::ProceedInteraction()
 				StoreComponent->SetIndex(0);
 				OndialogueEnd.Broadcast();
 			}
+			return;
 		}
-	
+		
+    		
 	}
 }
 

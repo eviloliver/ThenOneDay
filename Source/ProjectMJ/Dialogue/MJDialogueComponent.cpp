@@ -4,7 +4,6 @@
 #include "Dialogue/MJDialogueComponent.h"
 
 #include "MJBacklogWidget.h"
-#include "MJDialogueChoiceRow.h"
 #include "MJDialogueChoiceWidget.h"
 #include "MJDialogueWidget.h"
 #include "TG/MJGameInstanceTG.h"
@@ -99,6 +98,14 @@ UMJDialogueWidget* UMJDialogueComponent::GetDialogueWidget()
         	->GetHUDWidget()->GetDialogueWidget();
 	}
 	return nullptr;
+}
+
+void UMJDialogueComponent::SkipTyping()
+{
+	if (GetDialogueWidget()->GetIsTyping())
+	{
+		GetDialogueWidget()->SkipTyping();
+	}
 }
 
 bool UMJDialogueComponent::bIsFirstIndex()
