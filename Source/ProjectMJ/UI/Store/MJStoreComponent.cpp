@@ -69,7 +69,6 @@ void UMJStoreComponent::DialogueEnd()
 
 void UMJStoreComponent::SetChoiceWidgetText()
 {
-
 	GetDialogueWidget()->GetDialogueChoiceWidget()->SetTextBlock(
      	GetCurrentRow()->Choices[0].ChoiceText,
      	GetCurrentRow()->Choices[1].ChoiceText,
@@ -107,7 +106,8 @@ void UMJStoreComponent::ShowStore()
 void UMJStoreComponent::ExitDialogue()
 {
 	CurrentIndex =  DialogueTable->GetRowNames().Num() -1;
-	FloatLine();
+	GetDialogueWidget()->SetTextBlock(GetCurrentRow()->ScriptForExit, GetCurrentRow()->Speaker);
+	GetDialogueWidget()->StartTyping(GetCurrentRow()->ScriptForExit,0.05);
 	GetDialogueWidget()->GetDialogueChoiceWidget()->SetVisibility(ESlateVisibility::Hidden);
 }
 
