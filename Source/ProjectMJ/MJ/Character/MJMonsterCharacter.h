@@ -3,15 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Character/MJCharacterBase.h"
 #include "MJ/Interface/MJCharacterAIInterface.h"
-#include "Character/Component/MJPlayerSkillComponent.h"
 #include "MJMonsterCharacter.generated.h"
 
-class AMJItemBase;
+class UMJEnemySkillComponent;
 class UMJDropItemsDataAsset;
-class UMJItemDataAsset;
-class AMJTargetingProjectileBase;
 class UMJHealthBarComponent;
 class UMJDamageComponent;
 class UWidgetComponent;
@@ -44,12 +42,14 @@ public:
 	AMJMonsterCharacter();
 
 	FGameplayTag GetAttackTag() {return AttackTag;}
-	UMJSkillComponentBase* GetSkillComponent() {return SkillComponent;}
+	UMJEnemySkillComponent* GetSkillComponent() {return SkillComponent;}
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	TObjectPtr<UAnimationAsset> GetAppearanceAnimation(){return AppearanceAnimation;}
 
 	const EnemyTransferData& GetEnemyBequest(){return EnemyBequest;}
+
+	const FGameplayTag& GetDefaultEnemyTag() {return DefaultEnemyTag;}
 	
 protected:
 	virtual void BeginPlay() override;
@@ -94,10 +94,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMJCharacterSkillAttributeSet> CharacterSkillAttributeSet;
-
-	// TODO: 우선 base
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Gas")
-	TObjectPtr<UMJSkillComponentBase> SkillComponent;
+	TObjectPtr<UMJEnemySkillComponent> SkillComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat")
 	TObjectPtr<UMJEnemyStatComponent> StatComponent;
@@ -117,9 +116,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UAnimationAsset> DeathAnimation;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Item")
-	TObjectPtr<UMJItemDataAsset> ItemDataAsset;
 	
 	// Minjin: Ability Tag-안씀
 	FGameplayTag AttackTag;
