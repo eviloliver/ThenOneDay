@@ -9,6 +9,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "Character/Component/MJSkillComponentBase.h"
 #include "ProjectMJ.h"
+#include "Character/Component/MJEnemySkillComponent.h"
 
 UBTTask_MJInstantAttack::UBTTask_MJInstantAttack()
 {
@@ -30,29 +31,30 @@ EBTNodeResult::Type UBTTask_MJInstantAttack::ExecuteTask(UBehaviorTreeComponent&
 	}
 
 	UAbilitySystemComponent* ASC = Monster->GetAbilitySystemComponent();
-	UMJSkillComponentBase* SkillComponent = Monster->GetSkillComponent();
+	UMJEnemySkillComponent* SkillComponent = Monster->GetSkillComponent();
 	
 	FGameplayTag SkillTypeTag = FGameplayTag::RequestGameplayTag(FName("Skill.Instant"));
 	FGameplayTag AttackTag = SkillComponent->GetEquippedSkillMap()[SkillTypeTag];
-
+	
 	if (!AttackTag.IsValid())
 	{
 		return EBTNodeResult::Failed;
 	}
-
-	// FDelegateHandle Handle;
-	// Handle = ASC->OnAbilityEnded.AddLambda(
-	// [&, AttackTag, Handle](const FAbilityEndedData& EndedData)
-	// {
-	// 	MJ_LOG(LogMJ, Error,TEXT("A"));
-	// 	if (EndedData.AbilityThatEnded->AbilityTags.HasTagExact(AttackTag))
-	// 	{
-	// 		MJ_LOG(LogMJ, Error,TEXT("AA"));
-	// 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	// 		ASC->OnAbilityEnded.Remove(Handle);
-	// 	}
-	// });
+	
+	FDelegateHandle Handle;
+	Handle = ASC->OnAbilityEnded.AddLambda(
+	[&, AttackTag, Handle](const FAbilityEndedData& EndedData)
+	{
+		MJ_LOG(LogMJ, Error,TEXT("A"));
+		if (EndedData.AbilityThatEnded->AbilityTags.HasTagExact(AttackTag))
+		{
+			MJ_LOG(LogMJ, Error,TEXT("AA"));
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			ASC->OnAbilityEnded.Remove(Handle);
+		}
+	});
 	MJ_LOG(LogMJ, Error,TEXT("AAA"));
+	
 	SkillComponent->ActivateSkill(AttackTag);
 	
 	return EBTNodeResult::Succeeded;
