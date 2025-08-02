@@ -9,12 +9,14 @@
 #include "MJ/AI/AIPerceptionInfo.h"
 #include "MJCharacterBase.generated.h"
 
+class UMJMiniMapIconMeshComponent;
+class AMJMiniMapIconActor;
 class UMJAbilitySystemComponent;
 class UMJAttributeSet;
 class UDataAsset_StartDataBase;
 class UMotionWarpingComponent;
 /**
- * Class Description: CharacterBase
+ * Class Description: CharacterBased
  * Author: Lee JuHyeon
  * Created Date: 2025_06_11
  * Modified By: Lee JuHyeon / Kim Minjin
@@ -23,6 +25,10 @@ class UMotionWarpingComponent;
  * Description of Change: 모션 워핑 컴포넌트 추가
  * Modified By: 신동민	
  * Modified Date: 2025.07.19
+ * 
+ * Description of Change: add MiniMapIconMeshComponent 
+ * Modified By: CTG	
+ * Modified Date: 2025.07.31
  */
 UCLASS()
 class PROJECTMJ_API AMJCharacterBase : public ACharacter , public IAbilitySystemInterface, public IGenericTeamAgentInterface
@@ -34,6 +40,8 @@ public:
 	AMJCharacterBase();
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	UMJMiniMapIconMeshComponent* GetMiniMapIconMeshComponent() {return MiniMapIconMeshComponent;}
 
 	// GenericTeamAgentInterface 구현
 	virtual FGenericTeamId GetGenericTeamId() const override {return TeamId;}
@@ -53,6 +61,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation")
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TObjectPtr<UMJMiniMapIconMeshComponent> MiniMapIconMeshComponent;
 
 	FGenericTeamId TeamId;
 };

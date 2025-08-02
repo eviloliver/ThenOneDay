@@ -17,13 +17,15 @@
  * Last Modified Date: 2025-06-13
  */
 
+class UMJMiniMapIconMeshComponent;
 class AMJAIBossCharacterTG;
 class UEnvQuery;
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnHealthChangedSignature, float, Delta);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIBossOnSpawnedSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIBossOnDiedSignature);
 
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJActorSpawnedSignature, AActor*, Actor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIOnDestroyedSignature);
 
 UCLASS()
@@ -51,6 +53,9 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FMJAIBossOnHealthChangedSignature OnAIBossHealthChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FMJActorSpawnedSignature OnActorSpawned;
 
 	UPROPERTY(BlueprintAssignable)
 	FMJAIBossOnSpawnedSignature OnAIBossSpawned;

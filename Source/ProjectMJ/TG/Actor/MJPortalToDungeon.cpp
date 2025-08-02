@@ -48,7 +48,7 @@ void AMJPortalToDungeon::OnAudioFinish()
 	AMJGameModeTown* GMTown = Cast<AMJGameModeTown>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (GMTown && SubSystem)
 	{
-		uint8 NodeId = SubSystem->GetDungeonGraph()->Nodes[GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef().CurrentDungeonMapNum].NodeID;
+		uint8 NodeId = SubSystem->GetDungeonGraph()->Nodes[GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef().CurrentDungeonMapNum].AssignedMapID;
 		EMJNodeType NodeType = SubSystem->GetDungeonGraph()->Nodes[GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef().CurrentDungeonMapNum].NodeType;
 
 		FString MapName;

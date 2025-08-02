@@ -5,16 +5,22 @@
 
 void UMJChildMenuBaseWidget::SetParentWidget(UUserWidget* NewParentWidget)
 {
-	ParentWidget = NewParentWidget;
+	if (IsValid(NewParentWidget))
+	{
+		ParentWidget = NewParentWidget;
+	}
 }
 
 UUserWidget* UMJChildMenuBaseWidget::GetParentWidget()
 {
-	return ParentWidget;
+	return ParentWidget.Get();
 }
 
 void UMJChildMenuBaseWidget::BackToParentWidget()
 {
-	SetVisibility(ESlateVisibility::Hidden);
-	ParentWidget->SetVisibility(ESlateVisibility::Visible);
+	if (ParentWidget.IsValid())
+	{
+		SetVisibility(ESlateVisibility::Hidden);
+		ParentWidget->SetVisibility(ESlateVisibility::Visible);	
+	}
 }
