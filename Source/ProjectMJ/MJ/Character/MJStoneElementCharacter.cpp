@@ -16,5 +16,5 @@ void AMJStoneElementCharacter::BeginPlay()
 
 void AMJStoneElementCharacter::AttackByAI()
 {
-	SkillComponent->ActivateSkill(AttackTag);
+	// SkillComponent->ActivateSkill(AttackTag);
 }
