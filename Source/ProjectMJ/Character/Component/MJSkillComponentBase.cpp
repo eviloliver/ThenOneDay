@@ -100,7 +100,6 @@ void UMJSkillComponentBase::ActivateSkill(const FGameplayTag& SkillTag)
 		return;
 	}
 
-	// Minjin TODO: 여기서 리턴됨. 알아보기
 	if (!GivenActionAbilityHandles.Contains(SkillTag))
 	{
 		MJ_LOG(LogMJ, Error, TEXT("Not Exist GivenActionAbilityHandles(EquippedSlotSkill)"));
