@@ -21,44 +21,7 @@ bool UMJGA_InstantSkill::CanActivateAbility(const FGameplayAbilitySpecHandle Han
 	{
 		return false;
 	}
-
-	UMJAbilitySystemComponent* ASC = Cast<UMJAbilitySystemComponent>(ActorInfo->AbilitySystemComponent);
-	if (!ASC)
-	{
-		MJ_LOG(LogMJ, Warning, TEXT("Not Exist ASC"));
-		return false;
-	}
-
-	const UMJCharacterAttributeSet* CharacterAttributeSet = ASC->GetSet<UMJCharacterAttributeSet>();
-	const UMJCharacterSkillAttributeSet* SkillAttributeSet = ASC->GetSet<UMJCharacterSkillAttributeSet>();
-
-	if (CharacterAttributeSet && SkillAttributeSet)
-	{
-		// TODO: 더 좋은 방법이 있을거 같음
-		if (SkillAttributeSet->GetCostMana() > 0 && CharacterAttributeSet->GetMana() < SkillAttributeSet->GetCostMana())
-		{
-			MJ_LOG(LogMJ, Warning, TEXT("Need Mana"));
-
-			return false;
-		}
-		if (SkillAttributeSet->GetCostStamina() > 0 && CharacterAttributeSet->GetStamina() < SkillAttributeSet->GetCostStamina())
-		{
-			MJ_LOG(LogMJ, Warning, TEXT("Need Stamina"));
-
-			return false;
-		}
-		if (SkillAttributeSet->GetCostFocus() > 0 && CharacterAttributeSet->GetFocus() < SkillAttributeSet->GetCostFocus())
-		{
-			MJ_LOG(LogMJ, Warning, TEXT("Need Focus"));
-			return false;
-		}
-	}
-
-	if (ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.Cooldown"))))
-	{
-		MJ_LOG(LogMJ, Warning, TEXT("Instant Cooldown"));
-		return false;
-	}
+	MJ_LOG(LogMJ, Warning, TEXT("CanActivateAbility"));
 
 	return true;
 }
@@ -68,12 +31,17 @@ void UMJGA_InstantSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	MJ_LOG(LogMJ, Warning, TEXT("ActivateAbility"));
 
-	ApplyCost(Handle, ActorInfo, ActivationInfo);
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("CommitAbility is false"));
 
-	ApplyCooldown(Handle, ActorInfo, ActivationInfo);
+		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
+		return;
+	}
 
-
+	// EndAbility는 상속받은 자식 쪽에서 구현
 }
 
 void UMJGA_InstantSkill::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -81,16 +49,25 @@ void UMJGA_InstantSkill::EndAbility(const FGameplayAbilitySpecHandle Handle, con
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	// 스킬이 끝날 때 적용하는 법
-	//ApplyCooldown(Handle, ActorInfo, ActivationInfo);
+}
 
+bool UMJGA_InstantSkill::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	FGameplayTagContainer* OptionalRelevantTags) const
+{
+	if (!Super::CheckCost(Handle, ActorInfo, OptionalRelevantTags))
+	{
+		return false;
+	}
+	return true;
 }
 
 
 void UMJGA_InstantSkill::ApplyCost(const FGameplayAbilitySpecHandle Handle,
-                                   const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
+                                   const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
 {
-	if (!CustomCostGameplayEffectClass)
+	MJ_LOG(LogMJ, Warning, TEXT("ApplyCost"));
+
+	if (!CostGameplayEffectClass)
 	{
 		MJ_LOG(LogMJ, Warning, TEXT("Not Exist CostGameplayEffect"));
 		return;
@@ -110,7 +87,7 @@ void UMJGA_InstantSkill::ApplyCost(const FGameplayAbilitySpecHandle Handle,
 		return;
 	}
 
-	FGameplayEffectSpecHandle CostSpecHandle = MakeOutgoingGameplayEffectSpec(CustomCostGameplayEffectClass, 1.0f);
+	FGameplayEffectSpecHandle CostSpecHandle = MakeOutgoingGameplayEffectSpec(CostGameplayEffectClass, 1.0f);
 	if (!CostSpecHandle.Data)
 	{
 		MJ_LOG(LogMJ, Warning, TEXT("Not Exist CostSpecHandle.Data"));
@@ -125,9 +102,9 @@ void UMJGA_InstantSkill::ApplyCost(const FGameplayAbilitySpecHandle Handle,
 }
 
 void UMJGA_InstantSkill::ApplyCooldown(const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
 {
-	if (!CustomCooldownGameplayEffectClass)
+	if (!CooldownGameplayEffectClass)
 	{
 		MJ_LOG(LogMJ, Warning, TEXT("Not Exist CooldownGameplayEffectClass"));
 		return;
@@ -152,7 +129,7 @@ void UMJGA_InstantSkill::ApplyCooldown(const FGameplayAbilitySpecHandle Handle,
 	float CharacterSkillCooldown = CharacterAttributeSet->GetSkillCooldown() * 0.01f;
 	float FinalCooldown = BaseCooldown * (100.f / (100.f + CharacterSkillCooldown));
 	
-	FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(CustomCooldownGameplayEffectClass, 1.f, ASC->MakeEffectContext());
+	FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(CooldownGameplayEffectClass, 1.f, ASC->MakeEffectContext());
 	if (SpecHandle.IsValid())
 	{
 		SpecHandle.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Skill.Cooldown")), FinalCooldown);
