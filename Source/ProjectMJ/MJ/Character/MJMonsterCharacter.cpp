@@ -290,15 +290,6 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 		
 		const float FinishDelay = DeathAnimation->GetPlayLength();
 
-		// Minjin: 애니메이션 재생되는 동안 경험치 전달
-		// TODO: 스킬도 애니메이션 재생 때 전달하도록 변경하기
-		AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(InEffectCauser);
-		if (Player)
-		{
-			Player->StatComponent->GainExperience(EnemyBequest.Exp);
-			MJ_LOG(LogMJ, Warning, TEXT("경험치 전달: %d"), EnemyBequest.Exp);
-		}
-		
 		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
 			[this]()
 			{
