@@ -7,7 +7,7 @@
 #include "MJProjectileMovementFalling.generated.h"
 
 /**
- * Class Description: 하늘에서 떨어지는 투사체
+ * Class Description: 하늘에서 떨어지는 투사체 (중력 적용 X)
  * Author: 신동민
  * Created Date: 2025.08.02
  * Description of Change:
@@ -31,6 +31,6 @@ protected:
 	TObjectPtr<AMJProjectileBase> OwnerProjectile;
 
 	UPROPERTY()
-	FVector MoveDirection;
+	FVector Velocity;
 
 };
