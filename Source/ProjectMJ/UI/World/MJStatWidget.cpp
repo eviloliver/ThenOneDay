@@ -13,6 +13,8 @@ void UMJStatWidget::BindToAttribute(UMJAbilitySystemComponent* ASC, UMJCharacter
 	{
 		return;
 	}
+
+	this->AttributSet = AttributeSet;
 	
 	Health = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxHealthAttribute());
 	AttackPower = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxAttackDamageAttribute());
@@ -38,23 +40,40 @@ void UMJStatWidget::UpdateLevel(int32 NewLevel)
 
 void UMJStatWidget::UpdateStat(const FOnAttributeChangeData& Data) // settext
 {
-	if (StatHealth)
+	FGameplayAttribute ChangedAttr = Data.Attribute;
+	if (ChangedAttr == AttributSet->GetMaxHealthAttribute())
 	{
-		StatHealth->SetText(FText::FromString(FString::SanitizeFloat(Health)));
+		if (StatHealth)
+        {
+        	Health = Data.NewValue;
+        	StatHealth->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+        }
 	}
 
-	if (StatAttackPower)
+	if (ChangedAttr == AttributSet->GetMaxAttackDamageAttribute())
 	{
-		StatAttackPower->SetText(FText::FromString(FString::SanitizeFloat(AttackPower)));
+		if (StatAttackPower)
+		{
+			AttackPower = Data.NewValue;
+			StatAttackPower->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), AttackPower)));
+		}
+	}
+	if (ChangedAttr == AttributSet->GetMaxAbilityPowerAttribute())
+	{
+		if (StatSpellPower)
+        {
+        	SpellPower = Data.NewValue;
+        	StatSpellPower->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), SpellPower)));
+        }
 	}
 
-	if (StatSpellPower)
+	if (ChangedAttr == AttributSet->GetMaxMovementSpeedAttribute())
 	{
-		StatSpellPower->SetText(FText::FromString(FString::SanitizeFloat(SpellPower)));
+		if (StatSpeed)
+        {
+        	Speed = Data.NewValue;
+        	StatSpeed->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Speed)));
+        }
 	}
 
-	if (StatSpeed)
-	{
-		StatSpeed->SetText(FText::FromString(FString::SanitizeFloat(Speed)));
-	}
 }

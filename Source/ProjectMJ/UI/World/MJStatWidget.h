@@ -7,6 +7,8 @@
 #include "AbilitySystemComponent.h"
 #include "MJStatWidget.generated.h"
 
+class UMJCharacterAttributeSet;
+class UMJAttributeSet;
 /**
  * 
  */
@@ -32,6 +34,9 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> StatSpeed;
+
+	UPROPERTY()
+	TObjectPtr<UMJCharacterAttributeSet> AttributSet;
 	
 	float Health;
 	float AttackPower;
