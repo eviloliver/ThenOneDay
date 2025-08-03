@@ -32,8 +32,7 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> StatSpeed;
-
-	float Level;
+	
 	float Health;
 	float AttackPower;
 	float SpellPower;
@@ -41,7 +40,9 @@ private:
 
 public:
 	UFUNCTION()
-	void BindToAttribute(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet);
-	
+	void BindToAttribute(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet, class UMJPlayerStatComponent* Stat);
+
+	UFUNCTION()
+	void UpdateLevel(int32 NewLevel);
 	void UpdateStat(const FOnAttributeChangeData& Data);
 };

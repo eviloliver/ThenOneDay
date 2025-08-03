@@ -42,7 +42,7 @@ void UMJUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	// EnemyHPBarWidget = CreateWidget<UMJEnemyHPBar>(GetWorld(),EnemyHPBarWidgetClass );
 }
 
-void UMJUIManagerSubsystem::ShowHUD(AMJPlayerState* PlayerState, AMJPlayerController* PC)
+void UMJUIManagerSubsystem::ShowHUD(AMJPlayerState* PlayerState, AMJPlayerController* PC, UMJPlayerStatComponent* Stat)
 {
 	HUDWidget = CreateWidget<UMJHUDWidget>(PC, HUDWidgetClass);
 	if (HUDWidget)
@@ -52,7 +52,7 @@ void UMJUIManagerSubsystem::ShowHUD(AMJPlayerState* PlayerState, AMJPlayerContro
 		if (PlayerState) 
 		{
 			auto* MJASC = Cast<UMJAbilitySystemComponent>(PlayerState->GetAbilitySystemComponent());
-			HUDWidget->BindAtrributesToChildren(MJASC,PlayerState->GetCharacterAttributeSet());
+			HUDWidget->BindAtrributesToChildren(MJASC,PlayerState->GetCharacterAttributeSet(),Stat);
 		}
 	}
 }

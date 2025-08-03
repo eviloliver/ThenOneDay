@@ -63,13 +63,7 @@ void AMJPlayerController::BeginPlay()
 		MJChar->GetUITrigger()->OnComponentEndOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredOut);
 		MJChar->GetUITrigger()->OnComponentBeginOverlap.AddDynamic(this,&ThisClass::OnTriggeredItemIn);
 	}
-
-	AMJPlayerState* State = GetPlayerState<AMJPlayerState>();
-	if (State)
-	{
-		UIManager->ShowHUD(State, this);
-	}
-
+	
 	GameFlowHUD = CastChecked<UMJGameFlowHUDWidget>(CreateWidget(this, GameFlowHUDWidgetClass));
 	if (GameFlowHUD)
 	{
@@ -82,6 +76,12 @@ void AMJPlayerController::BeginPlay()
 	{
 		MJPlayerStatComp->OnDeath.AddDynamic(this,&AMJPlayerController::OnDead);
 	}
+
+	AMJPlayerState* State = GetPlayerState<AMJPlayerState>();
+    if (State && MJPlayerStatComp)
+    {
+    	UIManager->ShowHUD(State, this, MJPlayerStatComp);
+    }
 }
 
 void AMJPlayerController::SetupInputComponent()
