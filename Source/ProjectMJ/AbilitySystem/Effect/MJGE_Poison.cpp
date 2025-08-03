@@ -9,8 +9,6 @@ UMJGE_Poison::UMJGE_Poison()
 {
 	DurationPolicy = EGameplayEffectDurationType::HasDuration;
 
-	InheritableGameplayEffectTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Status.Debuff.Poison")));
-
 	FGameplayEffectExecutionDefinition ExecutionDefinition;
 	ExecutionDefinition.CalculationClass = UMJEC_DamageOverTime::StaticClass();
 
