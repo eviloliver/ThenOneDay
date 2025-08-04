@@ -44,6 +44,9 @@ protected:
 	UFUNCTION()
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION()
+	virtual void OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 public:
 	UPROPERTY(BlueprintReadWrite)
 	FMJSkillProjectileParams ProjectileParams;
@@ -68,6 +71,4 @@ private:
 	UPROPERTY(EditAnywhere, Category = "SFX")
 	TObjectPtr<USoundBase> HitSFX;
 
-	// Must TODO:
-	// float LifeSpan;
 };

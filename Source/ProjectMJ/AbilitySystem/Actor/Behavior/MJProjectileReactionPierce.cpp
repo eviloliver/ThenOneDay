@@ -7,14 +7,14 @@ UMJProjectileReactionPierce::UMJProjectileReactionPierce()
 {
 }
 
-void UMJProjectileReactionPierce::InitReaction(AMJProjectileBase* Projectile)
+void UMJProjectileReactionPierce::InitReaction(AMJProjectileBase* InProjectile)
 {
-	Super::InitReaction(Projectile);
+	Super::InitReaction(InProjectile);
 }
 
-void UMJProjectileReactionPierce::OnProjectileReact(AMJProjectileBase* Projectile, AActor* HitActor,
+void UMJProjectileReactionPierce::OnProjectileReact(AMJProjectileBase* InProjectile, AActor* HitActor,
 	const FHitResult& Hit)
 {
-	Super::OnProjectileReact(Projectile, HitActor, Hit);
+	Super::OnProjectileReact(InProjectile, HitActor, Hit);
 }
 
