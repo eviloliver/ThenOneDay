@@ -3,12 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Blueprint/UserWidget.h"
 #include "MJStoreWidget.generated.h"
 
+
+class UMJPlayerStatComponent;
+class UTextBlock;
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnClickedYes);
+
+class UMJPopupWidget;
 class UScrollBox;
 class UMJMerchandiseSlot;
 UCLASS()
@@ -26,10 +33,30 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Inventory)
 	TSubclassOf<UMJMerchandiseSlot> MerchandiseSlotClass;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJPopupWidget> Popup;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> AvailableGold;
+
+	UPROPERTY()
+	UMJPlayerStatComponent* StatCompRef;
 public:
 	virtual void NativeConstruct() override;
 
 	TArray<UMJMerchandiseSlot*> GetMerchandiseSlots() {return MerchandiseSlots;}
 
-	void ShowMerchandiseSlots(int32 SlotCount);
+	
+	void SetStatComponent(UMJPlayerStatComponent* StatComp);
+	
+	UFUNCTION()
+	void SetAvailableGold(int32 Gold);
+	UFUNCTION()
+	void Onclicked_Slot();
+	UFUNCTION()
+	void OnClicked_PopupYes();
+	UFUNCTION()
+	void OnClicked_PopupNo();
+	
+	FOnClickedYes OnClickedYes;
 };

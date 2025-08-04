@@ -30,6 +30,7 @@ void UMJStoreComponent::UpdateStore()
 	{
 		return;
 	}
+	
 	for (int i = 0; i < MerSlot.Num(); i++)
 	{
 		if (!MerSlot[i])
@@ -54,6 +55,7 @@ void UMJStoreComponent::UpdateStore()
 	
 	for (int i = 0; i < SlotCount; i++)
 	{
+		MerSlot[i]->SetItemTag(GI->ItemDataTable->FindRow<FItemDataRow>(MerchandiseRow[i], TEXT(""))->ItemTag);
 		MerSlot[i]->SetImage(GI->ItemDataTable->FindRow<FItemDataRow>(MerchandiseRow[i], TEXT(""))->Icon);
 		MerSlot[i]->SetItemName(GI->ItemDataTable->FindRow<FItemDataRow>(MerchandiseRow[i], TEXT(""))->ItemID);
 		MerSlot[i]->SetDescription(GI->ItemDataTable->FindRow<FItemDataRow>(MerchandiseRow[i], TEXT(""))->Description);
@@ -73,7 +75,11 @@ void UMJStoreComponent::SetChoiceWidgetText()
      	GetCurrentRow()->Choices[0].ChoiceText,
      	GetCurrentRow()->Choices[1].ChoiceText,
      	GetCurrentRow()->Choices[2].ChoiceText);
+}
 
+void UMJStoreComponent::Purchase()
+{
+	
 }
 
 void UMJStoreComponent::BindButtons()
@@ -103,8 +109,8 @@ void UMJStoreComponent::ShowStore()
 	CurrentIndex = DialogueTable->GetRowNames().Num() - 1; 
 	GetDialogueWidget()->SetTextBlock(GetCurrentRow()->ScriptForStore, GetCurrentRow()->Speaker);
 	GetDialogueWidget()->StartTyping(GetCurrentRow()->ScriptForStore,0.05);
+	GetDialogueWidget()->SetImageOpacity(GetCurrentRow()->Speaker);
 	GetDialogueWidget()->GetDialogueChoiceWidget()->SetVisibility(ESlateVisibility::Hidden);
-	//CurrentIndex = DialogueTable->GetRowNames().Num();
 	bIsStoreRoot = true;
 }
 
@@ -113,6 +119,7 @@ void UMJStoreComponent::ExitDialogue()
 	CurrentIndex =  DialogueTable->GetRowNames().Num() -1;
 	GetDialogueWidget()->SetTextBlock(GetCurrentRow()->ScriptForExit, GetCurrentRow()->Speaker);
 	GetDialogueWidget()->StartTyping(GetCurrentRow()->ScriptForExit,0.05);
+	GetDialogueWidget()->SetImageOpacity(GetCurrentRow()->Speaker);
 	GetDialogueWidget()->GetDialogueChoiceWidget()->SetVisibility(ESlateVisibility::Hidden);
 }
 

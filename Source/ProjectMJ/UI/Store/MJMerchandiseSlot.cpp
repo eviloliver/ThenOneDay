@@ -2,8 +2,23 @@
 
 
 #include "UI/Store/MJMerchandiseSlot.h"
+#include "GameplayTagContainer.h"
+#include "UI/Store/MJPopupWidget.h"
+#include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
+
+void UMJMerchandiseSlot::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	Button->OnClicked.AddDynamic(this,&UMJMerchandiseSlot::OnClicked_Slot);
+}
+
+void UMJMerchandiseSlot::SetItemTag(FGameplayTag tag)
+{
+	ItemTag = tag;
+}
 
 void UMJMerchandiseSlot::SetImage(UTexture2D* ItemTexture)
 {
@@ -11,7 +26,7 @@ void UMJMerchandiseSlot::SetImage(UTexture2D* ItemTexture)
 	{
 		FSlateBrush Brush;
 		Brush.SetResourceObject(ItemTexture);
-		Brush.ImageSize = FVector2D(40,40);
+		Brush.ImageSize = FVector2D(80,80);
 		MerImage->SetBrush(Brush);
 		MerImage->SetOpacity(1.0);
 	}
@@ -35,8 +50,14 @@ void UMJMerchandiseSlot::SetDescription(FText description)
 
 void UMJMerchandiseSlot::SetPrice(int price)
 {
-	if (Price)
+	if (PriceText)
 	{
-		Price->SetText(FText::AsNumber(price));	
+		PriceText->SetText(FText::AsNumber(price));	
 	}
+	Price = price;
+}
+
+void UMJMerchandiseSlot::OnClicked_Slot()
+{
+	OnMerchandiseSlotEvent.Broadcast(ItemTag, Price);
 }

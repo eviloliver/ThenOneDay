@@ -48,16 +48,11 @@ protected:
 	UPROPERTY(BlueprintAssignable, Category = "EventDispatchers")
 	FOnStoreUpdatedEvent OnStoreUpdated;
 
-public:
+public:	
 	void UpdateStore(); // 바인딩했던 슬롯들 정보 채우기용
 
 	int32 GetSlotCount() const {return SlotCount;}
-
-	bool GetIsOpened() const {return bIsOpened;}
-	void SetbIsOpened(bool bValue) {bIsOpened = bValue;}
-	bool GetIsStoreRoot() const {return bIsStoreRoot;}
-	void SetbIsStoreRoot(bool bValue) {bIsStoreRoot = bValue;}
-
+	
 	// 선택지 기능 추가를 위한 함수
 	UFUNCTION()
 	void BindButtons();
@@ -71,4 +66,16 @@ public:
 	void DialogueEnd();
 	UFUNCTION()
 	void SetChoiceWidgetText();
+	//
+
+	// 구매 시 PopUp
+	UFUNCTION()
+	void Purchase();
+	
+	bool GetIsOpened() const {return bIsOpened;}
+    void SetbIsOpened(bool bValue) {bIsOpened = bValue;}
+	bool GetIsStoreRoot() const {return bIsStoreRoot;}
+    void SetbIsStoreRoot(bool bValue) {bIsStoreRoot = bValue;}
+
+	
 };

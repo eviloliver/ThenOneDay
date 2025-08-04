@@ -22,6 +22,8 @@
 #include "TG/UI/MJGameFlowHUDWidget.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/Component/MJInteractComponent.h"
+#include "UI/Store/MJMerchandiseSlot.h"
+#include "UI/Store/MJStoreWidget.h"
 
 
 // TODO: Input 관련한 로직들 Component로 따로 빼기 - 동민 - 
@@ -81,7 +83,22 @@ void AMJPlayerController::BeginPlay()
     if (State && MJPlayerStatComp)
     {
     	UIManager->ShowHUD(State, this, MJPlayerStatComp);
+    	UIManager->GetHUDWidget()->GetStoreWidget()->SetStatComponent(MJPlayerStatComp);
     }
+	
+	TArray<UMJMerchandiseSlot*> MerSlot = UIManager->GetHUDWidget()->GetStoreWidget()->GetMerchandiseSlots();
+	for (int i = 0; i < MerSlot.Num(); i++)
+	{
+		if (MerSlot[i])
+		{
+			MerSlot[i]->OnMerchandiseSlotEvent.AddDynamic(this, &AMJPlayerController::OnTryPurchase);
+		}
+	}
+
+	if (UIManager->GetHUDWidget()->GetStoreWidget())
+	{
+		UIManager->GetHUDWidget()->GetStoreWidget()->OnClickedYes.AddDynamic(this,&AMJPlayerController::OnPurchase);
+	}
 }
 
 void AMJPlayerController::SetupInputComponent()
@@ -497,10 +514,34 @@ void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AAc
 	 }
 }
 
+void AMJPlayerController::OnTryPurchase(FGameplayTag& ItemTag, int32 Price)
+{
+	ItemTagForPurchase = ItemTag;
+	ItemPrice = Price;
+}
+
+void AMJPlayerController::OnPurchase()
+{
+	AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
+    if (!MyChar) return;
+    
+    UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
+    if (InventoryComp)
+    {
+    	InventoryComp->PickUpItem(ItemTagForPurchase);
+    }
+	UMJPlayerStatComponent* StatComp = GetPawn()->FindComponentByClass<UMJPlayerStatComponent>();
+	if (StatComp)
+	{
+		StatComp->SpendGold(ItemPrice);
+	}
+}
+
 void AMJPlayerController::PauseGame()
 {
 	GameFlowHUD->PauseGame(); 
 }
+
 void AMJPlayerController::OnDead(AActor* InEffectCauser)
 {
 	// TODO 태관 : StatComponent에서 델리게이트 로 호출해서 입력 막고 UI 띄울 예정 
