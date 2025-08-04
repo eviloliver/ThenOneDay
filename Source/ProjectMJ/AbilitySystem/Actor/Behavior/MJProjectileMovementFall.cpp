@@ -1,23 +1,22 @@
 // ThenOneDayStudio
 
 
-#include "AbilitySystem/Actor/Behavior/MJProjectileMovementFalling.h"
+#include "AbilitySystem/Actor/Behavior/MJProjectileMovementFall.h"
 
 #include "ProjectMJ.h"
 #include "AbilitySystem/Actor/MJProjectileBase.h"
 
-UMJProjectileMovementFalling::UMJProjectileMovementFalling()
+UMJProjectileMovementFall::UMJProjectileMovementFall()
 {
 
 }
 
-FTransform UMJProjectileMovementFalling::CalculateSpawnTransform(UGameplayAbility* OwningAbility,
+FTransform UMJProjectileMovementFall::CalculateSpawnTransform(UGameplayAbility* OwningAbility,
 	const FVector& TargetLocation, FName SpawnSocketName)
 {
 	FVector SpawnLocation = TargetLocation;
 
-	float SpawnHeightOffSet = 2000.0f;
-	SpawnLocation.Z += SpawnHeightOffSet;
+	SpawnLocation.Z += SpawnHeightOffset;
 
 	const FRotator SpawnRotation = FRotator(-90.0f, 0.0f, 0.0f);
 
@@ -25,7 +24,7 @@ FTransform UMJProjectileMovementFalling::CalculateSpawnTransform(UGameplayAbilit
 
 }
 
-void UMJProjectileMovementFalling::InitMovement(AMJProjectileBase* InProjectile)
+void UMJProjectileMovementFall::InitMovement(AMJProjectileBase* InProjectile)
 {
 	OwnerProjectile = InProjectile;
 	if (!OwnerProjectile)
@@ -33,12 +32,15 @@ void UMJProjectileMovementFalling::InitMovement(AMJProjectileBase* InProjectile)
 		MJ_LOG(LogMJ, Warning, TEXT("Not Exist OwnerProjectile"));
 		return;
 	}
+
+	TimeSinceSpawn = 0.0f;
+
 	float MoveSpeed = OwnerProjectile->ProjectileParams.ProjectileSpeed;
 
 	Velocity = OwnerProjectile->GetActorForwardVector() * MoveSpeed;
 }
 
-void UMJProjectileMovementFalling::Move(AMJProjectileBase* InProjectile, float DeltaSeconds)
+void UMJProjectileMovementFall::Move(AMJProjectileBase* InProjectile, float DeltaSeconds)
 {
 	if (!OwnerProjectile)
 	{
@@ -46,8 +48,13 @@ void UMJProjectileMovementFalling::Move(AMJProjectileBase* InProjectile, float D
 		return;
 	}
 
-	//FVector Gravity = FVector(0.0f, 0.0f, GetWorld()->GetGravityZ());
-	//Velocity += Gravity * DeltaSeconds;
+	TimeSinceSpawn += DeltaSeconds;
+
+	if (TimeSinceSpawn < DelayTime)
+	{
+		OwnerProjectile->SetActorLocation(OwnerProjectile->GetActorLocation());
+		return;
+	}
 
 	FVector NewLocation = OwnerProjectile->GetActorLocation() + Velocity * DeltaSeconds;
 	OwnerProjectile->SetActorLocation(NewLocation, true);

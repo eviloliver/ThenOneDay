@@ -4,9 +4,7 @@
 #include "AbilitySystem/Actor/Behavior/MJProjectileMovementLinearZLock.h"
 
 #include "ProjectMJ.h"
-#include "Abilities/GameplayAbility.h"
 #include "AbilitySystem/Actor/MJProjectileBase.h"
-#include "Character/MJCharacterBase.h"
 
 UMJProjectileMovementLinearZLock::UMJProjectileMovementLinearZLock()
 {
