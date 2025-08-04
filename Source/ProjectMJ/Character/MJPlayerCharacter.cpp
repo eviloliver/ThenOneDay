@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Character/MJPlayerCharacter.h"
@@ -19,6 +19,7 @@
 #include "Component/MJPlayerStatComponent.h"
 #include "Perception/AISense_Damage.h"
 #include "Perception/AISense_Hearing.h"
+
 
 class UMJSaveGameSubsystem;
 
@@ -84,11 +85,33 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 
 	// Minjin: ID 설정
 	ID = ETeam_ID::PLAYER;
+
+	static ConstructorHelpers::FClassFinder<AActor>WEAPONCLASS(TEXT("/Game/Characters/Item/BP_Sword.BP_Sword_C"));
+	if (WEAPONCLASS.Succeeded())
+	{
+		WeaponClass = WEAPONCLASS.Class;
+	}
 }
 
 void AMJPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	APawn* WeaponInstigator = Cast<APawn>(GetMesh()->GetOwner());
+	FTransform Trans;
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = GetMesh()->GetOwner();
+	SpawnParams.Instigator = WeaponInstigator;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+	AActor* Weapon = GetWorld()->SpawnActor<AActor>(WeaponClass, Trans, SpawnParams);
+
+	if (!Weapon)
+	{
+		return;
+	}
+	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("Weapon"));
+	
 }
 
 void AMJPlayerCharacter::PossessedBy(AController* NewController)
