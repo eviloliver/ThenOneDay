@@ -1,4 +1,4 @@
-// ThenOneDayStudio
+﻿// ThenOneDayStudio
 
 #pragma once
 
@@ -9,6 +9,7 @@
 /**
  * 
  */
+class UMJCharacterAttributeSet;
 UCLASS()
 class PROJECTMJ_API AMJForestCreatureCharacter : public AMJMonsterCharacter
 {
@@ -19,7 +20,7 @@ public:
 
 	virtual void BeginPlay() override;
 
-
+	FORCEINLINE UMJCharacterAttributeSet* GetAttributeSet() { return CharacterAttributeSet; }
 private:
 
 	
