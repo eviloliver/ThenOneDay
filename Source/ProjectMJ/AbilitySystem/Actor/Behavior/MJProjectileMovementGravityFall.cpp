@@ -1,16 +1,16 @@
 ﻿// ThenOneDayStudio
 
 
-#include "AbilitySystem/Actor/Behavior/MJProjectileMovementFallingGravity.h"
+#include "AbilitySystem/Actor/Behavior/MJProjectileMovementGravityFall.h"
 
 #include "ProjectMJ.h"
 #include "AbilitySystem/Actor/MJProjectileBase.h"
 
-UMJProjectileMovementFallingGravity::UMJProjectileMovementFallingGravity()
+UMJProjectileMovementGravityFall::UMJProjectileMovementGravityFall()
 {
 }
 
-void UMJProjectileMovementFallingGravity::Move(AMJProjectileBase* InProjectile, float DeltaSeconds)
+void UMJProjectileMovementGravityFall::Move(AMJProjectileBase* InProjectile, float DeltaSeconds)
 {
 	if (!OwnerProjectile)
 	{
