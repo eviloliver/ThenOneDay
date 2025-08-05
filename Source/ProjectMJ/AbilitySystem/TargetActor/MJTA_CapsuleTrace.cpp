@@ -42,9 +42,10 @@ FGameplayAbilityTargetDataHandle AMJTA_CapsuleTrace::MakeTargetData() const
 	const FVector Forward = Character->GetActorForwardVector();
 	const FVector Start = OriginLocation + Forward * Character->GetCapsuleComponent()->GetScaledCapsuleRadius();
 	const FVector End = Start + Forward * AttackRange;
+	float CapsuleHalfHeight = AttackRange * 0.5f;
 
 	TArray<FHitResult> OutHitResults;
-	GetWorld()->SweepMultiByChannel(OutHitResults, Start, End, FQuat::Identity, CCHANNEL_MJAbilityTargetTrace, FCollisionShape::MakeSphere(AttackRadius), Params);
+	GetWorld()->SweepMultiByChannel(OutHitResults, Start, End, FQuat::Identity, CCHANNEL_MJAbilityTargetTrace, FCollisionShape::MakeCapsule(AttackRadius, CapsuleHalfHeight), Params);
 	
 	/*
 	 * Minjin
@@ -80,7 +81,6 @@ FGameplayAbilityTargetDataHandle AMJTA_CapsuleTrace::MakeTargetData() const
 	if (bShowDebug)
 	{
 		FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
-		float CapsuleHalfHeight = AttackRange * 0.5f;
 		FColor DrawColor = OutHitResults.Num() != 0 ? FColor::Green : FColor::Red;
 		DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(Forward).ToQuat(), DrawColor, false, 5.0f);
 	}
