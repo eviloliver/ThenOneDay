@@ -8,8 +8,10 @@
 #include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/ScrollBox.h"
+#include "Controller/MJPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "TG/Struct/MJSaveGame.h"
+
 
 void UMJLoadGameWidget::NativeConstruct()
 {
@@ -75,6 +77,11 @@ void UMJLoadGameWidget::OnClicked_Back()
 	if (UGameplayStatics::GetCurrentLevelName(GetWorld()) == MAP_TOWN)
 	{
 		SetVisibility(ESlateVisibility::Hidden);
+		AMJPlayerController* MJPC = Cast<AMJPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0));
+		if (MJPC)
+		{
+			MJPC->ChangeToIMCDefault();
+		}
 	}
 	else
 	{

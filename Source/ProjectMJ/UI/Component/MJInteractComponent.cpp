@@ -97,9 +97,9 @@ void UMJInteractComponent::StartInteraction()
 	}
 	else if (CurrentType == EMJInteractionType::Interactable)
 	{
-		if (AMJInteractableActorBase* PortalToDungeon = Cast<AMJInteractableActorBase>(GetOwner()))
+		if (AMJInteractableActorBase* Interactable = Cast<AMJInteractableActorBase>(GetOwner()))
 		{
-			PortalToDungeon->Execute();
+			Interactable->Execute();
 		}
 	}
 }
