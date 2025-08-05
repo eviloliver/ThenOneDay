@@ -31,7 +31,7 @@ protected:
 	TObjectPtr<UNiagaraSystem> ExplosionVFX;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameplayCue")
-	float Scale;
+	float EffectRatio = 1.0f;
 
 	//TODO: Sound
 

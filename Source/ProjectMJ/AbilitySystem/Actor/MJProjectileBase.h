@@ -68,6 +68,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UNiagaraComponent> NiagaraComponent;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
+	float VFXRatio = 1.0f;
+
 	UPROPERTY(EditAnywhere, Category = "SFX")
 	TObjectPtr<USoundBase> HitSFX;
 
