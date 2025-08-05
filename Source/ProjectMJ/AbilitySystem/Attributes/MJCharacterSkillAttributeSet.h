@@ -23,6 +23,9 @@
  * * Description of Change: 투사체 값 추가
  * Modified By: 신동민
  * Modified Date: 2025.07.31
+ * Description of Change: 트레이스 위치 오프셋 값 추가
+ * Modified By: 김민진
+ * Modified Date: 2025.08.05.
  */
 UCLASS()
 class PROJECTMJ_API UMJCharacterSkillAttributeSet : public UAttributeSet
@@ -69,6 +72,8 @@ class PROJECTMJ_API UMJCharacterSkillAttributeSet : public UAttributeSet
 	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, SkillRange)
 	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxSkillRange)
 
+	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, SkillAttackLocationOffset)
+	
 	// Time
 	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, Cooldown)
 	ATTRIBUTE_ACCESSORS(UMJCharacterSkillAttributeSet, MaxCooldown)
@@ -203,6 +208,9 @@ protected:
 	FGameplayAttributeData SkillRange;
 	UPROPERTY(BlueprintReadOnly, Category = "Skill|Range", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData MaxSkillRange;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Skill|Range", Meta = (AllowPrivateAccess = true))
+	FGameplayAttributeData SkillAttackLocationOffset;
 
 	// Time
 	UPROPERTY(BlueprintReadOnly, Category = "Skill|Time", Meta = (AllowPrivateAccess = true))

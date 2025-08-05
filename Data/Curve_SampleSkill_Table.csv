@@ -19,6 +19,7 @@ SkillRadius,0,0,0,0,0,0,0,0,0
 MaxSkillRadius,0,0,0,0,0,0,0,0,0
 SkillRange,0,0,0,0,0,0,0,0,0
 MaxSkillRange,0,0,0,0,0,0,0,0,0
+SkillAttackLocationOffset,0,0,0,0,0,0,0,0,0
 Cooldown,0,0,0,0,0,0,0,0,0
 MaxCooldown,0,0,0,0,0,0,0,0,0
 SkillAttackRate,0,0,0,0,0,0,0,0,0

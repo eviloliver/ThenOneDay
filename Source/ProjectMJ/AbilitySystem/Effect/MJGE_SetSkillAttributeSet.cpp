@@ -44,6 +44,7 @@ UMJGE_SetSkillAttributeSet::UMJGE_SetSkillAttributeSet()
         { UMJCharacterSkillAttributeSet::GetMaxSkillRadiusAttribute(),       FName("Data.Skill.MaxSkillRadius") },
         { UMJCharacterSkillAttributeSet::GetSkillRangeAttribute(),           FName("Data.Skill.SkillRange") },
         { UMJCharacterSkillAttributeSet::GetMaxSkillRangeAttribute(),        FName("Data.Skill.MaxSkillRange") },
+        { UMJCharacterSkillAttributeSet::GetSkillAttackLocationOffsetAttribute(), FName("Data.Skill.SkillAttackLocationOffset") },
 
         // Time
         { UMJCharacterSkillAttributeSet::GetCooldownAttribute(),             FName("Data.Skill.Cooldown") },
