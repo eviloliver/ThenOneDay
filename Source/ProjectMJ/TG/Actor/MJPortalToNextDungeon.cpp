@@ -2,7 +2,6 @@
 
 #include "TG/Actor/MJPortalToNextDungeon.h"
 
-#include "Character/MJPlayerCharacter.h"
 #include "Controller/MJPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
@@ -12,43 +11,25 @@
 
 AMJPortalToNextDungeon::AMJPortalToNextDungeon()
 {
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	SphereCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
-
-	//RootComponent = Mesh;
-	SphereCollision->SetupAttachment(Mesh);
-
 	MiniMapIconMesh = CreateDefaultSubobject<UMJMiniMapIconMeshComponent>(TEXT("MiniMapIcon"));
-	MiniMapIconMesh->SetupAttachment(Mesh);
+	MiniMapIconMesh->SetupAttachment(StaticMesh);
 }
 
-void AMJPortalToNextDungeon::PostInitializeComponents()
+void AMJPortalToNextDungeon::Execute()
 {
-	Super::PostInitializeComponents();
-
-	SphereCollision->OnComponentBeginOverlap.AddDynamic(this,&ThisClass::OnOverlap);
+	Super::Execute();
 	
-		
-}
-
-void AMJPortalToNextDungeon::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
-{
-	if (AMJPlayerCharacter* Character = Cast<AMJPlayerCharacter>(OtherActor))
+	AMJPlayerController* PC = Cast<AMJPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0));
+	if (PC)
 	{
-		AMJPlayerController* PC = Character->GetController<AMJPlayerController>();
-		if (PC)
+		PC->StopMovement();
+		PC->SetInputMode(FInputModeUIOnly());
+		UGameplayStatics::PlaySound2D(GetWorld(),CollisionSFX);
+		if (UMJDungeonMapWidget* DungeonMapWidget = PC->GetGameFlowHUD()->GetDungeonMapWidget())
 		{
-			PC->StopMovement();
-			PC->SetInputMode(FInputModeUIOnly());
-			UGameplayStatics::PlaySound2D(GetWorld(),CollisionSFX);
-			if (UMJDungeonMapWidget* DungeonMapWidget = PC->GetGameFlowHUD()->GetDungeonMapWidget())
-			{
-				DungeonMapWidget->SetVisibility(ESlateVisibility::Visible);
-				DungeonMapWidget->SetAllVisibility(ESlateVisibility::Visible);
-				
-			} 
-		}
+			DungeonMapWidget->SetVisibility(ESlateVisibility::Visible);
+			DungeonMapWidget->SetAllVisibility(ESlateVisibility::Visible);
+		} 
 	}
+	
 }
-
-

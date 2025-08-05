@@ -2,11 +2,8 @@
 
 #include "TG/Actor/MJPortalToDungeon.h"
 
-#include "Components/AudioComponent.h"
-#include "Components/SphereComponent.h"
 #include "GameMode/MJGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
-#include "Sound/SoundCue.h"
 #include "TG/MJGameInstanceTG.h"
 #include "TG/GameMode/MJGameModeTown.h"
 #include "TG/SubSystem/MJDungeonGenerationSubSystem.h"
@@ -14,38 +11,18 @@
 
 AMJPortalToDungeon::AMJPortalToDungeon()
 {
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	RootComponent = StaticMesh;
-
-	Collision = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
-	Collision->SetupAttachment(StaticMesh);
 }
 
-void AMJPortalToDungeon::PostInitializeComponents()
+void AMJPortalToDungeon::Execute()
 {
-	Super::PostInitializeComponents();
+	Super::Execute();
 	
-	Collision->OnComponentBeginOverlap.AddDynamic(this, &AMJPortalToDungeon::GotoDungeon);
-}
-
-void AMJPortalToDungeon::GotoDungeon(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
 	UMJDungeonGenerationSubSystem* SubSystem = GetGameInstance()->GetSubsystem<UMJDungeonGenerationSubSystem>();
 	if (SubSystem)
 	{
 		SubSystem->GenerateDungeonGraph();
 	}
-
-	// UAudioComponent* AudioComp = UGameplayStatics::SpawnSound2D(GetWorld(),CollisionSFX);
-	//
-	// AudioComp->OnAudioFinished.AddDynamic(this, &AMJPortalToDungeon::OnAudioFinish);
-	OnAudioFinish();
-}
-
-void AMJPortalToDungeon::OnAudioFinish()
-{
-	UMJDungeonGenerationSubSystem* SubSystem = GetGameInstance()->GetSubsystem<UMJDungeonGenerationSubSystem>();
+	
 	AMJGameModeTown* GMTown = Cast<AMJGameModeTown>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (GMTown && SubSystem)
 	{
@@ -77,5 +54,4 @@ void AMJPortalToDungeon::OnAudioFinish()
 		
 	}
 }
-
 

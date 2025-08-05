@@ -22,7 +22,8 @@ enum class EMJInteractionType : uint8
 {
 	None,
 	Dialogue,
-	Store
+	Store,
+	Interactable
 };
 
 class UMJInteractionComponent;
