@@ -69,7 +69,7 @@ void UMJEC_DamageOverTime::Execute_Implementation(const FGameplayEffectCustomExe
 	float TickDamage = BaseDamage + (SourceAttackDamage * AttackDamageScaling) + (SourceAbilityPower * AbilityPowerScaling);
 
 
-	int32 StackCount = Spec.StackCount;
+	int32 StackCount = Spec.GetStackCount();
 	if (StackCount > 1)
 	{
 		TickDamage *= StackCount;

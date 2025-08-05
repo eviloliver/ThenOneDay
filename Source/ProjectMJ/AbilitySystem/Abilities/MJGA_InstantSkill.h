@@ -15,6 +15,13 @@
  * Last Modified Date: (Last Modified Date)
  */
 
+struct FSkillCost
+{
+	float StaminaCost = 0.0f;
+	float ManaCost = 0.0f;
+	float FocusCost = 0.0f;
+};
+
 class UAnimMontage;
 class UGameplayEffect;
 
@@ -31,17 +38,15 @@ public:
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
 protected:
-	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
-	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo);
+
+	virtual bool CalculateFinalCosts(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FSkillCost& OutCost) const;
+	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
+	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+
+	// CalculateFinalCooldown 도 만들어서 적용하면 어떨까?
+	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	TObjectPtr<UAnimMontage> SkillActionAnimMontage;
-
-	// 
-	UPROPERTY(EditDefaultsOnly, Category = "Costs")
-	TSubclassOf<UGameplayEffect> CustomCostGameplayEffectClass;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Cooldowns")
-	TSubclassOf<UGameplayEffect> CustomCooldownGameplayEffectClass;
 
 };
