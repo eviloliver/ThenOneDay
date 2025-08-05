@@ -3,8 +3,10 @@
 
 #include "AbilitySystem/GameplayCue/MJGC_ProjectileExplosion.h"
 
+#include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "ProjectMJ.h"
+#include "AbilitySystem/Actor/MJProjectileBase.h"
 
 UMJGC_ProjectileExplosion::UMJGC_ProjectileExplosion()
 {
@@ -14,6 +16,7 @@ bool UMJGC_ProjectileExplosion::OnExecute_Implementation(AActor* MyTarget,
 	const FGameplayCueParameters& Parameters) const
 {
 	FVector SpawnLocation;
+	float ExplosionRadius = Parameters.RawMagnitude;
 
 	if (!Parameters.Location.IsNearlyZero())
 	{
@@ -32,14 +35,18 @@ bool UMJGC_ProjectileExplosion::OnExecute_Implementation(AActor* MyTarget,
 	{
 		if (MyTarget)
 		{
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			UNiagaraComponent* NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 				MyTarget->GetWorld(),
 				ExplosionVFX,
 				SpawnLocation,
 				FRotator::ZeroRotator,
-				FVector(Scale));
-		}
+				FVector(1.0f));
 
+			{
+				float NiagaraScale = ExplosionRadius / EffectRatio;
+				NiagaraComponent->SetFloatParameter(TEXT("Scale_All"), NiagaraScale);
+			}
+		}
 	}
 
 	// TODO:SFX

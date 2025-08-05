@@ -9,8 +9,10 @@
 #include "Physics/MJCollision.h"
 #include "GameplayTagContainer.h"
 #include "NiagaraComponent.h"
+#include "ProjectMJ.h"
 #include "Behavior/MJProjectileReactionBehaviorBase.h"
 #include "Behavior/MJProjectileMovementBehaviorBase.h"
+#include "Character/MJCharacterBase.h"
 
 AMJProjectileBase::AMJProjectileBase()
 {
@@ -21,12 +23,7 @@ AMJProjectileBase::AMJProjectileBase()
 	SetRootComponent(Sphere);
 
 	Sphere->SetCollisionObjectType(CCHANNEL_MJPROJECTILE);
-
-	Sphere->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
-	Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
-	Sphere->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Block);
-	Sphere->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
-	Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	Sphere->SetCollisionProfileName(CRPOFILE_MJPROJECTILE);
 
 	// Niagara Section
 	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>("NiagaraComponent");
@@ -76,6 +73,12 @@ void AMJProjectileBase::InitProjectile(const FMJSkillProjectileParams& InParams,
 		Sphere->SetSphereRadius(ProjectileParams.SkillRadius);
 
 	}
+
+	if (NiagaraComponent)
+	{
+		const float NiagaraScale = ProjectileParams.SkillRadius / VFXRatio;
+		NiagaraComponent->SetFloatParameter(TEXT("Scale_All"), NiagaraScale);
+	}
 }
 
 void AMJProjectileBase::BeginPlay()
@@ -93,6 +96,20 @@ void AMJProjectileBase::BeginPlay()
 void AMJProjectileBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	AMJCharacterBase* OwnerActor = Cast<AMJCharacterBase>(ProjectileParams.SourceASC->GetAvatarActor());
+
+	if (!OwnerActor)
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("Not Exist OwnerActor"));
+		return;
+	}
+
+	if (OtherActor == this || (OwnerActor && OtherActor == OwnerActor))
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("Target is User"));
+		return;
+	}
+
 	bool bIsLastPierce = false;
 
 	if (ProjectileParams.PierceCount > 0)
@@ -115,10 +132,18 @@ void AMJProjectileBase::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent
 			ReactionBehavior->OnProjectileReact(this, OtherActor, SweepResult);
 		}
 	}
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor);
+	if (!TargetASC)
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("Not Exist TargetASC"));
+		Destroy();
+		return;
+	}
 
 	if (bIsLastPierce)
 	{
 		Destroy();
+		return;
 	}
 }
 
