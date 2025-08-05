@@ -37,8 +37,12 @@ FGameplayAbilityTargetDataHandle AMJTA_SphereTrace::MakeTargetData() const
 	const float AttackRadius = SkillAttributeSet->GetSkillRadius();
 
 	FVector OriginLocation = Character->GetActorLocation();
+	const FVector Forward = Character->GetActorForwardVector();
+	const float Offset = SkillAttributeSet->GetSkillAttackLocationOffset();
+
+	FVector Center = OriginLocation + Forward * ((Offset!=0)?Offset:1);
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(UMJTA_Trace), false, Character);
-	GetWorld()->OverlapMultiByChannel(Overlaps, OriginLocation, FQuat::Identity, CCHANNEL_MJAbilityTargetTrace, FCollisionShape::MakeSphere(AttackRadius), Params);
+	GetWorld()->OverlapMultiByChannel(Overlaps, Center, FQuat::Identity, CCHANNEL_MJAbilityTargetTrace, FCollisionShape::MakeSphere(AttackRadius), Params);
 
 	/*
 	* Minjin
@@ -72,7 +76,7 @@ FGameplayAbilityTargetDataHandle AMJTA_SphereTrace::MakeTargetData() const
 	if (bShowDebug)
 	{
 		FColor DrawColor = HitActors.Num() > 0 ? FColor::Green : FColor::Red;
-		DrawDebugSphere(GetWorld(), OriginLocation, AttackRadius, 16, DrawColor, false, 5.0f);
+		DrawDebugSphere(GetWorld(), Center, AttackRadius, 16, DrawColor, false, 5.0f);
 	}
 
 #endif

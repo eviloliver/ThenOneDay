@@ -13,6 +13,9 @@
  * Description of Change: 같은 클래스끼리 공격 못하도록 수정
  * Modified By: 김민진
  * Modified Date: 2025.07.27.
+ * Description of Change: Trace 위치 오프셋 추가
+ * Modified By: 김민진
+ * Modified Date: 2025.08.05.
  */
 UCLASS()
 class PROJECTMJ_API AMJTA_SphereTrace : public AMJTA_Trace
