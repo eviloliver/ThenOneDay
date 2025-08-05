@@ -12,8 +12,6 @@
 #include "UI/MJUIManagerSubsystem.h"
 #include "UI/Inventory/ItemDataRow.h"
 
-
-// Sets default values for this component's properties
 void UMJStoreComponent::UpdateStore()
 {
 	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
@@ -55,13 +53,31 @@ void UMJStoreComponent::UpdateStore()
 	
 	for (int i = 0; i < SlotCount; i++)
 	{
+		// UI 갱신
+		//MerSlot[i]->SetStoreComp(this);
 		MerSlot[i]->SetItemTag(GI->ItemDataTable->FindRow<FItemDataRow>(MerchandiseRow[i], TEXT(""))->ItemTag);
 		MerSlot[i]->SetImage(GI->ItemDataTable->FindRow<FItemDataRow>(MerchandiseRow[i], TEXT(""))->Icon);
 		MerSlot[i]->SetItemName(GI->ItemDataTable->FindRow<FItemDataRow>(MerchandiseRow[i], TEXT(""))->ItemID);
 		MerSlot[i]->SetDescription(GI->ItemDataTable->FindRow<FItemDataRow>(MerchandiseRow[i], TEXT(""))->Description);
 		MerSlot[i]->SetPrice(GI->ItemDataTable->FindRow<FItemDataRow>(MerchandiseRow[i], TEXT(""))->Price);
+
+		// 바인딩
+		MerSlot[i]->GetButton()->OnClicked.AddDynamic(this, &ThisClass::TryPurchase);
 	}
 }
+
+void UMJStoreComponent::TryPurchase()
+{
+	// 구매하시겠어요 팝업을 뜨게 함
+	GetWorld()->GetGameInstance<UMJGameInstanceTG>()->
+	GetSubsystem<UMJUIManagerSubsystem>()->GetHUDWidget()->GetStoreWidget()->Onclicked_Slot();
+}
+
+// void UMJStoreComponent::UpdateQuantity(int32 Quantity)
+// {
+// 	CurrentQuantity += Quantity;
+//  	OnQuantityUpdated.Broadcast(CurrentQuantity);
+// }
 
 void UMJStoreComponent::DialogueEnd()
 {
@@ -75,11 +91,6 @@ void UMJStoreComponent::SetChoiceWidgetText()
      	GetCurrentRow()->Choices[0].ChoiceText,
      	GetCurrentRow()->Choices[1].ChoiceText,
      	GetCurrentRow()->Choices[2].ChoiceText);
-}
-
-void UMJStoreComponent::Purchase()
-{
-	
 }
 
 void UMJStoreComponent::BindButtons()

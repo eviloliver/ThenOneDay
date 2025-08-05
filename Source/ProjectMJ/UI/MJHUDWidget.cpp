@@ -89,6 +89,7 @@ void UMJHUDWidget::ShowStore()
 	if (Store->GetVisibility() == ESlateVisibility::Visible)
 	{
 		Store->SetVisibility(ESlateVisibility::Hidden);
+		Store->CloseWidget();
 	}
 	else if (Store->GetVisibility() == ESlateVisibility::Hidden)
 	{

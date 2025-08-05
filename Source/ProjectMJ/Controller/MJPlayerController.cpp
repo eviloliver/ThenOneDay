@@ -23,6 +23,7 @@
 #include "UI/MJHUDWidget.h"
 #include "UI/Component/MJInteractComponent.h"
 #include "UI/Store/MJMerchandiseSlot.h"
+#include "UI/Store/MJPopupWidget.h"
 #include "UI/Store/MJStoreWidget.h"
 
 
@@ -361,16 +362,17 @@ void AMJPlayerController::StartDialogue()// x키를 눌렀을 때 실행되는 �
 	
 	if (UMJInteractComponent* InteractComp = MyChar->GetUITarget()->FindComponentByClass<UMJInteractComponent>())
 	{
-		ChangeToIMCDialogue();
-		InteractComp->StartInteraction();
 		
+		InteractComp->StartInteraction();
 		switch (InteractComp->CurrentType)
 		{
 		case EMJInteractionType::Dialogue:
+			ChangeToIMCDialogue();
 			UIManager->SetDialogueVisibility();
 			break;
 
 		case EMJInteractionType::Store:
+			ChangeToIMCDialogue();
 			UIManager->SetDialogueVisibility();
 			break;
 
@@ -382,6 +384,7 @@ void AMJPlayerController::StartDialogue()// x키를 눌렀을 때 실행되는 �
 
 void AMJPlayerController::ChangeToIMCDialogue()
 {
+	StopMovement();
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
     {
 		Subsystem->AddMappingContext(InputConfigDataAsset->GetDialogueMappingContext(), 0);
@@ -509,32 +512,46 @@ void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AAc
 	UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
 	 if (InventoryComp)
 	 {
-	 	InventoryComp->PickUpItem(Item->GetItemTag());
+	 	InventoryComp->PickUpItem(Item->GetItemTag(), 1);
 	 	Item->Destroy();
 	 }
 }
 
-void AMJPlayerController::OnTryPurchase(FGameplayTag& ItemTag, int32 Price)
+void AMJPlayerController::OnTryPurchase(FGameplayTag& ItemTag, int32 Price, int32 Quantity)
 {
 	ItemTagForPurchase = ItemTag;
 	ItemPrice = Price;
+	ItemQuantity = Quantity;
+	
 }
 
 void AMJPlayerController::OnPurchase()
 {
 	AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
     if (!MyChar) return;
-    
-    UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
-    if (InventoryComp)
-    {
-    	InventoryComp->PickUpItem(ItemTagForPurchase);
-    }
-	UMJPlayerStatComponent* StatComp = GetPawn()->FindComponentByClass<UMJPlayerStatComponent>();
-	if (StatComp)
-	{
-		StatComp->SpendGold(ItemPrice);
-	}
+	
+   	UMJPlayerStatComponent* StatComp = GetPawn()->FindComponentByClass<UMJPlayerStatComponent>();
+	UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
+	if (StatComp && InventoryComp)
+   	{
+   		if (StatComp->GetGold() >= ItemQuantity * ItemPrice)
+   		{
+   			InventoryComp->PickUpItem(ItemTagForPurchase, ItemQuantity);
+   			StatComp->SpendGold(ItemQuantity * ItemPrice);
+   			for (auto* Slot : UIManager->GetHUDWidget()->GetStoreWidget()->GetMerchandiseSlots())
+   			{
+   				if (Slot)
+   				{
+   					Slot->InitializeQuantity(); // 구매 완료 후 구매 수량 초기화
+   				}
+   			}
+   		}
+   		else
+   		{
+   			// storewidget이 잔액 부족을 띄우게 한다.
+   			return;
+   		}
+   	}
 }
 
 void AMJPlayerController::PauseGame()

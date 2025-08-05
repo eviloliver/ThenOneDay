@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "Dialogue/MJDialogueComponent.h"
 #include "MJStoreComponent.generated.h"
 
+struct FGameplayTag;
 /*
 * Class Description: 상점 시스템 / 상인 NPC에게 달아줘야 함
 * Author: 이지수
@@ -15,6 +17,7 @@
 * Last Modified Date:
 * */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStoreUpdatedEvent, int32, SlotCount);
+
 USTRUCT(BlueprintType)
 struct FStoreData
 {
@@ -44,16 +47,23 @@ protected:
 	int32 SlotCount;
 	bool bIsOpened = false;
 	bool bIsStoreRoot = false;
+
+	FGameplayTag CurrentItemTag;
+	int32 CurrentPrice;
+	int32 CurrentQuantity;
 	
 	UPROPERTY(BlueprintAssignable, Category = "EventDispatchers")
 	FOnStoreUpdatedEvent OnStoreUpdated;
 
-public:	
+public:
 	void UpdateStore(); // 바인딩했던 슬롯들 정보 채우기용
 
+	UFUNCTION()
+	void TryPurchase();
+	
 	int32 GetSlotCount() const {return SlotCount;}
 	
-	// 선택지 기능 추가를 위한 함수
+	//다이어로그 선택지 기능 추가를 위한 함수
 	UFUNCTION()
 	void BindButtons();
 	UFUNCTION()
@@ -69,13 +79,9 @@ public:
 	//
 
 	// 구매 시 PopUp
-	UFUNCTION()
-	void Purchase();
 	
 	bool GetIsOpened() const {return bIsOpened;}
     void SetbIsOpened(bool bValue) {bIsOpened = bValue;}
 	bool GetIsStoreRoot() const {return bIsStoreRoot;}
-    void SetbIsStoreRoot(bool bValue) {bIsStoreRoot = bValue;}
-
-	
+    void SetbIsStoreRoot(bool bValue) {bIsStoreRoot = bValue;};
 };

@@ -24,7 +24,6 @@ void UMJStoreWidget::NativeConstruct()
 	for (int i = 0; i < 5; i++)
     {
         UMJMerchandiseSlot* NewSlot = CreateWidget<UMJMerchandiseSlot>(this, MerchandiseSlotClass);
-		NewSlot->GetButton()->OnClicked.AddDynamic(this,&UMJStoreWidget::Onclicked_Slot);
 		ScrollBox->AddChild(NewSlot);
         MerchandiseSlots.Add(NewSlot);
     }
@@ -39,7 +38,7 @@ void UMJStoreWidget::SetStatComponent(UMJPlayerStatComponent* StatComp)
 	StatCompRef = StatComp;
 	if (StatCompRef)
 	{
-		SetAvailableGold(StatCompRef->GetGold());
+		SetAvailableGold(StatCompRef->GetGold()); // 초기화
     	StatCompRef->OnGoldChange.AddDynamic(this,&UMJStoreWidget::SetAvailableGold);
 	}
 }
@@ -75,6 +74,16 @@ void UMJStoreWidget::OnClicked_PopupNo()
 	{
 		MerchandiseSlots[i]->GetButton()->SetIsEnabled(true);
 	}
+}
+
+void UMJStoreWidget::CloseWidget()
+{
+	Popup->SetVisibility(ESlateVisibility::Hidden);
+	for (int i =0; i < MerchandiseSlots.Num(); i++)
+	{
+		MerchandiseSlots[i]->InitializeQuantity();
+	}
+	
 }
 
 

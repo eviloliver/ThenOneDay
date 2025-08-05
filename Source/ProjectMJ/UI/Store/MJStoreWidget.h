@@ -45,7 +45,6 @@ public:
 	virtual void NativeConstruct() override;
 
 	TArray<UMJMerchandiseSlot*> GetMerchandiseSlots() {return MerchandiseSlots;}
-
 	
 	void SetStatComponent(UMJPlayerStatComponent* StatComp);
 	
@@ -57,6 +56,9 @@ public:
 	void OnClicked_PopupYes();
 	UFUNCTION()
 	void OnClicked_PopupNo();
+
+	UMJPopupWidget* GetPopup() {return Popup;};
+	void CloseWidget();
 	
 	FOnClickedYes OnClickedYes;
 };
