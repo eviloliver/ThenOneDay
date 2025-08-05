@@ -52,16 +52,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 SkillLevel = 1;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0.0", ClampMax = "1.0", Delta = "0.01", DisplayName = "Give Chance (%)"))
+	float GiveChance;
+	
 	// 기본 스탯
 	// Basic Stat Section
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftObjectPtr<UCurveTable> AttributeCurve;
 
 	// TODO: 사운드나 아이콘 등등
-	
-	// Minjin: DropItem-삭제 예정
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Item"))
-	FGameplayTag ItemTag;
 
 	// Minjin: DropItems
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
