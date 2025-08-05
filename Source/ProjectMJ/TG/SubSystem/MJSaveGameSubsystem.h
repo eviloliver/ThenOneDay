@@ -33,6 +33,9 @@ public:
 	void SaveGameToCurrentSlotNum();
 
 	UFUNCTION()
+	void SaveGameToSelectedSlotNum(const uint8 InputSlotNum);
+
+	UFUNCTION()
 	bool LoadGameFromSlotNum(int8 SlotNum);
 
 	// Loading Screen Section

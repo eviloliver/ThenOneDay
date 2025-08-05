@@ -53,9 +53,6 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_Resume;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UButton> Button_SaveGame;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_Settings;

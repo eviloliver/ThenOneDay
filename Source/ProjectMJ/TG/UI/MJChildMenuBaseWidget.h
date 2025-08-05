@@ -32,7 +32,5 @@ protected:
 	
 	UPROPERTY()
 	TWeakObjectPtr<UUserWidget> ParentWidget;
-
-	
 	
 };

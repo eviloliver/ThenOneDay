@@ -7,6 +7,7 @@
 #include "MJDungeonEndMenuWidget.h"
 #include "MJDungeonMapWidget.h"
 #include "MJForceExitCautionWidget.h"
+#include "MJLoadGameWidget.h"
 #include "MJPauseMenuWidget.h"
 #include "MJSettingsWidget.h"
 #include "Kismet/GameplayStatics.h"
@@ -18,12 +19,12 @@ void UMJGameFlowHUDWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	PauseMenu->SetVisibility(ESlateVisibility::Hidden);
+	SaveGameMenu->SetVisibility(ESlateVisibility::Hidden);
 	ForceExitCaution->SetVisibility(ESlateVisibility::Hidden);
 	DungeonEndMenu->SetVisibility(ESlateVisibility::Hidden);
 	BossHpBar->SetVisibility(ESlateVisibility::Hidden);
 	MiniMap->SetVisibility(ESlateVisibility::Hidden);
-
-
+	
 	FSlateApplication::Get().OnApplicationActivationStateChanged().AddUObject(this, &UMJGameFlowHUDWidget::OnWindowFocusChanged);
 
 	AMJGameStateDungeon* MJDungeonState = Cast<AMJGameStateDungeon>(UGameplayStatics::GetGameState(GetWorld()));

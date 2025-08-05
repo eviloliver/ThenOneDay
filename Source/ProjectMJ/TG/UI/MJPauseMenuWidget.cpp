@@ -4,6 +4,7 @@
 #include "TG/UI/MJPauseMenuWidget.h"
 
 #include "MJForceExitCautionWidget.h"
+#include "ProjectMJ.h"
 #include "Components/Button.h"
 #include "Components/Spacer.h"
 #include "Kismet/GameplayStatics.h"
@@ -15,7 +16,6 @@
 void UMJPauseMenuWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
-	
 }
 
 void UMJPauseMenuWidget::NativeConstruct()
@@ -25,7 +25,6 @@ void UMJPauseMenuWidget::NativeConstruct()
 	Button_Resume->OnClicked.AddDynamic(this,&UMJPauseMenuWidget::OnClicked_Resume);
 	Button_Settings->OnClicked.AddDynamic(this,&UMJPauseMenuWidget::OnClicked_Settings);
 	Button_MainMenu->OnClicked.AddDynamic(this,&UMJPauseMenuWidget::OnClicked_MainMenu);
-	Button_SaveGame->OnClicked.AddDynamic(this,&UMJPauseMenuWidget::OnClicked_SaveGame);
 	Button_GotoTown->OnClicked.AddDynamic(this,&UMJPauseMenuWidget::OnClicked_GotoTown);
 	Button_QuitGame->OnClicked.AddDynamic(this, &UMJPauseMenuWidget::OnClicked_QuitGame);
 
@@ -139,7 +138,7 @@ void UMJPauseMenuWidget::OnClicked_GotoTown()
 					AMJGameModeBase* MJGM = WeakThis->GetWorld()->GetAuthGameMode<AMJGameModeBase>();
 					if (MJGM)
 					{
-						MJGM->TravelToMap(TEXT("TG_Town"));
+						MJGM->TravelToMap(MAP_TOWN);
 					}
 				}
 			}));

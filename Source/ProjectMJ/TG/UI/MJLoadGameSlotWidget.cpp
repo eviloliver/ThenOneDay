@@ -3,9 +3,12 @@
 
 #include "TG/UI/MJLoadGameSlotWidget.h"
 
+#include "MJGameFlowHUDWidget.h"
+#include "MJLoadGameWidget.h"
+#include "ProjectMJ.h"
 #include "Components/AudioComponent.h"
-#include "Components/Border.h"
 #include "Components/TextBlock.h"
+#include "Controller/MJPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 #include "TG/SubSystem/MJSaveGameSubsystem.h"
@@ -27,18 +30,37 @@ FReply UMJLoadGameSlotWidget::NativeOnMouseButtonDoubleClick(const FGeometry& In
 	UMJSaveGameSubsystem* SGSS = GetGameInstance()->GetSubsystem<UMJSaveGameSubsystem>();
 	if (SGSS)
 	{
-		bool bLoadSlotSucceeded  = SGSS->LoadGameFromSlotNum(SlotNum);
-		
-		if (bLoadSlotSucceeded)
+
+		if (UGameplayStatics::GetCurrentLevelName(GetWorld()) == MAP_TOWN)
 		{
-			// UAudioComponent* AudioComp = UGameplayStatics::SpawnSound2D(GetWorld(),SuccessSound);
-			// if (AudioComp)
-			// {
-			// 	AudioComp->OnAudioFinished.AddDynamic(this, &UMJLoadGameSlotWidget::SwitchToInGame);
-			// }
-			SwitchToInGame();
-			return FReply::Handled();
+			// Saving at SavePoint. Widget popups only in town.
+			
+			GetGameInstance()->GetSubsystem<UMJSaveGameSubsystem>()->SaveGameToSelectedSlotNum(SlotNum);
+			
+			AMJPlayerController* MJPC = Cast<AMJPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0));
+			if (MJPC)
+			{
+				MJPC->GetGameFlowHUD()->GetSaveGameWidget()->SetVisibility(ESlateVisibility::Hidden);
+				MJPC->ChangeToIMCDefault();
+			}
 		}
+		else
+		{
+			bool bLoadSlotSucceeded  = SGSS->LoadGameFromSlotNum(SlotNum);
+		
+			if (bLoadSlotSucceeded)
+			{
+				// UAudioComponent* AudioComp = UGameplayStatics::SpawnSound2D(GetWorld(),SuccessSound);
+				// if (AudioComp)
+				// {
+				// 	AudioComp->OnAudioFinished.AddDynamic(this, &UMJLoadGameSlotWidget::SwitchToInGame);
+				// }
+				
+				SwitchToInGame();
+			}
+			
+		}
+		return FReply::Handled();
 	}
 	
 	UGameplayStatics::SpawnSound2D(GetWorld(),FailSound);
@@ -48,7 +70,7 @@ FReply UMJLoadGameSlotWidget::NativeOnMouseButtonDoubleClick(const FGeometry& In
 
 void UMJLoadGameSlotWidget::SwitchToInGame()
 {
-	UGameplayStatics::OpenLevel(this,TEXT("TG_Town"));
+	UGameplayStatics::OpenLevel(this,MAP_TOWN);
 }
 
 void UMJLoadGameSlotWidget::SetText(const FText NewSlotNumberText, const FText NewPlayerNameText, const FText NewCreatedDateText,
