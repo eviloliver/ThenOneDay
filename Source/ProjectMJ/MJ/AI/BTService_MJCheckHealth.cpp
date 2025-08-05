@@ -12,7 +12,7 @@
 
 UBTService_MJCheckHealth::UBTService_MJCheckHealth()
 {
-	NodeName = "CheckHealth";
+	NodeName = TEXT("CheckHealth");
 	Interval = 0.1f;
 }
 
@@ -26,7 +26,8 @@ void UBTService_MJCheckHealth::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 	{
 		return;
 	}
-	
+	Blackboard = OwnerComp.GetBlackboardComponent();
+
 	CachedASC = ControlledPawn->GetAbilitySystemComponent();
 	if (!CachedASC)
 	{
@@ -39,7 +40,12 @@ void UBTService_MJCheckHealth::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 
 void UBTService_MJCheckHealth::EnemyOnChangedHealth(const FOnAttributeChangeData& Data)
 {
+	if (!Blackboard)
+	{
+		return;
+	}
 	float CurrentHP = Data.NewValue;
-	bool IsSet = (CurrentHP < 200.f) ? false : true;
-
+	bool IsSet = (CurrentHP > 200.f) ? false : true;
+	
+	Blackboard->SetValueAsBool("IsAttack", IsSet);
 }

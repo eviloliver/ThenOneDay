@@ -16,6 +16,8 @@
  */
 class AMJForestCreatureCharacter;
 class UAbilitySystemComponent;
+class UBlackboardComponent; 
+
 UCLASS()
 class PROJECTMJ_API UBTService_MJCheckHealth : public UBTService
 {
@@ -29,9 +31,10 @@ protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 private:
+
 	AMJForestCreatureCharacter* ControlledPawn = nullptr;
 	UAbilitySystemComponent* CachedASC;
-
+	UBlackboardComponent* Blackboard;
 public:
 
 	void EnemyOnChangedHealth(const FOnAttributeChangeData& Data);
