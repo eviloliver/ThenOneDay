@@ -5,8 +5,7 @@
 
 #include "MJBossHpBarWidget.h"
 #include "MJDungeonEndMenuWidget.h"
-#include "MJDungeonMapWidget.h"
-#include "MJForceExitCautionWidget.h"
+#include "MJGameFlowPopUpMsgWidget.h"
 #include "MJLoadGameWidget.h"
 #include "MJPauseMenuWidget.h"
 #include "MJSettingsWidget.h"
@@ -20,7 +19,6 @@ void UMJGameFlowHUDWidget::NativeConstruct()
 
 	PauseMenu->SetVisibility(ESlateVisibility::Hidden);
 	SaveGameMenu->SetVisibility(ESlateVisibility::Hidden);
-	ForceExitCaution->SetVisibility(ESlateVisibility::Hidden);
 	DungeonEndMenu->SetVisibility(ESlateVisibility::Hidden);
 	BossHpBar->SetVisibility(ESlateVisibility::Hidden);
 	MiniMap->SetVisibility(ESlateVisibility::Hidden);
@@ -68,7 +66,7 @@ void UMJGameFlowHUDWidget::PauseGame()
 		if (PC->IsPaused())
 		{
 			UMJSettingsWidget* SettingsWidget = Cast<UMJSettingsWidget>((Cast<UMJPauseMenuWidget>(PauseMenu)->GetSettingsWidget()));
-			UMJForceExitCautionWidget* ForceExitCautionWidget = Cast<UMJForceExitCautionWidget>((PauseMenu->GetForceExitCautionWidget()));
+			UMJGameFlowPopUpMsgWidget* ForceExitCautionWidget = Cast<UMJGameFlowPopUpMsgWidget>((PauseMenu->GetForceExitCautionWidget()));
 			
 			if ( SettingsWidget && ForceExitCautionWidget)
 			{

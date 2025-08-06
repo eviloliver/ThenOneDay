@@ -3,7 +3,7 @@
 
 #include "TG/UI/MJPauseMenuWidget.h"
 
-#include "MJForceExitCautionWidget.h"
+#include "MJGameFlowPopUpMsgWidget.h"
 #include "ProjectMJ.h"
 #include "Components/Button.h"
 #include "Components/Spacer.h"
@@ -100,7 +100,7 @@ void UMJPauseMenuWidget::OnClicked_MainMenu()
 	{
 		
 		SetVisibility(ESlateVisibility::Hidden);
-		UMJForceExitCautionWidget* CastedWidget = Cast<UMJForceExitCautionWidget>(ForceExitCautionWidget);
+		UMJGameFlowPopUpMsgWidget* CastedWidget = Cast<UMJGameFlowPopUpMsgWidget>(ForceExitCautionWidget);
 		
 		if (CastedWidget)
 		{
@@ -115,7 +115,7 @@ void UMJPauseMenuWidget::OnClicked_MainMenu()
 						MJGM->TravelToMap(TEXT("TG_MainMenu"));
 					}
 				}
-			}));
+			}), FText::FromString(TEXT("All unsaved changes will be lost. Are you sure you want to go main menu?")));
 		}
 	}
 }
@@ -126,7 +126,7 @@ void UMJPauseMenuWidget::OnClicked_GotoTown()
 	{
 
 		SetVisibility(ESlateVisibility::Hidden);
-		UMJForceExitCautionWidget* CastedWidget = Cast<UMJForceExitCautionWidget>(ForceExitCautionWidget);
+		UMJGameFlowPopUpMsgWidget* CastedWidget = Cast<UMJGameFlowPopUpMsgWidget>(ForceExitCautionWidget);
 		
 		if (CastedWidget)
 		{
@@ -141,7 +141,7 @@ void UMJPauseMenuWidget::OnClicked_GotoTown()
 						MJGM->TravelToMap(MAP_TOWN);
 					}
 				}
-			}));
+			}), FText::FromString(TEXT("All unsaved changes will be lost. Are you sure you want to go back to town?")));
 		}
 		
 	}
@@ -152,7 +152,7 @@ void UMJPauseMenuWidget::OnClicked_QuitGame()
 	if (IsValid(ForceExitCautionWidget))
 	{
 		SetVisibility(ESlateVisibility::Hidden);
-		UMJForceExitCautionWidget* CastedWidget = Cast<UMJForceExitCautionWidget>(ForceExitCautionWidget);
+		UMJGameFlowPopUpMsgWidget* CastedWidget = Cast<UMJGameFlowPopUpMsgWidget>(ForceExitCautionWidget);
 		
 		if (CastedWidget)
 		{
@@ -160,7 +160,7 @@ void UMJPauseMenuWidget::OnClicked_QuitGame()
 			CastedWidget->PopUpWithCallback(FOnUserConfirmed::CreateLambda([WeakThis]
 			{
 				UKismetSystemLibrary::QuitGame(WeakThis->GetWorld(),nullptr,EQuitPreference::Quit,false);
-			}));
+			}), FText::FromString(TEXT("All unsaved changes will be lost. Are you sure you want to quit the game?")));
 		}
 	}
 }

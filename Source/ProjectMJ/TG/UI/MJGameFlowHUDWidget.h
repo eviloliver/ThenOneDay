@@ -11,7 +11,7 @@ class UMJDungeonMapWidget;
 class UMJBossHpBarWidget;
 class UMJSettingsWidget;
 class UMJDungeonEndMenuWidget;
-class UMJForceExitCautionWidget;
+class UMJGameFlowPopUpMsgWidget;
 class UMJPauseMenuWidget;
 /**
  * Class Description: UMJGameFlowHUDWidget Widget
@@ -59,9 +59,6 @@ protected:
 
 	UPROPERTY(meta= (BindWidget))
 	TObjectPtr<UMJLoadGameWidget> SaveGameMenu;
-
-	UPROPERTY(meta= (BindWidget))
-	TObjectPtr<UMJForceExitCautionWidget> ForceExitCaution;
 	
 	UPROPERTY(meta= (BindWidget))
 	TObjectPtr<UMJDungeonEndMenuWidget> DungeonEndMenu;
