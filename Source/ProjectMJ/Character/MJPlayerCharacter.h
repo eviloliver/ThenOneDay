@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -30,6 +30,9 @@ class UMJFadeObjectComponent;
  * Modified By: 김민진
  * Modified Date: 2025.07.29.
  * Modified Description: Add ID
+ * Modified By: Lee JUHYEON
+ * Modified Date: 2025.08.04
+ * Modified Description: Add Weapon
  */
 UCLASS()
 class PROJECTMJ_API AMJPlayerCharacter : public AMJCharacterBase, public IMJInventoryInterface
@@ -66,6 +69,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
 	TObjectPtr<UMJInventoryComponent> InventoryComponent;
 
+	UPROPERTY()
+	TSubclassOf<AActor>WeaponClass;
 public:
 	void SetUITarget(AActor* NewTarget) { UITarget = NewTarget; }
 	
