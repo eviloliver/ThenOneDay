@@ -10,6 +10,7 @@
 #include "TG/MJGameInstanceTG.h"
 #include "TG/GameMode/MJGameModeDungeon.h"
 #include "TG/SubSystem/MJDungeonGenerationSubSystem.h"
+#include "TG/SubSystem/MJSaveGameSubsystem.h"
 
 void UMJDungeonNodeWidget::NativeConstruct()
 {
@@ -59,6 +60,12 @@ FReply UMJDungeonNodeWidget::NativeOnMouseButtonDoubleClick(const FGeometry& InG
 						MapName = TEXT("Dungeon_Chunk_Reward");
 						break;
 					}
+
+					// GameSaveTiming
+
+					GetGameInstance()->GetSubsystem<UMJSaveGameSubsystem>()->SaveGameToCurrentSlotNum();
+					
+					
 					
 					GMDungeon->TravelToMapByNode(MapName,UKismetStringLibrary::Conv_StringToInt(NodeNum->GetText().ToString()));
 

@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MJGameFlowHUDWidget.generated.h"
 
+class UMJLoadGameWidget;
 class UMJDungeonMapWidget;
 class UMJBossHpBarWidget;
 class UMJSettingsWidget;
@@ -42,9 +43,9 @@ public:
 
 	UFUNCTION()
 	void OnBossHpBarFadeInEnded();
-
-	UFUNCTION(BlueprintCallable)
-	UMJDungeonMapWidget* GetDungeonMapWidget() {return DungeonMap;}
+	
+	FORCEINLINE UMJLoadGameWidget* GetSaveGameWidget() {return SaveGameMenu;}
+	FORCEINLINE UMJDungeonMapWidget* GetDungeonMapWidget() {return DungeonMap;}
 	
 protected:
 	
@@ -54,7 +55,10 @@ protected:
 	TWeakObjectPtr<APlayerController> PC;
 
 	UPROPERTY(meta= (BindWidget))
-	TObjectPtr<UMJPauseMenuWidget> PauseMenu;   
+	TObjectPtr<UMJPauseMenuWidget> PauseMenu;
+
+	UPROPERTY(meta= (BindWidget))
+	TObjectPtr<UMJLoadGameWidget> SaveGameMenu;
 
 	UPROPERTY(meta= (BindWidget))
 	TObjectPtr<UMJForceExitCautionWidget> ForceExitCaution;

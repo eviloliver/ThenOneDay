@@ -5,23 +5,23 @@
 #include "CoreMinimal.h"
 #include "MJInteractableActorBase.h"
 #include "GameFramework/Actor.h"
-#include "MJPortalToTown.generated.h"
+#include "MJSavePointActor.generated.h"
 
 /**
- * Class Description: Portal to Town
+ * Class Description: SavePoint
  * Author: Cha Tae Gwan
- * Created Date: 2025-07-24
+ * Created Date: 2025-08-05
  * Last Modified By: Cha Tae Gwan
- * Last Modified Date: 2025-07-24
+ * Last Modified Date: 2025-08-05
  */
 UCLASS()
-class PROJECTMJ_API AMJPortalToTown : public AMJInteractableActorBase
+class PROJECTMJ_API AMJSavePointActor : public AMJInteractableActorBase
 {
 	GENERATED_BODY()
 	
 public:	
-	AMJPortalToTown();
-	
+	AMJSavePointActor();
+
 	virtual void Execute() override;
-	
+
 };

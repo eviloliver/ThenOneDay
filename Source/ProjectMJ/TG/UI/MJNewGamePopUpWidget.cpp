@@ -3,6 +3,7 @@
 
 #include "TG/UI/MJNewGamePopUpWidget.h"
 
+#include "ProjectMJ.h"
 #include "Components/AudioComponent.h"
 #include "Components/Button.h"
 #include "Components/EditableTextBox.h"
@@ -82,7 +83,7 @@ void UMJNewGamePopUpWidget::SwitchToInGame()
 	}
 	// OpenLevel
 	
-	UGameplayStatics::OpenLevel(this,TEXT("TG_Town"));
+	UGameplayStatics::OpenLevel(this,MAP_TOWN);
 }
 
 int8 UMJNewGamePopUpWidget::GetEmptySlotNum()

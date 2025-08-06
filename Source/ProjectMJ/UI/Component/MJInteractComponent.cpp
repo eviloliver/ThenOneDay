@@ -1,16 +1,13 @@
 // ThenOneDayStudio
 
-
 #include "UI/Component/MJInteractComponent.h"
 
 #include "Dialogue/MJDialogueChoiceWidget.h"
 #include "Dialogue/MJDialogueComponent.h"
 #include "Dialogue/MJDialogueWidget.h"
+#include "TG/Actor/MJSavePointActor.h"
 #include "UI/Store/MJStoreComponent.h"
 #include "UI/World/MJInteractionComponent.h"
-
-// Sets default values for this component's properties
-
 
 UMJInteractComponent::UMJInteractComponent()
 {
@@ -74,27 +71,42 @@ void UMJInteractComponent::EvaluateType()
     		UE_LOG(LogTemp,Error,TEXT("%hhd"),CurrentType);
     		return;
     	}
+		// CTG : add Interact Logic 25.08.05
+		if (GetOwner()->IsA(AMJInteractableActorBase::StaticClass()))
+		{
+			CurrentType = EMJInteractionType::Interactable;
+			return;
+		}
     }
 }
 
 
 void UMJInteractComponent::StartInteraction()
 {
+	// execute logic
 	if (CurrentType == EMJInteractionType::Dialogue)
 	{
 		DialogueComponent->FloatLine();
 		return;
 	}
-	if (CurrentType == EMJInteractionType::Store)
+	else if (CurrentType == EMJInteractionType::Store)
 	{
 		StoreComponent->FloatLine();
 		StoreComponent->GetDialogueWidget()->GetDialogueChoiceWidget()->SetVisibility(ESlateVisibility::Visible);
 		return;
 	}
+	else if (CurrentType == EMJInteractionType::Interactable)
+	{
+		if (AMJInteractableActorBase* Interactable = Cast<AMJInteractableActorBase>(GetOwner()))
+		{
+			Interactable->Execute();
+		}
+	}
 }
 
 void UMJInteractComponent::ProceedInteraction()
 {
+	// if have any procedure, called.
 	if (CurrentType == EMJInteractionType::Dialogue)
 	{
 		DialogueComponent->TurnOver();

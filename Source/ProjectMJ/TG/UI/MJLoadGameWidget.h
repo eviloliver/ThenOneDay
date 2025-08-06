@@ -14,6 +14,7 @@
  * Last Modified Date: 2025-07-21
  */
 
+class UImage;
 class UScrollBox;
 class UMJLoadGameSlotWidget;
 class UButton;
@@ -38,6 +39,9 @@ protected:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> BackButton;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> BackGround;
 	
 	
 	

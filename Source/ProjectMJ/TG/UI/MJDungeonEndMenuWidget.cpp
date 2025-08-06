@@ -3,6 +3,7 @@
 
 #include "TG/UI/MJDungeonEndMenuWidget.h"
 
+#include "ProjectMJ.h"
 #include "Character/MJPlayerCharacter.h"
 #include "Character/Component/MJPlayerStatComponent.h"
 #include "Components/Button.h"
@@ -41,7 +42,7 @@ void UMJDungeonEndMenuWidget::OnClicked_GotoTown()
 		AMJGameModeBase* MJGM = GetWorld()->GetAuthGameMode<AMJGameModeBase>();
 		if (MJGM)
 		{
-			MJGM->TravelToMap(TEXT("TG_Town"));
+			MJGM->TravelToMap(MAP_TOWN);
 		}
 	}
 }
