@@ -25,6 +25,7 @@ class PROJECTMJ_API UMJEnemySkillComponent : public UMJSkillComponentBase
 private:
 	FGameplayTag NormalSkillTag;
 	FGameplayTag IdentitySkillTag;
+	float GiveChance;
 	
 public:
 	UMJEnemySkillComponent();

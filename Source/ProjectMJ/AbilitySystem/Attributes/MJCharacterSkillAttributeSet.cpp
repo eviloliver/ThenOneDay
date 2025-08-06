@@ -32,6 +32,7 @@ UMJCharacterSkillAttributeSet::UMJCharacterSkillAttributeSet()
     , MaxSkillRadius(0.0f)
     , SkillRange(0.0f)
     , MaxSkillRange(0.0f)
+	, SkillAttackLocationOffset(0.0f)
 
     // Time
     , Cooldown(0.0f)

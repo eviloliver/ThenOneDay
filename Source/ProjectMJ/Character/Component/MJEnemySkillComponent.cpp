@@ -5,6 +5,7 @@
 
 #include "ProjectMJ.h"
 #include "DataTable/MJEnemyDataRow.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "MJ/Character/MJMonsterCharacter.h"
 #include "TG/MJGameInstanceTG.h"
 
@@ -54,6 +55,9 @@ void UMJEnemySkillComponent::InitializeComponent()
 	// Minjin: Activate 때 사용할 수 있도록 스킬 태그를 저장
 	NormalSkillTag = DataRow->NormalAttackTag;
 	IdentitySkillTag = DataRow->IdentitySkillTag;
+
+	// Minjin: 죽었을 때 스킬을 전달할 확률
+	GiveChance = DataRow->GiveChance;
 }
 
 void UMJEnemySkillComponent::BeginPlay()
@@ -91,6 +95,18 @@ void UMJEnemySkillComponent::ActivateIdentitySkill()
 FGameplayTag UMJEnemySkillComponent::TryGiveMemory()
 {
 	// TODO: 확률 추가하기
+
+	if(!IdentitySkillTag.IsValid())
+	{
+		return FGameplayTag::EmptyTag;
+	}
+
+	bool IsCanGive = UKismetMathLibrary::RandomBoolWithWeight(GiveChance);
+
+	if (IsCanGive)
+	{
+		return IdentitySkillTag;
+	}
 	
-	return IdentitySkillTag;
+	return FGameplayTag::EmptyTag;
 }
