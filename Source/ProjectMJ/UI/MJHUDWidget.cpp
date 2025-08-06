@@ -6,6 +6,7 @@
 #include "Bar/MJManaBarWidget.h"
 #include "Bar/MJStaminaBar.h"
 #include "Bar/MJExperienceWidget.h"
+#include "Character/Component/MJPlayerStatComponent.h"
 #include "Dialogue/MJDialogueWidget.h"
 #include "World/MJStatWidget.h"
 #include "Inventory/MJInventoryWidget.h"
@@ -36,7 +37,7 @@ void UMJHUDWidget::NativeConstruct()
 	}
 }
 
-void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet)
+void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet, UMJPlayerStatComponent* Stat)
 {
 	if (HealthBar)
 	{
@@ -55,7 +56,7 @@ void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJC
 
 	if (StatPanel)
 	{
-		StatPanel->BindToAttribute(ASC,AttributeSet);
+		StatPanel->BindToAttribute(ASC,AttributeSet,Stat);
 	}
 }
 
@@ -88,6 +89,7 @@ void UMJHUDWidget::ShowStore()
 	if (Store->GetVisibility() == ESlateVisibility::Visible)
 	{
 		Store->SetVisibility(ESlateVisibility::Hidden);
+		Store->CloseWidget();
 	}
 	else if (Store->GetVisibility() == ESlateVisibility::Hidden)
 	{

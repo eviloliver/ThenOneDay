@@ -77,7 +77,9 @@ private:
 #pragma region UIPart
 private:
 	bool IsInteracted = false;
-
+	FGameplayTag ItemTagForPurchase;
+	int32 ItemPrice;
+	int32 ItemQuantity;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction> ChangeIMCAction;
@@ -138,6 +140,12 @@ public:
 	UFUNCTION()
 	void OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 										int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnTryPurchase(FGameplayTag& ItemTag, int32 Price, int32 Quantity);
+
+	UFUNCTION()
+	void OnPurchase();
 #pragma endregion
 
 

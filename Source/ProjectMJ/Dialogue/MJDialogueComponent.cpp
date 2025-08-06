@@ -35,7 +35,6 @@ void UMJDialogueComponent::TurnOver() // x키가 눌리면 이 함수가 실행�
         
         UpdateBacklog();		
 	}
-	
 }
 
 void UMJDialogueComponent::UpdateBacklog()
@@ -68,6 +67,7 @@ void UMJDialogueComponent::FloatLine()
 {
 	GetDialogueWidget()->SetTextBlock(GetCurrentRow()->Script, GetCurrentRow()->Speaker);
 	GetDialogueWidget()->StartTyping(GetCurrentRow()->Script,0.05);
+	GetDialogueWidget()->SetImageOpacity(GetCurrentRow()->Speaker);
 }
 
 const FMJDialogueRow* UMJDialogueComponent::GetCurrentRow() const

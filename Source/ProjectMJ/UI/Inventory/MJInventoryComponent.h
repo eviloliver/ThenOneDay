@@ -48,7 +48,7 @@ class PROJECTMJ_API UMJInventoryComponent : public UActorComponent
 public:
 	int32 Position;
 	
-	void PickUpItem(FGameplayTag ItemTag);
+	void PickUpItem(FGameplayTag ItemTag, int32 Count);
 	void DropItem(FGameplayTag ItemTag);
 	void UpdateSlot(FGameplayTag ItemTag);
 

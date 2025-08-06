@@ -83,6 +83,18 @@ void UMJPlayerStatComponent::GainExperience(int32 GainedExp)
 	OnExperienceChanged.Broadcast(GetNumerator() ,GetDenominator());
 }
 
+void UMJPlayerStatComponent::GainGold(int32 GainedGold)
+{
+	Gold += GainedGold;
+	OnGoldChange.Broadcast(Gold);
+}
+
+void UMJPlayerStatComponent::SpendGold(int32 UsedGold)
+{
+	Gold -= UsedGold;
+	OnGoldChange.Broadcast(Gold);
+}
+
 void UMJPlayerStatComponent::CheckForLevelUp()
 {
 	if (ExperienceForNextLevel <= 0)

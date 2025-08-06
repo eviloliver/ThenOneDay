@@ -11,9 +11,9 @@
 
 UMJInventoryComponent::UMJInventoryComponent()
 {
+	
 }
-
-void UMJInventoryComponent::PickUpItem(FGameplayTag ItemTag) 
+void UMJInventoryComponent::PickUpItem(FGameplayTag ItemTag, int32 Count) 
 {
 #pragma region InventoryRef
 	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
@@ -46,16 +46,21 @@ void UMJInventoryComponent::PickUpItem(FGameplayTag ItemTag)
 			return;
 		}
 	}
-#pragma endregion 
+#pragma endregion
+	if (Count == 0)
+	{
+		return;
+	}
+	
 	if (ItemInInventory.Contains(ItemTag))
 	{
-		ItemInInventory[ItemTag].ItemCount ++;
+		ItemInInventory[ItemTag].ItemCount += Count;
 	}
 	else
 	{
 		FInventoryItemData NewItemData;
 		NewItemData.ItemTag = ItemTag;
-		NewItemData.ItemCount = 1;
+		NewItemData.ItemCount = Count;
 
 		// for문 순회를 통해 공백을 만나면 그 위치를 반환해서 넣기
 		for (int i = 0; i < InventorySlot.Num(); i++)

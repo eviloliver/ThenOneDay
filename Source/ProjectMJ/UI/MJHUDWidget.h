@@ -58,7 +58,7 @@ public:
 	UFUNCTION()
 	virtual void NativeConstruct() override;
 	
-	void BindAtrributesToChildren(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet);
+	void BindAtrributesToChildren(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet, class UMJPlayerStatComponent* Stat);
 	void ShowStatPanel();
 	void ShowInventory();
 	void ShowStore();

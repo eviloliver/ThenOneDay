@@ -4,20 +4,24 @@
 #include "MJStatWidget.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
+#include "Character/Component/MJPlayerStatComponent.h"
 #include "Components/TextBlock.h"
 
-void UMJStatWidget::BindToAttribute(UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet)
+void UMJStatWidget::BindToAttribute(UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet, UMJPlayerStatComponent* Stat)
 {
 	if (!ASC || !AttributeSet) 
 	{
 		return;
 	}
+
+	this->AttributSet = AttributeSet;
 	
 	Health = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxHealthAttribute());
 	AttackPower = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxAttackDamageAttribute());
 	SpellPower = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxAbilityPowerAttribute());
 	Speed = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxAbilityPowerAttribute());
-	
+
+	Stat->OnLevelUp.AddDynamic(this, &UMJStatWidget::UpdateLevel);
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxHealthAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxAttackDamageAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxAbilityPowerAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
@@ -26,31 +30,50 @@ void UMJStatWidget::BindToAttribute(UMJAbilitySystemComponent* ASC, UMJCharacter
 	UpdateStat(FOnAttributeChangeData{});
 }
 
+void UMJStatWidget::UpdateLevel(int32 NewLevel)
+{
+	if (StatLevel)
+ 	{
+ 		StatLevel->SetText(FText::FromString(FString::Printf(TEXT("%d"), NewLevel)));
+ 	}
+}
+
 void UMJStatWidget::UpdateStat(const FOnAttributeChangeData& Data) // settext
 {
-	// 지수 : 하나의 함수로 두는거 말고 UpdateLevelStat 이런식으로 여러개를 두는게 나을까?
-	if (StatLevel)
+	FGameplayAttribute ChangedAttr = Data.Attribute;
+	if (ChangedAttr == AttributSet->GetMaxHealthAttribute())
 	{
-		StatLevel->SetText(FText::FromString(FString::SanitizeFloat(Level)));
-	}
-	
-	if (StatHealth)
-	{
-		StatHealth->SetText(FText::FromString(FString::SanitizeFloat(Health)));
-	}
-
-	if (StatAttackPower)
-	{
-		StatAttackPower->SetText(FText::FromString(FString::SanitizeFloat(AttackPower)));
+		if (StatHealth)
+        {
+        	Health = Data.NewValue;
+        	StatHealth->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+        }
 	}
 
-	if (StatSpellPower)
+	if (ChangedAttr == AttributSet->GetMaxAttackDamageAttribute())
 	{
-		StatSpellPower->SetText(FText::FromString(FString::SanitizeFloat(SpellPower)));
+		if (StatAttackPower)
+		{
+			AttackPower = Data.NewValue;
+			StatAttackPower->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), AttackPower)));
+		}
+	}
+	if (ChangedAttr == AttributSet->GetMaxAbilityPowerAttribute())
+	{
+		if (StatSpellPower)
+        {
+        	SpellPower = Data.NewValue;
+        	StatSpellPower->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), SpellPower)));
+        }
 	}
 
-	if (StatSpeed)
+	if (ChangedAttr == AttributSet->GetMaxMovementSpeedAttribute())
 	{
-		StatSpeed->SetText(FText::FromString(FString::SanitizeFloat(Speed)));
+		if (StatSpeed)
+        {
+        	Speed = Data.NewValue;
+        	StatSpeed->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Speed)));
+        }
 	}
+
 }

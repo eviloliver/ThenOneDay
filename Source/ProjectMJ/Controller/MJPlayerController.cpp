@@ -22,6 +22,9 @@
 #include "TG/UI/MJGameFlowHUDWidget.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/Component/MJInteractComponent.h"
+#include "UI/Store/MJMerchandiseSlot.h"
+#include "UI/Store/MJPopupWidget.h"
+#include "UI/Store/MJStoreWidget.h"
 
 
 // TODO: Input 관련한 로직들 Component로 따로 빼기 - 동민 - 
@@ -63,13 +66,7 @@ void AMJPlayerController::BeginPlay()
 		MJChar->GetUITrigger()->OnComponentEndOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredOut);
 		MJChar->GetUITrigger()->OnComponentBeginOverlap.AddDynamic(this,&ThisClass::OnTriggeredItemIn);
 	}
-
-	AMJPlayerState* State = GetPlayerState<AMJPlayerState>();
-	if (State)
-	{
-		UIManager->ShowHUD(State, this);
-	}
-
+	
 	GameFlowHUD = CastChecked<UMJGameFlowHUDWidget>(CreateWidget(this, GameFlowHUDWidgetClass));
 	if (GameFlowHUD)
 	{
@@ -81,6 +78,27 @@ void AMJPlayerController::BeginPlay()
 	if (MJPlayerStatComp)
 	{
 		MJPlayerStatComp->OnDeath.AddDynamic(this,&AMJPlayerController::OnDead);
+	}
+
+	AMJPlayerState* State = GetPlayerState<AMJPlayerState>();
+    if (State && MJPlayerStatComp)
+    {
+    	UIManager->ShowHUD(State, this, MJPlayerStatComp);
+    	UIManager->GetHUDWidget()->GetStoreWidget()->SetStatComponent(MJPlayerStatComp);
+    }
+	
+	TArray<UMJMerchandiseSlot*> MerSlot = UIManager->GetHUDWidget()->GetStoreWidget()->GetMerchandiseSlots();
+	for (int i = 0; i < MerSlot.Num(); i++)
+	{
+		if (MerSlot[i])
+		{
+			MerSlot[i]->OnMerchandiseSlotEvent.AddDynamic(this, &AMJPlayerController::OnTryPurchase);
+		}
+	}
+
+	if (UIManager->GetHUDWidget()->GetStoreWidget())
+	{
+		UIManager->GetHUDWidget()->GetStoreWidget()->OnClickedYes.AddDynamic(this,&AMJPlayerController::OnPurchase);
 	}
 }
 
@@ -344,16 +362,17 @@ void AMJPlayerController::StartDialogue()// x키를 눌렀을 때 실행되는 �
 	
 	if (UMJInteractComponent* InteractComp = MyChar->GetUITarget()->FindComponentByClass<UMJInteractComponent>())
 	{
-		ChangeToIMCDialogue();
-		InteractComp->StartInteraction();
 		
+		InteractComp->StartInteraction();
 		switch (InteractComp->CurrentType)
 		{
 		case EMJInteractionType::Dialogue:
+			ChangeToIMCDialogue();
 			UIManager->SetDialogueVisibility();
 			break;
 
 		case EMJInteractionType::Store:
+			ChangeToIMCDialogue();
 			UIManager->SetDialogueVisibility();
 			break;
 
@@ -365,6 +384,7 @@ void AMJPlayerController::StartDialogue()// x키를 눌렀을 때 실행되는 �
 
 void AMJPlayerController::ChangeToIMCDialogue()
 {
+	StopMovement();
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
     {
 		Subsystem->AddMappingContext(InputConfigDataAsset->GetDialogueMappingContext(), 0);
@@ -492,15 +512,53 @@ void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AAc
 	UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
 	 if (InventoryComp)
 	 {
-	 	InventoryComp->PickUpItem(Item->GetItemTag());
+	 	InventoryComp->PickUpItem(Item->GetItemTag(), 1);
 	 	Item->Destroy();
 	 }
+}
+
+void AMJPlayerController::OnTryPurchase(FGameplayTag& ItemTag, int32 Price, int32 Quantity)
+{
+	ItemTagForPurchase = ItemTag;
+	ItemPrice = Price;
+	ItemQuantity = Quantity;
+	
+}
+
+void AMJPlayerController::OnPurchase()
+{
+	AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
+    if (!MyChar) return;
+	
+   	UMJPlayerStatComponent* StatComp = GetPawn()->FindComponentByClass<UMJPlayerStatComponent>();
+	UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
+	if (StatComp && InventoryComp)
+   	{
+   		if (StatComp->GetGold() >= ItemQuantity * ItemPrice)
+   		{
+   			InventoryComp->PickUpItem(ItemTagForPurchase, ItemQuantity);
+   			StatComp->SpendGold(ItemQuantity * ItemPrice);
+   			for (auto* Slot : UIManager->GetHUDWidget()->GetStoreWidget()->GetMerchandiseSlots())
+   			{
+   				if (Slot)
+   				{
+   					Slot->InitializeQuantity(); // 구매 완료 후 구매 수량 초기화
+   				}
+   			}
+   		}
+   		else
+   		{
+   			// storewidget이 잔액 부족을 띄우게 한다.
+   			return;
+   		}
+   	}
 }
 
 void AMJPlayerController::PauseGame()
 {
 	GameFlowHUD->PauseGame(); 
 }
+
 void AMJPlayerController::OnDead(AActor* InEffectCauser)
 {
 	// TODO 태관 : StatComponent에서 델리게이트 로 호출해서 입력 막고 UI 띄울 예정 

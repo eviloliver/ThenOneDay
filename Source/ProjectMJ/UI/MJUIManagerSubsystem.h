@@ -33,7 +33,7 @@ public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
 	// HUD
-	void ShowHUD(class AMJPlayerState* PlayerState, class AMJPlayerController* PC);
+	void ShowHUD(class AMJPlayerState* PlayerState, class AMJPlayerController* PC, class UMJPlayerStatComponent* Stat);
 	UMJHUDWidget* GetHUDWidget() {return HUDWidget;}
 
 	// Dialouge Section
