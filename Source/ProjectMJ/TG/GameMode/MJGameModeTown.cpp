@@ -4,6 +4,7 @@
 #include "MJGameModeTown.h"
 
 #include "ProjectMJ.h"
+#include "Kismet/GameplayStatics.h"
 
 AMJGameModeTown::AMJGameModeTown()
 {
@@ -13,5 +14,11 @@ AMJGameModeTown::AMJGameModeTown()
 void AMJGameModeTown::BeginPlay()
 {
 	Super::BeginPlay();
+
+	APlayerController* NewPC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (NewPC)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PC After OpenLevel: %p"), NewPC);
+	}
 	
 }
