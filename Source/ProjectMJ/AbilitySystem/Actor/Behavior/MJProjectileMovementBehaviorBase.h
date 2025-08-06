@@ -18,7 +18,7 @@
 class UGameplayAbility;
 class AMJProjectileBase;
 
-UCLASS(Abstract)
+UCLASS(Abstract, Blueprintable)
 class PROJECTMJ_API UMJProjectileMovementBehaviorBase : public UObject
 {
 	GENERATED_BODY()

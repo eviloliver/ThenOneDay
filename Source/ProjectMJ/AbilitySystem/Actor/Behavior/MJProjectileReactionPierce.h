@@ -23,8 +23,8 @@ class PROJECTMJ_API UMJProjectileReactionPierce : public UMJProjectileReactionBe
 public:
 	UMJProjectileReactionPierce();
 
-	virtual void InitReaction(AMJProjectileBase* Projectile) override;
-	virtual void OnProjectileReact(AMJProjectileBase* Projectile, AActor* HitActor, const FHitResult& Hit) override;
+	virtual void InitReaction(AMJProjectileBase* InProjectile) override;
+	virtual void OnProjectileReact(AMJProjectileBase* InProjectile, AActor* HitActor, const FHitResult& Hit) override;
 
 protected:
 	UPROPERTY()

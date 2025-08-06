@@ -128,6 +128,7 @@ void UMJGA_SpawnProjectile::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
         ProjectileParams.ProjectileSpeed = SkillAttributeSet->GetProjectileSpeed();
         ProjectileParams.ProjectileCount = SkillAttributeSet->GetProjectileCount();
+        ProjectileParams.LifeSpan = SkillAttributeSet->GetProjectileLifeSpan();
 
         ProjectileParams.PierceCount = SkillAttributeSet->GetProjectilePierceCount();
 

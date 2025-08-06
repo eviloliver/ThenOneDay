@@ -41,10 +41,14 @@ FTransform UMJProjectileMovementLinear::CalculateSpawnTransform(UGameplayAbility
 void UMJProjectileMovementLinear::InitMovement(AMJProjectileBase* InProjectile)
 {
 	OwnerProjectile = InProjectile;
-	if (OwnerProjectile)
+	if (!OwnerProjectile)
 	{
-		MoveDirection = OwnerProjectile->GetActorForwardVector();
+		MJ_LOG(LogMJ, Warning, TEXT("Not Exist OwnerProjectile"));
+		return;
 	}
+	float MoveSpeed = OwnerProjectile->ProjectileParams.ProjectileSpeed;
+
+	Velocity = OwnerProjectile->GetActorForwardVector() * MoveSpeed;
 }
 
 void UMJProjectileMovementLinear::Move(AMJProjectileBase* InProjectile, float DeltaSeconds)
@@ -56,6 +60,6 @@ void UMJProjectileMovementLinear::Move(AMJProjectileBase* InProjectile, float De
 	}
 
 	const float MoveSpeed = OwnerProjectile->ProjectileParams.ProjectileSpeed;
-	const FVector NewLocation = OwnerProjectile->GetActorLocation() + MoveDirection * MoveSpeed * DeltaSeconds;
+	const FVector NewLocation = OwnerProjectile->GetActorLocation() + Velocity * DeltaSeconds;
 	OwnerProjectile->SetActorLocation(NewLocation);
 }

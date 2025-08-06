@@ -90,6 +90,9 @@ struct FMJSkillProjectileParams
     float ProjectileCount = 1.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float LifeSpan = 0.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 PierceCount = 0;
 
     // ASC

@@ -15,13 +15,6 @@
  * Last Modified Date: (Last Modified Date)
  */
 
-struct FSkillCost
-{
-	float StaminaCost = 0.0f;
-	float ManaCost = 0.0f;
-	float FocusCost = 0.0f;
-};
-
 class UAnimMontage;
 class UGameplayEffect;
 

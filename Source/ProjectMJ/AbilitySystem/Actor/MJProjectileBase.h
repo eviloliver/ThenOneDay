@@ -44,6 +44,9 @@ protected:
 	UFUNCTION()
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION()
+	virtual void OnSphereHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 public:
 	UPROPERTY(BlueprintReadWrite)
 	FMJSkillProjectileParams ProjectileParams;
@@ -65,9 +68,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UNiagaraComponent> NiagaraComponent;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Projectile", meta = (AllowPrivateAccess = "true"))
+	float VFXRatio = 1.0f;
+
 	UPROPERTY(EditAnywhere, Category = "SFX")
 	TObjectPtr<USoundBase> HitSFX;
 
-	// Must TODO:
-	// float LifeSpan;
 };

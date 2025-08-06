@@ -9,9 +9,10 @@
 /**
  * Class Description: DataTable Base
  * Author: 신동민
- * Created Date: 2025_06_27
- * Last Modified By:
- * Last Modified Date:
+ * Created Date: 2025.06.27
+ * Description of Change: Ability 부분 수정
+ * Modified By: 신동민
+ * Modified Date: 2025.08.06
  */
 
 class AMJProjectileBase;
@@ -43,27 +44,6 @@ enum class ESkillTargetType : uint8
 	None    UMETA(Hidden),
 	Single  UMETA(DisplayName = "Single", ToolTip = "Single Target"),
 	Area    UMETA(DisplayName = "AoE", ToolTip = "Area of Effect"),
-};
-
-USTRUCT(BlueprintType)
-struct FSkillAssetDataByLevel
-{
-	GENERATED_BODY()
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    int32 MinimumLevel = 1;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Animation"))
-    FGameplayTag AnimationTag;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Projectile"))
-    FGameplayTag ProjectileTag;
-
-	// Dongmin
-	// TODO: 이펙트 관련 + 위에 있는 투사체 관련한 내용이 이걸로 바뀔 가능성이 있기도 함
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "GameplayCue"))
-	// FGameplayTag VFXTag;
-	// 20250724 -> 이거 그냥 태그 하나로 AnimMontage랑 Projectile Cue 다 처리하는 DA 만들껄 싶음
 };
 
 USTRUCT(BlueprintType)

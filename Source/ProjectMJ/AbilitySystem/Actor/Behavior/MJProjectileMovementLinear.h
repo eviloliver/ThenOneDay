@@ -35,5 +35,5 @@ protected:
 	TObjectPtr<AMJProjectileBase> OwnerProjectile;
 
 	UPROPERTY()
-	FVector MoveDirection;
+	FVector Velocity;
 };

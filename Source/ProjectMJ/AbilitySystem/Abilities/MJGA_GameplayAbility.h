@@ -15,6 +15,14 @@ enum class EMJAbilityActivationPolicy :uint8
 	OnTriggered,
 	OnGiven
 };
+
+struct FSkillCost
+{
+	float StaminaCost = 0.0f;
+	float ManaCost = 0.0f;
+	float FocusCost = 0.0f;
+};
+
 /**
  * Class Description:
  * Author: Lee JuHyeon
