@@ -13,6 +13,9 @@ AMJPortalToNextDungeon::AMJPortalToNextDungeon()
 {
 	MiniMapIconMesh = CreateDefaultSubobject<UMJMiniMapIconMeshComponent>(TEXT("MiniMapIcon"));
 	MiniMapIconMesh->SetupAttachment(StaticMesh);
+	
+	// TG : Don`t change this for proper SpawnActor
+	SetActorRelativeScale3D(FVector(0.38f,0.2f,0.38f));
 }
 
 void AMJPortalToNextDungeon::Execute()
@@ -31,5 +34,19 @@ void AMJPortalToNextDungeon::Execute()
 			DungeonMapWidget->SetAllVisibility(ESlateVisibility::Visible);
 		} 
 	}
+	
+}
+
+void AMJPortalToNextDungeon::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	
+	// TG : Don`t change this for proper SpawnActor
+	SetActorRelativeScale3D(FVector(0.38f,0.2f,0.38f));
+}
+
+void AMJPortalToNextDungeon::BeginPlay()
+{
+	Super::BeginPlay();
 	
 }

@@ -13,6 +13,7 @@ AMJPortalToDungeon::AMJPortalToDungeon()
 {
 }
 
+
 void AMJPortalToDungeon::Execute()
 {
 	Super::Execute();
@@ -55,3 +56,16 @@ void AMJPortalToDungeon::Execute()
 	}
 }
 
+void AMJPortalToDungeon::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	
+	// TG : Don`t change this for proper SpawnActor
+	SetActorRelativeScale3D(FVector(0.38f,0.2f,0.38f));
+}
+
+
+void AMJPortalToDungeon::BeginPlay()
+{
+	Super::BeginPlay();
+}

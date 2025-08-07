@@ -16,4 +16,9 @@ public:
 	AMJPortalToDungeon();
 
 	virtual void Execute() override;
+protected:
+
+	virtual void PostInitializeComponents() override;
+	virtual void BeginPlay() override;
+	
 };

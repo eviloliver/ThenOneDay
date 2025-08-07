@@ -27,6 +27,10 @@ public:
 	virtual void Execute() override;
 
 protected:
+
+	virtual void PostInitializeComponents() override;
+	
+	virtual void BeginPlay() override;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UMJMiniMapIconMeshComponent> MiniMapIconMesh;
