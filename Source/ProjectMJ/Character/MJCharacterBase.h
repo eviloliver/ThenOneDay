@@ -9,6 +9,7 @@
 #include "MJ/AI/AIPerceptionInfo.h"
 #include "MJCharacterBase.generated.h"
 
+class UMJDamageComponent;
 class UMJAbilityContextComponent;
 class UMJMiniMapIconMeshComponent;
 class AMJMiniMapIconActor;
@@ -31,6 +32,13 @@ class UMotionWarpingComponent;
  * Modified By: CTG	
  * Modified Date: 2025.07.31
  */
+UENUM(BlueprintType)
+enum class EOwnerType : uint8
+{
+	Player,
+	Monster
+};
+
 UCLASS()
 class PROJECTMJ_API AMJCharacterBase : public ACharacter , public IAbilitySystemInterface, public IGenericTeamAgentInterface
 {
@@ -67,11 +75,20 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TObjectPtr<UMJMiniMapIconMeshComponent> MiniMapIconMeshComponent;
-  
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
+	TArray<TObjectPtr<UMJDamageComponent>> DamageComponents;
+	
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController)override;
 
 	FGenericTeamId TeamId;
+
+public:
+	// jisoo
+	UFUNCTION()
+	virtual void FloatDamage(float Magnitude, bool bIsCritical, EOwnerType type);
+	float OffSet = 0;
 };
 
 

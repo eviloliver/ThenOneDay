@@ -83,9 +83,9 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UMJHealthBarComponent> HPBarComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
-	TArray<TObjectPtr<UMJDamageComponent>> DamageComponents;
+	
+	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
+	// TArray<TObjectPtr<UMJDamageComponent>> DamageComponents;
 	int DamageIndex = 0;
 	float OffSet = 0;
 

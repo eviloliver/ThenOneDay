@@ -11,6 +11,8 @@
 #include "MotionWarpingComponent.h"
 #include "Component/MJAbilityContextComponent.h"
 #include "TG/Component/MJMiniMapIconMeshComponent.h"
+#include "UI/World/MJDamageComponent.h"
+#include "UI/World/MJDamageWidget.h"
 
 
 // Sets default values
@@ -72,6 +74,27 @@ void AMJCharacterBase::PossessedBy(AController* NewController)
 		//ensureMsgf(!CharacterStartData.IsNull(), TEXT("Forgot to assign start data to %s"), *GetName());
 	}
 
+}
+
+void AMJCharacterBase::FloatDamage(float Magnitude, bool bIsCritical, EOwnerType type)
+{
+	UMJDamageComponent* NewComp = NewObject<UMJDamageComponent>(this);
+	NewComp->RegisterComponent();
+	NewComp->SetDamageWidget(this->GetActorLocation(), OffSet);
+	NewComp->SetVisibility(true);
+	DamageComponents.Add(NewComp);
+
+	if (UMJDamageWidget* Widget =Cast<UMJDamageWidget>(NewComp->GetUserWidgetObject()) )
+	{
+		Widget->SetDamage(-Magnitude, bIsCritical, type);
+		Widget->PlayAnim();
+	}
+
+	OffSet ++;
+	if (OffSet > 5)
+	{
+		OffSet = 0;
+	}
 }
 
 

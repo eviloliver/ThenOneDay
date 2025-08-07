@@ -311,26 +311,12 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 		
 		Destroy();
 	}
-	DamageIndex = 0;
+	//DamageIndex = 0;
 }
 
 void AMJMonsterCharacter::OnDamage(float Magnitude, bool bIsCritical)
 {	
 	HPBarComponent->SetVisibility(true);
-	UE_LOG(LogMJ, Warning, TEXT("<UNK> <UNK>: %f"), Magnitude);
-	UMJDamageComponent* NewComp = NewObject<UMJDamageComponent>(this);
-	NewComp->RegisterComponent();
-	NewComp->SetDamageWidget(this->GetActorLocation(), OffSet);
-	NewComp->SetVisibility(true);
-	DamageComponents.Add(NewComp);
 
-	if (UMJDamageWidget* Widget =Cast<UMJDamageWidget>(NewComp->GetUserWidgetObject()) )
-	{
-		Widget->SetDamage(-Magnitude, bIsCritical);
-		Widget->PlayAnim();
-	}
-	DamageIndex ++;
-	OffSet ++;
-	if (OffSet > 5) {OffSet = 0;}
-	
+	FloatDamage(Magnitude, bIsCritical, EOwnerType::Monster);
 }
