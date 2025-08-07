@@ -15,6 +15,8 @@
  */
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathDelegate, AActor*, InEffectCauser);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDamageDelegate, float, Data, bool, IsCritical);
+
 
 class UGameplayEffect;
 
@@ -35,8 +37,10 @@ public:
 	FORCEINLINE bool GetbIsInitializingStats() const { return bIsInitializingStats; }
 
 	virtual void OnDead(AActor* InEffectCauser);
+	virtual void OnDamaged(float Magnitude, bool bIsCritical);
 
 	FOnDeathDelegate OnDeath;
+	mutable FOnDamageDelegate OnDamage;
 
 protected:
 
