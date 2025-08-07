@@ -23,14 +23,8 @@ void UMJLoadGameWidget::NativeConstruct()
 
 	SavedGameSlotScrollBox->ClearChildren();
 
-	if (UGameplayStatics::GetCurrentLevelName(GetWorld()) == MAP_TOWN)
-	{
-		BackGround->SetVisibility(ESlateVisibility::Visible);
-	}
-	else
-	{
-		BackGround->SetVisibility(ESlateVisibility::Hidden);
-	}
+	BackGround->SetVisibility(ESlateVisibility::Visible);
+	
 
 	InitializeSlot();
 }

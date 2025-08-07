@@ -48,12 +48,10 @@ void UMJPauseMenuWidget::NativeConstruct()
 
 		if (AMJGameModeTown* GMTown = GetWorld()->GetAuthGameMode<AMJGameModeTown>())
 		{
-			Spacer_GotoTown->SetVisibility(ESlateVisibility::Collapsed);
 			Button_GotoTown->SetVisibility(ESlateVisibility::Collapsed);
 		}
 		else if (AMJGameModeDungeon* GMDungeon = GetWorld()->GetAuthGameMode<AMJGameModeDungeon>())
 		{
-			Spacer_GotoTown->SetVisibility(ESlateVisibility::Visible);
 			Button_GotoTown->SetVisibility(ESlateVisibility::Visible);
 		}
 	}

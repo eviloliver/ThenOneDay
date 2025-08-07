@@ -59,9 +59,6 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_GotoTown;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USpacer> Spacer_GotoTown;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_MainMenu;
