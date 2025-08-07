@@ -46,7 +46,7 @@ protected:
 	TObjectPtr<UMJChildMenuBaseWidget> SettingsWidget;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> ForceExitCautionWidgetClass;
+	TSubclassOf<UMJChildMenuBaseWidget> ForceExitCautionWidgetClass;
 
 	UPROPERTY()
 	TObjectPtr<UMJChildMenuBaseWidget> ForceExitCautionWidget;

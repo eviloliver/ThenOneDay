@@ -157,7 +157,10 @@ void UMJPauseMenuWidget::OnClicked_QuitGame()
 			TWeakObjectPtr<UMJPauseMenuWidget> WeakThis = this;
 			CastedWidget->PopUpWithCallback(FOnUserConfirmed::CreateLambda([WeakThis]
 			{
-				UKismetSystemLibrary::QuitGame(WeakThis->GetWorld(),nullptr,EQuitPreference::Quit,false);
+				if (WeakThis.IsValid())
+				{
+					UKismetSystemLibrary::QuitGame(WeakThis->GetWorld(),nullptr,EQuitPreference::Quit,false);
+				}
 			}), FText::FromString(TEXT("All unsaved changes will be lost. Are you sure you want to quit the game?")));
 		}
 	}

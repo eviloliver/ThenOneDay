@@ -47,18 +47,20 @@ FReply UMJLoadGameSlotWidget::NativeOnMouseButtonDoubleClick(const FGeometry& In
 			PopUpMsgWidget->PopUpWithCallback(FOnUserConfirmed::CreateLambda([WeakThis]
 				{
 					// Saving at SavePoint. Widget popups only in town.
-					
-					WeakThis->GetGameInstance()->GetSubsystem<UMJSaveGameSubsystem>()->SaveGameToSelectedSlotNum(WeakThis->SlotNum);
-						
-					AMJPlayerController* MJPC = Cast<AMJPlayerController>(UGameplayStatics::GetPlayerController(WeakThis->GetWorld(),0));
-						
-					if (MJPC)
+					if (WeakThis.IsValid())
 					{
-						MJPC->GetGameFlowHUD()->GetSaveGameWidget()->SetVisibility(ESlateVisibility::Hidden);
-						MJPC->ChangeToIMCDefault();
+						WeakThis->GetGameInstance()->GetSubsystem<UMJSaveGameSubsystem>()->SaveGameToSelectedSlotNum(WeakThis->SlotNum);
+							
+						AMJPlayerController* MJPC = Cast<AMJPlayerController>(UGameplayStatics::GetPlayerController(WeakThis->GetWorld(),0));
+							
+						if (MJPC)
+						{
+							MJPC->GetGameFlowHUD()->GetSaveGameWidget()->SetVisibility(ESlateVisibility::Hidden);
+							MJPC->ChangeToIMCDefault();
+						}
+					
+						UGameplayStatics::SpawnSound2D(WeakThis->GetWorld(),WeakThis->FailSound);
 					}
-				
-					UGameplayStatics::SpawnSound2D(WeakThis->GetWorld(),WeakThis->FailSound);
 
 				}), FText::FromString(FString::Printf(TEXT("Are you sure to Save at Slot_%d ?"), SlotNum) ));
 		}
