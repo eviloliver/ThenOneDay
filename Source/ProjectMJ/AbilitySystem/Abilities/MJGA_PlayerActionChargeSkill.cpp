@@ -118,10 +118,6 @@ void UMJGA_PlayerActionChargeSkill::OnMousePositionReady(const FVector& MouseLoc
 
 	UAbilityTask_PlayMontageAndWait* PlayChargeMontage = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, TEXT("PlayCharge"), SkillChargeAnimMontage, 1.0f);
 
-	//PlayChargeMontage->OnCompleted.AddDynamic(this, &UMJGA_PlayerActionChargeSkill::OnCompleteCallback);
-	//PlayChargeMontage->OnInterrupted.AddDynamic(this, &UMJGA_PlayerActionChargeSkill::OnInterruptedCallback);
-	//PlayChargeMontage->OnCancelled.AddDynamic(this, &UMJGA_PlayerActionChargeSkill::OnInterruptedCallback);
-
 	PlayChargeMontage->ReadyForActivation();
 }
 
