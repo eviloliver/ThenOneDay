@@ -87,6 +87,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
 	TArray<TObjectPtr<UMJDamageComponent>> DamageComponents;
 	int DamageIndex = 0;
+	float OffSet = 0;
 
 protected:
 	UPROPERTY(EditDefaultsOnly)

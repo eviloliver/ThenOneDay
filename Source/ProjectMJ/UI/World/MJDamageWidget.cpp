@@ -2,16 +2,13 @@
 
 
 #include "UI/World/MJDamageWidget.h"
-#include "AbilitySystem/MJAbilitySystemComponent.h"
-#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "Components/TextBlock.h"
 #include "Animation/WidgetAnimationEvents.h"
 
 void UMJDamageWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	AnimFinishedDelegate.BindDynamic(this,&UMJDamageWidget::OnAnimFinished);
+	
 }
 
 
@@ -21,7 +18,7 @@ void UMJDamageWidget::SetDamage(float damage, bool IsCritical)
 
 	if (IsCritical)
 	{
-		Damage->SetColorAndOpacity( FSlateColor(FLinearColor::Red));
+		Damage->SetColorAndOpacity( FSlateColor(FLinearColor::Yellow));
 	}
 	else
 	{
@@ -34,10 +31,6 @@ void UMJDamageWidget::PlayAnim()
 	if (DamageAnim)
 	{
 		PlayAnimation(DamageAnim);
-	}
-	else
-	{
-		UE_LOG(LogTemp,Error,TEXT("PlayAnimation damage"));
 	}
 }
 
