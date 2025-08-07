@@ -23,6 +23,8 @@ AMJSceneCapture2D::AMJSceneCapture2D()
 	SetActorRotation(FRotator3d(-90.0f,0.0f,0.0f));
 	ProceduralMeshComponent = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("ProceduralMeshComponent"));
 	//ProceduralMeshComponent->SetupAttachment(RootComponent);
+	
+	ProceduralMeshComponent->bCastDynamicShadow = false;
 }
 
 void AMJSceneCapture2D::PostInitializeComponents()
