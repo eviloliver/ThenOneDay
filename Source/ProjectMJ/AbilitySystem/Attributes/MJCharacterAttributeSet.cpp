@@ -107,10 +107,17 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 		{
 			if (Data.EvaluatedData.Magnitude < 0.f) //이렇게 하면 힐이 들어와도 ondamage가 실행되는 불상사를 막을 수 있는 거 같다.!
 			{
-				const FGameplayEffectSpec& Spec = Data.EffectSpec;
-				float IsCritical = Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Character.IsCritical")), false, 0.f);
-				bool bIsCritical = (IsCritical > 0.5f); // 크리티컬이면 1이 들어가게 설정해둠
-				OnDamage.Broadcast(Data.EvaluatedData.Magnitude, bIsCritical);
+				bool bIsCritical;
+				if (Data.EffectSpec.GetDynamicAssetTags().HasTag(FGameplayTag::RequestGameplayTag(FName("Data.Character.IsCritical"))))
+				{
+					bIsCritical = true;
+				}
+				else
+				{
+					bIsCritical = false;
+				}
+				StatComp->OnDamaged(Data.EvaluatedData.Magnitude, bIsCritical);
+                				
 			}
 		}
 	}
