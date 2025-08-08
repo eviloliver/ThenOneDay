@@ -20,6 +20,7 @@
 #include "UI/MJUIManagerSubsystem.h"
 #include "TG/MJGameInstanceTG.h"
 #include "Character/Component/MJPlayerStatComponent.h"
+#include "DataAsset/MJStateAbilityDataAsset.h"
 #include "Item/MJItemBase.h"
 #include "MJ/DataAssetMJ/MJDropItemsDataAsset.h"
 #include "UI/Inventory/ItemDataRow.h"
@@ -216,6 +217,30 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 
 	// Minjin: 지정한 확률로 아이템 태그를 얻음
 	EnemyBequest.ItemTag = DataRow->DropItems->TryDropItem();
+
+	/*
+	 * Minjin
+	 * StateAbilityDataAsset을 통한 어빌리티 부여
+	 * 관련 태그를 맵의 키로 쓰고 있는데.. 다른 방법 있다면 알려주세요..(부여는 X)
+	 */
+	UMJStateAbilityDataAsset* StateAbility = DataRow->StateAbility;
+	if (!StateAbility)
+	{
+		MJ_LOG(LogMJ, Log, TEXT("Not Exist StateAbility"));
+		return;
+	}
+
+	// Minjin: Player 따로, Enemy 따로 진행해야 되나?
+	// Minjin: State Ability 부여
+	FGameplayAbilitySpec AppearAbilitySpec(StateAbility->ActionAppearanceAbilityClass);
+	ASC->GiveAbility(AppearAbilitySpec);
+
+	FGameplayAbilitySpec DamageAbilitySpec(StateAbility->ActionDamageAbilityClass);
+	ASC->GiveAbility(DamageAbilitySpec);
+
+	FGameplayAbilitySpec DeathAbilitySpec(StateAbility->ActionDeathAbilityClass);
+	ASC->GiveAbility(DeathAbilitySpec);
+
 }
 
 void AMJMonsterCharacter::GiveDeathRewardTo()
@@ -277,40 +302,44 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 		AIController->StopAI();
 	}
 	SetActorEnableCollision(false);
+
+	FGameplayEventData EventData;
+	EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("Event.Character.Dead"));
+	ASC->HandleGameplayEvent(EventData.EventTag, &EventData);
 	
-	if (DeathAnimation)
-	{
-		MJ_LOG(LogMJ, Warning, TEXT("%s: Play Death Animation"), *GetName());
-		//StopAnimMontage();
-		//GetMesh()->PlayAnimation(DeathAnimation, false);<-이거로 하면 공격 들어갈때마다 애니메이션이 처음부터 재생됨
-		GetMesh()->OverrideAnimationData(DeathAnimation, false);
-
-		// Minin: Target 정보 저장
-		EnemyBequest.Target = InEffectCauser;
-		
-		const float FinishDelay = DeathAnimation->GetPlayLength();
-
-		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
-			[this]()
-			{
-				SetActorHiddenInGame(true);
-
-				// Minjin: 경험치 전달, 아이템 스폰
-				GiveDeathRewardTo();
-				
-				Destroy();
-			}
-		), FinishDelay, false);
-	}
-	else
-	{
-		SetActorHiddenInGame(true);
-
-		// Minjin: 경험치 전달, 아이템 스폰
-		GiveDeathRewardTo();
-		
-		Destroy();
-	}
+	// if (DeathAnimation)
+	// {
+	// 	MJ_LOG(LogMJ, Warning, TEXT("%s: Play Death Animation"), *GetName());
+	// 	//StopAnimMontage();
+	// 	//GetMesh()->PlayAnimation(DeathAnimation, false);<-이거로 하면 공격 들어갈때마다 애니메이션이 처음부터 재생됨
+	// 	GetMesh()->OverrideAnimationData(DeathAnimation, false);
+	//
+	// 	// Minin: Target 정보 저장
+	// 	EnemyBequest.Target = InEffectCauser;
+	// 	
+	// 	const float FinishDelay = DeathAnimation->GetPlayLength();
+	//
+	// 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
+	// 		[this]()
+	// 		{
+	// 			SetActorHiddenInGame(true);
+	//
+	// 			// Minjin: 경험치 전달, 아이템 스폰
+	// 			GiveDeathRewardTo();
+	// 			
+	// 			Destroy();
+	// 		}
+	// 	), FinishDelay, false);
+	// }
+	// else
+	// {
+	// 	SetActorHiddenInGame(true);
+	//
+	// 	// Minjin: 경험치 전달, 아이템 스폰
+	// 	GiveDeathRewardTo();
+	// 	
+	// 	Destroy();
+	// }
 	DamageIndex = 0;
 }
 

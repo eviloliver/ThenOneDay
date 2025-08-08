@@ -14,6 +14,7 @@
  * Modified Date:
  */
 
+class UMJStateAbilityDataAsset;
 class UMJDropItemsDataAsset;
 class AMJMonsterAIControllerBase;
 class UCurveTable;
@@ -72,6 +73,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UAnimationAsset> DeathAnimation;
+
+	// Minjin: State Ability DataAsset
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UMJStateAbilityDataAsset> StateAbility;
 	
 	/*
 	 * TODO
