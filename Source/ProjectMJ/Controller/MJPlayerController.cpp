@@ -24,6 +24,7 @@
 #include "UI/Component/MJInteractComponent.h"
 #include "UI/Store/MJMerchandiseSlot.h"
 #include "UI/Store/MJPopupWidget.h"
+#include "UI/Store/MJStoreComponent.h"
 #include "UI/Store/MJStoreWidget.h"
 
 
@@ -98,7 +99,8 @@ void AMJPlayerController::BeginPlay()
 
 	if (UIManager->GetHUDWidget()->GetStoreWidget())
 	{
-		UIManager->GetHUDWidget()->GetStoreWidget()->OnClickedYes.AddDynamic(this,&AMJPlayerController::OnPurchase);
+		UIManager->GetHUDWidget()->GetStoreWidget()->OnClickedPurchaseYes.AddDynamic(this,&AMJPlayerController::OnPurchase);
+		UIManager->GetHUDWidget()->GetStoreWidget()->OnClickedSellYes.AddDynamic(this,&AMJPlayerController::OnSell);
 	}
 }
 
@@ -477,6 +479,11 @@ void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor*
 			if (AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn()))
 			{
 				MJChar->SetUITarget(Other);
+				if (InteractComp->GetStoreComponent())
+				{
+					InteractComp->GetStoreComponent()->SetItemData(MJChar->GetInventoryComponent()->GetItemTags(),MJChar->GetInventoryComponent()->GetItemTags().Num(), CanPurchaseQuantity);
+					
+				}
 			}
 		}
 	}
@@ -505,24 +512,33 @@ void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AAc
 {
 	AMJItemBase* Item = Cast<AMJItemBase>(Other);
 	if (!Item) return;
-	
+	UE_LOG(LogTemp,Error,TEXT("AMJPlayerController::OnTriggeredItemIn"));
 	AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
 	if (!MyChar) return;
 	
 	UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
 	 if (InventoryComp)
 	 {
-	 	InventoryComp->PickUpItem(Item->GetItemTag(), 1);
+	 	InventoryComp->PickUpItem(Item->GetItemTag(), 1, UIManager->GetHUDWidget()->GetStoreWidget());
+
+	 	TArray<UMJMerchandiseSlot*> InvenSlot = UIManager->GetHUDWidget()->GetStoreWidget()->GetInventorySlots();
+	 	for (int i = 0; i < InvenSlot.Num(); i++)
+	 	{
+	 		if (InvenSlot[i])
+	 		{
+	 			InvenSlot[i]->OnMerchandiseSlotEvent.AddDynamic(this, &AMJPlayerController::OnTryPurchase);
+	 		}
+	 	}
+
 	 	Item->Destroy();
 	 }
 }
 
-void AMJPlayerController::OnTryPurchase(FGameplayTag& ItemTag, int32 Price, int32 Quantity)
+void AMJPlayerController::OnTryPurchase(FGameplayTag& ItemTag, int32 Price, int32 Quantity) // GET Item Data
 {
 	ItemTagForPurchase = ItemTag;
 	ItemPrice = Price;
 	ItemQuantity = Quantity;
-	
 }
 
 void AMJPlayerController::OnPurchase()
@@ -537,6 +553,7 @@ void AMJPlayerController::OnPurchase()
    		if (StatComp->GetGold() >= ItemQuantity * ItemPrice)
    		{
    			InventoryComp->PickUpItem(ItemTagForPurchase, ItemQuantity);
+   			CanPurchaseQuantity = InventoryComp->GetItemInInventory()[ItemTagForPurchase].ItemCount;
    			StatComp->SpendGold(ItemQuantity * ItemPrice);
    			for (auto* Slot : UIManager->GetHUDWidget()->GetStoreWidget()->GetMerchandiseSlots())
    			{
@@ -552,6 +569,34 @@ void AMJPlayerController::OnPurchase()
    			return;
    		}
    	}
+}
+
+void AMJPlayerController::OnSell()
+{
+	AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
+	if (!MyChar) return;
+	
+	UMJPlayerStatComponent* StatComp = GetPawn()->FindComponentByClass<UMJPlayerStatComponent>();
+	UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
+	if (StatComp && InventoryComp)
+	{
+		if (InventoryComp->GetItemInInventory()[ItemTagForPurchase].ItemCount < ItemQuantity)
+		{
+			CanPurchaseQuantity = InventoryComp->GetItemInInventory()[ItemTagForPurchase].ItemCount;
+			ItemQuantity = InventoryComp->GetItemInInventory()[ItemTagForPurchase].ItemCount;
+			StatComp->GainGold(ItemQuantity * ItemPrice);
+		}
+		
+		InventoryComp->DropItem(ItemTagForPurchase,ItemQuantity);
+		
+		for (auto* Slot : UIManager->GetHUDWidget()->GetStoreWidget()->GetMerchandiseSlots())
+		{
+			if (Slot)
+			{
+				Slot->InitializeQuantity(); // 판매 완료 후 판매 수량 초기화
+			}
+		}
+	}
 }
 
 void AMJPlayerController::PauseGame()

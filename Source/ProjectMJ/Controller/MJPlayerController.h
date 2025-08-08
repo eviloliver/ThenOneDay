@@ -80,6 +80,7 @@ private:
 	FGameplayTag ItemTagForPurchase;
 	int32 ItemPrice;
 	int32 ItemQuantity;
+	int32 CanPurchaseQuantity;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction> ChangeIMCAction;
@@ -146,6 +147,9 @@ public:
 
 	UFUNCTION()
 	void OnPurchase();
+
+	UFUNCTION()
+	void OnSell();
 #pragma endregion
 
 

@@ -68,6 +68,10 @@ protected:
 	FGameplayTag ItemTag;
 	int32 Price;
 	int32 Quantity = 0;
+
+	bool IsEmpty = true;
+
+	int32 MaxQuantity = 0;
     	
 public:
 	virtual void NativeConstruct() override;
@@ -99,4 +103,8 @@ public:
 	void OnClicked_MinusTenButton();
 
 	FOnMerchandiseSlotEvent OnMerchandiseSlotEvent;
+
+	bool GetIsEmpty() { return IsEmpty; }
+	void SetIsEmpty(bool isEmpty) { IsEmpty = isEmpty; }
+	void SetMaxQuantity(int32 maxQuantity) { MaxQuantity = maxQuantity; }
 };

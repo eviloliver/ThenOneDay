@@ -4,7 +4,6 @@
 #include "UI/Store/MJStoreWidget.h"
 
 #include "MJPopupWidget.h"
-#include "MJStoreComponent.h"
 #include "Character/Component/MJPlayerStatComponent.h"
 #include "Components/Button.h"
 #include "Components/ScrollBox.h"
@@ -14,10 +13,11 @@
 void UMJStoreWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	
+
+	// 상점에 슬롯채우기
 	if (!ScrollBox || !MerchandiseSlotClass) 
     {
-    	UE_LOG(LogTemp,Error,TEXT("머가 없다"));
+    	UE_LOG(LogTemp,Error,TEXT("상점용 슬롯 클래스가 없다"));
     	return;
     }
 	
@@ -27,10 +27,32 @@ void UMJStoreWidget::NativeConstruct()
 		ScrollBox->AddChild(NewSlot);
         MerchandiseSlots.Add(NewSlot);
     }
+	//
+		
+	//Delegate
+	PurchasePopup->SetVisibility(ESlateVisibility::Hidden);
+	//PurchasePopup->SetNotification(FText::FromString("정말 구매하시겠어요? 구매 시 철회가 불가능합니다."));
+	PurchasePopup->GetYesButton()->OnClicked.AddDynamic(this,&UMJStoreWidget::OnClicked_PurchasePopupYes);
+	PurchasePopup->GetNoButton()->OnClicked.AddDynamic(this,&UMJStoreWidget::OnClicked_PurchasePopupNo);
+
+	SellPopup->SetVisibility(ESlateVisibility::Hidden);
+	//SellPopup->SetNotification(FText::FromString("정말 판매하시겠어요? 판매 시 재구매가 불가능합니다."));
+	SellPopup->GetYesButton()->OnClicked.AddDynamic(this,&UMJStoreWidget::OnClicked_SellPopupYes);
+	SellPopup->GetNoButton()->OnClicked.AddDynamic(this,&UMJStoreWidget::OnClicked_SellPopupNo);
+	//
+}
+
+void UMJStoreWidget::UpdateInventorySlot()
+{
+	if (!InvenScrollBox || !InventorySlotClass) 
+	{
+		UE_LOG(LogTemp,Error,TEXT("인벤용 슬롯 클래스가 없다"));
+		return;
+	}
 	
-	Popup->SetVisibility(ESlateVisibility::Hidden);
-	Popup->GetYesButton()->OnClicked.AddDynamic(this,&UMJStoreWidget::OnClicked_PopupYes);
-	Popup->GetNoButton()->OnClicked.AddDynamic(this,&UMJStoreWidget::OnClicked_PopupNo);
+	UMJMerchandiseSlot* NewSlot_2 = CreateWidget<UMJMerchandiseSlot>(this, InventorySlotClass);
+	InvenScrollBox->AddChild(NewSlot_2);
+	InventorySlots.Add(NewSlot_2);
 }
 
 void UMJStoreWidget::SetStatComponent(UMJPlayerStatComponent* StatComp)
@@ -48,40 +70,76 @@ void UMJStoreWidget::SetAvailableGold(int32 Gold)
 	AvailableGold->SetText(FText::FromString(FString::FromInt(Gold)));
 }
 
-void UMJStoreWidget::Onclicked_Slot()
+void UMJStoreWidget::Onclicked_PurchaseButton()
 {
-	Popup->SetVisibility(ESlateVisibility::Visible);
+	PurchasePopup->SetVisibility(ESlateVisibility::Visible);
 	for (int i =0; i < MerchandiseSlots.Num(); i++)
 	{
 		MerchandiseSlots[i]->GetButton()->SetIsEnabled(false);
 	}
 }
 
-void UMJStoreWidget::OnClicked_PopupYes()
+void UMJStoreWidget::OnClicked_PurchasePopupYes()
 {
-	Popup->SetVisibility(ESlateVisibility::Hidden);
+	PurchasePopup->SetVisibility(ESlateVisibility::Hidden);
 	for (int i =0; i < MerchandiseSlots.Num(); i++)
 	{
 		MerchandiseSlots[i]->GetButton()->SetIsEnabled(true);
 	}
-	OnClickedYes.Broadcast();
+	OnClickedPurchaseYes.Broadcast();
 }
 
-void UMJStoreWidget::OnClicked_PopupNo()
+void UMJStoreWidget::OnClicked_PurchasePopupNo()
 {
-	Popup->SetVisibility(ESlateVisibility::Hidden);
+	PurchasePopup->SetVisibility(ESlateVisibility::Hidden);
 	for (int i =0; i < MerchandiseSlots.Num(); i++)
 	{
 		MerchandiseSlots[i]->GetButton()->SetIsEnabled(true);
+	}
+}
+
+void UMJStoreWidget::Onclicked_SellButton()
+{
+	SellPopup->SetVisibility(ESlateVisibility::Visible);
+	for (int i =0; i < InventorySlots.Num(); i++)
+	{
+		InventorySlots[i]->GetButton()->SetIsEnabled(false);
+	}
+}
+
+void UMJStoreWidget::OnClicked_SellPopupYes()
+{
+	SellPopup->SetVisibility(ESlateVisibility::Hidden);
+	for (int i =0; i < InventorySlots.Num(); i++)
+	{
+		InventorySlots[i]->GetButton()->SetIsEnabled(true);
+	}
+	OnClickedSellYes.Broadcast();
+}
+
+void UMJStoreWidget::OnClicked_SellPopupNo()
+{
+	SellPopup->SetVisibility(ESlateVisibility::Hidden);
+	for (int i =0; i < InventorySlots.Num(); i++)
+	{
+		InventorySlots[i]->GetButton()->SetIsEnabled(true);
 	}
 }
 
 void UMJStoreWidget::CloseWidget()
 {
-	Popup->SetVisibility(ESlateVisibility::Hidden);
+	// 팝업이 열린 상태로 상점을 닫는 경우, 나중에 다시 켰을 때 팝업이 꺼져있게 하기 위함
+	PurchasePopup->SetVisibility(ESlateVisibility::Hidden);
+	SellPopup->SetVisibility(ESlateVisibility::Hidden);
+
+	// 늘려놨던 개수들도 리셋
 	for (int i =0; i < MerchandiseSlots.Num(); i++)
 	{
 		MerchandiseSlots[i]->InitializeQuantity();
+	}
+	for (int i =0; i < InventorySlots.Num(); i++)
+	{
+		InventorySlots[i]->InitializeQuantity();
 	}
 	
 }

@@ -82,6 +82,10 @@ void UMJMerchandiseSlot::TryPurchase()
 void UMJMerchandiseSlot::OnClicked_PlusButton()
 {
 	Quantity ++;
+	if (Quantity >= MaxQuantity)
+	{
+		Quantity = MaxQuantity;
+	}
 	SetQuantity(Quantity);
 }
 
@@ -94,12 +98,17 @@ void UMJMerchandiseSlot::OnClicked_MinusButton()
 	}
 	
 	Quantity --;
+	
 	SetQuantity(Quantity);
 }
 
 void UMJMerchandiseSlot::OnClicked_PlusTenButton()
 {
 	Quantity += 10;
+	if (Quantity >= MaxQuantity)
+	{
+		Quantity = MaxQuantity;
+	}
 	SetQuantity(Quantity);
 }
 

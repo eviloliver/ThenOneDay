@@ -78,7 +78,14 @@ public:
 	
 	void SetImage(UTexture2D* ItemTexture);
 	void SetText(FText text);
-	void SetItemCount(int count) {ItemCount->SetText(FText::AsNumber(count));};
+	void SetItemCount(int count)
+	{
+		ItemCount->SetText(FText::AsNumber(count));
+		if (count == 0)
+		{
+			ItemCount->SetText(FText::GetEmpty());
+		}
+	};
 	void SetIsOccupied(bool b) {bIsOccupied = b;}
 	
 	void SetInventoryItemData(FInventoryItemData data){InventoryData = data;}

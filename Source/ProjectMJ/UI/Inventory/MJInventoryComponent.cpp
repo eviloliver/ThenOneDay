@@ -8,12 +8,15 @@
 #include "TG/MJGameInstanceTG.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/MJUIManagerSubsystem.h"
+#include "UI/Store/MJStoreComponent.h"
+#include "UI/Store/MJStoreWidget.h"
 
 UMJInventoryComponent::UMJInventoryComponent()
 {
-	
+	ItemEmptyData.ItemTag = FGameplayTag::EmptyTag;
+	ItemEmptyData.ItemCount = 0;
 }
-void UMJInventoryComponent::PickUpItem(FGameplayTag ItemTag, int32 Count) 
+void UMJInventoryComponent::PickUpItem(FGameplayTag ItemTag, int32 Count, UMJStoreWidget* StoreWidget) 
 {
 #pragma region InventoryRef
 	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
@@ -58,6 +61,11 @@ void UMJInventoryComponent::PickUpItem(FGameplayTag ItemTag, int32 Count)
 	}
 	else
 	{
+		if (StoreWidget)
+		{
+			StoreWidget->UpdateInventorySlot();
+		}
+		
 		FInventoryItemData NewItemData;
 		NewItemData.ItemTag = ItemTag;
 		NewItemData.ItemCount = Count;
@@ -72,21 +80,30 @@ void UMJInventoryComponent::PickUpItem(FGameplayTag ItemTag, int32 Count)
 				break;
 			}
 		}
-		if (NewItemData.Position == -1)
-		{
-			UE_LOG(LogTemp,Error,TEXT("자리가 부족합니다"));
-			return;
-		}
+		// if (NewItemData.Position == -1)
+		// {
+		// 	UE_LOG(LogTemp,Error,TEXT("자리가 부족합니다"));
+		// 	return;
+		// }
 		
 		ItemInInventory.Add(ItemTag, NewItemData);
+		ItemTags.Add(ItemTag);
 	}
 	UpdateSlot(ItemTag);
 }
 
-void UMJInventoryComponent::DropItem(FGameplayTag ItemTag)
+void UMJInventoryComponent::DropItem(FGameplayTag ItemTag, int32 count)
 {
-	// 티맵의 아이템을 지워야 하지 않을까
-	//ItemInInventory.Remove(ItemName); // 나중에 전체가 아니라 일부만 버리고 싶게 할 때는 입력받은 숫자만큼 카운트만 줄이기??
+	ItemInInventory[ItemTag].ItemCount -= count;
+	if (ItemInInventory[ItemTag].ItemCount <= 0)
+	{
+		ItemEmptyData.Position = ItemInInventory[ItemTag].Position;
+		UpdateSlot(ItemEmptyData.ItemTag);
+		ItemInInventory.Remove(ItemTag);
+		return;
+	}
+
+	UpdateSlot(ItemTag);
 }
 
 void UMJInventoryComponent::UpdateSlot(FGameplayTag ItemTag)
@@ -123,11 +140,31 @@ void UMJInventoryComponent::UpdateSlot(FGameplayTag ItemTag)
 		}
 	}
 #pragma endregion inventory
-	// Test
+	if (ItemTag == ItemEmptyData.ItemTag)
+    {
+		InventorySlot[ItemEmptyData.Position]->SetInventoryItemData({FGameplayTag::EmptyTag, 0, ItemEmptyData.Position});
+		InventorySlot[ItemEmptyData.Position]->SetItemCount(0);
+		InventorySlot[ItemEmptyData.Position]->SetText(FText::GetEmpty());
+		InventorySlot[ItemEmptyData.Position]->SetImage(nullptr);
+
+		return;	
+    }
+
 	InventorySlot[ItemInInventory[ItemTag].Position]->SetInventoryItemData(ItemInInventory[ItemTag]);
 	InventorySlot[ItemInInventory[ItemTag].Position]->SetItemData(*GI->ItemDataTable->FindRow<FItemDataRow>(ItemTag.GetTagName(),TEXT("Inventory")));
 	
 	InventorySlot[ItemInInventory[ItemTag].Position]->SetItemCount(ItemInInventory[ItemTag].ItemCount);
 	InventorySlot[ItemInInventory[ItemTag].Position]->SetText(GI->ItemDataTable->FindRow<FItemDataRow>(ItemTag.GetTagName(),TEXT("Inventory"))->ItemID);
 	InventorySlot[ItemInInventory[ItemTag].Position]->SetImage(GI->ItemDataTable->FindRow<FItemDataRow>(ItemTag.GetTagName(),TEXT("Inventory"))->Icon);
+
+
+}
+
+void UMJInventoryComponent::ZeroItem(FGameplayTag ItemTag)
+{
+	if (ItemInInventory[ItemTag].ItemCount == 0)
+	{
+		ItemTag = FGameplayTag::EmptyTag;
+	}
+	
 }

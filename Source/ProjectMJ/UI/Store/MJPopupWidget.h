@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MJPopupWidget.generated.h"
 
+class UTextBlock;
 class UButton;
 /**
  * 
@@ -17,12 +18,16 @@ class PROJECTMJ_API UMJPopupWidget : public UUserWidget
 
 protected:
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> Notification;
+	
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> YesButton;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> NoButton;
 
 public:
+	void SetNotification(FText notification);
 	UButton* GetYesButton() {return YesButton;}
 	UButton* GetNoButton() {return NoButton;}
 };

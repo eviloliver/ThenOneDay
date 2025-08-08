@@ -26,16 +26,28 @@ class PROJECTMJ_API UMJStoreWidget : public UUserWidget
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UScrollBox> ScrollBox;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UScrollBox> InvenScrollBox;
 	
 	UPROPERTY(meta = (BindWidget))
 	TArray<TObjectPtr<UMJMerchandiseSlot>> MerchandiseSlots;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Inventory)
+	UPROPERTY(meta = (BindWidget))
+	TArray<TObjectPtr<UMJMerchandiseSlot>> InventorySlots;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= Store)
 	TSubclassOf<UMJMerchandiseSlot> MerchandiseSlotClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= Store)
+	TSubclassOf<UMJMerchandiseSlot> InventorySlotClass;
+	
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UMJPopupWidget> Popup;
+	TObjectPtr<UMJPopupWidget> PurchasePopup;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJPopupWidget> SellPopup;
+	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> AvailableGold;
 
@@ -44,21 +56,36 @@ protected:
 public:
 	virtual void NativeConstruct() override;
 
+	void UpdateInventorySlot();
+	
 	TArray<UMJMerchandiseSlot*> GetMerchandiseSlots() {return MerchandiseSlots;}
+	TArray<UMJMerchandiseSlot*> GetInventorySlots() {return InventorySlots;}
 	
 	void SetStatComponent(UMJPlayerStatComponent* StatComp);
 	
 	UFUNCTION()
 	void SetAvailableGold(int32 Gold);
-	UFUNCTION()
-	void Onclicked_Slot();
-	UFUNCTION()
-	void OnClicked_PopupYes();
-	UFUNCTION()
-	void OnClicked_PopupNo();
 
-	UMJPopupWidget* GetPopup() {return Popup;};
+	// 구매 팝업 관련
+	UFUNCTION()
+	void Onclicked_PurchaseButton();
+	UFUNCTION()
+	void OnClicked_PurchasePopupYes();
+	UFUNCTION()
+	void OnClicked_PurchasePopupNo();
+
+
+	// 판매 팝업관련
+	UFUNCTION()
+	void Onclicked_SellButton();
+	UFUNCTION()
+	void OnClicked_SellPopupYes();
+	UFUNCTION()
+	void OnClicked_SellPopupNo();
+
+	UMJPopupWidget* GetPurchasePopup() {return PurchasePopup;};
 	void CloseWidget();
 	
-	FOnClickedYes OnClickedYes;
+	FOnClickedYes OnClickedPurchaseYes;
+	FOnClickedYes OnClickedSellYes;
 };
