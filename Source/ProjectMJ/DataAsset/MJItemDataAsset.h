@@ -13,7 +13,7 @@ class AMJItemBase;
  * Author: Kim Minjin
  * Created Date: 2025.07.26.
  * Last Modified By:
- * Last Modified Date:
+ * Last Modified Date: 현재 사용 안 함.(DropItemsDataAsset 사용)
  */
 UCLASS()
 class PROJECTMJ_API UMJItemDataAsset : public UDataAsset

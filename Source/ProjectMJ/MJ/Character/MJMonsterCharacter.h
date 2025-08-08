@@ -54,7 +54,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
-	// Minjin: Interface
+	// Minjin: Interface-바꿀 예정
 	virtual float GetAIPatrolRadius() override;
 	virtual float GetAITurnSpeed() override;
 	virtual float GetAIMaximumAttackRange() override;
@@ -110,7 +110,7 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	bool bIsDying = false;
 
-	// Minjin: Animation
+	// Minjin: Animation-안 쓸 예정
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UAnimationAsset> AppearanceAnimation;
 

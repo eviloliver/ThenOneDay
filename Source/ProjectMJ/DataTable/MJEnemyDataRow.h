@@ -66,7 +66,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UMJDropItemsDataAsset> DropItems;
 	
-	// Minjin: Animation
+	// Minjin: Animation - 안 쓸 예정
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UAnimationAsset> AppearanceAnimation;
 
