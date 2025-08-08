@@ -39,9 +39,12 @@ AMJPlayerController::AMJPlayerController()
 	LMBHoldTime = 0.0f;
 
 	bIsRMBPressed = false;
+	bIsRMBHolding = false;
 	RMBHoldTime = 0.0f;
 
-	HoldThreshold = 0.1f;
+	bIsCharge = false;
+	bShiftKeyDown = false;
+
 	ChargeThreshold = 0.3f;
 }
 
@@ -136,21 +139,24 @@ void AMJPlayerController::PlayerTick(float DeltaTime)
 
 	if (bIsLMBPressed && !bIsLMBHolding)
 	{
-		LMBHoldTime += DeltaTime;
-		if (LMBHoldTime >= HoldThreshold)
-		{
-			bIsLMBHolding = true;
-		}
+		bIsLMBHolding = true;
 	}
 
 	if (bIsLMBHolding)
 	{
+		LMBHoldTime += DeltaTime;
 		HandleLeftMouseHold();
 	}
 
-	if (bIsRMBPressed)
+	if (bIsRMBPressed && !bIsRMBHolding)
+	{
+		bIsRMBHolding = true;
+	}
+
+	if (bIsRMBHolding)
 	{
 		RMBHoldTime += DeltaTime;
+		HandleRightMouseHold();
 	}
 }
 
@@ -230,12 +236,16 @@ void AMJPlayerController::HandleLeftMouseHold()
 void AMJPlayerController::OnRightMousePressed()
 {
 	bIsRMBPressed = true;
+	bIsRMBHolding = false;
+	bIsCharge = false;
 	RMBHoldTime = 0.0f;
 }
 
 void AMJPlayerController::OnRightMouseReleased()
 {
 	StopMovement();
+
+
 
 	AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
 	if (!ControlledCharacter)
@@ -249,7 +259,9 @@ void AMJPlayerController::OnRightMouseReleased()
 		return;
 	}
 	MJ_LOG(LogMJ, Warning, TEXT("%f"), RMBHoldTime);
-	if (RMBHoldTime < ChargeThreshold)
+
+
+	if (!bIsCharge)
 	{
 		
 		FGameplayTag InstantSkillTag = FGameplayTag::RequestGameplayTag(FName("Skill.Instant"));
@@ -257,6 +269,34 @@ void AMJPlayerController::OnRightMouseReleased()
 	}
 	else
 	{
+		FGameplayTag ChargeSkillTag = FGameplayTag::RequestGameplayTag(FName("Skill.Charge"));
+		SkillComponent->ReleaseSkillByInputTag(ChargeSkillTag);
+	}
+
+	bIsRMBPressed = false;
+	bIsRMBHolding = false;
+	bIsCharge = false;
+	RMBHoldTime = 0.f;
+}
+
+void AMJPlayerController::HandleRightMouseHold()
+{
+	if (!bIsCharge && RMBHoldTime >= ChargeThreshold)
+	{
+		bIsCharge = true;
+
+		AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
+		if (!ControlledCharacter)
+		{
+			return;
+		}
+
+		UMJPlayerSkillComponent* SkillComponent = ControlledCharacter->FindComponentByClass<UMJPlayerSkillComponent>();
+		if (!SkillComponent)
+		{
+			return;
+		}
+
 		FGameplayTag ChargeSkillTag = FGameplayTag::RequestGameplayTag(FName("Skill.Charge"));
 		SkillComponent->ActivateSkillByInputTag(ChargeSkillTag);
 	}

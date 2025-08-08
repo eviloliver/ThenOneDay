@@ -53,6 +53,8 @@ public:
 
 	virtual void ActivateSkill(const FGameplayTag& SkillTag);
 
+	virtual void ReleaseSkill(const FGameplayTag& SkillTag);
+
 	void GiveAbilityToASC(const FGameplayTag& SkillTag);
 
 	void RemoveAbility(const FGameplayTag& SkillTag);

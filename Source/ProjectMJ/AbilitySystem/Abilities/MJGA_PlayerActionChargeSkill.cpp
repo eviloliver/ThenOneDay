@@ -15,7 +15,7 @@
 
 UMJGA_PlayerActionChargeSkill::UMJGA_PlayerActionChargeSkill()
 {
-	bIsCharging = false;
+
 }
 
 void UMJGA_PlayerActionChargeSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -23,8 +23,6 @@ void UMJGA_PlayerActionChargeSkill::ActivateAbility(const FGameplayAbilitySpecHa
 	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	bIsCharging = true;
 
 	UMJAbilitySystemComponent* ASC = Cast<UMJAbilitySystemComponent>(ActorInfo->AbilitySystemComponent);
 	if (!ASC)
@@ -55,12 +53,8 @@ void UMJGA_PlayerActionChargeSkill::InputReleased(const FGameplayAbilitySpecHand
 {
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 
-	if (!bIsCharging || CurrentChargeTime < MinChargeTime)
-	{
-		MJ_LOG(LogMJ, Warning, TEXT("A:"));
-		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
-		return;
-	}
+	MJ_LOG(LogMJ, Warning, TEXT("BB"));
+
 	PlayReleaseMontage();
 }
 
@@ -72,8 +66,6 @@ void UMJGA_PlayerActionChargeSkill::EndAbility(const FGameplayAbilitySpecHandle 
 	{
 		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.IsCharging"));
 	}
-
-	bIsCharging = false;
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
@@ -133,6 +125,8 @@ void UMJGA_PlayerActionChargeSkill::OnReleaseMontageComplete()
 
 void UMJGA_PlayerActionChargeSkill::PlayReleaseMontage()
 {
+	MJ_LOG(LogMJ, Warning, TEXT("AA"));
+
 	if (CurrentActorInfo->AnimInstance.IsValid())
 	{
 		CurrentActorInfo->AnimInstance->Montage_Stop(0.1f, SkillChargeAnimMontage);

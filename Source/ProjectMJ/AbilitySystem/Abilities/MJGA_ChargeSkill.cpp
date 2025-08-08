@@ -13,9 +13,6 @@ UMJGA_ChargeSkill::UMJGA_ChargeSkill()
 {
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
-	MinChargeTime = 0.3f;
-	bIsCharging = false;
-	CurrentChargeTime = 0.0f;
 }
 
 bool UMJGA_ChargeSkill::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -43,8 +40,6 @@ void UMJGA_ChargeSkill::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		constexpr bool bWasCancelled = true;
 		EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 	}
-
-	BeginCharging();
 }
 
 void UMJGA_ChargeSkill::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -198,22 +193,5 @@ void UMJGA_ChargeSkill::ApplyCooldown(const FGameplayAbilitySpecHandle Handle,
 		ASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data);
 	}
 	return;
-}
-
-void UMJGA_ChargeSkill::BeginCharging()
-{
-	bIsCharging = true;
-	CurrentChargeTime = 0.0f;
-
-}
-
-void UMJGA_ChargeSkill::EndCharging(bool bWasCancelled)
-{
-	bIsCharging = false;
-
-	if (bWasCancelled)
-	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-	}
 }
 

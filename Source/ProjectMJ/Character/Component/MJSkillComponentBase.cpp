@@ -184,6 +184,42 @@ void UMJSkillComponentBase::ActivateSkill(const FGameplayTag& SkillTag)
 
 }
 
+void UMJSkillComponentBase::ReleaseSkill(const FGameplayTag& SkillTag)
+{
+	if (!OwnedSkillMap.Contains(SkillTag))
+	{
+		MJ_LOG(LogMJ, Error, TEXT("Not Exist OwnedSkillMap[SkillTag]"));
+		return;
+	}
+
+	if (!GivenActionAbilityHandles.Contains(SkillTag))
+	{
+		MJ_LOG(LogMJ, Error, TEXT("Not Exist GivenActionAbilityHandles(EquippedSlotSkill)"));
+		return;
+	}
+
+	AMJCharacterBase* OwnerCharacter = Cast<AMJCharacterBase>(GetOwner());
+	if (!OwnerCharacter)
+	{
+		MJ_LOG(LogMJ, Error, TEXT("Not Exist OwnerCharacter"));
+		return;
+	}
+
+	UMJAbilitySystemComponent* ASC = Cast<UMJAbilitySystemComponent>(OwnerCharacter->GetAbilitySystemComponent());
+	if (!ASC)
+	{
+		MJ_LOG(LogMJ, Error, TEXT("Not Exist ASC"));
+		return;
+	}
+
+	FGameplayAbilitySpecHandle Handle = GivenActionAbilityHandles[SkillTag];
+	FGameplayAbilitySpec* SpecPtr = ASC->FindAbilitySpecFromHandle(Handle);
+	if (SpecPtr)
+	{
+		ASC->AbilitySpecInputReleased(*SpecPtr);
+	}
+}
+
 void UMJSkillComponentBase::GiveAbilityToASC(const FGameplayTag& SkillTag)
 {
 	if (!OwnedSkillMap.Contains(SkillTag))
