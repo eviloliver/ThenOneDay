@@ -4,7 +4,9 @@
 #include "MJCharacterAttributeSet.h"
 #include "GameplayEffectExtension.h"
 #include "ProjectMJ.h"
+#include "Character/MJCharacterBase.h"
 #include "Character/Component/MJStatComponentBase.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UMJCharacterAttributeSet::UMJCharacterAttributeSet()
     : Experience(0.0f)
@@ -87,30 +89,36 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 
 	if (UMJStatComponentBase* StatComp = Data.Target.GetAvatarActor()->FindComponentByClass<UMJStatComponentBase>())
 	{
-		if (StatComp->GetbIsInitializingStats())
-		{
-			return;
-		}
-
-		if (GetHealth() <= 0)
-		{
-			if (!StatComp->GetbIsDead())
-			{
-				// Minjin: 데미지를 입힌 상대 전달
-				//StatComp->OnDeath.Broadcast(Data.EffectSpec.GetEffectContext().GetEffectCauser());
-				StatComp->OnDead(Data.EffectSpec.GetEffectContext().GetEffectCauser());
-			}
-		}
-
-		// Jisoo
 		if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 		{
+			if (GetHealth() <= 0)
+			{
+				if (!StatComp->GetbIsDead())
+				{
+					// Minjin: 데미지를 입힌 상대 전달
+					//StatComp->OnDeath.Broadcast(Data.EffectSpec.GetEffectContext().GetEffectCauser());
+					StatComp->OnDead(Data.EffectSpec.GetEffectContext().GetEffectCauser());
+				}
+			}
+
 			if (Data.EvaluatedData.Magnitude < 0.f) //이렇게 하면 힐이 들어와도 ondamage가 실행되는 불상사를 막을 수 있는 거 같다.!
 			{
 				const FGameplayEffectSpec& Spec = Data.EffectSpec;
 				float IsCritical = Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Character.IsCritical")), false, 0.f);
 				bool bIsCritical = (IsCritical > 0.5f); // 크리티컬이면 1이 들어가게 설정해둠
 				OnDamage.Broadcast(Data.EvaluatedData.Magnitude, bIsCritical);
+			}
+		}
+		else if (Data.EvaluatedData.Attribute == GetMaxMovementSpeedAttribute())
+		{
+			AMJCharacterBase* Character = Cast<AMJCharacterBase>(Data.Target.GetAvatarActor());
+			if (Character)
+			{
+				UCharacterMovementComponent* MoveComponent = Character->GetCharacterMovement();
+				if (MoveComponent)
+				{
+					MoveComponent->MaxWalkSpeed = GetMaxMovementSpeed();
+				}
 			}
 		}
 	}
