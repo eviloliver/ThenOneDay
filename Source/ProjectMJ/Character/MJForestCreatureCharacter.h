@@ -19,8 +19,11 @@ public:
 	AMJForestCreatureCharacter();
 
 	virtual void BeginPlay() override;
+	virtual float GetAIMaximumAttackRange() override;
+	virtual float GetAIMinimumAttackRange() override;
 
 	FORCEINLINE UMJCharacterAttributeSet* GetAttributeSet() { return CharacterAttributeSet; }
+
 private:
 
 	
