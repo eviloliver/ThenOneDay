@@ -220,8 +220,7 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 
 	/*
 	 * Minjin
-	 * StateAbilityDataAsset을 통한 어빌리티 부여
-	 * 관련 태그를 맵의 키로 쓰고 있는데.. 다른 방법 있다면 알려주세요..(부여는 X)
+	 * StateAbilityDataAsset 설정
 	 */
 	UMJStateAbilityDataAsset* StateAbility = DataRow->StateAbility;
 	if (!StateAbility)
@@ -229,18 +228,8 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 		MJ_LOG(LogMJ, Log, TEXT("Not Exist StateAbility"));
 		return;
 	}
-
-	// Minjin: Player 따로, Enemy 따로 진행해야 되나?
-	// Minjin: State Ability 부여
-	FGameplayAbilitySpec AppearAbilitySpec(StateAbility->ActionAppearanceAbilityClass);
-	ASC->GiveAbility(AppearAbilitySpec);
-
-	FGameplayAbilitySpec DamageAbilitySpec(StateAbility->ActionDamageAbilityClass);
-	ASC->GiveAbility(DamageAbilitySpec);
-
-	FGameplayAbilitySpec DeathAbilitySpec(StateAbility->ActionDeathAbilityClass);
-	ASC->GiveAbility(DeathAbilitySpec);
-
+	
+	StateAbilityDataAsset = StateAbility;
 }
 
 void AMJMonsterCharacter::GiveDeathRewardTo()
