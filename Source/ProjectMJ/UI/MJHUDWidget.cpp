@@ -43,11 +43,11 @@ void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJC
 	{
 		HealthBar->BindToAttributes(ASC,AttributeSet);
 	}
-
-	if (ManaBar)
-	{
-		ManaBar->BindToAttributes(ASC,AttributeSet);
-	}
+	//
+	// if (ManaBar)
+	// {
+	// 	ManaBar->BindToAttributes(ASC,AttributeSet);
+	// }
 
 	if (StaminaBar)
 	{

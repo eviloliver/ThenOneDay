@@ -33,8 +33,8 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJHealthBarWidget> HealthBar;
 
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UMJManaBarWidget> ManaBar;
+	// UPROPERTY(meta = (BindWidget))
+	// TObjectPtr<UMJManaBarWidget> ManaBar;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJStaminaBar> StaminaBar;
