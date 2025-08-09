@@ -66,8 +66,8 @@ void AMJMonsterCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	// Minjin: 캐릭터는 미리 맵에 스폰되어 있다. 안 보이게 설정-콜리전을 비활성화 하면 맵 밑으로 꺼짐
-	AActor::SetActorHiddenInGame(true);
-	SetActorEnableCollision(true);
+	// AActor::SetActorHiddenInGame(true);
+	// SetActorEnableCollision(true);
 	
 	// Jisoo
 	if (UMJEnemyHPBar* EnemyHPBar = Cast<UMJEnemyHPBar>(HPBarComponent->GetUserWidgetObject()))

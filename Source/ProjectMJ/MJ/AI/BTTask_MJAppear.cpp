@@ -21,8 +21,8 @@ EBTNodeResult::Type UBTTask_MJAppear::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		return EBTNodeResult::Failed;
 	}
 
-	ControlledPawn->SetActorHiddenInGame(false);
-	ControlledPawn->SetActorEnableCollision(true);
+	// ControlledPawn->SetActorHiddenInGame(false);
+	// ControlledPawn->SetActorEnableCollision(true);
 
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool("IsAppear", true);
 
