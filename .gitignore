@@ -569,6 +569,7 @@ FodyWeavers.xsd
 content/Assets/*
 content/VFX_Asset/*
 content/SFX_Asset/*
+content/Enemy_Asset/*
 
 # Rider .idea all ignore
 .idea/*
