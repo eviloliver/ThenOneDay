@@ -426,7 +426,8 @@ void AMJGameStateDungeon::SaveToInstancedDungeonSessionData(uint8 SaveToNum)
 	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
 
 	FMJDungeonSessionData NewDungeonSessionData = LoadedDungeonSessionData;
-
+	NewDungeonSessionData.SpawnInfos.Empty();
+	
 	if (MJGI) 
 	{
 		for (TActorIterator<AActor> Iter(GetWorld()); Iter ; ++Iter)
@@ -466,6 +467,7 @@ void AMJGameStateDungeon::LoadFromInstancedDungeonSessionData(uint8 LoadFromNum)
 				
 				if (SavedActor)
 				{
+					//SavedActor->SetActorScale3D(iter.Transform.GetScale3D());
 					OnActorSpawned.Broadcast(SavedActor);
 				}
 			}

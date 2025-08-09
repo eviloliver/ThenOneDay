@@ -1,11 +1,12 @@
 // ThenOneDayStudio
 
-#include "TG/Actor/MJInteractableActorBase.h"
+#include "TG/Actor/MJInteractableActor.h"
 
 #include "Components/SphereComponent.h"
+#include "TG/Component/MJMiniMapIconMeshComponent.h"
 #include "UI/Component/MJInteractComponent.h"
 
-AMJInteractableActorBase::AMJInteractableActorBase()
+AMJInteractableActor::AMJInteractableActor()
 {
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	RootComponent = StaticMesh;
@@ -14,9 +15,13 @@ AMJInteractableActorBase::AMJInteractableActorBase()
 	SphereCollision->SetupAttachment(StaticMesh);
 
 	InteractComponent = CreateDefaultSubobject<UMJInteractComponent>(TEXT("InteractComp"));
+
+	MiniMapIconMesh = CreateDefaultSubobject<UMJMiniMapIconMeshComponent>(TEXT("MiniMapIconMesh"));
+	MiniMapIconMesh->SetupAttachment(StaticMesh);
+	
 }
 
-void AMJInteractableActorBase::Execute()
+void AMJInteractableActor::Execute()
 {
 	
 }

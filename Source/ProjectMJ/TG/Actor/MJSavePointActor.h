@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MJInteractableActorBase.h"
+#include "MJInteractableActor.h"
 #include "GameFramework/Actor.h"
 #include "MJSavePointActor.generated.h"
 
@@ -15,7 +15,7 @@
  * Last Modified Date: 2025-08-05
  */
 UCLASS()
-class PROJECTMJ_API AMJSavePointActor : public AMJInteractableActorBase
+class PROJECTMJ_API AMJSavePointActor : public AMJInteractableActor
 {
 	GENERATED_BODY()
 	

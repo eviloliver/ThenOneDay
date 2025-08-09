@@ -7,4 +7,6 @@ AMJMiniMapBackgroundActor::AMJMiniMapBackgroundActor()
 {
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = StaticMesh;
+
+	StaticMesh->bCastDynamicShadow = false;
 }

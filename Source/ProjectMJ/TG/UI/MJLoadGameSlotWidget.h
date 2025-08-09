@@ -19,6 +19,7 @@ class UVerticalBox;
 class UTextBlock;
 class UBorder;
 class USoundCue;
+class UMJGameFlowPopUpMsgWidget;
 
 UCLASS()
 class PROJECTMJ_API UMJLoadGameSlotWidget : public UUserWidget
@@ -45,7 +46,6 @@ protected:
 
 	UFUNCTION()
 	void SwitchToInGame();
-	
 
 	UPROPERTY()
 	int8 SlotNum;
@@ -67,5 +67,11 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USoundCue> FailSound;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UMJGameFlowPopUpMsgWidget> PopUpMessageWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UMJGameFlowPopUpMsgWidget> PopUpMsgWidget;
 	
 };

@@ -72,7 +72,7 @@ void UMJInteractComponent::EvaluateType()
     		return;
     	}
 		// CTG : add Interact Logic 25.08.05
-		if (GetOwner()->IsA(AMJInteractableActorBase::StaticClass()))
+		if (GetOwner()->IsA(AMJInteractableActor::StaticClass()))
 		{
 			CurrentType = EMJInteractionType::Interactable;
 			return;
@@ -97,7 +97,7 @@ void UMJInteractComponent::StartInteraction()
 	}
 	else if (CurrentType == EMJInteractionType::Interactable)
 	{
-		if (AMJInteractableActorBase* Interactable = Cast<AMJInteractableActorBase>(GetOwner()))
+		if (AMJInteractableActor* Interactable = Cast<AMJInteractableActor>(GetOwner()))
 		{
 			Interactable->Execute();
 		}

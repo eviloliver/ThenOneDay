@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MJInteractableActorBase.h"
+#include "MJInteractableActor.h"
 #include "GameFramework/Actor.h"
 #include "TG/Interface/MJInstancedActorInterface.h"
 #include "MJPortalToNextDungeon.generated.h"
@@ -17,7 +17,7 @@ class UMJMiniMapIconMeshComponent;
  * Last Modified Date: 2025_07_29
  */
 UCLASS()
-class PROJECTMJ_API AMJPortalToNextDungeon : public AMJInteractableActorBase, public IMJInstancedActorInterface
+class PROJECTMJ_API AMJPortalToNextDungeon : public AMJInteractableActor, public IMJInstancedActorInterface
 {
 	GENERATED_BODY()
 	
@@ -27,10 +27,14 @@ public:
 	virtual void Execute() override;
 
 protected:
+
+	virtual void PostInitializeComponents() override;
 	
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UMJMiniMapIconMeshComponent> MiniMapIconMesh;
+	virtual void BeginPlay() override;
 	
+	// UPROPERTY(EditDefaultsOnly)
+	// TObjectPtr<UMJMiniMapIconMeshComponent> MiniMapIconMesh;
+	//
 	
 	
 };

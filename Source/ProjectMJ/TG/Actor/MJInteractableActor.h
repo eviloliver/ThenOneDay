@@ -4,9 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "MJInteractableActorBase.generated.h"
+#include "MJInteractableActor.generated.h"
 
 
+class UMJMiniMapIconMeshComponent;
 class UMJInteractComponent;
 class USphereComponent;
 class USoundCue;
@@ -18,12 +19,12 @@ class USoundCue;
  * Last Modified Date: 2025-08-05
  */
 UCLASS()
-class PROJECTMJ_API AMJInteractableActorBase : public AActor
+class PROJECTMJ_API AMJInteractableActor : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
-	AMJInteractableActorBase();
+	AMJInteractableActor();
 
 	virtual void Execute();
 	
@@ -31,6 +32,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UStaticMeshComponent> StaticMesh;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UMJMiniMapIconMeshComponent> MiniMapIconMesh;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USphereComponent> SphereCollision;
@@ -40,5 +44,7 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USoundCue> CollisionSFX;
+
+	
 
 };

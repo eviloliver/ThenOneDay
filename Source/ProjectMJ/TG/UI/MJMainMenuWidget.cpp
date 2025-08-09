@@ -24,7 +24,8 @@ void UMJMainMenuWidget::NativeConstruct()
 		FInputModeGameAndUI InputMode;
 		InputMode.SetWidgetToFocus(this->TakeWidget());
 		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockInFullscreen);
-   
+		InputMode.SetHideCursorDuringCapture(false);
+		
 		PC->SetInputMode(InputMode);
 		PC->SetShowMouseCursor(true);
 

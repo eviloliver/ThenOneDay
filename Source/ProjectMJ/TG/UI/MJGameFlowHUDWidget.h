@@ -6,12 +6,14 @@
 #include "Blueprint/UserWidget.h"
 #include "MJGameFlowHUDWidget.generated.h"
 
+class UImage;
+class UTextBlock;
 class UMJLoadGameWidget;
 class UMJDungeonMapWidget;
 class UMJBossHpBarWidget;
 class UMJSettingsWidget;
 class UMJDungeonEndMenuWidget;
-class UMJForceExitCautionWidget;
+class UMJGameFlowPopUpMsgWidget;
 class UMJPauseMenuWidget;
 /**
  * Class Description: UMJGameFlowHUDWidget Widget
@@ -48,9 +50,9 @@ public:
 	FORCEINLINE UMJDungeonMapWidget* GetDungeonMapWidget() {return DungeonMap;}
 	
 protected:
+
 	
 	virtual void NativeConstruct() override;
-
 
 	TWeakObjectPtr<APlayerController> PC;
 
@@ -59,9 +61,6 @@ protected:
 
 	UPROPERTY(meta= (BindWidget))
 	TObjectPtr<UMJLoadGameWidget> SaveGameMenu;
-
-	UPROPERTY(meta= (BindWidget))
-	TObjectPtr<UMJForceExitCautionWidget> ForceExitCaution;
 	
 	UPROPERTY(meta= (BindWidget))
 	TObjectPtr<UMJDungeonEndMenuWidget> DungeonEndMenu;
@@ -72,12 +71,26 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UUserWidget> MiniMap;
 
+
 	// Boss Section
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UMJBossHpBarWidget> BossHpBar;
 
 	UPROPERTY(meta=(BindWidgetAnim), Transient)
 	TObjectPtr<UWidgetAnimation> BossHpFadeIn;
+
+	// Time Section
 	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> TimeTextBlock;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> TimeBG;
+	
+	UPROPERTY()
+	float CurrTime;
+
+	UPROPERTY()
+	FTimerHandle TimeWidgetTimerHandle;
 	
 };
