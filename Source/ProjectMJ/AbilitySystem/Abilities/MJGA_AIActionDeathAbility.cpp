@@ -5,6 +5,7 @@
 
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Character/MJCharacterBase.h"
+#include "MJ/Character/MJMonsterCharacter.h"
 
 UMJGA_AIActionDeathAbility::UMJGA_AIActionDeathAbility()
 {
@@ -28,6 +29,8 @@ void UMJGA_AIActionDeathAbility::ActivateAbility(const FGameplayAbilitySpecHandl
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 		return;
 	}
+	
+	AMJCharacter->SetActorEnableCollision(false);
 	
 	UAbilityTask_PlayMontageAndWait* PlayDeathMontage = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, TEXT("PlayDeath"), DeathActionAnimMontage, 1.0f);
 
@@ -58,6 +61,13 @@ void UMJGA_AIActionDeathAbility::EndAbility(const FGameplayAbilitySpecHandle Han
 		return; 
 	}
 
+	AMJMonsterCharacter* Enemy = Cast<AMJMonsterCharacter>(AMJCharacter);
+	if (Enemy)
+	{
+		// Minjin: 경험치 전달, 아이템 드랍
+		Enemy->GiveDeathRewardTo();
+	}
+	
 	AMJCharacter->Destroy();
 }
 

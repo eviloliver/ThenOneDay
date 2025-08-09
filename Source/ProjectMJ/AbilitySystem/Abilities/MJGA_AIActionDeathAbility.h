@@ -7,7 +7,7 @@
 #include "MJGA_AIActionDeathAbility.generated.h"
 
 /**
- * Class Description: Enemy Death Ability. 몽타주 재생 후 Destroy 
+ * Class Description: Enemy Death Ability. 몽타주 재생 후 캐릭터에서 진행하던 GiveDeathRewardTo() 진행, Destroy
  * Author: Kim Minjin
  * Created Date: 2025.08.09.
  * Description of Change:

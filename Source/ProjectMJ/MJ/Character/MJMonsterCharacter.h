@@ -54,6 +54,9 @@ public:
 
 	const FGameplayTag& GetDefaultEnemyTag() {return DefaultEnemyTag;}
 
+	UFUNCTION()
+	virtual void GiveDeathRewardTo();
+	
 	// IGameplayTagAssetInterface
 	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override
 	{
@@ -91,9 +94,6 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 
 protected:
-	UFUNCTION()
-	virtual void GiveDeathRewardTo();
-
 	UFUNCTION()
 	virtual void OnDead(AActor* InEffectCauser);
 

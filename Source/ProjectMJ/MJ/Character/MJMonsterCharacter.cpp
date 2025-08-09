@@ -285,50 +285,21 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 	// - 동민 -
 
 	bIsDying = true;
+
+	// Minin: Target 정보 저장
+	EnemyBequest.Target = InEffectCauser;
+	
 	AMJMonsterAIControllerBase* AIController = Cast<AMJMonsterAIControllerBase>(GetController());
 	if (AIController)
 	{
 		AIController->StopAI();
 	}
-	SetActorEnableCollision(false);
 
+	// Minjin: Death Ability
 	FGameplayEventData EventData;
 	EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("Event.Character.Dead"));
 	ASC->HandleGameplayEvent(EventData.EventTag, &EventData);
 	
-	// if (DeathAnimation)
-	// {
-	// 	MJ_LOG(LogMJ, Warning, TEXT("%s: Play Death Animation"), *GetName());
-	// 	//StopAnimMontage();
-	// 	//GetMesh()->PlayAnimation(DeathAnimation, false);<-이거로 하면 공격 들어갈때마다 애니메이션이 처음부터 재생됨
-	// 	GetMesh()->OverrideAnimationData(DeathAnimation, false);
-	//
-	// 	// Minin: Target 정보 저장
-	// 	EnemyBequest.Target = InEffectCauser;
-	// 	
-	// 	const float FinishDelay = DeathAnimation->GetPlayLength();
-	//
-	// 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
-	// 		[this]()
-	// 		{
-	// 			SetActorHiddenInGame(true);
-	//
-	// 			// Minjin: 경험치 전달, 아이템 스폰
-	// 			GiveDeathRewardTo();
-	// 			
-	// 			Destroy();
-	// 		}
-	// 	), FinishDelay, false);
-	// }
-	// else
-	// {
-	// 	SetActorHiddenInGame(true);
-	//
-	// 	// Minjin: 경험치 전달, 아이템 스폰
-	// 	GiveDeathRewardTo();
-	// 	
-	// 	Destroy();
-	// }
 	DamageIndex = 0;
 }
 
