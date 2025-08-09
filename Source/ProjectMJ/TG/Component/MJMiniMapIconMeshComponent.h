@@ -26,12 +26,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UStaticMesh> PlayerIcon;
-
+	//
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UStaticMesh> EnemyIcon;
-
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UStaticMesh> PortalIcon;
+	//
+	// UPROPERTY(EditDefaultsOnly)
+	// TObjectPtr<UStaticMesh> PortalIcon;
 	
 	
 };

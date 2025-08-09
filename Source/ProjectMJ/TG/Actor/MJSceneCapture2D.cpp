@@ -3,6 +3,7 @@
 
 #include "TG/Actor/MJSceneCapture2D.h"
 
+#include "MJPortalToDungeon.h"
 #include "NavigationSystem.h"
 #include "Components/SceneCaptureComponent2D.h"
 #include "Kismet/GameplayStatics.h"
@@ -10,6 +11,7 @@
 #include "ProceduralMeshComponent.h"
 #include "GameFramework/Character.h"
 #include "TG/Component/MJMiniMapIconMeshComponent.h"
+#include "TG/GameMode/MJGameModeTown.h"
 #include "TG/GameState/MJGameStateDungeon.h"
 
 
@@ -42,7 +44,21 @@ void AMJSceneCapture2D::BeginPlay()
 {
 	Super::BeginPlay();	
 	
+	if (Cast<AMJGameModeTown>(UGameplayStatics::GetGameMode(GetWorld())))
+	{
+		TArray<AActor*> OutActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(),AMJInteractableActor::StaticClass(), OutActors);
 
+		for (const auto& Iter : OutActors)
+		{
+			if (IsValid(Iter))
+			{
+				GetCaptureComponent2D()->ShowOnlyComponents.Add(Iter->FindComponentByClass<UMJMiniMapIconMeshComponent>());
+			}	
+		}
+		
+		
+	}
 	
 
 	Player = TWeakObjectPtr<ACharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(),0));
