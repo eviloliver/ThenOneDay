@@ -11,6 +11,8 @@
 
 AMJPortalToDungeon::AMJPortalToDungeon()
 {
+	// TG : Don`t change this for proper SpawnActor
+	SetActorRelativeScale3D(FVector(0.38f,0.2f,0.38f));
 }
 
 

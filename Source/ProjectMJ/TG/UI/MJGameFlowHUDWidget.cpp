@@ -9,6 +9,7 @@
 #include "MJLoadGameWidget.h"
 #include "MJPauseMenuWidget.h"
 #include "MJSettingsWidget.h"
+#include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 #include "TG/GameState/MJGameStateDungeon.h"
@@ -22,8 +23,9 @@ void UMJGameFlowHUDWidget::NativeConstruct()
 	SaveGameMenu->SetVisibility(ESlateVisibility::Hidden);
 	DungeonEndMenu->SetVisibility(ESlateVisibility::Hidden);
 	BossHpBar->SetVisibility(ESlateVisibility::Hidden);
-	MiniMap->SetVisibility(ESlateVisibility::Hidden);
+	MiniMap->SetVisibility(ESlateVisibility::Visible);
 	TimeTextBlock->SetVisibility(ESlateVisibility::Hidden);
+	TimeBG->SetVisibility(ESlateVisibility::Hidden);
 
 	CurrTime = 0.0f;
 	
@@ -35,9 +37,10 @@ void UMJGameFlowHUDWidget::NativeConstruct()
 		MJDungeonState->OnAIBossSpawned.AddDynamic(this,&UMJGameFlowHUDWidget::OnBossSpawned);
 		MJDungeonState->OnAIBossDied.AddDynamic(this, &UMJGameFlowHUDWidget::OnBossDied);
 		
-		
-		MiniMap->SetVisibility(ESlateVisibility::Visible);
+		//MiniMap->SetVisibility(ESlateVisibility::Visible);
 
+		GetWorld()->GetTimerManager().ClearTimer(TimeWidgetTimerHandle);
+		
 		TWeakObjectPtr<UMJGameFlowHUDWidget> WeakThis = this;
 		GetWorld()->GetTimerManager().SetTimer(TimeWidgetTimerHandle,FTimerDelegate::CreateLambda([WeakThis]
 		{
@@ -50,6 +53,7 @@ void UMJGameFlowHUDWidget::NativeConstruct()
 		}),1.0f,true,0.0f);
 		
 		TimeTextBlock->SetVisibility(ESlateVisibility::Visible);
+		TimeBG->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 

@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MJGameFlowHUDWidget.generated.h"
 
+class UImage;
 class UTextBlock;
 class UMJLoadGameWidget;
 class UMJDungeonMapWidget;
@@ -82,6 +83,9 @@ protected:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TimeTextBlock;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UImage> TimeBG;
 	
 	UPROPERTY()
 	float CurrTime;

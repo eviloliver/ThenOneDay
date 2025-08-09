@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MJInteractableActorBase.h"
+#include "MJInteractableActor.h"
 #include "GameFramework/Actor.h"
 #include "MJPortalToDungeon.generated.h"
 
 UCLASS()
-class PROJECTMJ_API AMJPortalToDungeon : public AMJInteractableActorBase
+class PROJECTMJ_API AMJPortalToDungeon : public AMJInteractableActor
 {
 	GENERATED_BODY()
 	
