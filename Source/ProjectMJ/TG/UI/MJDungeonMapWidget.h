@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MJDungeonMapWidget.generated.h"
 
+class UBackgroundBlur;
 class UCanvasPanel;
 class UImage;
 /**
@@ -26,9 +27,10 @@ public:
 	
 	UFUNCTION()
 	void SetAllVisibility(ESlateVisibility NewVisibility);
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UImage> Background;
+	//
+	// UPROPERTY(meta = (BindWidget))
+	// TObjectPtr<UImage> Background;
+
 
 	
 
@@ -59,5 +61,8 @@ protected:
 	
 	UPROPERTY()
 	TArray<FVector2D> PivotPoints;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UBackgroundBlur> BackgroundBlur;
 	
 };
