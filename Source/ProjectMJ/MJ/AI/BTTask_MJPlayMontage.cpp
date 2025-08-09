@@ -44,10 +44,7 @@ EBTNodeResult::Type UBTTask_MJPlayMontage::ExecuteTask(UBehaviorTreeComponent& O
 	}
 
 	CachedComponent = &OwnerComp;
-	if (!MontagePlay)
-	{
-		return EBTNodeResult::Failed;
-	}
+	
 	FVector AILocation = ControlledPawn->GetActorLocation();
 	FVector TargetLocation = Player->GetActorLocation();
 	TargetLocation.Z = AILocation.Z;
@@ -64,8 +61,10 @@ EBTNodeResult::Type UBTTask_MJPlayMontage::ExecuteTask(UBehaviorTreeComponent& O
 
 
 	//Anim->Montage_Play(MontagePlay);
-
-	SkillComponent->ActivateIdentitySkill();
+	if (!Anim->IsAnyMontagePlaying())
+	{
+		SkillComponent->ActivateIdentitySkill();
+	}
 	if (SessionName != NAME_None)
 	{
 		ControlledPawn->GetWorldTimerManager().SetTimer(
@@ -78,9 +77,7 @@ EBTNodeResult::Type UBTTask_MJPlayMontage::ExecuteTask(UBehaviorTreeComponent& O
 		board->SetValueAsBool(TEXT("IsPatten"), false);
 
 	}
-	FOnMontageEnded EndDelegate;
-	EndDelegate.BindUObject(this, &UBTTask_MJPlayMontage::OnMontageEnded);
-	Anim->Montage_SetEndDelegate(EndDelegate, MontagePlay);
+	Anim->OnMontageEnded.AddDynamic(this, &UBTTask_MJPlayMontage::OnMontageEnded);
 	
 	return EBTNodeResult::InProgress;
 }
@@ -99,6 +96,7 @@ void UBTTask_MJPlayMontage::OnMontageEnded(UAnimMontage* AnimMontage, bool bInte
 {
 	if (CachedComponent)
 	{
+				
 		FinishLatentTask(*CachedComponent, EBTNodeResult::Succeeded);
 	}
 }
