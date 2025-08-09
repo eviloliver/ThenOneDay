@@ -33,6 +33,9 @@ void UMJGA_PlayerActionAppearAbility::ActivateAbility(const FGameplayAbilitySpec
 	UAbilityTask_PlayMontageAndWait* PlayDeathMontage = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, TEXT("PlayAttack"), AppearanceActionAnimMontage, 1.0f);
 
 	PlayDeathMontage->OnCompleted.AddDynamic(this, &UMJGA_PlayerActionAppearAbility::OnCompleteCallback);
+	PlayDeathMontage->OnInterrupted.AddDynamic(this, &UMJGA_PlayerActionAppearAbility::OnInterruptedCallback);
+	PlayDeathMontage->OnCancelled.AddDynamic(this, &UMJGA_PlayerActionAppearAbility::OnInterruptedCallback);
+	PlayDeathMontage->OnBlendOut.AddDynamic(this, &UMJGA_PlayerActionAppearAbility::OnBlendOutCallback);
 
 	PlayDeathMontage->ReadyForActivation();
 }
@@ -66,6 +69,13 @@ void UMJGA_PlayerActionAppearAbility::OnCompleteCallback()
 }
 
 void UMJGA_PlayerActionAppearAbility::OnInterruptedCallback()
+{
+	bool bReplicatedEndAbility = true;
+	bool bWasCancelled = true;
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicatedEndAbility, bWasCancelled);
+}
+
+void UMJGA_PlayerActionAppearAbility::OnBlendOutCallback()
 {
 	bool bReplicatedEndAbility = true;
 	bool bWasCancelled = true;

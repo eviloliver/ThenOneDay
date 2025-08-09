@@ -33,4 +33,7 @@ protected:
 
 	UFUNCTION()
 	void OnInterruptedCallback();
+
+	UFUNCTION()
+	void OnBlendOutCallback();
 };

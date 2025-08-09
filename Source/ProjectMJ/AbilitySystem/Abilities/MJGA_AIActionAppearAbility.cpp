@@ -4,6 +4,7 @@
 #include "AbilitySystem/Abilities/MJGA_AIActionAppearAbility.h"
 
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "Character/MJCharacterBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -31,10 +32,17 @@ void UMJGA_AIActionAppearAbility::ActivateAbility(const FGameplayAbilitySpecHand
 	}
 
 	AMJCharacter->GetCharacterMovement()->SetMovementMode(MOVE_None);
+
+	// IsInactivated 태그 제거 - 활성화
+	const FGameplayTag InActivatedTag = FGameplayTag::RequestGameplayTag(TEXT("Character.State.IsInactivated"));
+	AMJCharacter->ASC->RemoveLooseGameplayTag(InActivatedTag);
 	
 	UAbilityTask_PlayMontageAndWait* PlayDeathMontage = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, TEXT("PlayAppear"), AppearanceActionAnimMontage, 1.0f);
 
 	PlayDeathMontage->OnCompleted.AddDynamic(this, &UMJGA_AIActionAppearAbility::OnCompleteCallback);
+	PlayDeathMontage->OnInterrupted.AddDynamic(this, &UMJGA_AIActionAppearAbility::OnInterruptedCallback);
+	PlayDeathMontage->OnCancelled.AddDynamic(this, &UMJGA_AIActionAppearAbility::OnInterruptedCallback);
+	PlayDeathMontage->OnBlendOut.AddDynamic(this, &UMJGA_AIActionAppearAbility::OnBlendOutCallback);
 
 	PlayDeathMontage->ReadyForActivation();
 }
@@ -74,4 +82,11 @@ void UMJGA_AIActionAppearAbility::OnInterruptedCallback()
 	bool bWasCancelled = true;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicatedEndAbility, bWasCancelled);
 
+}
+
+void UMJGA_AIActionAppearAbility::OnBlendOutCallback()
+{
+	bool bReplicatedEndAbility = true;
+	bool bWasCancelled = true;
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicatedEndAbility, bWasCancelled);
 }
