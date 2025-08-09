@@ -29,6 +29,8 @@ void UMJGA_AIActionAppearAbility::ActivateAbility(const FGameplayAbilitySpecHand
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 		return;
 	}
+
+	AMJCharacter->GetCharacterMovement()->SetMovementMode(MOVE_None);
 	
 	UAbilityTask_PlayMontageAndWait* PlayDeathMontage = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, TEXT("PlayAppear"), AppearanceActionAnimMontage, 1.0f);
 
