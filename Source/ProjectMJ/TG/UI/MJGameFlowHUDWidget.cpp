@@ -9,6 +9,7 @@
 #include "MJLoadGameWidget.h"
 #include "MJPauseMenuWidget.h"
 #include "MJSettingsWidget.h"
+#include "Components/Button.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
@@ -30,6 +31,9 @@ void UMJGameFlowHUDWidget::NativeConstruct()
 	CurrTime = 0.0f;
 	
 	FSlateApplication::Get().OnApplicationActivationStateChanged().AddUObject(this, &UMJGameFlowHUDWidget::OnWindowFocusChanged);
+	
+	
+	SettingsButton->OnClicked.AddDynamic(this,&UMJGameFlowHUDWidget::PauseGame);
 
 	AMJGameStateDungeon* MJDungeonState = Cast<AMJGameStateDungeon>(UGameplayStatics::GetGameState(GetWorld()));
 	if (MJDungeonState)
@@ -56,6 +60,7 @@ void UMJGameFlowHUDWidget::NativeConstruct()
 		TimeBG->SetVisibility(ESlateVisibility::Visible);
 	}
 }
+
 
 void UMJGameFlowHUDWidget::OnBossSpawned()
 {
