@@ -10,8 +10,8 @@
  * Class Description: BBKey인 PatrolPos 설정 
  * Author: Kim Minjin
  * Created Date: 2025.06.19.
- * Last Modified By: (Last Modifier)
- * Last Modified Date: (Last Modified Date)
+ * Last Modified By: Kim Minjin
+ * Last Modified Date: (2025.08.10.) Sight Perception 기반으로 Patrol Radius 설정
  */
 UCLASS()
 class PROJECTMJ_API UBTTask_MJFindPatrolPos : public UBTTaskNode
