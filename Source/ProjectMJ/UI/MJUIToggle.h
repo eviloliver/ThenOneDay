@@ -11,7 +11,11 @@ class UVerticalBox;
 class UHorizontalBox;
 class UButton;
 /**
- * 
+* Class Description: 위젯 목록
+ * Author: 이지수
+ * Created Date: 2025.08.11
+ * Last Modified By: 
+ * Last Modified Date: 
  */
 UCLASS()
 class PROJECTMJ_API UMJUIToggle : public UUserWidget

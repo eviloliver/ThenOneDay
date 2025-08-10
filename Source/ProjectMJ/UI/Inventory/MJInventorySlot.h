@@ -12,7 +12,7 @@
 /**
 * Class Description: 인벤토리 슬롯 위젯
  * Author: 이지수
- * Created Date: 2025.07.02
+ * Created Date: 2025.08.10
  * Last Modified By: 
  * Last Modified Date: 
  */
@@ -37,7 +37,7 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UImage> Image;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY()
 	TObjectPtr<UTextBlock> Text;
 
 	UPROPERTY(meta = (BindWidget))
