@@ -284,6 +284,13 @@ void UMJSkillComponentBase::GiveAbilityToASC(const FGameplayTag& SkillTag)
 		FGameplayAbilitySpecHandle PassiveSkillHandle = ASC->GiveAbility(PassiveSkillAbilitySpec);
 		GivenPassiveAbilityHandles.Add(SkillTag, PassiveSkillHandle);
 	}
+
+	if (LevelAbilityRow->DrawMarkerAbilityClass)
+	{
+		FGameplayAbilitySpec DrawMarkerAbilitySpec(LevelAbilityRow->DrawMarkerAbilityClass, SkillLevel, INDEX_NONE, OwnerCharacter);
+		FGameplayAbilitySpecHandle PassiveSkillHandle = ASC->GiveAbility(DrawMarkerAbilitySpec);
+		GivenPassiveAbilityHandles.Add(SkillTag, PassiveSkillHandle);
+	}
 }
 
 void UMJSkillComponentBase::RemoveAbility(const FGameplayTag& SkillTag)
@@ -317,6 +324,12 @@ void UMJSkillComponentBase::RemoveAbility(const FGameplayTag& SkillTag)
 	{
 		ASC->ClearAbility(GivenSkillAbilityHandles[SkillTag]);
 		GivenPassiveAbilityHandles.Remove(SkillTag);
+	}
+
+	if (GivenDrawMarkerAbilityHandles.Contains(SkillTag))
+	{
+		ASC->ClearAbility(GivenDrawMarkerAbilityHandles[SkillTag]);
+		GivenDrawMarkerAbilityHandles.Remove(SkillTag);
 	}
 }
 

@@ -81,5 +81,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FGameplayAbilitySpecHandle> GivenPassiveAbilityHandles;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+	TMap<FGameplayTag, FGameplayAbilitySpecHandle> GivenDrawMarkerAbilityHandles;
+
 };
