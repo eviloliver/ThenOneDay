@@ -14,6 +14,8 @@
  * Last Modified Date: 
  */
 
+class UMJSkillWidget;
+class UMJUIToggle;
 class UMJDialogueWidget;
 class UMJBossHpBarWidget;
 class UMJHealthBarWidget;
@@ -54,14 +56,32 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJDialogueWidget> Dialogue;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJUIToggle> UIToggle;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJSkillWidget> SkillWidget;
+
 public:
 	UFUNCTION()
 	virtual void NativeConstruct() override;
-	
+
+	UFUNCTION()
 	void BindAtrributesToChildren(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet, class UMJPlayerStatComponent* Stat);
+
+	UFUNCTION()
 	void ShowStatPanel();
+
+	UFUNCTION()
 	void ShowInventory();
+
+	UFUNCTION()
 	void ShowStore();
+
+	UFUNCTION()
+	void SetSkillWidgetVisibility();
+	
+	UFUNCTION()
 	void SetDialogueVisibility();
 
 	UMJInventoryWidget* GetInventoryWidget() {return Inventory;};
