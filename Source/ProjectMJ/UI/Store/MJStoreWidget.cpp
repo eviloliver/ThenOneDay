@@ -2,8 +2,8 @@
 
 
 #include "UI/Store/MJStoreWidget.h"
-
 #include "MJPopupWidget.h"
+#include "MJSalesSlot.h"
 #include "Character/Component/MJPlayerStatComponent.h"
 #include "Components/Button.h"
 #include "Components/ScrollBox.h"
@@ -21,7 +21,7 @@ void UMJStoreWidget::NativeConstruct()
     	return;
     }
 	
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 4; i++)
     {
         UMJMerchandiseSlot* NewSlot = CreateWidget<UMJMerchandiseSlot>(this, MerchandiseSlotClass);
 		ScrollBox->AddChild(NewSlot);
@@ -50,9 +50,9 @@ void UMJStoreWidget::UpdateInventorySlot()
 		return;
 	}
 	
-	UMJMerchandiseSlot* NewSlot_2 = CreateWidget<UMJMerchandiseSlot>(this, InventorySlotClass);
-	InvenScrollBox->AddChild(NewSlot_2);
-	InventorySlots.Add(NewSlot_2);
+	UMJSalesSlot* NewSlot = CreateWidget<UMJSalesSlot>(this, InventorySlotClass);
+	InvenScrollBox->AddChild(NewSlot);
+	InventorySlots.Add(NewSlot);
 }
 
 void UMJStoreWidget::SetStatComponent(UMJPlayerStatComponent* StatComp)
@@ -73,10 +73,10 @@ void UMJStoreWidget::SetAvailableGold(int32 Gold)
 void UMJStoreWidget::Onclicked_PurchaseButton()
 {
 	PurchasePopup->SetVisibility(ESlateVisibility::Visible);
-	for (int i =0; i < MerchandiseSlots.Num(); i++)
-	{
-		MerchandiseSlots[i]->GetButton()->SetIsEnabled(false);
-	}
+	// for (int i =0; i < MerchandiseSlots.Num(); i++)
+	// {
+	// 	MerchandiseSlots[i]->GetButton()->SetIsEnabled(false);
+	// }
 }
 
 void UMJStoreWidget::OnClicked_PurchasePopupYes()
@@ -101,10 +101,10 @@ void UMJStoreWidget::OnClicked_PurchasePopupNo()
 void UMJStoreWidget::Onclicked_SellButton()
 {
 	SellPopup->SetVisibility(ESlateVisibility::Visible);
-	for (int i =0; i < InventorySlots.Num(); i++)
-	{
-		InventorySlots[i]->GetButton()->SetIsEnabled(false);
-	}
+	// for (int i =0; i < InventorySlots.Num(); i++)
+	// {
+	// 	InventorySlots[i]->GetButton()->SetIsEnabled(false);
+	// }
 }
 
 void UMJStoreWidget::OnClicked_SellPopupYes()

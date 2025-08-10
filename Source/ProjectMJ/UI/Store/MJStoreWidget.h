@@ -8,10 +8,15 @@
 #include "MJStoreWidget.generated.h"
 
 
+class UMJSalesSlot;
 class UMJPlayerStatComponent;
 class UTextBlock;
 /**
- * 
+* Class Description: 상점창
+ * Author: 이지수
+ * Created Date: 2025.08.09
+ * Last Modified By: 
+ * Last Modified Date: 
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnClickedYes);
 
@@ -34,13 +39,13 @@ protected:
 	TArray<TObjectPtr<UMJMerchandiseSlot>> MerchandiseSlots;
 
 	UPROPERTY(meta = (BindWidget))
-	TArray<TObjectPtr<UMJMerchandiseSlot>> InventorySlots;
+	TArray<TObjectPtr<UMJSalesSlot>> InventorySlots;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= Store)
 	TSubclassOf<UMJMerchandiseSlot> MerchandiseSlotClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= Store)
-	TSubclassOf<UMJMerchandiseSlot> InventorySlotClass;
+	TSubclassOf<UMJSalesSlot> InventorySlotClass;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJPopupWidget> PurchasePopup;
@@ -59,7 +64,7 @@ public:
 	void UpdateInventorySlot();
 	
 	TArray<UMJMerchandiseSlot*> GetMerchandiseSlots() {return MerchandiseSlots;}
-	TArray<UMJMerchandiseSlot*> GetInventorySlots() {return InventorySlots;}
+	TArray<UMJSalesSlot*> GetInventorySlots() {return InventorySlots;}
 	
 	void SetStatComponent(UMJPlayerStatComponent* StatComp);
 	
