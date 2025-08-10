@@ -64,6 +64,7 @@ void UMJGameFlowHUDWidget::NativeConstruct()
 
 void UMJGameFlowHUDWidget::OnBossSpawned()
 {
+	BossHpBar->BindToAttributes();
 	BossHpBar->SetVisibility(ESlateVisibility::Visible);
 	if (!BossHpFadeIn)
 	{
