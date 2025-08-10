@@ -99,6 +99,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction> ShowStoreAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<UInputAction> ShowSkillWidgetAction;
 	
 	UPROPERTY()
 	TObjectPtr<UMJUIManagerSubsystem> UIManager;
@@ -126,9 +129,14 @@ public:
 	void HideStore();
 		
 	// Show Widget
+	UFUNCTION()
 	void ShowBacklog();
+	UFUNCTION()
 	void ShowStatPanel();
+	UFUNCTION()
 	void ShowInventory();
+	UFUNCTION()
+	void ShowSkillWidget();
 	
 	UFUNCTION()
 	void OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
