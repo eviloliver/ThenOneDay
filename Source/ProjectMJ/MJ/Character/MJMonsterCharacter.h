@@ -6,7 +6,6 @@
 #include "GameplayTagAssetInterface.h"
 #include "GameplayTagContainer.h"
 #include "Character/MJCharacterBase.h"
-#include "MJ/Interface/MJCharacterAIInterface.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystemComponent.h"
 #include "MJMonsterCharacter.generated.h"
@@ -37,7 +36,7 @@ struct EnemyTransferData
 };
 
 UCLASS()
-class PROJECTMJ_API AMJMonsterCharacter : public AMJCharacterBase, public IMJCharacterAIInterface, public IGameplayTagAssetInterface
+class PROJECTMJ_API AMJMonsterCharacter : public AMJCharacterBase, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 
@@ -80,17 +79,6 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
-	
-	// Minjin: Interface-바꿀 예정
-	virtual float GetAIPatrolRadius() override;
-	virtual float GetAITurnSpeed() override;
-	virtual float GetAIMaximumAttackRange() override;
-	virtual float GetAIMinimumAttackRange() override;
-
-	virtual void AttackByAI() override;
-	virtual void MeleeAttackByAI() override;
-	virtual void RangeAttackByAI() override;
-	
 	virtual void PossessedBy(AController* NewController) override;
 
 protected:
