@@ -60,7 +60,6 @@ void UMJInteractComponent::EvaluateType()
          {
          	StoreComponent = Cast<UMJStoreComponent>(Comp);
          	CurrentType = EMJInteractionType::Store;
-         	UE_LOG(LogTemp,Error,TEXT("%hhd"),CurrentType);
          	return;
          }
 		
@@ -68,11 +67,10 @@ void UMJInteractComponent::EvaluateType()
     	{
     		DialogueComponent = Cast<UMJDialogueComponent>(Comp);
     		CurrentType = EMJInteractionType::Dialogue;
-    		UE_LOG(LogTemp,Error,TEXT("%hhd"),CurrentType);
     		return;
     	}
 		// CTG : add Interact Logic 25.08.05
-		if (GetOwner()->IsA(AMJInteractableActorBase::StaticClass()))
+		if (GetOwner()->IsA(AMJInteractableActor::StaticClass()))
 		{
 			CurrentType = EMJInteractionType::Interactable;
 			return;
@@ -97,7 +95,7 @@ void UMJInteractComponent::StartInteraction()
 	}
 	else if (CurrentType == EMJInteractionType::Interactable)
 	{
-		if (AMJInteractableActorBase* Interactable = Cast<AMJInteractableActorBase>(GetOwner()))
+		if (AMJInteractableActor* Interactable = Cast<AMJInteractableActor>(GetOwner()))
 		{
 			Interactable->Execute();
 		}

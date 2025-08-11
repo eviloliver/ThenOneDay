@@ -53,8 +53,8 @@ void UMJExperienceWidget::OnExperienceChanged(float Current, float ExpForNextLev
 	
 	if (Percent)
 	{
-		float percent = CurrentPercent * 100.f;
-		Percent->SetText(FText::FromString(FString::Printf(TEXT("%.1f%%( %.0f / %.0f )"),percent, CurrentExp , MaxExp)));
+		float percent = TargetPercent * 100.f;
+		Percent->SetText(FText::FromString(FString::Printf(TEXT("%.1f%% ( %.0f / %.0f )"),percent, CurrentExp , MaxExp)));
 	}
 }
 

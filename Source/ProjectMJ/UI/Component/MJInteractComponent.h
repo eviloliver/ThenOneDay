@@ -65,4 +65,6 @@ public:
 	FOnDialogueEnd OndialogueEnd;
 	FOnStoreOpen OnstoreOpen;
 	FOnStoreClose OnstoreClose;
+
+	UMJStoreComponent* GetStoreComponent() {return StoreComponent;}
 };

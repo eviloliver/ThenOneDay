@@ -13,6 +13,9 @@
  * Last Modified By: Cha Tae Gwan
  * Last Modified Date: 2025-07-22
  */
+
+class UMJChildMenuBaseWidget;
+class UMJGameFlowPopUpMsgWidget;
 class UButton;
 UCLASS()
 class PROJECTMJ_API UMJDungeonEndMenuWidget : public UUserWidget
@@ -21,6 +24,12 @@ class PROJECTMJ_API UMJDungeonEndMenuWidget : public UUserWidget
 
 protected:
 	virtual void NativeConstruct() override;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UMJGameFlowPopUpMsgWidget> PopUpWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UMJChildMenuBaseWidget> PopUpWidget;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_GotoTown;

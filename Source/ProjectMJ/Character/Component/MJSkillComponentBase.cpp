@@ -253,7 +253,7 @@ void UMJSkillComponentBase::GiveAbilityToASC(const FGameplayTag& SkillTag)
 
 	int32 SkillLevel = OwnedSkillMap[SkillTag].Level;
 	FName RowName = FName(*FString::FromInt(SkillLevel));
-	// Minjin TODO: SkillLevelAbilityTable 넣어주기.
+
 	UDataTable* SkillLevelAbilityTable = DataRow->SkillLevelAbilityTable.LoadSynchronous();
 	if (!SkillLevelAbilityTable)
 	{

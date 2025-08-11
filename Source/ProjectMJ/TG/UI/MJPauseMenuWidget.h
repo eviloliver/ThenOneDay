@@ -46,7 +46,7 @@ protected:
 	TObjectPtr<UMJChildMenuBaseWidget> SettingsWidget;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> ForceExitCautionWidgetClass;
+	TSubclassOf<UMJChildMenuBaseWidget> ForceExitCautionWidgetClass;
 
 	UPROPERTY()
 	TObjectPtr<UMJChildMenuBaseWidget> ForceExitCautionWidget;
@@ -59,9 +59,6 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_GotoTown;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USpacer> Spacer_GotoTown;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_MainMenu;

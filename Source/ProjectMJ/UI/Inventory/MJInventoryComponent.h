@@ -7,6 +7,8 @@
 #include "GameplayTagContainer.h"
 #include "MJInventoryComponent.generated.h"
 
+class UMJStoreComponent;
+class UMJStoreWidget;
 /**
 * Class Description: 인벤토리 컴포넌트 / 캐릭터가 들고 있음 / 인벤토리 위젯의 아이템 정보를 갱신하는 역할
  * Author: 이지수
@@ -45,15 +47,24 @@ class PROJECTMJ_API UMJInventoryComponent : public UActorComponent
 
 	UMJInventoryComponent();
 
-public:
+protected:
 	int32 Position;
-	
-	void PickUpItem(FGameplayTag ItemTag, int32 Count);
-	void DropItem(FGameplayTag ItemTag);
+
+	FInventoryItemData ItemEmptyData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+    TMap<FGameplayTag, FInventoryItemData> ItemInInventory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	TArray<FGameplayTag> ItemTags;
+public:
+	void PickUpItem(FGameplayTag ItemTag, int32 Count, UMJStoreWidget* StoreWidget = nullptr);
+	void DropItem(FGameplayTag ItemTag,  int32 count);
 	void UpdateSlot(FGameplayTag ItemTag);
 
 	void SetPosition(FGameplayTag ItemTag, int32 NewPosition) {ItemInInventory[ItemTag].Position = NewPosition;};
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-	TMap<FGameplayTag, FInventoryItemData> ItemInInventory;
+
+	void ZeroItem(FGameplayTag ItemTag);
+	TMap<FGameplayTag, FInventoryItemData> GetItemInInventory() {return ItemInInventory;}
+	TArray<FGameplayTag> GetItemTags() {return ItemTags;}
 };

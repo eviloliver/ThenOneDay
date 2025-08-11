@@ -20,12 +20,4 @@ public:
 protected:
 
 	virtual void BeginPlay() override;
-	
-	virtual float GetAIMaximumAttackRange() override;
-	virtual float GetAIMinimumAttackRange() override;
-
-	virtual void AttackByAI() override;
-	virtual void MeleeAttackByAI() override;
-	virtual void RangeAttackByAI() override;
-	
 };

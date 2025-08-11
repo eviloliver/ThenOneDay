@@ -18,6 +18,7 @@ void AMJSavePointActor::Execute()
 	AMJPlayerController* MJPC = Cast<AMJPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(),0));
 	if (MJPC)
 	{
+		MJPC->GetGameFlowHUD()->GetSaveGameWidget()->UpdateSlot();
 		MJPC->GetGameFlowHUD()->GetSaveGameWidget()->SetVisibility(ESlateVisibility::Visible);
 	}
 }

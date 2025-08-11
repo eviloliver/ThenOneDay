@@ -135,10 +135,16 @@ void AMJPlayerCharacter::PossessedBy(AController* NewController)
 	// {
 	// 	StatComponent->InitializeStat();
 	// }
+	StatComponent->OnDamage.AddDynamic(this,&ThisClass::OnDamage);
 }
 
 void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
+}
+
+void AMJPlayerCharacter::OnDamage(float Magnitude, bool bIsCritical)
+{
+	FloatDamage(Magnitude, bIsCritical,EOwnerType::Player);
 }

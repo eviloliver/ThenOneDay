@@ -10,8 +10,8 @@
  * Class Description: 데미지 계산을 하는 이펙트
  * Author: 신동민
  * Created Date: 2025.07.07
- * Last Modified By:
- * Last Modified Date:
+ * Last Modified By: 김민진
+ * Last Modified Date: (25.08.08.) 데미지 태그 부여
  */
 
 UCLASS()

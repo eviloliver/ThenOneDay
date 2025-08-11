@@ -12,7 +12,7 @@
 /**
 * Class Description: 인벤토리 슬롯 위젯
  * Author: 이지수
- * Created Date: 2025.07.02
+ * Created Date: 2025.08.10
  * Last Modified By: 
  * Last Modified Date: 
  */
@@ -37,7 +37,7 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UImage> Image;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY()
 	TObjectPtr<UTextBlock> Text;
 
 	UPROPERTY(meta = (BindWidget))
@@ -78,7 +78,14 @@ public:
 	
 	void SetImage(UTexture2D* ItemTexture);
 	void SetText(FText text);
-	void SetItemCount(int count) {ItemCount->SetText(FText::AsNumber(count));};
+	void SetItemCount(int count)
+	{
+		ItemCount->SetText(FText::AsNumber(count));
+		if (count == 0)
+		{
+			ItemCount->SetText(FText::GetEmpty());
+		}
+	};
 	void SetIsOccupied(bool b) {bIsOccupied = b;}
 	
 	void SetInventoryItemData(FInventoryItemData data){InventoryData = data;}

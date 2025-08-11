@@ -64,6 +64,7 @@ void UMJGA_AIActionInstantAbility::ActivateAbility(const FGameplayAbilitySpecHan
 	TargetRotation.Pitch = 0;
 	TargetRotation.Roll = 0;
 
+	// Minjin: 현재 Turn 오류 때문에 안 씀
 	UMotionWarpingComponent* MotionWarpingComponent = AMJCharacter->FindComponentByClass<UMotionWarpingComponent>();
 	if (MotionWarpingComponent)
 	{

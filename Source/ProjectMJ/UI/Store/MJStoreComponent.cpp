@@ -3,6 +3,7 @@
 
 #include "UI/Store/MJStoreComponent.h"
 #include "MJMerchandiseSlot.h"
+#include "MJSalesSlot.h"
 #include "MJStoreWidget.h"
 #include "Components/Button.h"
 #include "Dialogue/MJDialogueChoiceWidget.h"
@@ -11,6 +12,8 @@
 #include "UI/MJHUDWidget.h"
 #include "UI/MJUIManagerSubsystem.h"
 #include "UI/Inventory/ItemDataRow.h"
+#include "UI/Inventory/MJInventoryComponent.h"
+
 
 void UMJStoreComponent::UpdateStore()
 {
@@ -54,7 +57,6 @@ void UMJStoreComponent::UpdateStore()
 	for (int i = 0; i < SlotCount; i++)
 	{
 		// UI 갱신
-		//MerSlot[i]->SetStoreComp(this);
 		MerSlot[i]->SetItemTag(GI->ItemDataTable->FindRow<FItemDataRow>(MerchandiseRow[i], TEXT(""))->ItemTag);
 		MerSlot[i]->SetImage(GI->ItemDataTable->FindRow<FItemDataRow>(MerchandiseRow[i], TEXT(""))->Icon);
 		MerSlot[i]->SetItemName(GI->ItemDataTable->FindRow<FItemDataRow>(MerchandiseRow[i], TEXT(""))->ItemID);
@@ -66,18 +68,70 @@ void UMJStoreComponent::UpdateStore()
 	}
 }
 
+void UMJStoreComponent::UpdateInventory(UMJInventoryComponent* InvenComp)
+{
+	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+	if (!GI ||!GI->ItemDataTable)
+	{
+		return;
+	}
+
+	TArray<UMJSalesSlot*> InvenSlot = GI->GetSubsystem<UMJUIManagerSubsystem>()->GetHUDWidget()->GetStoreWidget()->GetInventorySlots();
+	if (!GI->GetSubsystem<UMJUIManagerSubsystem>()
+	|| !GI->GetSubsystem<UMJUIManagerSubsystem>()->GetHUDWidget()
+	|| !GI->GetSubsystem<UMJUIManagerSubsystem>()->GetHUDWidget()->GetStoreWidget()
+	)
+	{
+		return;
+	}
+
+	for (int i = 0; i < ItemTagForStore.Num(); i++)
+	{
+		const FItemDataRow* Row= GI->ItemDataTable->FindRow<FItemDataRow>(ItemTagForStore[i].GetTagName(),TEXT("Inventory"));
+		if (!Row)
+		{
+			InvenSlot[i]->SetVisibility(ESlateVisibility::Collapsed);
+		}
+		
+		const FGameplayTag ItemTag = Row->ItemTag;
+		const FInventoryItemData* Data = InvenComp->GetItemInInventory().Find(ItemTag);
+		if (!Data || Data->ItemCount <=0)
+		{
+			InvenSlot[i]->SetVisibility(ESlateVisibility::Collapsed);
+		}
+		
+		InvenSlot[i]->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		InvenSlot[i]->SetItemTag(ItemTag);
+		InvenSlot[i]->SetImage(Row->Icon);
+		InvenSlot[i]->SetItemName(Row->ItemID);
+		InvenSlot[i]->SetDescription(Row->Description);
+		InvenSlot[i]->SetPrice(Row->Price);
+		InvenSlot[i]->SetCount(Data->ItemCount);
+		InvenSlot[i]->SetMaxQuantity(Data->ItemCount);
+		
+		InvenSlot[i]->GetButton()->OnClicked.Clear();
+		InvenSlot[i]->GetButton()->OnClicked.AddDynamic(this, &ThisClass::TrySale);
+		UE_LOG(LogTemp,Error,TEXT("%s"),*Row->ItemID.ToString());
+		UE_LOG(LogTemp,Error,TEXT("%d"),ItemTagForStore.Num());
+	}
+	
+	
+	// 0이면 빈 슬롯이 되도록
+}
+
+
 void UMJStoreComponent::TryPurchase()
 {
 	// 구매하시겠어요 팝업을 뜨게 함
 	GetWorld()->GetGameInstance<UMJGameInstanceTG>()->
-	GetSubsystem<UMJUIManagerSubsystem>()->GetHUDWidget()->GetStoreWidget()->Onclicked_Slot();
+	GetSubsystem<UMJUIManagerSubsystem>()->GetHUDWidget()->GetStoreWidget()->Onclicked_PurchaseButton();
 }
 
-// void UMJStoreComponent::UpdateQuantity(int32 Quantity)
-// {
-// 	CurrentQuantity += Quantity;
-//  	OnQuantityUpdated.Broadcast(CurrentQuantity);
-// }
+void UMJStoreComponent::TrySale()
+{
+	GetWorld()->GetGameInstance<UMJGameInstanceTG>()->
+	GetSubsystem<UMJUIManagerSubsystem>()->GetHUDWidget()->GetStoreWidget()->Onclicked_SellButton();
+}
 
 void UMJStoreComponent::DialogueEnd()
 {
@@ -91,6 +145,13 @@ void UMJStoreComponent::SetChoiceWidgetText()
      	GetCurrentRow()->Choices[0].ChoiceText,
      	GetCurrentRow()->Choices[1].ChoiceText,
      	GetCurrentRow()->Choices[2].ChoiceText);
+}
+
+void UMJStoreComponent::SetItemData(TArray<FGameplayTag> ItemTags, int32 slotCount, UMJInventoryComponent* InvenComp)
+{
+	ItemTagForStore = ItemTags;
+	InvenSlotCount = slotCount;
+	UpdateInventory(InvenComp);
 }
 
 void UMJStoreComponent::BindButtons()

@@ -185,6 +185,7 @@ void AMJGameStateDungeon::Initialize_BossNode()
 			GetWorldTimerManager().SetTimer(OnBossSpawnedBroadCastTimerHandle,this, &ThisClass::PublishOnBossSpawned,3.0f);
 
 			OnActorSpawned.Broadcast(BossAIRef);
+			OnAIBossSpawned.Broadcast();
 		}
 		LoadedDungeonSessionData.DungeonContext = EMJDungeonContext::Activated;
 	}
@@ -426,7 +427,8 @@ void AMJGameStateDungeon::SaveToInstancedDungeonSessionData(uint8 SaveToNum)
 	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
 
 	FMJDungeonSessionData NewDungeonSessionData = LoadedDungeonSessionData;
-
+	NewDungeonSessionData.SpawnInfos.Empty();
+	
 	if (MJGI) 
 	{
 		for (TActorIterator<AActor> Iter(GetWorld()); Iter ; ++Iter)
@@ -466,6 +468,7 @@ void AMJGameStateDungeon::LoadFromInstancedDungeonSessionData(uint8 LoadFromNum)
 				
 				if (SavedActor)
 				{
+					//SavedActor->SetActorScale3D(iter.Transform.GetScale3D());
 					OnActorSpawned.Broadcast(SavedActor);
 				}
 			}
