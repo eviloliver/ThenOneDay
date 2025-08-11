@@ -39,6 +39,8 @@ public:
 	AMJGameStateDungeon();
 
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	
 	
 	UFUNCTION(BlueprintCallable)
 	void SetDungeonSessionData(const FMJDungeonSessionData& DungeonSessionData);
@@ -93,7 +95,9 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	TSubclassOf<AActor> GetActorFromPool();
-	
+
+	UFUNCTION(BlueprintCallable)
+	void Test_DeleteAI();
 	UFUNCTION(BlueprintCallable)
 	void OnAIDestroy(AActor* DestroyedActor);
 
@@ -144,8 +148,8 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	int32 CurrentSpawnedAINum;
 	
-	UPROPERTY(BlueprintReadWrite)
-	TArray<AActor*> SpawnedActorRefs;
+	UPROPERTY()
+	TArray<TWeakObjectPtr<AActor>> SpawnedActorRefs;
 	
 	UPROPERTY(BlueprintAssignable)
 	FMJAIOnDestroyedSignature OnAIDestroyed;
