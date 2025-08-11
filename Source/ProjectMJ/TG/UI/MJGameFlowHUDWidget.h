@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MJGameFlowHUDWidget.generated.h"
 
+class UButton;
 class UImage;
 class UTextBlock;
 class UMJLoadGameWidget;
@@ -92,5 +93,20 @@ protected:
 
 	UPROPERTY()
 	FTimerHandle TimeWidgetTimerHandle;
+
+	// Button Section
+	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UButton> InventoryButton;
+	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UButton> StatButton;
+	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UButton> QuestButton;
+	
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UButton> SettingsButton;
+
 	
 };
