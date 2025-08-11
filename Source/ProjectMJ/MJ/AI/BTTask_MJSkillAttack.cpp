@@ -4,6 +4,7 @@
 #include "MJ/AI/BTTask_MJSkillAttack.h"
 
 #include "AIController.h"
+#include "ProjectMJ.h"
 #include "Character/Component/MJEnemySkillComponent.h"
 #include "MJ/Character/MJMonsterCharacter.h"
 
@@ -30,6 +31,8 @@ EBTNodeResult::Type UBTTask_MJSkillAttack::ExecuteTask(UBehaviorTreeComponent& O
 	UMJEnemySkillComponent* SkillComponent = Monster->GetSkillComponent();
 	
 	SkillComponent->ActivateIdentitySkill();
+
+	MJ_LOG(LogMJ, Warning, TEXT("Skill Attack"));
 	
 	return EBTNodeResult::Succeeded;
 }
