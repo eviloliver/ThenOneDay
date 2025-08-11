@@ -77,3 +77,8 @@ void UMJUIManagerSubsystem::ShowStore()
 	HUDWidget->ShowStore();
 }
 
+void UMJUIManagerSubsystem::SetSkillWidgetVisibility()
+{
+	HUDWidget->SetSkillWidgetVisibility();
+}
+

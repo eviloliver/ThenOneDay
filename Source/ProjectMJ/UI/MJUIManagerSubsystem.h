@@ -47,7 +47,8 @@ public:
 
 	// Store Section
 	void ShowStore();
-	
+
+	void SetSkillWidgetVisibility();
 protected:
 	UPROPERTY()
 	TObjectPtr<UMJHUDWidget> HUDWidget;

@@ -110,7 +110,7 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	// 그런데 자동으로 DT에 있는 값으로 Attribute를 넣어 줄 거면 전체 덮어주는 Effect 가지고 있고, 노가다가 필요해서
 	// 나중에 DT만들고 집중 안될 때 와서 작업 함
 	//  -동민 -
-	CharacterAttributeSet->OnDamage.AddDynamic(this,&ThisClass::OnDamage);
+	StatComponent->OnDamage.AddDynamic(this,&ThisClass::OnDamage);
 	StatComponent->OnDeath.AddDynamic(this, &ThisClass::OnDead);
 	// 알겠긔 -민진-
 
@@ -243,19 +243,8 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 }
 
 void AMJMonsterCharacter::OnDamage(float Magnitude, bool bIsCritical)
-{
+{	
 	HPBarComponent->SetVisibility(true);
-	
-	UMJDamageComponent* NewComp = NewObject<UMJDamageComponent>(this);
-	NewComp->RegisterComponent();
-	NewComp->SetDamageWidget(this->GetActorLocation());
-	NewComp->SetVisibility(true);
-	DamageComponents.Add(NewComp);
 
-	if (UMJDamageWidget* Widget =Cast<UMJDamageWidget>(NewComp->GetUserWidgetObject()) )
-	{
-		Widget->SetDamage(-Magnitude, bIsCritical);
-		Widget->PlayAnim();
-	}
-	DamageIndex ++;
+	FloatDamage(Magnitude, bIsCritical, EOwnerType::Monster);
 }

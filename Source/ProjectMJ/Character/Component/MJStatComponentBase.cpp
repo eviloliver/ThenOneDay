@@ -17,5 +17,10 @@ void UMJStatComponentBase::OnDead(AActor* InEffectCauser)
 	OnDeath.Broadcast(InEffectCauser);
 }
 
+void UMJStatComponentBase::OnDamaged(float Magnitude, bool bIsCritical)
+{
+	OnDamage.Broadcast(Magnitude, bIsCritical);
+}
+
 
 

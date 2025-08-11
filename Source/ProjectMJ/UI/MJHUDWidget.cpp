@@ -2,14 +2,18 @@
 
 
 #include "UI/MJHUDWidget.h"
+
+#include "MJUIToggle.h"
 #include "UI/Bar/MJHealthBarWidget.h"
 #include "Bar/MJManaBarWidget.h"
 #include "Bar/MJStaminaBar.h"
 #include "Bar/MJExperienceWidget.h"
 #include "Character/Component/MJPlayerStatComponent.h"
+#include "Components/Button.h"
 #include "Dialogue/MJDialogueWidget.h"
 #include "World/MJStatWidget.h"
 #include "Inventory/MJInventoryWidget.h"
+#include "Skill/MJSkillWidget.h"
 #include "Store/MJStoreWidget.h"
 #include "TG/UI/MJBossHpBarWidget.h"
 
@@ -35,6 +39,18 @@ void UMJHUDWidget::NativeConstruct()
 	{
 		Dialogue->SetVisibility(ESlateVisibility::Hidden);
 	}
+
+	if (UIToggle)
+	{
+		UIToggle->GetInventoryButton()->OnClicked.AddDynamic(this, &ThisClass::ShowInventory);
+		UIToggle->GetStatPanelButton()->OnClicked.AddDynamic(this, &ThisClass::ShowStatPanel);
+		UIToggle->GetSkillWidgetButton()->OnClicked.AddDynamic(this, &ThisClass::SetSkillWidgetVisibility);
+	}
+
+	if (SkillWidget)
+	{
+		SkillWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet, UMJPlayerStatComponent* Stat)
@@ -43,11 +59,11 @@ void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJC
 	{
 		HealthBar->BindToAttributes(ASC,AttributeSet);
 	}
-
-	if (ManaBar)
-	{
-		ManaBar->BindToAttributes(ASC,AttributeSet);
-	}
+	//
+	// if (ManaBar)
+	// {
+	// 	ManaBar->BindToAttributes(ASC,AttributeSet);
+	// }
 
 	if (StaminaBar)
 	{
@@ -94,6 +110,18 @@ void UMJHUDWidget::ShowStore()
 	else if (Store->GetVisibility() == ESlateVisibility::Hidden)
 	{
 		Store->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+void UMJHUDWidget::SetSkillWidgetVisibility()
+{
+	if (SkillWidget->GetVisibility() == ESlateVisibility::Visible)
+	{
+		SkillWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else if (SkillWidget->GetVisibility() == ESlateVisibility::Hidden)
+	{
+		SkillWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 

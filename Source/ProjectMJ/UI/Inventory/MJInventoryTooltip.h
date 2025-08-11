@@ -8,7 +8,11 @@
 #include "MJInventoryTooltip.generated.h"
 
 /**
- * 
+* Class Description: 인벤토리 슬롯에 가져다대면 뜨는 아이템 정보 툴팁
+ * Author: 이지수
+ * Created Date: 2025.
+ * Last Modified By: 
+ * Last Modified Date: 
  */
 class USizeBox;
 class UTextBlock;

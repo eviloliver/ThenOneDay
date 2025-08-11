@@ -2,30 +2,45 @@
 
 
 #include "UI/World/MJDamageWidget.h"
-#include "AbilitySystem/MJAbilitySystemComponent.h"
-#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "Components/TextBlock.h"
 #include "Animation/WidgetAnimationEvents.h"
+#include "Character/MJCharacterBase.h"
 
 void UMJDamageWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	AnimFinishedDelegate.BindDynamic(this,&UMJDamageWidget::OnAnimFinished);
+	
 }
 
 
-void UMJDamageWidget::SetDamage(float damage, bool IsCritical)
+void UMJDamageWidget::SetDamage(float damage, bool IsCritical, EOwnerType type)
 {
 	Damage->SetText(FText::AsNumber(damage));
+	
+	SetDamageColor(IsCritical, type);
 
-	if (IsCritical)
+}
+
+void UMJDamageWidget::SetDamageColor(bool IsCritical, EOwnerType type)
+{
+	switch (type)
 	{
+	case EOwnerType::Player:
 		Damage->SetColorAndOpacity( FSlateColor(FLinearColor::Red));
-	}
-	else
-	{
-		Damage->SetColorAndOpacity( FSlateColor(FLinearColor::White));
+		break;
+
+	case EOwnerType::Monster:
+		if (IsCritical)
+		{
+			Damage->SetColorAndOpacity( FSlateColor(FLinearColor::Yellow));
+		}
+		else
+		{
+			Damage->SetColorAndOpacity( FSlateColor(FLinearColor::White));
+		}
+		break;
+	default:
+		break;
 	}
 }
 
@@ -34,10 +49,6 @@ void UMJDamageWidget::PlayAnim()
 	if (DamageAnim)
 	{
 		PlayAnimation(DamageAnim);
-	}
-	else
-	{
-		UE_LOG(LogTemp,Error,TEXT("PlayAnimation damage"));
 	}
 }
 
