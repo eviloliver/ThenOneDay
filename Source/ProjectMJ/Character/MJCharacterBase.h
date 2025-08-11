@@ -10,6 +10,7 @@
 #include "MJCharacterBase.generated.h"
 
 class UMJDamageComponent;
+class UMJStateAbilityDataAsset;
 class UMJAbilityContextComponent;
 class UMJMiniMapIconMeshComponent;
 class AMJMiniMapIconActor;
@@ -31,6 +32,10 @@ class UMotionWarpingComponent;
  * Description of Change: add MiniMapIconMeshComponent 
  * Modified By: CTG	
  * Modified Date: 2025.07.31
+ *
+ * Description of Change: Add StateAbilityDataAsset And Setting
+ * Modified By: Kim Minjin	
+ * Modified Date: 2025.08.09.
  */
 UENUM(BlueprintType)
 enum class EOwnerType : uint8
@@ -65,6 +70,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS")
 	TSoftObjectPtr<UDataAsset_StartDataBase>CharacterStartData;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GAS")
+	TObjectPtr<UMJStateAbilityDataAsset> StateAbilityDataAsset;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation")
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
 

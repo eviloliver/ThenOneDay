@@ -4,7 +4,7 @@
 #include "TG/UI/MJDungeonMapWidget.h"
 
 #include "MJDungeonNodeWidget.h"
-#include "MJGameFlowHUDWidget.h"
+#include "Components/BackgroundBlur.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/Image.h"
@@ -17,8 +17,8 @@ void UMJDungeonMapWidget::NativeConstruct()
 {	
 	Super::NativeConstruct();
 
-	Background->SetVisibility(ESlateVisibility::Hidden);
-	
+	//Background->SetVisibility(ESlateVisibility::Hidden);
+	BackgroundBlur->SetVisibility(ESlateVisibility::Hidden);
 	DrawAllWidget();
 }
 

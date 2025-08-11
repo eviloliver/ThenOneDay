@@ -5,6 +5,8 @@
 #include "GameplayEffectExtension.h"
 #include "ProjectMJ.h"
 #include "Character/Component/MJStatComponentBase.h"
+#include "MJ/Character/MJMonsterCharacter.h"
+#include "Perception/AISense_Damage.h"
 
 UMJCharacterAttributeSet::UMJCharacterAttributeSet()
     : Experience(0.0f)
@@ -108,7 +110,8 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 			if (Data.EvaluatedData.Magnitude < 0.f) //이렇게 하면 힐이 들어와도 ondamage가 실행되는 불상사를 막을 수 있는 거 같다.!
 			{
 				bool bIsCritical;
-				if (Data.EffectSpec.GetDynamicAssetTags().HasTag(FGameplayTag::RequestGameplayTag(FName("Data.Character.IsCritical"))))
+				FGameplayTag IsCriticalTag = FGameplayTag::RequestGameplayTag(FName("Data.Character.IsCritical"));
+				if (Data.EffectSpec.GetDynamicAssetTags().HasTag(IsCriticalTag))
 				{
 					bIsCritical = true;
 				}
@@ -117,7 +120,29 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 					bIsCritical = false;
 				}
 				StatComp->OnDamaged(Data.EvaluatedData.Magnitude, bIsCritical);
-                				
+
+				// Minjin: Damage Perception - Data 사용함. TODO.위치 수정하기
+				// EventLocation으로 들어가는 값이 Stimulus Location이다.- HitResult값이 nullptr이라서 Target의 Location 넣어놓음
+				AActor* Target = Data.Target.GetAvatarActor();
+				FVector TargetLocation = Target->GetActorLocation();
+				UAISense_Damage::ReportDamageEvent(Target->GetWorld(), Target,
+					Data.EffectSpec.GetEffectContext().GetEffectCauser(), Data.EvaluatedData.Magnitude,
+					Target->GetActorLocation(), FVector::Zero()/*Data.EffectSpec.GetEffectContext().GetHitResult()->Location*/
+					);
+
+				// Minjin: Damage Ability
+				AMJCharacterBase* Character = Cast<AMJCharacterBase>(Target);
+				if (Character == nullptr)
+				{
+					return;
+				}
+				FGameplayTag DamageTag = FGameplayTag::RequestGameplayTag(FName("Character.State.IsHurt"));
+				if (Data.EffectSpec.GetDynamicAssetTags().HasTag(DamageTag))
+				{
+					FGameplayEventData EventData;
+					EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("Event.Character.Hurt"));
+					Character->ASC->HandleGameplayEvent(EventData.EventTag, &EventData);
+				}
 			}
 		}
 	}
