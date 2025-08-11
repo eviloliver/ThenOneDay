@@ -23,10 +23,13 @@ public:
 
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+	virtual void InitializeFromAsset(UBehaviorTree& Asset) override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tag", meta=(Categories = "Skill"))
-	FGameplayTag SkillTag;
+	FGameplayTagContainer SkillTags;
 
 	FVector PreTargetLocation;
 	FVector CurrTargetLocation;
+
+	UBehaviorTreeComponent* CachedOwnerComp;
 };

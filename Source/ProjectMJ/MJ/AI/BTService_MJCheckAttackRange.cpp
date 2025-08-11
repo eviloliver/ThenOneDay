@@ -31,7 +31,7 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	/*
 	 * How to: 타겟이 몬스터의 공격 범위에 들어갔을 때 Maximum 혹은 Minimum 범위에 들어오면 블랙보드 키를 설정
 	 */
-	
+	CachedOwnerComp = &OwnerComp;
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
 	APawn* ControlledPawn = OwnerComp.GetAIOwner()->GetPawn();
@@ -60,11 +60,31 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	
 	/*
 	 * Minjin
-	 * HowTo: 설정한 태그(스킬타입)를 통해 가지고 있는 태그와 비교해서 구체적인 태그를 가져온다.
+	 * HowTo: 설정한 태그를 가지고 있는 태그와 비교해서 구체적인 태그를 가져온다.
 	 * 가져온 태그로 Skill Set 가져온다.
 	 */
+
+	/*if (!Enemy->HasAnyMatchingGameplayTags(SkillTags))
+	{
+		MJ_LOG(LogMJ, Log, TEXT("Has not AnyMatchingGameplayTags"));
+		return;
+	}*/
 	
 	UMJSkillComponentBase* SkillComp = Enemy->GetSkillComponent();
+	FGameplayTag SkillTag = FGameplayTag::EmptyTag;
+
+	for (FGameplayTag HasTag: SkillTags)
+	{
+		if (SkillComp->GetOwnedSkillMap().Contains(HasTag))
+		{
+			SkillTag = HasTag;
+		}
+	}
+
+	if (!SkillTag.IsValid())
+	{
+		return;
+	}
 	int32 SkillLevel = SkillComp->GetOwnedSkillMap()[SkillTag].Level;
 	// 레벨 정보 가져옴
 
@@ -162,4 +182,9 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	}
 
 	OwnerComp.GetBlackboardComponent()->SetValueAsVector("KeepDistancePos", MoveToLocation);
+}
+
+void UBTService_MJCheckAttackRange::InitializeFromAsset(UBehaviorTree& Asset)
+{
+	Super::InitializeFromAsset(Asset);
 }
