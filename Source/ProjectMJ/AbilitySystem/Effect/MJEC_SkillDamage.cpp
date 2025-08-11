@@ -85,6 +85,10 @@ void UMJEC_SkillDamage::Execute_Implementation(const FGameplayEffectCustomExecut
 
     float FinalDamage = BaseDamage + ((AttackDamageScaling / 100) * SourceAttackDamage) + ((AbilityPowerScaling / 100) * SourceAbilityPower);
 
+	// Minjin: Damage Tag 부여
+	FGameplayTag DamageTag = FGameplayTag::RequestGameplayTag(FName("Character.State.IsHurt"));
+	ExecutionParams.GetOwningSpecForPreExecuteMod()->AddDynamicAssetTag(DamageTag);
+	
     bool bIsCritical = FMath::FRandRange(0.f, 100.f) < CriticalChance;
     if (bIsCritical)
     {

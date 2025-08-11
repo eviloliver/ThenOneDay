@@ -6,7 +6,6 @@
 #include "AIController.h"
 #include "ProjectMJ.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "MJ/Interface/MJCharacterAIInterface.h"
 
 UBTTask_MJTurnToTarget::UBTTask_MJTurnToTarget()
 {
@@ -76,18 +75,12 @@ void UBTTask_MJTurnToTarget::OnRotated()
 	{
 		FinishLatentTask(*MyOwnerComp, EBTNodeResult::Failed);
 	}
-
-	IMJCharacterAIInterface* AIPawn = Cast<IMJCharacterAIInterface>(ControlledPawn);
-	if (nullptr == AIPawn)
-	{
-		FinishLatentTask(*MyOwnerComp, EBTNodeResult::Failed);
-	}
-
+	
 	/*
 	 * Minjin
 	 * TurnSpeed는 5.0f 이상이 좋아보입니다.
 	 */
-	float TurnSpeed = AIPawn->GetAITurnSpeed();
+	float TurnSpeed = 5.0f;
 	FRotator NewRot = FMath::RInterpTo(ControlledPawn->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), TurnSpeed);
 	ControlledPawn->SetActorRotation(NewRot);
 

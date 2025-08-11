@@ -23,6 +23,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDamageDelegate, float, Data, boo
  * Last Modified Date: 2025-06-19
  * Last Modified By: 김민진
  * Last Modified Date: (2025.07.22.) FOnDeathDelegate EffectCauser를 전달하게 수정
+ * Last Modified By: 김민진
+ * Last Modified Date: (2025.08.08.) 데미지 어빌리티 추가
  */
 UCLASS()
 class PROJECTMJ_API UMJCharacterAttributeSet : public UAttributeSet

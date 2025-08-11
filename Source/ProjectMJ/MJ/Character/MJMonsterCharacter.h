@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagAssetInterface.h"
 #include "GameplayTagContainer.h"
 #include "Character/MJCharacterBase.h"
-#include "MJ/Interface/MJCharacterAIInterface.h"
+#include "AbilitySystem/MJAbilitySystemComponent.h"
+#include "AbilitySystemComponent.h"
 #include "MJMonsterCharacter.generated.h"
 
 class UMJEnemySkillComponent;
@@ -34,7 +36,7 @@ struct EnemyTransferData
 };
 
 UCLASS()
-class PROJECTMJ_API AMJMonsterCharacter : public AMJCharacterBase, public IMJCharacterAIInterface
+class PROJECTMJ_API AMJMonsterCharacter : public AMJCharacterBase, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 
@@ -50,26 +52,36 @@ public:
 	const EnemyTransferData& GetEnemyBequest(){return EnemyBequest;}
 
 	const FGameplayTag& GetDefaultEnemyTag() {return DefaultEnemyTag;}
+
+	UFUNCTION()
+	virtual void GiveDeathRewardTo();
+	
+	// IGameplayTagAssetInterface
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override
+	{
+		ASC->GetOwnedGameplayTags(TagContainer);
+	}
+	
+	virtual bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const override
+	{
+		return ASC->HasMatchingGameplayTag(TagToCheck);
+	}
+	
+	bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override
+	{
+		return ASC->HasAllMatchingGameplayTags(TagContainer);
+	}
+
+	bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override
+	{
+		return ASC->HasAllMatchingGameplayTags(TagContainer);
+	}
 	
 protected:
 	virtual void BeginPlay() override;
-	
-	// Minjin: Interface
-	virtual float GetAIPatrolRadius() override;
-	virtual float GetAITurnSpeed() override;
-	virtual float GetAIMaximumAttackRange() override;
-	virtual float GetAIMinimumAttackRange() override;
-
-	virtual void AttackByAI() override;
-	virtual void MeleeAttackByAI() override;
-	virtual void RangeAttackByAI() override;
-	
 	virtual void PossessedBy(AController* NewController) override;
 
 protected:
-	UFUNCTION()
-	virtual void GiveDeathRewardTo();
-
 	UFUNCTION()
 	virtual void OnDead(AActor* InEffectCauser);
 
@@ -110,7 +122,7 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	bool bIsDying = false;
 
-	// Minjin: Animation
+	// Minjin: Animation-안 쓸 예정
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UAnimationAsset> AppearanceAnimation;
 

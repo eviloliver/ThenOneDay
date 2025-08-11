@@ -20,6 +20,7 @@
 #include "UI/MJUIManagerSubsystem.h"
 #include "TG/MJGameInstanceTG.h"
 #include "Character/Component/MJPlayerStatComponent.h"
+#include "DataAsset/MJStateAbilityDataAsset.h"
 #include "Item/MJItemBase.h"
 #include "MJ/DataAssetMJ/MJDropItemsDataAsset.h"
 #include "UI/Inventory/ItemDataRow.h"
@@ -65,75 +66,14 @@ void AMJMonsterCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	// Minjin: 캐릭터는 미리 맵에 스폰되어 있다. 안 보이게 설정-콜리전을 비활성화 하면 맵 밑으로 꺼짐
-	AActor::SetActorHiddenInGame(true);
-	SetActorEnableCollision(true);
+	// AActor::SetActorHiddenInGame(true);
+	// SetActorEnableCollision(true);
 	
 	// Jisoo
 	if (UMJEnemyHPBar* EnemyHPBar = Cast<UMJEnemyHPBar>(HPBarComponent->GetUserWidgetObject()))
 	{
 		EnemyHPBar->BindToAttributes(ASC,CharacterAttributeSet);
 	}
-}
-
-float AMJMonsterCharacter::GetAIPatrolRadius()
-{
-	return 800.0f;
-}
-
-float AMJMonsterCharacter::GetAITurnSpeed()
-{
-	return 5.0f;
-}
-
-float AMJMonsterCharacter::GetAIMaximumAttackRange()
-{
-	// Minjin: 원거리 공격(근거리 몬스터의 경우 중거리 공격으로 활용 가능할 듯)
-	/*
-	* TODO
-	* 우선 하드코딩. 스탯 기반으로 바꾸기
-	*/
-	//return Stat->GetTotalStat().AttackRange + Stat->GetAttackRadius()*2;
-	return 500.0f;
-}
-
-float AMJMonsterCharacter::GetAIMinimumAttackRange()
-{
-	// Minjin: 근거리 공격
-	/*
-	* TODO
-	* 우선 하드코딩. 스탯 기반으로 바꾸기
-	*/
-	//return Stat->GetTotalStat().AttackRange + Stat->GetAttackRadius()*2;
-	return 200.0f;
-}
-
-void AMJMonsterCharacter::AttackByAI()
-{
-	/*
-	 * TODO
-	 * 공격
-	 */
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("Attack"));
-}
-
-void AMJMonsterCharacter::MeleeAttackByAI()
-{
-	/*
-	 * Minjin
-	 * TODO
-	 * 근거리 공격
-	 */
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("MeleeAttack"));
-}
-
-void AMJMonsterCharacter::RangeAttackByAI()
-{
-	/*
- * Minjin
- * TODO
- * 원거리 공격
- */
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("RangeAttack"));
 }
 
 UAbilitySystemComponent* AMJMonsterCharacter::GetAbilitySystemComponent() const
@@ -216,6 +156,19 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 
 	// Minjin: 지정한 확률로 아이템 태그를 얻음
 	EnemyBequest.ItemTag = DataRow->DropItems->TryDropItem();
+
+	/*
+	 * Minjin
+	 * StateAbilityDataAsset 설정
+	 */
+	UMJStateAbilityDataAsset* StateAbility = DataRow->StateAbility;
+	if (!StateAbility)
+	{
+		MJ_LOG(LogMJ, Log, TEXT("Not Exist StateAbility"));
+		return;
+	}
+	
+	StateAbilityDataAsset = StateAbility;
 }
 
 void AMJMonsterCharacter::GiveDeathRewardTo()
@@ -271,46 +224,21 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 	// - 동민 -
 
 	bIsDying = true;
+
+	// Minin: Target 정보 저장
+	EnemyBequest.Target = InEffectCauser;
+	
 	AMJMonsterAIControllerBase* AIController = Cast<AMJMonsterAIControllerBase>(GetController());
 	if (AIController)
 	{
 		AIController->StopAI();
 	}
-	SetActorEnableCollision(false);
+
+	// Minjin: Death Ability
+	FGameplayEventData EventData;
+	EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("Event.Character.Dead"));
+	ASC->HandleGameplayEvent(EventData.EventTag, &EventData);
 	
-	if (DeathAnimation)
-	{
-		MJ_LOG(LogMJ, Warning, TEXT("%s: Play Death Animation"), *GetName());
-		//StopAnimMontage();
-		//GetMesh()->PlayAnimation(DeathAnimation, false);<-이거로 하면 공격 들어갈때마다 애니메이션이 처음부터 재생됨
-		GetMesh()->OverrideAnimationData(DeathAnimation, false);
-
-		// Minin: Target 정보 저장
-		EnemyBequest.Target = InEffectCauser;
-		
-		const float FinishDelay = DeathAnimation->GetPlayLength();
-
-		GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, FTimerDelegate::CreateLambda(
-			[this]()
-			{
-				SetActorHiddenInGame(true);
-
-				// Minjin: 경험치 전달, 아이템 스폰
-				GiveDeathRewardTo();
-				
-				Destroy();
-			}
-		), FinishDelay, false);
-	}
-	else
-	{
-		SetActorHiddenInGame(true);
-
-		// Minjin: 경험치 전달, 아이템 스폰
-		GiveDeathRewardTo();
-		
-		Destroy();
-	}
 	DamageIndex = 0;
 }
 

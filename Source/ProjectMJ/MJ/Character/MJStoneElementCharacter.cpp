@@ -13,8 +13,3 @@ void AMJStoneElementCharacter::BeginPlay()
 	AttackTag = FGameplayTag::RequestGameplayTag(FName("Skill.Instant.StoneElementalMeleeAttack"));
 	
 }
-
-void AMJStoneElementCharacter::AttackByAI()
-{
-	// SkillComponent->ActivateSkill(AttackTag);
-}
