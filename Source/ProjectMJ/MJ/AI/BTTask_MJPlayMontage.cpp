@@ -5,7 +5,9 @@
 #include "BTTask_MJPlayMontage.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "MJ/Character/MJMonsterCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Character/Component/MJEnemySkillComponent.h"
 
 UBTTask_MJPlayMontage::UBTTask_MJPlayMontage()
 {
@@ -17,14 +19,14 @@ UBTTask_MJPlayMontage::UBTTask_MJPlayMontage()
 
 EBTNodeResult::Type UBTTask_MJPlayMontage::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	AAIController* Controller = OwnerComp.GetAIOwner();
-	if (!Controller)
+	APawn* ControlledPawn = OwnerComp.GetAIOwner()->GetPawn();
+	if (!ControlledPawn)
 	{
 		return EBTNodeResult::Failed;
 	}
 
-	APawn* Pawn = Controller->GetPawn();
-	if (!Pawn)
+	AMJMonsterCharacter* Monster = Cast<AMJMonsterCharacter>(ControlledPawn);
+	if (!Monster)
 	{
 		return EBTNodeResult::Failed;
 	}
@@ -35,32 +37,37 @@ EBTNodeResult::Type UBTTask_MJPlayMontage::ExecuteTask(UBehaviorTreeComponent& O
 		return EBTNodeResult::Failed;
 	}
 	
-	UAnimInstance* Anim = Pawn->FindComponentByClass<USkeletalMeshComponent>()->GetAnimInstance();
+	UAnimInstance* Anim = ControlledPawn->FindComponentByClass<USkeletalMeshComponent>()->GetAnimInstance();
 	if (!Anim)
 	{
 		return EBTNodeResult::Failed;
 	}
 
 	CachedComponent = &OwnerComp;
-	if (!MontagePlay)
-	{
-		return EBTNodeResult::Failed;
-	}
-	FVector AILocation = Pawn->GetActorLocation();
+	
+	FVector AILocation = ControlledPawn->GetActorLocation();
 	FVector TargetLocation = Player->GetActorLocation();
 	TargetLocation.Z = AILocation.Z;
 
 	FRotator LookAtRotation = (TargetLocation - AILocation).Rotation();
 
-	Pawn->SetActorRotation(LookAtRotation);
+	ControlledPawn->SetActorRotation(LookAtRotation);
 
 
-	Pawn->FindComponentByClass<USkeletalMeshComponent>()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	ControlledPawn->FindComponentByClass<USkeletalMeshComponent>()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	
-	Anim->Montage_Play(MontagePlay);
+	UAbilitySystemComponent* ASC = Monster->GetAbilitySystemComponent();
+	
+
+
+	//Anim->Montage_Play(MontagePlay);
+	if (!Anim->IsAnyMontagePlaying())
+	{
+		Monster->GetSkillComponent()->ActivateIdentitySkill();
+	}
 	if (SessionName != NAME_None)
 	{
-		Pawn->GetWorldTimerManager().SetTimer(
+		ControlledPawn->GetWorldTimerManager().SetTimer(
 			WaitTimerHandle,
 			FTimerDelegate::CreateUObject(this, &UBTTask_MJPlayMontage::JumpToSection, Anim),
 			3.0f,
@@ -70,17 +77,16 @@ EBTNodeResult::Type UBTTask_MJPlayMontage::ExecuteTask(UBehaviorTreeComponent& O
 		board->SetValueAsBool(TEXT("IsPatten"), false);
 
 	}
-	FOnMontageEnded EndDelegate;
-	EndDelegate.BindUObject(this, &UBTTask_MJPlayMontage::OnMontageEnded);
-	Anim->Montage_SetEndDelegate(EndDelegate, MontagePlay);
+	Anim->OnMontageEnded.AddDynamic(this, &UBTTask_MJPlayMontage::OnMontageEnded);
 	
 	return EBTNodeResult::InProgress;
 }
 
 void UBTTask_MJPlayMontage::JumpToSection(UAnimInstance* AnimInstance)
 {
-	if (AnimInstance && MontagePlay)
+	if (AnimInstance )
 	{
+		MontagePlay = AnimInstance->GetCurrentActiveMontage();
 		AnimInstance->Montage_JumpToSection(SessionName, MontagePlay);
 	}
 
@@ -90,6 +96,7 @@ void UBTTask_MJPlayMontage::OnMontageEnded(UAnimMontage* AnimMontage, bool bInte
 {
 	if (CachedComponent)
 	{
+				
 		FinishLatentTask(*CachedComponent, EBTNodeResult::Succeeded);
 	}
 }
