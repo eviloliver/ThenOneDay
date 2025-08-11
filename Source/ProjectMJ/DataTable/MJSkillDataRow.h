@@ -60,6 +60,9 @@ public:
 	FText SkillName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSoftObjectPtr<UTexture2D> Icon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText SkillDescription;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
