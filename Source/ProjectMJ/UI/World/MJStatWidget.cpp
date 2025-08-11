@@ -17,14 +17,14 @@ void UMJStatWidget::BindToAttribute(UMJAbilitySystemComponent* ASC, UMJCharacter
 	this->AttributSet = AttributeSet;
 	
 	Health = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxHealthAttribute());
-	AttackPower = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxAttackDamageAttribute());
-	SpellPower = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxAbilityPowerAttribute());
-	Speed = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetMaxAbilityPowerAttribute());
+	AttackPower = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetAttackDamageAttribute());
+	SpellPower = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetAbilityPowerAttribute());
+	Speed = ASC->GetNumericAttribute(UMJCharacterAttributeSet::GetAbilityPowerAttribute());
 
 	Stat->OnLevelUp.AddDynamic(this, &UMJStatWidget::UpdateLevel);
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxHealthAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
-	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxAttackDamageAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
-	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxAbilityPowerAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
+	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetAttackDamageAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
+	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetAbilityPowerAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
 	ASC->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetMaxMovementSpeedAttribute()).AddUObject(this, &UMJStatWidget::UpdateStat);
 	
 	UpdateStat(FOnAttributeChangeData{});
@@ -50,7 +50,7 @@ void UMJStatWidget::UpdateStat(const FOnAttributeChangeData& Data) // settext
         }
 	}
 
-	if (ChangedAttr == AttributSet->GetMaxAttackDamageAttribute())
+	if (ChangedAttr == AttributSet->GetAttackDamageAttribute())
 	{
 		if (StatAttackPower)
 		{
@@ -58,7 +58,7 @@ void UMJStatWidget::UpdateStat(const FOnAttributeChangeData& Data) // settext
 			StatAttackPower->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), AttackPower)));
 		}
 	}
-	if (ChangedAttr == AttributSet->GetMaxAbilityPowerAttribute())
+	if (ChangedAttr == AttributSet->GetAbilityPowerAttribute())
 	{
 		if (StatSpellPower)
         {

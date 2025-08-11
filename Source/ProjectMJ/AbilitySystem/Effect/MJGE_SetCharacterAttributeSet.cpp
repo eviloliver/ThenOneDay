@@ -33,30 +33,24 @@ UMJGE_SetCharacterAttributeSet::UMJGE_SetCharacterAttributeSet()
         { UMJCharacterAttributeSet::GetMaxStaminaAttribute(),       FName("Data.Character.MaxStamina") },
 
         { UMJCharacterAttributeSet::GetStaminaRegenerationAttribute(),  FName("Data.Character.StaminaRegeneration") },
-        { UMJCharacterAttributeSet::GetMaxStaminaRegenerationAttribute(),FName("Data.Character.MaxStaminaRegeneration") },
 
         { UMJCharacterAttributeSet::GetManaAttribute(),             FName("Data.Character.Mana") },
         { UMJCharacterAttributeSet::GetMaxManaAttribute(),          FName("Data.Character.MaxMana") },
 
         { UMJCharacterAttributeSet::GetManaRegenerationAttribute(),     FName("Data.Character.ManaRegeneration") },
-        { UMJCharacterAttributeSet::GetMaxManaRegenerationAttribute(),  FName("Data.Character.MaxManaRegeneration") },
 
         { UMJCharacterAttributeSet::GetFocusAttribute(),            FName("Data.Character.Focus") },
         { UMJCharacterAttributeSet::GetMaxFocusAttribute(),         FName("Data.Character.MaxFocus") },
 
         { UMJCharacterAttributeSet::GetFocusRegenerationAttribute(),    FName("Data.Character.FocusRegeneration") },
-        { UMJCharacterAttributeSet::GetMaxFocusRegenerationAttribute(), FName("Data.Character.MaxFocusRegeneration") },
 
         // Attack / Ability
         { UMJCharacterAttributeSet::GetAttackDamageAttribute(),     FName("Data.Character.AttackDamage") },
-        { UMJCharacterAttributeSet::GetMaxAttackDamageAttribute(),  FName("Data.Character.MaxAttackDamage") },
 
         { UMJCharacterAttributeSet::GetAbilityPowerAttribute(),     FName("Data.Character.AbilityPower") },
-        { UMJCharacterAttributeSet::GetMaxAbilityPowerAttribute(),  FName("Data.Character.MaxAbilityPower") },
 
         // Armor / Resistance
         { UMJCharacterAttributeSet::GetArmorAttribute(),            FName("Data.Character.Armor") },
-        { UMJCharacterAttributeSet::GetMaxArmorAttribute(),         FName("Data.Character.MaxArmor") },
 
         { UMJCharacterAttributeSet::GetResistanceAttribute(),       FName("Data.Character.Resistance") },
         { UMJCharacterAttributeSet::GetMaxResistanceAttribute(),    FName("Data.Character.MaxResistance") },
@@ -71,10 +65,8 @@ UMJGE_SetCharacterAttributeSet::UMJGE_SetCharacterAttributeSet()
 
         // Critical
         { UMJCharacterAttributeSet::GetCriticalChanceAttribute(),   FName("Data.Character.CriticalChance") },
-        { UMJCharacterAttributeSet::GetMaxCriticalChanceAttribute(),FName("Data.Character.MaxCriticalChance") },
 
         { UMJCharacterAttributeSet::GetCriticalDamageAttribute(),   FName("Data.Character.CriticalDamage") },
-        { UMJCharacterAttributeSet::GetMaxCriticalDamageAttribute(),FName("Data.Character.MaxCriticalDamage") },
 
         // MovementSpeed
         { UMJCharacterAttributeSet::GetMovementSpeedAttribute(),    FName("Data.Character.MovementSpeed") },
