@@ -45,6 +45,7 @@ void UMJMiniMapIconMeshComponent::BeginPlay()
 	if (AMJMonsterCharacter* MonsterCharacter = Cast<AMJMonsterCharacter>(GetOwner()))
 	{
 		SetRelativeScale3D(FVector(1.0f,1.0f,1.0f));
+		SetRelativeLocation(FVector(0.0f,0.0f,0.f));
 		SetStaticMesh(EnemyIcon);
 	}
 	else if (AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(GetOwner()))
