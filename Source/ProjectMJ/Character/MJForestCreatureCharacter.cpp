@@ -22,13 +22,3 @@ void AMJForestCreatureCharacter::BeginPlay()
 	
 	
 }
-
-float AMJForestCreatureCharacter::GetAIMaximumAttackRange()
-{
-	return 500.0;
-}
-
-float AMJForestCreatureCharacter::GetAIMinimumAttackRange()
-{
-	return 200.0f;
-}
