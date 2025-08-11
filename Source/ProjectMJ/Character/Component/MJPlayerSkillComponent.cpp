@@ -21,6 +21,9 @@ void UMJPlayerSkillComponent::BeginPlay()
 	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirSwordAura")));
 	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirSwordAura")));
 
+	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.AlphaStrike")));
+	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.AlphaStrike")));
+
 	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
 	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
 
@@ -56,5 +59,19 @@ void UMJPlayerSkillComponent::ActivateSkillByInputTag(const FGameplayTag InputTa
 	else
 	{
 		MJ_LOG(LogMJ, Warning, TEXT("Not Equipped Skill Tag"))
+	}
+}
+
+void UMJPlayerSkillComponent::ReleaseSkillByInputTag(const FGameplayTag InputTag)
+{
+	if (EquippedSkillMap.Contains(InputTag))
+	{
+		FGameplayTag EquippedSkill = EquippedSkillMap[InputTag];
+		ReleaseSkill(EquippedSkill);
+	}
+	else
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("Not Equipped Skill Tag"))
+
 	}
 }

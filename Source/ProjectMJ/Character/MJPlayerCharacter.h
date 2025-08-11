@@ -107,4 +107,7 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "Effect", meta = (AllowPrivateAccess = true))
 	TObjectPtr<UMJPlayerEffectComponent> EffectComponent;
 
+	UFUNCTION()
+	void OnDamage(float Magnitude, bool bIsCritical);
+
 };

@@ -53,6 +53,8 @@ public:
 
 	virtual void ActivateSkill(const FGameplayTag& SkillTag);
 
+	virtual void ReleaseSkill(const FGameplayTag& SkillTag);
+
 	void GiveAbilityToASC(const FGameplayTag& SkillTag);
 
 	void RemoveAbility(const FGameplayTag& SkillTag);
@@ -79,5 +81,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FGameplayAbilitySpecHandle> GivenPassiveAbilityHandles;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+	TMap<FGameplayTag, FGameplayAbilitySpecHandle> GivenDrawMarkerAbilityHandles;
+
 };

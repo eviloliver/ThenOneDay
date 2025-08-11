@@ -14,6 +14,7 @@
  * Last Modified Date: 2025-07-21
  */
 
+class UMJGameFlowPopUpMsgWidget;
 class UImage;
 class UScrollBox;
 class UMJLoadGameSlotWidget;
@@ -24,9 +25,14 @@ class PROJECTMJ_API UMJLoadGameWidget : public UMJChildMenuBaseWidget
 {
 	GENERATED_BODY()
 
+public:
+	void UpdateSlot();
+
 protected:
 
 	virtual void NativeConstruct() override;
+
+	void InitializeSlot();
 
 	UFUNCTION()
 	void OnClicked_Back();
@@ -42,6 +48,9 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UImage> BackGround;
+
+	UPROPERTY()
+	uint8 MaxSlotNum;
 	
 	
 	

@@ -79,6 +79,7 @@ void UMJNewGamePopUpWidget::SwitchToInGame()
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0))
 	{
 		FInputModeGameAndUI InputModeGameAndUI;
+		InputModeGameAndUI.SetHideCursorDuringCapture(false);
 		PC->SetInputMode(InputModeGameAndUI);
 	}
 	// OpenLevel

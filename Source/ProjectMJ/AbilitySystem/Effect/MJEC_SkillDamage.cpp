@@ -85,17 +85,20 @@ void UMJEC_SkillDamage::Execute_Implementation(const FGameplayEffectCustomExecut
 
     float FinalDamage = BaseDamage + ((AttackDamageScaling / 100) * SourceAttackDamage) + ((AbilityPowerScaling / 100) * SourceAbilityPower);
 
+	// Minjin: Damage Tag 부여
+	FGameplayTag DamageTag = FGameplayTag::RequestGameplayTag(FName("Character.State.IsHurt"));
+	ExecutionParams.GetOwningSpecForPreExecuteMod()->AddDynamicAssetTag(DamageTag);
+	
     bool bIsCritical = FMath::FRandRange(0.f, 100.f) < CriticalChance;
     if (bIsCritical)
     {
-        FinalDamage *= (1.0f + CriticalDamage / 100.0f);
-        // TODO:크리티컬 연출/태그 등 처리
-    	
-    }
+	    FinalDamage *= (1.0f + CriticalDamage / 100.0f);
+    	// TODO:크리티컬 연출/태그 등 처리
 
-	FGameplayEffectSpec& NonConstSpec = const_cast<FGameplayEffectSpec&>(Spec); // Spec이 const라서 cast
-	NonConstSpec.SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Character.IsCritical")), bIsCritical ? 1.f : 0.f);
-	
+    	FGameplayTag IsCriticalTag = FGameplayTag::RequestGameplayTag(FName("Data.Character.IsCritical"));
+    	ExecutionParams.GetOwningSpecForPreExecuteMod()->AddDynamicAssetTag(IsCriticalTag);
+    }
+    	
      // TODO: 난수 추가
     OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UMJCharacterAttributeSet::GetHealthAttribute(), EGameplayModOp::Additive, -FinalDamage));
 

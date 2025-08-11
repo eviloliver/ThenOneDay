@@ -96,24 +96,32 @@ void UMJSaveGameSubsystem::SaveGameToCurrentSlotNum()
 
 void UMJSaveGameSubsystem::SaveGameToSelectedSlotNum(const uint8 InputSlotNum)
 {
+	// using only in SavePointActor
 	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetGameInstance());
 	if (MJGI)
 	{
 		const FString SlotName = FString::Printf(TEXT("Slot_%d"), InputSlotNum);
 
-		UMJSaveGame* SaveGame = Cast<UMJSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
+		UMJSaveGame* SaveGame;
 
-		if (!SaveGame)
+		if (UGameplayStatics::DoesSaveGameExist(SlotName,0))
+		{
+			SaveGame = Cast<UMJSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
+		}
+		else
 		{
 			SaveGame = Cast<UMJSaveGame>(UGameplayStatics::CreateSaveGameObject(UMJSaveGame::StaticClass()));
-			SaveGame->SlotNum = InputSlotNum;
 		}
 
-		SaveGame->PlayerName = MJGI->GetPlayerSessionDataRef().PlayerName;
-		SaveGame->PlayerLevel = MJGI->GetPlayerSessionDataRef().PlayerLevel;
-		SaveGame->PlayerExp = MJGI->GetPlayerSessionDataRef().PlayerExp;
-		SaveGame->SlotNum = InputSlotNum;
-		SaveGame->RecentPlayedDateTime = FDateTime::Now();
+		if (SaveGame)
+		{
+			SaveGame->PlayerName = MJGI->GetPlayerSessionDataRef().PlayerName;
+			SaveGame->PlayerLevel = MJGI->GetPlayerSessionDataRef().PlayerLevel;
+			SaveGame->PlayerExp = MJGI->GetPlayerSessionDataRef().PlayerExp;
+			SaveGame->SlotNum = InputSlotNum;
+			SaveGame->RecentPlayedDateTime = FDateTime::Now();
+			SaveGame->SaveGameCreatedDateTime = FDateTime::Now();
+		}
 
 		UGameplayStatics::SaveGameToSlot(SaveGame, SlotName, 0);
 	}

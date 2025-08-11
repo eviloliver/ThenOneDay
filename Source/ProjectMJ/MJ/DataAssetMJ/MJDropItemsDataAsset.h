@@ -38,9 +38,8 @@ class PROJECTMJ_API UMJDropItemsDataAsset : public UDataAsset
 public:
 	UMJDropItemsDataAsset();
 	
-	TSubclassOf<AMJItemBase> FindItemClassForTag(const FGameplayTag& ItemTag) const;
-	
 	FGameplayTag TryDropItem() const;
+	
 protected:
 	UPROPERTY(EditAnywhere)
 	TArray<FDropItemInfo> DropItems;

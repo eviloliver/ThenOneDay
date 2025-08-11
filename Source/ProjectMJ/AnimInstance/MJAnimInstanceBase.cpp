@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AnimInstance/MJAnimInstanceBase.h"
@@ -30,4 +30,12 @@ void UMJAnimInstanceBase::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 	{
 		bHasAcceleration = true;
 	}
+	else
+	{
+		bHasAcceleration = false;
+	}
+
+	const float BaseRunSpeed = 600.f; // 기본 속도
+
+	MoveAnimPlayRate = FMath::Max(GroundSpeed / BaseRunSpeed, 0.2f);
 }

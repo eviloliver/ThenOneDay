@@ -5,14 +5,16 @@
 #include "Controller/MJPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
-#include "TG/Component/MJMiniMapIconMeshComponent.h"
 #include "TG/UI/MJDungeonMapWidget.h"
 #include "TG/UI/MJGameFlowHUDWidget.h"
 
 AMJPortalToNextDungeon::AMJPortalToNextDungeon()
 {
-	MiniMapIconMesh = CreateDefaultSubobject<UMJMiniMapIconMeshComponent>(TEXT("MiniMapIcon"));
-	MiniMapIconMesh->SetupAttachment(StaticMesh);
+	// MiniMapIconMesh = CreateDefaultSubobject<UMJMiniMapIconMeshComponent>(TEXT("MiniMapIcon"));
+	// MiniMapIconMesh->SetupAttachment(StaticMesh);
+	
+	// TG : Don`t change this for proper SpawnActor
+	SetActorRelativeScale3D(FVector(0.38f,0.2f,0.38f));
 }
 
 void AMJPortalToNextDungeon::Execute()
@@ -31,5 +33,19 @@ void AMJPortalToNextDungeon::Execute()
 			DungeonMapWidget->SetAllVisibility(ESlateVisibility::Visible);
 		} 
 	}
+	
+}
+
+void AMJPortalToNextDungeon::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	
+	// TG : Don`t change this for proper SpawnActor
+	SetActorRelativeScale3D(FVector(0.38f,0.2f,0.38f));
+}
+
+void AMJPortalToNextDungeon::BeginPlay()
+{
+	Super::BeginPlay();
 	
 }

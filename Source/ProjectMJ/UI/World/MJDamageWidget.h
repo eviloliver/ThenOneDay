@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MJDamageWidget.generated.h"
 
+enum class EOwnerType : uint8;
 struct FGameplayModifierEvaluatedData;
 class UMJCharacterAttributeSet;
 class UMJAbilitySystemComponent;
@@ -29,7 +30,8 @@ protected:
 	void OnAnimFinished();
 public:
 	virtual void NativeConstruct() override;
-	void SetDamage(float damage, bool IsCritical);
+	void SetDamage(float damage, bool IsCritical, EOwnerType type);
+	void SetDamageColor(bool IsCritical, EOwnerType type);
 	void PlayAnim();
 
 	FWidgetAnimationDynamicEvent AnimFinishedDelegate;

@@ -7,7 +7,11 @@
 #include "MJDragWidget.generated.h"
 
 /**
- * 
+* Class Description: 인벤토리 내 슬롯을 집으면 뜨는 드래그 위젯
+ * Author: 이지수
+ * Created Date: 2025.
+ * Last Modified By: 
+ * Last Modified Date: 
  */
 class UImage;
 UCLASS()

@@ -45,6 +45,7 @@ public:
 
 	void OnRightMousePressed();
 	void OnRightMouseReleased();
+	void HandleRightMouseHold();
 
 	void AttackOrMove(const FHitResult& HitResult);
 
@@ -59,12 +60,12 @@ private:
 	float LMBHoldTime = 0.0f;
 
 	bool bIsRMBPressed = false;
+	bool bIsRMBHolding = false;
 	float RMBHoldTime = 0.0f;
 
-	bool bShiftKeyDown = false;
+	bool bIsCharge = false;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	float HoldThreshold = 0.0f;
+	bool bShiftKeyDown = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	float ChargeThreshold = 0.4f;
@@ -80,6 +81,7 @@ private:
 	FGameplayTag ItemTagForPurchase;
 	int32 ItemPrice;
 	int32 ItemQuantity;
+	int32 CanPurchaseQuantity;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction> ChangeIMCAction;
@@ -98,6 +100,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction> ShowStoreAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<UInputAction> ShowSkillWidgetAction;
 	
 	UPROPERTY()
 	TObjectPtr<UMJUIManagerSubsystem> UIManager;
@@ -125,9 +130,14 @@ public:
 	void HideStore();
 		
 	// Show Widget
+	UFUNCTION()
 	void ShowBacklog();
+	UFUNCTION()
 	void ShowStatPanel();
+	UFUNCTION()
 	void ShowInventory();
+	UFUNCTION()
+	void ShowSkillWidget();
 	
 	UFUNCTION()
 	void OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
@@ -146,6 +156,9 @@ public:
 
 	UFUNCTION()
 	void OnPurchase();
+
+	UFUNCTION()
+	void OnSell();
 #pragma endregion
 
 

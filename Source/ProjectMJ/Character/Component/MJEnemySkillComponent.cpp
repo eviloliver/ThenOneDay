@@ -44,9 +44,9 @@ void UMJEnemySkillComponent::InitializeComponent()
 	 * TODO
 	 * 몬스터의 레벨에 따라 스킬 레벨도 다르게 적용하기?-색깔 다르게 할까ㅎㅎ
 	 */
-	// Minjin: 기본 공격 - Normal이 Instant에서 변경되면 적용하기
-	// SkillComponent->LearnSkill(DataRow->NormalAttackTag);
-	// SkillComponent->EquipSkill(DataRow->NormalAttackTag);
+	// Minjin: 기본 공격
+	LearnSkill(DataRow->NormalAttackTag);
+	EquipSkill(DataRow->NormalAttackTag);
 
 	// Minjin: 특수 공격 -> 드랍하는 스킬
 	LearnSkill(DataRow->IdentitySkillTag);
@@ -96,8 +96,6 @@ void UMJEnemySkillComponent::ActivateIdentitySkill()
 
 FGameplayTag UMJEnemySkillComponent::TryGiveMemory()
 {
-	// TODO: 확률 추가하기
-
 	if(!IdentitySkillTag.IsValid())
 	{
 		return FGameplayTag::EmptyTag;

@@ -4,53 +4,55 @@
 
 #include "Character/MJPlayerCharacter.h"
 #include "MJ/Character/MJMonsterCharacter.h"
-#include "TG/Actor/MJPortalToNextDungeon.h"
 
 UMJMiniMapIconMeshComponent::UMJMiniMapIconMeshComponent()
 {
-	SetRelativeScale3D(FVector(2.0f,2.0f,1.0f));
 
-	ConstructorHelpers::FObjectFinder<UStaticMesh> ArrowMesh(TEXT("/Game/TG/StaticMesh/SM_MJArrow.SM_MJArrow"));
-	if (ArrowMesh.Succeeded())
-	{
-		PlayerIcon = ArrowMesh.Object;
-	}
+	SetRelativeLocation(FVector(0.0f,0.0f,300.f));
+
+	bVisibleInSceneCaptureOnly = true;
+	bCanEverAffectNavigation = false;
+	
+	// have to do this cuz there`s no parent BP of Enemy. and no need for change icon per enemy
 	ConstructorHelpers::FObjectFinder<UStaticMesh> EnemyMesh(TEXT("/Game/TG/StaticMesh/SM_MJSphere.SM_MJSphere"));
 	if (EnemyMesh.Succeeded())
 	{
 		EnemyIcon = EnemyMesh.Object;
 	}
-	ConstructorHelpers::FObjectFinder<UStaticMesh> PortalMesh(TEXT("/Game/TG/StaticMesh/SM_MJPortal.SM_MJPortal"));
-	if (PortalMesh.Succeeded())
+	
+	ConstructorHelpers::FObjectFinder<UStaticMesh> ArrowMesh(TEXT("/Game/TG/StaticMesh/SM_MJArrow.SM_MJArrow"));
+	if (ArrowMesh.Succeeded())
 	{
-		PortalIcon = PortalMesh.Object;
+		PlayerIcon = ArrowMesh.Object;
 	}
+
 }
 
 void UMJMiniMapIconMeshComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	
+	SetUsingAbsoluteRotation(true);
+	SetUsingAbsoluteScale(true);
+	SetRelativeRotation(FRotator(0.0f,90.0f,0.0f));	
+	SetRelativeLocation(FVector(0.0f,0.0f,300.f));
+	SetWorldScale3D(FVector(2.0f,2.0f,1.0f));
+	
 	SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
 	SetVisibleInSceneCaptureOnly(true);
 
 	if (AMJMonsterCharacter* MonsterCharacter = Cast<AMJMonsterCharacter>(GetOwner()))
 	{
-		SetRelativeLocation(FVector(0.0f,0.f,0.f));
 		SetRelativeScale3D(FVector(1.0f,1.0f,1.0f));
 		SetStaticMesh(EnemyIcon);
-	}
-	else if (AMJPortalToNextDungeon* PortalToNextDungeon = Cast<AMJPortalToNextDungeon>(GetOwner()))
-	{
-		SetRelativeLocation(FVector(0.0f,0.f,0.0f));
-		SetRelativeScale3D(FVector( 2.0f,2.0f,2.0f));
-		
-		SetStaticMesh(PortalIcon);
 	}
 	else if (AMJPlayerCharacter* Player = Cast<AMJPlayerCharacter>(GetOwner()))
 	{
 		
-		SetRelativeLocation(FVector(0.0f,0.f,180.f));
+		SetUsingAbsoluteRotation(false);
+		SetUsingAbsoluteScale(false);
+		SetRelativeRotation(FRotator(0.0f,0.0f,0.0f));	
 		SetStaticMesh(PlayerIcon);
 	}
 }

@@ -9,7 +9,11 @@
 #include "MJInventoryWidget.generated.h"
 
 /**
- * 
+* Class Description: 인벤토리 창
+ * Author: 이지수
+ * Created Date: 2025.
+ * Last Modified By: 
+ * Last Modified Date: 
  */
 class UGridPanel;
 class UMJInventorySlot;
@@ -45,7 +49,7 @@ protected:
 
 	// 아래 숫자 조절로 인벤토리 칸 조절 가능함
 	int32 Row = 6;
-	int32 Col = 7;
+	int32 Col = 6;
 public:
 	virtual void NativeConstruct() override;
 

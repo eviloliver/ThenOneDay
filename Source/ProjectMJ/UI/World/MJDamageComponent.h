@@ -16,7 +16,7 @@ class PROJECTMJ_API UMJDamageComponent : public UWidgetComponent
 
 	UMJDamageComponent();
 protected:
-	
+
 public:
-	void SetDamageWidget(FVector CharacterLocation);
+	void SetDamageWidget(FVector CharacterLocation, float OffSet);
 };

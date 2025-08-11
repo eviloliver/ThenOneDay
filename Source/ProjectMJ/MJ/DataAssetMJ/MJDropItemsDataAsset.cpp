@@ -36,33 +36,3 @@ FGameplayTag UMJDropItemsDataAsset::TryDropItem() const
 	
 	return FGameplayTag::EmptyTag;
 }
-
-TSubclassOf<AMJItemBase> UMJDropItemsDataAsset::FindItemClassForTag(const FGameplayTag& ItemTag) const
-{
-	// if (!ItemTag.IsValid())
-	// {
-	// 	return nullptr;
-	// }
-	// UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
-	// if (!GI || !GI->ItemDataTable)
-	// {
-	// 	MJ_LOG(LogMJ, Error, TEXT("Not Exist GI or ItemDataTable"));
-	// 	return nullptr;
-	// }
-	//
-	// const FItemDataRow* DataRow = GI->ItemDataTable->FindRow<FItemDataRow>(ItemTag.GetTagName(), TEXT("Find ItemDataTable"));
-	// if (!DataRow)
-	// {
-	// 	MJ_LOG(LogMJ, Error, TEXT("Not Exist DataRow"));
-	// 	return nullptr;
-	// }
-	//
-	// TSubclassOf<AMJItemBase> ItemClass = * DataRow->ItemClass;
-	// if (ItemClass == nullptr)
-	// {
-	// 	return nullptr;
-	// }
-	//
-	// return ItemClass;
-	return nullptr;
-}

@@ -9,6 +9,17 @@
 
 AMJPortalToTown::AMJPortalToTown()
 {
+	
+	// TG : Don`t change this for proper SpawnActor
+	SetActorRelativeScale3D(FVector(0.38f,0.2f,0.38f));
+}
+
+void AMJPortalToTown::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	
+	// TG : Don`t change this for proper SpawnActor
+	SetActorRelativeScale3D(FVector(0.38f,0.2f,0.38f));
 }
 
 void AMJPortalToTown::Execute()
