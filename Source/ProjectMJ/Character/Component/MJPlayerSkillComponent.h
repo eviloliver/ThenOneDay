@@ -35,4 +35,5 @@ public:
 
 	void ActivateSkillByInputTag(const FGameplayTag InputTag);
 
+	void ReleaseSkillByInputTag(const FGameplayTag InputTag);
 };

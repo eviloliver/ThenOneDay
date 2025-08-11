@@ -45,6 +45,7 @@ public:
 
 	void OnRightMousePressed();
 	void OnRightMouseReleased();
+	void HandleRightMouseHold();
 
 	void AttackOrMove(const FHitResult& HitResult);
 
@@ -59,12 +60,12 @@ private:
 	float LMBHoldTime = 0.0f;
 
 	bool bIsRMBPressed = false;
+	bool bIsRMBHolding = false;
 	float RMBHoldTime = 0.0f;
 
-	bool bShiftKeyDown = false;
+	bool bIsCharge = false;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	float HoldThreshold = 0.0f;
+	bool bShiftKeyDown = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	float ChargeThreshold = 0.4f;

@@ -32,4 +32,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSubclassOf<UGameplayAbility> PassiveSkillAbilityClass;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSubclassOf<UGameplayAbility> DrawMarkerAbilityClass;
+
 };

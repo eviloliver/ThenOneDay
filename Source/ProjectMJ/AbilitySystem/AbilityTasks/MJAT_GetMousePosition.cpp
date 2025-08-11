@@ -30,6 +30,7 @@ void UMJAT_GetMousePosition::Activate()
 	}
 	FHitResult HitResult;
 
+	// TODO: 이거 TraceChannel 땅만 감지하는걸로 만들어서 쓰자
 	PlayerController->GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
 
 	if (ShouldBroadcastAbilityTaskDelegates())

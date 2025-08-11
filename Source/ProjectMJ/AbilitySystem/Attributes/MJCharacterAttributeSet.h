@@ -24,6 +24,9 @@ GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
  * Last Modified Date: (2025.08.06.) StatComp로 Delegate 이동
  * Last Modified By: 김민진
  * Last Modified Date: (2025.08.08.) 데미지 어빌리티 추가
+ * Description of Change: 안쓰는 Max 지우기
+ * Modified By: 신동민
+ * Modified Date: 2025.08.11
  */
 UCLASS()
 class PROJECTMJ_API UMJCharacterAttributeSet : public UAttributeSet
@@ -51,30 +54,24 @@ public:
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxStamina)
 
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, StaminaRegeneration)
-	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxStaminaRegeneration)
 
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, Mana)
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxMana)
 
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, ManaRegeneration)
-	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxManaRegeneration)
 
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, Focus)
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxFocus)
 
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, FocusRegeneration)
-	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxFocusRegeneration)
 
 	// Attack / Ability
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, AttackDamage)
-	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxAttackDamage)
 
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, AbilityPower)
-	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxAbilityPower)
 
 	// Armor / Resistance (for future)
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, Armor)
-	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxArmor)
 
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, Resistance)
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxResistance)
@@ -89,10 +86,8 @@ public:
 
 	// Critical
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, CriticalChance)
-	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxCriticalChance)
 
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, CriticalDamage)
-	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxCriticalDamage)
 
 	// MovementSpeed
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MovementSpeed)
@@ -141,8 +136,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Stat|Resource", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData StaminaRegeneration;
-	UPROPERTY(BlueprintReadOnly, Category = "Stat|Resource", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxStaminaRegeneration;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Stat|Resource", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Mana;
@@ -151,8 +144,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Stat|Resource", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData ManaRegeneration;
-	UPROPERTY(BlueprintReadOnly, Category = "Stat|Resource", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxManaRegeneration;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Stat|Resource", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Focus;
@@ -161,25 +152,17 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Stat|Resource", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData FocusRegeneration;
-	UPROPERTY(BlueprintReadOnly, Category = "Stat|Resource", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxFocusRegeneration;
 
 	// Attack / Ability
 	UPROPERTY(BlueprintReadOnly, Category = "Stat|Attack/Ability", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData AttackDamage;
-	UPROPERTY(BlueprintReadOnly, Category = "Stat|Attack/Ability", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxAttackDamage;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Stat|Attack/Ability", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData AbilityPower;
-	UPROPERTY(BlueprintReadOnly, Category = "Stat|Attack/Ability", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxAbilityPower;
 
 	// Armor / Resistance
 	UPROPERTY(BlueprintReadOnly, Category = "Stat|Armor/Resistance", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Armor;
-	UPROPERTY(BlueprintReadOnly, Category = "Stat|Armor/Resistance", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxArmor;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Stat|Armor/Resistance", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Resistance;
@@ -201,13 +184,9 @@ protected:
 	// Critical
 	UPROPERTY(BlueprintReadOnly, Category = "Stat|Critical", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData CriticalChance;
-	UPROPERTY(BlueprintReadOnly, Category = "Stat|Critical", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxCriticalChance;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Stat|Critical", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData CriticalDamage;
-	UPROPERTY(BlueprintReadOnly, Category = "Stat|Critical", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxCriticalDamage;
 
 	// MovementSpeed
 	UPROPERTY(BlueprintReadOnly, Category = "Stat|MovementSpeed", Meta = (AllowPrivateAccess = true))

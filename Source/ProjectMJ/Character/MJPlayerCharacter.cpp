@@ -46,8 +46,11 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	FollowCamera->bUsePawnControlRotation = false;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
-	GetCharacterMovement()->BrakingDecelerationWalking = 2000.0;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+	// GetCharacterMovement()->BrakingDecelerationWalking = 2000.0;
+	GetCharacterMovement()->MaxAcceleration = 99999.f;
+	GetCharacterMovement()->BrakingFrictionFactor = 999.f;
+	GetCharacterMovement()->BrakingDecelerationWalking = 99999.f;
 
 	PlayerCombatComponent = CreateDefaultSubobject<UMJPlayerCombatComponent>(TEXT("PlayerCombatComponent"));
 

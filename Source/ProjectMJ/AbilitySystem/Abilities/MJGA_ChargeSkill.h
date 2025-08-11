@@ -38,20 +38,11 @@ protected:
 
 	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
 
-	virtual void BeginCharging();
-	virtual void EndCharging(bool bWasCancelled);
-
 protected:
 	UPROPERTY(EditAnywhere, Category="Animation")
 	TObjectPtr<UAnimMontage> SkillChargeAnimMontage;
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	TObjectPtr<UAnimMontage> SkillActionAnimMontage;
-
-	UPROPERTY(EditAnywhere, Category = "Charge")
-	float MinChargeTime;
-
-	bool bIsCharging;
-	float CurrentChargeTime;
 
 };
