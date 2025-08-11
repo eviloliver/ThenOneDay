@@ -20,6 +20,7 @@ public:
 
 	virtual void BeginPlay() override;
 
+	virtual void PossessedBy(AController* NewController) override;
 	FORCEINLINE UMJCharacterAttributeSet* GetAttributeSet() { return CharacterAttributeSet; }
 
 private:
