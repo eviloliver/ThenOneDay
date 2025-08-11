@@ -57,13 +57,13 @@ EBTNodeResult::Type UBTTask_MJPlayMontage::ExecuteTask(UBehaviorTreeComponent& O
 	ControlledPawn->FindComponentByClass<USkeletalMeshComponent>()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	
 	UAbilitySystemComponent* ASC = Monster->GetAbilitySystemComponent();
-	UMJEnemySkillComponent* SkillComponent = Monster->GetSkillComponent();
+	
 
 
 	//Anim->Montage_Play(MontagePlay);
 	if (!Anim->IsAnyMontagePlaying())
 	{
-		SkillComponent->ActivateIdentitySkill();
+		Monster->GetSkillComponent()->ActivateIdentitySkill();
 	}
 	if (SessionName != NAME_None)
 	{

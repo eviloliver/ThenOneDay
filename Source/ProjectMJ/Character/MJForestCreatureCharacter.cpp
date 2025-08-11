@@ -19,7 +19,8 @@ void AMJForestCreatureCharacter::BeginPlay()
 
 	SetActorHiddenInGame(false);
 	SetActorEnableCollision(true);
-	GetAIMaximumAttackRange();
+	
+	
 }
 
 float AMJForestCreatureCharacter::GetAIMaximumAttackRange()
