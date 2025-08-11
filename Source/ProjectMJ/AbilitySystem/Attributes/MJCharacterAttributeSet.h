@@ -103,6 +103,7 @@ public:
 	friend struct FMJEC_SkillDamageStatics;
 	friend struct FMJEC_DamageOverTimeStatics;
 	friend struct FMJEC_MovementSpeedModifierStatics;
+	friend struct FMJEC_StaminaRegenStatics;
 
 protected:
 
