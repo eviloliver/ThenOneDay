@@ -239,4 +239,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Skill|Explosion", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData ExplosionAPScaling;
 
+private:
+	void ClampBaseToMax(const FGameplayAttribute& BaseAttribute, const FGameplayAttribute& MaxAttribute, float Min = 0.0f);
 };

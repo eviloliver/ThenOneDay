@@ -3,6 +3,10 @@
 
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
 
+#include "GameplayEffectExtension.h"
+#include "ProjectMJ.h"
+#include "AbilitySystem/MJAbilitySystemComponent.h"
+
 UMJCharacterSkillAttributeSet::UMJCharacterSkillAttributeSet()
     : 
     // Cost
@@ -62,25 +66,56 @@ UMJCharacterSkillAttributeSet::UMJCharacterSkillAttributeSet()
 
 void UMJCharacterSkillAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
-	Super::PreAttributeChange(Attribute, NewValue);
+    Super::PreAttributeChange(Attribute, NewValue);
 
-    // TODO: 필요한  Attribute들 다 Clamp로 구간 잡아줘야 할거 같음
-
-	//if (Attribute == GetSkillRangeAttribute())
-	//{
-	//	NewValue = FMath::Clamp(NewValue, 0.1f, GetMaxSkillRange());
-	//}
-	//else if (Attribute == GetSkillAttackRateAttribute())
-	//{
-	//	NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxSkillAttackRate());
-	//}
-
+    if (Attribute == GetCooldownAttribute())
+    {
+        ClampBaseToMax(GetCooldownAttribute(), GetMaxCooldownAttribute(), 0.f);
+    }
+    else if (Attribute == GetSkillAttackRateAttribute())
+    {
+        ClampBaseToMax(GetSkillAttackRateAttribute(), GetMaxSkillAttackRateAttribute(), 0.f);
+    }
+    else if (Attribute == GetStatusEffectMaxStackAttribute())
+    {
+        ClampBaseToMax(GetStatusEffectMaxStackAttribute(), GetMaxStatusEffectMaxStackAttribute(), 0.f);
+    }
+    else if (Attribute == GetProjectileCountAttribute())
+    {
+        ClampBaseToMax(GetProjectileCountAttribute(), GetMaxProjectileCountAttribute(), 0.f);
+    }
+    else if (Attribute == GetProjectilePierceCountAttribute())
+    {
+        ClampBaseToMax(GetProjectilePierceCountAttribute(), GetMaxProjectilePierceCountAttribute(), 0.f);
+    }
 }
 
 void UMJCharacterSkillAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue,
 	float NewValue)
 {
 	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+
+    if (Attribute == GetMaxCooldownAttribute())
+    {
+        ClampBaseToMax(GetCooldownAttribute(), GetMaxCooldownAttribute(), 0.f);
+    }
+    else if (Attribute == GetMaxSkillAttackRateAttribute())
+    {
+	    ClampBaseToMax(GetSkillAttackRateAttribute(), GetMaxSkillAttackRateAttribute(), 0.f);
+    }
+    else if (Attribute == GetMaxStatusEffectMaxStackAttribute())
+    {
+	    ClampBaseToMax(GetStatusEffectMaxStackAttribute(), GetMaxStatusEffectMaxStackAttribute(), 0.f);
+    }
+    else if (Attribute == GetMaxProjectileCountAttribute())
+    {
+	    ClampBaseToMax(GetProjectileCountAttribute(), GetMaxProjectileCountAttribute(), 0.f);
+    }
+    else if (Attribute == GetMaxProjectilePierceCountAttribute())
+    {
+	    ClampBaseToMax(GetProjectilePierceCountAttribute(), GetMaxProjectilePierceCountAttribute(), 0.f);
+    }
+
 }
 
 bool UMJCharacterSkillAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data)
@@ -91,4 +126,42 @@ bool UMJCharacterSkillAttributeSet::PreGameplayEffectExecute(FGameplayEffectModC
 void UMJCharacterSkillAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
+    if (Data.EvaluatedData.Attribute == GetCooldownAttribute())
+    {
+	    ClampBaseToMax(GetCooldownAttribute(), GetMaxCooldownAttribute(), 0.f);
+    }
+    else if (Data.EvaluatedData.Attribute == GetSkillAttackRateAttribute())
+    {
+	    ClampBaseToMax(GetSkillAttackRateAttribute(), GetMaxSkillAttackRateAttribute(), 0.f);
+    }
+    else if (Data.EvaluatedData.Attribute == GetStatusEffectMaxStackAttribute())
+    {
+	    ClampBaseToMax(GetStatusEffectMaxStackAttribute(), GetMaxStatusEffectMaxStackAttribute(), 0.f);
+    }
+    else if (Data.EvaluatedData.Attribute == GetProjectileCountAttribute())
+    {
+	    ClampBaseToMax(GetProjectileCountAttribute(), GetMaxProjectileCountAttribute(), 0.f);
+    }
+    else if (Data.EvaluatedData.Attribute == GetProjectilePierceCountAttribute())
+    {
+	    ClampBaseToMax(GetProjectilePierceCountAttribute(), GetMaxProjectilePierceCountAttribute(), 0.f);
+    }
+ }
+
+void UMJCharacterSkillAttributeSet::ClampBaseToMax(const FGameplayAttribute& BaseAttribute,
+	const FGameplayAttribute& MaxAttribute, float Min)
+{
+    UMJAbilitySystemComponent* ASC = Cast<UMJAbilitySystemComponent>(GetOwningAbilitySystemComponent());
+    if (!ASC)
+    {
+        MJ_LOG(LogMJ, Warning, TEXT("Not Exist ASC"));
+        return;
+    }
+    const float MaxValue = MaxAttribute.GetNumericValue(this);
+    const float CurrentValue = BaseAttribute.GetNumericValue(this);
+    const float Clamped = FMath::Clamp(CurrentValue, Min, MaxValue);
+    if (!FMath::IsNearlyEqual(CurrentValue, Clamped))
+    {
+        ASC->ApplyModToAttributeUnsafe(BaseAttribute, EGameplayModOp::Additive, Clamped - CurrentValue);
+    }
 }
