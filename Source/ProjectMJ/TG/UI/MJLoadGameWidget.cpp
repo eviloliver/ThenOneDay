@@ -11,13 +11,13 @@
 #include "Controller/MJPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "TG/Struct/MJSaveGame.h"
-
+#include "TG/SubSystem/MJSaveGameSubsystem.h"
 
 
 void UMJLoadGameWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	MaxSlotNum = 8;
+	MaxSlotNum = GetGameInstance()->GetSubsystem<UMJSaveGameSubsystem>()->GetMaxSaveSlotNum();
 	
 	BackButton->OnClicked.AddDynamic(this, &UMJLoadGameWidget::OnClicked_Back);
 

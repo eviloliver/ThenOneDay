@@ -14,6 +14,8 @@
  * Last Modified Date: 2025-06-20
  */
 
+class UMJSaveGame;
+
 UCLASS()
 class PROJECTMJ_API UMJSaveGameSubsystem : public UGameInstanceSubsystem
 {
@@ -38,7 +40,14 @@ public:
 	UFUNCTION()
 	bool LoadGameFromSlotNum(int8 SlotNum);
 
-	// Loading Screen Section
+	UFUNCTION()
+	const uint8 GetCurrentSavedSlotNum();
+
+	const uint8 GetMaxSaveSlotNum() {return MaxSaveSlotNum; }
+
+	const bool IsSlotFull();
+
+	// Loading Screen Section	
 	
 	UFUNCTION()
 	virtual void BeginLoadingScreen(const FString& MapName);
@@ -53,4 +62,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UMJSaveGame> SaveGameData;
+
+	UPROPERTY(VisibleAnywhere)
+	uint8 MaxSaveSlotNum;
+	
 };

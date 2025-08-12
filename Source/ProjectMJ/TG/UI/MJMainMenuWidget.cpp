@@ -3,10 +3,12 @@
 
 #include "TG/UI/MJMainMenuWidget.h"
 
+#include "MJGameFlowPopUpMsgWidget.h"
 #include "MJSettingsWidget.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "TG/SubSystem/MJSaveGameSubsystem.h"
 
 
 void UMJMainMenuWidget::NativeConstruct()
@@ -52,13 +54,41 @@ void UMJMainMenuWidget::NativeConstruct()
 			SettingsWidget->SetParentWidget(this);
 			SettingsWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
+		
+		PopUpMsgWidget = Cast<UMJChildMenuBaseWidget>(CreateWidget(PC,PopUpMsgWidgetClass));
+		if (PopUpMsgWidget)
+		{
+			PopUpMsgWidget->AddToViewport(2);
+			PopUpMsgWidget->SetParentWidget(this);
+			PopUpMsgWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
 	}
 }
 
 void UMJMainMenuWidget::OnClicked_NewGame()
 {
-	SetVisibility(ESlateVisibility::Hidden);
-	NewGamePopUpWidget->SetVisibility(ESlateVisibility::Visible);
+	if (GetGameInstance()->GetSubsystem<UMJSaveGameSubsystem>()->IsSlotFull())
+	{
+		UMJGameFlowPopUpMsgWidget* CastedWidget = Cast<UMJGameFlowPopUpMsgWidget>(PopUpMsgWidget);
+		
+		if (CastedWidget)
+		{
+			TWeakObjectPtr<UMJMainMenuWidget> WeakThis = this;
+			CastedWidget->PopUpWithCallback(FOnUserConfirmed::CreateLambda([WeakThis]
+			{
+				if (WeakThis.IsValid())
+				{
+					WeakThis->PopUpMsgWidget->BackToParentWidget();
+				}
+			}), FText::FromString(TEXT("All slots are full! Please delete at least one slot.")));
+		}
+	}
+	else
+	{
+		SetVisibility(ESlateVisibility::Hidden);
+		NewGamePopUpWidget->SetVisibility(ESlateVisibility::Visible);
+
+	}
 }
 
 void UMJMainMenuWidget::OnClicked_LoadGame()

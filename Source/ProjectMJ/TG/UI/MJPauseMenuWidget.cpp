@@ -38,12 +38,12 @@ void UMJPauseMenuWidget::NativeConstruct()
 			SettingsWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 
-		ForceExitCautionWidget = Cast<UMJChildMenuBaseWidget>(CreateWidget(this,ForceExitCautionWidgetClass));
-		if (ForceExitCautionWidget)
+		PopUpMsgWidget = Cast<UMJChildMenuBaseWidget>(CreateWidget(this,PopUpMsgnWidgetClass));
+		if (PopUpMsgWidget)
 		{
-			ForceExitCautionWidget->SetParentWidget(this);
-			ForceExitCautionWidget->AddToViewport(2);
-			ForceExitCautionWidget->SetVisibility(ESlateVisibility::Hidden);
+			PopUpMsgWidget->SetParentWidget(this);
+			PopUpMsgWidget->AddToViewport(2);
+			PopUpMsgWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 
 		if (AMJGameModeTown* GMTown = GetWorld()->GetAuthGameMode<AMJGameModeTown>())
@@ -98,7 +98,7 @@ void UMJPauseMenuWidget::OnClicked_MainMenu()
 	{
 		
 		SetVisibility(ESlateVisibility::Hidden);
-		UMJGameFlowPopUpMsgWidget* CastedWidget = Cast<UMJGameFlowPopUpMsgWidget>(ForceExitCautionWidget);
+		UMJGameFlowPopUpMsgWidget* CastedWidget = Cast<UMJGameFlowPopUpMsgWidget>(PopUpMsgWidget);
 		
 		if (CastedWidget)
 		{
@@ -124,7 +124,7 @@ void UMJPauseMenuWidget::OnClicked_GotoTown()
 	{
 
 		SetVisibility(ESlateVisibility::Hidden);
-		UMJGameFlowPopUpMsgWidget* CastedWidget = Cast<UMJGameFlowPopUpMsgWidget>(ForceExitCautionWidget);
+		UMJGameFlowPopUpMsgWidget* CastedWidget = Cast<UMJGameFlowPopUpMsgWidget>(PopUpMsgWidget);
 		
 		if (CastedWidget)
 		{
@@ -147,10 +147,10 @@ void UMJPauseMenuWidget::OnClicked_GotoTown()
 
 void UMJPauseMenuWidget::OnClicked_QuitGame()
 {
-	if (IsValid(ForceExitCautionWidget))
+	if (IsValid(PopUpMsgWidget))
 	{
 		SetVisibility(ESlateVisibility::Hidden);
-		UMJGameFlowPopUpMsgWidget* CastedWidget = Cast<UMJGameFlowPopUpMsgWidget>(ForceExitCautionWidget);
+		UMJGameFlowPopUpMsgWidget* CastedWidget = Cast<UMJGameFlowPopUpMsgWidget>(PopUpMsgWidget);
 		
 		if (CastedWidget)
 		{
@@ -173,7 +173,7 @@ UUserWidget* UMJPauseMenuWidget::GetSettingsWidget()
 
 UUserWidget* UMJPauseMenuWidget::GetForceExitCautionWidget()
 {
-	return ForceExitCautionWidget;
+	return PopUpMsgWidget;
 }
 
 void UMJPauseMenuWidget::SetPlayerController(APlayerController* InputPC)	

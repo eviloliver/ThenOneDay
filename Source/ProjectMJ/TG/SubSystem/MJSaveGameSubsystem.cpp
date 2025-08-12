@@ -17,6 +17,7 @@ UMJSaveGameSubsystem::UMJSaveGameSubsystem()
 	{
 		LoadingScreen = LoadingScreenRef.Class;
 	}
+	MaxSaveSlotNum = 8;
 }
 
 void UMJSaveGameSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -56,7 +57,7 @@ void UMJSaveGameSubsystem::EndLoadingScreen(UWorld* InLoadedWorld)
 
 UMJSaveGame* UMJSaveGameSubsystem::GetSaveGameData()
 {
-	return SaveGameData;	
+	return SaveGameData;		
 }
 
 void UMJSaveGameSubsystem::SaveGameToCurrentSlotNum()
@@ -145,6 +146,36 @@ bool UMJSaveGameSubsystem::LoadGameFromSlotNum(int8 SlotNum)
 
 			return true;
 		}
+	}
+	return false;
+}
+
+const uint8 UMJSaveGameSubsystem::GetCurrentSavedSlotNum()
+{
+	uint8 Result = 0;
+	
+	for (int i = 0; i < MaxSaveSlotNum; ++i)
+	{
+		const FString SlotName = FString::Printf(TEXT("Slot_%d"), i);
+    		
+		if (UGameplayStatics::DoesSaveGameExist(SlotName, 0))
+		{
+			UMJSaveGame* SaveGame = Cast<UMJSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
+			if (SaveGame)
+			{
+				++Result;	
+			}
+		}
+	}
+
+	return Result;
+}
+
+const bool UMJSaveGameSubsystem::IsSlotFull()
+{
+	if (GetCurrentSavedSlotNum() == MaxSaveSlotNum)
+	{
+		return true;
 	}
 	return false;
 }
