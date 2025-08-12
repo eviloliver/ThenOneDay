@@ -78,10 +78,13 @@ private:
 #pragma region UIPart
 private:
 	bool IsInteracted = false;
-	FGameplayTag ItemTagForPurchase;
+	FGameplayTag PurchaseItemTag;
 	int32 ItemPrice;
 	int32 ItemQuantity;
-	int32 CanPurchaseQuantity;
+
+	FGameplayTag SalesItemTag;
+	int32 SalesPrice;
+	int32 SalesQuantity;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	TObjectPtr<UInputAction> ChangeIMCAction;
@@ -153,6 +156,9 @@ public:
 
 	UFUNCTION()
 	void OnTryPurchase(FGameplayTag& ItemTag, int32 Price, int32 Quantity);
+
+	UFUNCTION()
+	void OnTrySell(FGameplayTag& ItemTag, int32 Price, int32 Quantity);
 
 	UFUNCTION()
 	void OnPurchase();

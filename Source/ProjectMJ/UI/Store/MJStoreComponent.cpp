@@ -98,6 +98,7 @@ void UMJStoreComponent::UpdateInventory(UMJInventoryComponent* InvenComp)
 		if (!Data || Data->ItemCount <=0)
 		{
 			InvenSlot[i]->SetVisibility(ESlateVisibility::Collapsed);
+			return;
 		}
 		
 		InvenSlot[i]->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
@@ -108,11 +109,9 @@ void UMJStoreComponent::UpdateInventory(UMJInventoryComponent* InvenComp)
 		InvenSlot[i]->SetPrice(Row->Price);
 		InvenSlot[i]->SetCount(Data->ItemCount);
 		InvenSlot[i]->SetMaxQuantity(Data->ItemCount);
-		
-		InvenSlot[i]->GetButton()->OnClicked.Clear();
+
+		InvenSlot[i]->GetButton()->OnClicked.RemoveDynamic(this, &ThisClass::TrySale);
 		InvenSlot[i]->GetButton()->OnClicked.AddDynamic(this, &ThisClass::TrySale);
-		UE_LOG(LogTemp,Error,TEXT("%s"),*Row->ItemID.ToString());
-		UE_LOG(LogTemp,Error,TEXT("%d"),ItemTagForStore.Num());
 	}
 	
 	

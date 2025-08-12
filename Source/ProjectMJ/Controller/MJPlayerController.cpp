@@ -515,7 +515,7 @@ void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor*
 			
 			InteractComp->OndialogueEnd.RemoveDynamic(this, &AMJPlayerController::SetDialogueVisibility);
 			InteractComp->OndialogueEnd.AddDynamic(this, &AMJPlayerController::SetDialogueVisibility);
-
+			
 			InteractComp->OnstoreOpen.RemoveDynamic(this, &AMJPlayerController::ShowStore);
 			InteractComp->OnstoreOpen.AddDynamic(this, &AMJPlayerController::ShowStore);
 			
@@ -566,15 +566,14 @@ void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AAc
 	 {
 	 	InventoryComp->PickUpItem(Item->GetItemTag(), 1, UIManager->GetHUDWidget()->GetStoreWidget());
 	 	
-	 	TArray<UMJSalesSlot*> InvenSlot = UIManager->GetHUDWidget()->GetStoreWidget()->GetInventorySlots();
-		UE_LOG(LogTemp,Error,TEXT("%d"),InvenSlot.Num());
-	 	for (int i = 0; i < InvenSlot.Num(); i++)
+	 	TArray<UMJSalesSlot*> SalesSlot = UIManager->GetHUDWidget()->GetStoreWidget()->GetInventorySlots();
+	 	for (int i = 0; i < SalesSlot.Num(); i++)
 	 	{
-	 		if (InvenSlot[i])
+	 		if (SalesSlot[i])
 	 		{
-	 			InvenSlot[i]->OnMerchandiseSlotEvent.RemoveDynamic(this, &AMJPlayerController::OnTryPurchase);
-	 			InvenSlot[i]->OnMerchandiseSlotEvent.AddDynamic(this, &AMJPlayerController::OnTryPurchase);
-	 			UE_LOG(LogTemp,Error,TEXT("%d개의 슬롯에 델리게이트 연결됨"),InvenSlot.Num());
+	 			SalesSlot[i]->OnMerchandiseSlotEvent.RemoveDynamic(this, &AMJPlayerController::OnTrySell);
+	 			SalesSlot[i]->OnMerchandiseSlotEvent.AddDynamic(this, &AMJPlayerController::OnTrySell);
+	 			UE_LOG(LogTemp,Error,TEXT("%d개의 슬롯에 델리게이트 연결됨"),SalesSlot.Num());
 	 		}
 	 	}
 
@@ -585,9 +584,17 @@ void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AAc
 void AMJPlayerController::OnTryPurchase(FGameplayTag& ItemTag, int32 Price, int32 Quantity) // GET Item Data
 {
 	UE_LOG(LogTemp,Error,TEXT("AMJPlayerController::OnTryPurchase"));
-	ItemTagForPurchase = ItemTag;
+	PurchaseItemTag = ItemTag;
 	ItemPrice = Price;
 	ItemQuantity = Quantity;
+}
+
+void AMJPlayerController::OnTrySell(FGameplayTag& ItemTag, int32 Price, int32 Quantity)
+{
+	UE_LOG(LogTemp,Error,TEXT("AMJPlayerController::OnTrySell"));
+	SalesItemTag = ItemTag;
+	SalesPrice = Price;
+	SalesQuantity = Quantity;
 }
 
 void AMJPlayerController::OnPurchase()
@@ -602,7 +609,7 @@ void AMJPlayerController::OnPurchase()
    	{
    		if (StatComp->GetGold() >= ItemQuantity * ItemPrice)
    		{
-   			InventoryComp->PickUpItem(ItemTagForPurchase, ItemQuantity, UIManager->GetHUDWidget()->GetStoreWidget()); // 인벤토리 내 수량증가
+   			InventoryComp->PickUpItem(PurchaseItemTag, ItemQuantity, UIManager->GetHUDWidget()->GetStoreWidget()); // 인벤토리 내 수량증가
    			UMJStoreComponent* StoreComp = MyChar->GetUITarget()->FindComponentByClass<UMJStoreComponent>();
    			StoreComp->SetItemData(MyChar->GetInventoryComponent()->GetItemTags(),MyChar->GetInventoryComponent()->GetItemTags().Num(),InventoryComp);
    			StatComp->SpendGold(ItemQuantity * ItemPrice);
@@ -632,13 +639,14 @@ void AMJPlayerController::OnSell()
 	UMJStoreComponent* StoreComp = MyChar->GetUITarget()->FindComponentByClass<UMJStoreComponent>();
 	if (StatComp && InventoryComp)
 	{
-		if (InventoryComp->GetItemInInventory()[ItemTagForPurchase].ItemCount > ItemQuantity)
+		if (InventoryComp->GetItemInInventory()[SalesItemTag].ItemCount > SalesQuantity)
 		{ 
-			StatComp->GainGold(ItemQuantity * ItemPrice);
+			StatComp->GainGold(SalesQuantity * SalesPrice);
 		}
 		
-		InventoryComp->DropItem(ItemTagForPurchase,ItemQuantity);
+		InventoryComp->DropItem(SalesItemTag,SalesQuantity);
 		StoreComp->UpdateInventory(InventoryComp);
+
 		for (auto* Slot : UIManager->GetHUDWidget()->GetStoreWidget()->GetInventorySlots())
 		{
 			if (Slot)
