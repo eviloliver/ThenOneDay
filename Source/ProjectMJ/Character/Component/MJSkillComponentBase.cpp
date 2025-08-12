@@ -54,6 +54,8 @@ void UMJSkillComponentBase::LearnSkill(const FGameplayTag& SkillTag)
 			NewSkillData.SkillTypeTag = SkillTag.GetGameplayTagParents().GetByIndex(TagLength - 2);
 			OwnedSkillMap.Add(SkillTag, NewSkillData);
 		}
+
+		OnLearnSkillEvent.Broadcast(SkillTag,1);
 	}
 }
 

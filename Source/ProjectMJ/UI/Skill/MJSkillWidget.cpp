@@ -2,51 +2,51 @@
 
 
 #include "UI/Skill/MJSkillWidget.h"
-#include "Components/Image.h"
-#include "Components/TextBlock.h"
 
-void UMJSkillWidget::SetSkillImage(UTexture2D* Image)
+#include "GameplayTagContainer.h"
+#include "MJSkillSlotWidget.h"
+#include "Components/ScrollBox.h"
+#include "DataTable/MJSkillDataRow.h"
+#include "TG/MJGameInstanceTG.h"
+
+
+void UMJSkillWidget::NativeConstruct()
 {
-	if (SkillImage)
+	Super::NativeConstruct();
+
+	if (!SkillSlotClass)
 	{
-		FSlateBrush Brush;
-        Brush.SetResourceObject(SkillImage);
-        SkillImage->SetBrush(Brush);
-        SkillImage->SetOpacity(1.0);
+		return;
+	}
+	for (int j = 0; j < 10; ++j)
+	{
+		UMJSkillSlotWidget* NewSlot = CreateWidget<UMJSkillSlotWidget>(this, SkillSlotClass);
+		ScrollBox->AddChild(NewSlot);
+		SkillSlots.Add(NewSlot);
 	}
 }
 
-void UMJSkillWidget::SetSkillName(FText Name)
+void UMJSkillWidget::UpdateSkillSlots(FGameplayTag SkillTag,int32 Level)
 {
-	if (SkillDescription)
+	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+	if (!GI ||!GI->PlayerSkillDataTable)
 	{
-		SkillDescription->SetText(Name);
+		return;
 	}
 	
-}
-
-void UMJSkillWidget::SetSkillDescription(FText Description)
-{
-	if (SkillDescription)
+	const FMJSkillDataRow* Row = GI->PlayerSkillDataTable->FindRow<FMJSkillDataRow>(SkillTag.GetTagName(),TEXT(""));
+	if (!Row)
 	{
-		SkillDescription->SetText(Description);
-	}
-
-}
-
-void UMJSkillWidget::SetSkillType(FText Type)
-{
-	if (SkillType)
-	{
-		SkillType->SetText(Type);
+		return;
 	}
 	
-}
-
-void UMJSkillWidget::SetSkillLevel(int32 Level)
-{
-	if (SkillLevel)
-	{
-		SkillLevel->SetText(FText::AsNumber(Level));
-	}
+	int32 Index = Row->SkillIndex;
+	UTexture2D* Image = Row->Icon;
+	FText Name = Row->SkillName;
+	FText Description =Row->SkillDescription;
+	ESkillType SkillType =Row->SkillType;
+	FText Type = StaticEnum<ESkillType>()->GetDisplayNameTextByValue((int64)SkillType);
+	
+	SkillSlots[Index]->SetSkillWidget(Image, Name, Description, Type, Level);
+	
 }

@@ -87,5 +87,6 @@ public:
 	UMJInventoryWidget* GetInventoryWidget() {return Inventory;};
 	UMJStoreWidget* GetStoreWidget() {return Store;};
 	UMJDialogueWidget* GetDialogueWidget() {return Dialogue;};
+	UMJSkillWidget* GetSkillWidget() {return SkillWidget;};
 
 };

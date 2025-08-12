@@ -14,34 +14,28 @@
  * Last Modified Date: 
  */
 
-class UTextBlock;
-class UImage;
+struct FGameplayTag;
+class UScrollBox;
+class UMJSkillSlotWidget;
 
 UCLASS()
 class PROJECTMJ_API UMJSkillWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-protected:
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UImage> SkillImage;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> SkillName;
-	
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> SkillDescription;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> SkillType;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> SkillLevel;
 
 public:
-	void SetSkillImage(UTexture2D* Image);
-	void SetSkillName(FText Name);
-	void SetSkillDescription(FText Description);
-	void SetSkillType(FText Type);
-	void SetSkillLevel(int32 Level);
+	virtual void NativeConstruct() override;
+
+	void UpdateSkillSlots(FGameplayTag SkillTag,int32 Level);
+protected:
+	UPROPERTY(meta = (BindWidget))
+	TArray<TObjectPtr<UMJSkillSlotWidget>> SkillSlots;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UScrollBox> ScrollBox;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= Skill)
+	TSubclassOf<UMJSkillSlotWidget> SkillSlotClass;
+	
 };

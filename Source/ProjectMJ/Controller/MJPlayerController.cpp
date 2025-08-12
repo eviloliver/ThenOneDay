@@ -17,11 +17,13 @@
 #include "Character/Component/MJPlayerSkillComponent.h"
 #include "Dialogue/MJDialogueWidget.h"
 #include "Character/Component/MJPlayerStatComponent.h"
+#include "DataTable/MJSkillDataRow.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
 #include "TG/UI/MJGameFlowHUDWidget.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/Component/MJInteractComponent.h"
+#include "UI/Skill/MJSkillWidget.h"
 #include "UI/Store/MJMerchandiseSlot.h"
 #include "UI/Store/MJPopupWidget.h"
 #include "UI/Store/MJSalesSlot.h"
@@ -53,8 +55,6 @@ AMJPlayerController::AMJPlayerController()
 void AMJPlayerController::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	
-	
 }
 
 void AMJPlayerController::BeginPlay()
@@ -106,6 +106,12 @@ void AMJPlayerController::BeginPlay()
 		UIManager->GetHUDWidget()->GetStoreWidget()->OnClickedPurchaseYes.AddDynamic(this,&AMJPlayerController::OnPurchase);
 		UIManager->GetHUDWidget()->GetStoreWidget()->OnClickedSellYes.AddDynamic(this,&AMJPlayerController::OnSell);
 	}
+
+	if (UMJPlayerSkillComponent* SkillComponent = MJChar->FindComponentByClass<UMJPlayerSkillComponent>())
+	{
+		SkillComponent->OnLearnSkillEvent.AddDynamic(this,&AMJPlayerController::UpdateSkillWidget);
+	}
+	
 }
 
 void AMJPlayerController::SetupInputComponent()
@@ -501,6 +507,11 @@ void AMJPlayerController::ShowInventory()
 void AMJPlayerController::ShowSkillWidget()
 {
 	UIManager->SetSkillWidgetVisibility();
+}
+
+void AMJPlayerController::UpdateSkillWidget(FGameplayTag SkillTag,int32 Level)
+{
+	UIManager->GetHUDWidget()->GetSkillWidget()->UpdateSkillSlots(SkillTag,Level);
 }
 
 void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,

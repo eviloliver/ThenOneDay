@@ -141,6 +141,8 @@ public:
 	void ShowInventory();
 	UFUNCTION()
 	void ShowSkillWidget();
+	UFUNCTION()
+	void UpdateSkillWidget(FGameplayTag SkillTag,int32 Level);
 	
 	UFUNCTION()
 	void OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
