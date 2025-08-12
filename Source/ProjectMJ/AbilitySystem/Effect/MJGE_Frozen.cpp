@@ -1,0 +1,28 @@
+// ThenOneDayStudio
+
+
+#include "AbilitySystem/Effect/MJGE_Frozen.h"
+
+#include "MJEC_MovementSpeedModifier.h"
+
+UMJGE_Frozen::UMJGE_Frozen()
+{
+	DurationPolicy = EGameplayEffectDurationType::HasDuration;
+	
+	FGameplayEffectExecutionDefinition ExecutionDefinition;
+	ExecutionDefinition.CalculationClass = UMJEC_MovementSpeedModifier::StaticClass();
+
+	Executions.Add(ExecutionDefinition);
+
+	FSetByCallerFloat DurationCaller;
+	DurationCaller.DataTag = FGameplayTag::RequestGameplayTag("Data.Skill.StatusEffectDuration");
+	DurationMagnitude = FGameplayEffectModifierMagnitude(DurationCaller);
+
+	// Period 도 SetByCaller로 넣을 수 있나
+	Period = 1.0f;
+
+	StackLimitCount = 1;
+	StackingType = EGameplayEffectStackingType::AggregateBySource;
+	StackDurationRefreshPolicy = EGameplayEffectStackingDurationPolicy::RefreshOnSuccessfulApplication;
+	StackPeriodResetPolicy = EGameplayEffectStackingPeriodPolicy::NeverReset;
+}
