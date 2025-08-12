@@ -171,6 +171,7 @@ void UMJStoreComponent::ShowStory() // Story 클릭 시
 	{
 		FloatLine();
 		GetDialogueWidget()->SetImageOpacity(GetCurrentRow()->Speaker);
+		UpdateBacklog();
 	}
 	GetDialogueWidget()->GetDialogueChoiceWidget()->SetVisibility(ESlateVisibility::Hidden);
 }
