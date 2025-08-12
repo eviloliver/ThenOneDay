@@ -122,7 +122,7 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	// float DistanceToTarget = ControlledPawn->GetDistanceTo(Target);
 	int32 DistanceToTarget = FMath::FloorToInt(ControlledPawn->GetDistanceTo(Target));
 
-	const  float MinimumAttackRange = Character->GetCapsuleComponent()->GetScaledCapsuleRadius() * ((Offset!=0)?Offset:1);	
+	const float MinimumAttackRange = Character->GetCapsuleComponent()->GetScaledCapsuleRadius() * ((Offset!=0)?Offset:1);	
 	const float MaximumAttackRange = MinimumAttackRange + AttackRange;
 
 	DrawDebugCircle(GetWorld(), ControlledPawn->GetActorLocation(), MaximumAttackRange, 16, FColor::Emerald, false, 0.2f, 0, 0, FVector::RightVector,FVector::ForwardVector, false);
