@@ -23,6 +23,7 @@ public:
 
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 	virtual void InitializeFromAsset(UBehaviorTree& Asset) override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tag", meta=(Categories = "Skill"))
