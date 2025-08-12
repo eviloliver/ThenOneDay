@@ -23,11 +23,15 @@ class PROJECTMJ_API UMJSkillWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-
 public:
 	virtual void NativeConstruct() override;
 
 	void UpdateSkillSlots(FGameplayTag SkillTag,int32 Level);
+
+	TArray<TObjectPtr<UMJSkillSlotWidget>> GetSkillSlots() {return SkillSlots;};
+
+	UFUNCTION()
+	void UpdateEquipedSlots();
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TArray<TObjectPtr<UMJSkillSlotWidget>> SkillSlots;

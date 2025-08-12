@@ -17,18 +17,21 @@
 #include "Character/Component/MJPlayerSkillComponent.h"
 #include "Dialogue/MJDialogueWidget.h"
 #include "Character/Component/MJPlayerStatComponent.h"
+#include "Components/Button.h"
 #include "DataTable/MJSkillDataRow.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
 #include "TG/UI/MJGameFlowHUDWidget.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/Component/MJInteractComponent.h"
+#include "UI/Skill/MJEquipedSkillWidget.h"
 #include "UI/Skill/MJSkillWidget.h"
 #include "UI/Store/MJMerchandiseSlot.h"
 #include "UI/Store/MJPopupWidget.h"
 #include "UI/Store/MJSalesSlot.h"
 #include "UI/Store/MJStoreComponent.h"
 #include "UI/Store/MJStoreWidget.h"
+#include "UI/Skill/MJSkillSlotWidget.h"
 
 
 // TODO: Input 관련한 로직들 Component로 따로 빼기 - 동민 - 
@@ -111,6 +114,13 @@ void AMJPlayerController::BeginPlay()
 	{
 		SkillComponent->OnLearnSkillEvent.AddDynamic(this,&AMJPlayerController::UpdateSkillWidget);
 	}
+
+	for (int i = 0; i < 10; i++)
+	{
+		UIManager->GetHUDWidget()->GetSkillWidget()->GetSkillSlots()[i]->OnClickedEquipButton.AddDynamic(this,&AMJPlayerController::UpdateEquipedSkillWidget);
+		UIManager->GetHUDWidget()->GetSkillWidget()->GetSkillSlots()[i]->GetEquipButton()->OnClicked.AddDynamic(this,&ThisClass::GetOwnedSkill);
+	}
+	
 	
 }
 
@@ -513,6 +523,36 @@ void AMJPlayerController::UpdateSkillWidget(FGameplayTag SkillTag,int32 Level)
 {
 	UIManager->GetHUDWidget()->GetSkillWidget()->UpdateSkillSlots(SkillTag,Level);
 }
+
+void AMJPlayerController::UpdateEquipedSkillWidget(UTexture2D* Icon, ESkillType SkillType, FGameplayTag Tag)
+{
+	if (SkillType == ESkillType::Instant)
+	{
+		UIManager->GetHUDWidget()->GetEquipedSkillWidget()->SetInstantImage(Icon);
+	}
+	if (SkillType == ESkillType::Passive)
+	{
+		UIManager->GetHUDWidget()->GetEquipedSkillWidget()->SetPassiveImage(Icon);
+	}
+	if (SkillType == ESkillType::Charge)
+	{
+		UIManager->GetHUDWidget()->GetEquipedSkillWidget()->SetChargingImage(Icon);
+	}
+
+	TempTag = Tag;
+}
+
+void AMJPlayerController::GetOwnedSkill()
+{
+	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
+	if (UMJPlayerSkillComponent* SkillComponent = MJChar->FindComponentByClass<UMJPlayerSkillComponent>())
+	{
+	
+		SkillComponent->EquipSkill(TempTag);
+		UE_LOG(LogTemp,Error,TEXT("AMJPlayerController::GetOwnedSkill, %s"),*TempTag.ToString());
+	}
+}
+
 
 void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
                                         int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

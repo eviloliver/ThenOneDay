@@ -143,6 +143,12 @@ public:
 	void ShowSkillWidget();
 	UFUNCTION()
 	void UpdateSkillWidget(FGameplayTag SkillTag,int32 Level);
+	UFUNCTION()
+	void UpdateEquipedSkillWidget(UTexture2D* Icon, ESkillType SkillType, FGameplayTag Tag);
+	UFUNCTION()
+	void GetOwnedSkill();
+
+	FGameplayTag TempTag;
 	
 	UFUNCTION()
 	void OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
