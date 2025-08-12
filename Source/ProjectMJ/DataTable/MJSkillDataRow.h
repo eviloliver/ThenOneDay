@@ -57,11 +57,14 @@ public:
 	FGameplayTag DefaultSkillTag;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 SkillIndex;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText SkillName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UTexture2D> Icon;
-
+	UTexture2D* Icon;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText SkillDescription;
 

@@ -14,6 +14,7 @@
  * Last Modified Date: 
  */
 
+class UMJEquipedSkillWidget;
 class UMJSkillWidget;
 class UMJUIToggle;
 class UMJDialogueWidget;
@@ -62,6 +63,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJSkillWidget> SkillWidget;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJEquipedSkillWidget> EquipedSkillWidget;
+
 public:
 	UFUNCTION()
 	virtual void NativeConstruct() override;
@@ -87,5 +91,7 @@ public:
 	UMJInventoryWidget* GetInventoryWidget() {return Inventory;};
 	UMJStoreWidget* GetStoreWidget() {return Store;};
 	UMJDialogueWidget* GetDialogueWidget() {return Dialogue;};
+	UMJSkillWidget* GetSkillWidget() {return SkillWidget;};
+	UMJEquipedSkillWidget* GetEquipedSkillWidget() {return EquipedSkillWidget;}
 
 };

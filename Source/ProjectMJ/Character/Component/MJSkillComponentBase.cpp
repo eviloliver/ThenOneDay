@@ -55,6 +55,10 @@ void UMJSkillComponentBase::LearnSkill(const FGameplayTag& SkillTag)
 			OwnedSkillMap.Add(SkillTag, NewSkillData);
 		}
 	}
+	if (OwnedSkillMap.Contains(SkillTag))
+	{
+		OnLearnSkillEvent.Broadcast(SkillTag, OwnedSkillMap[SkillTag].Level);
+	}
 }
 
 void UMJSkillComponentBase::EquipSkill(const FGameplayTag& SkillTag)
@@ -289,7 +293,7 @@ void UMJSkillComponentBase::GiveAbilityToASC(const FGameplayTag& SkillTag)
 	{
 		FGameplayAbilitySpec DrawMarkerAbilitySpec(LevelAbilityRow->DrawMarkerAbilityClass, SkillLevel, INDEX_NONE, OwnerCharacter);
 		FGameplayAbilitySpecHandle PassiveSkillHandle = ASC->GiveAbility(DrawMarkerAbilitySpec);
-		GivenPassiveAbilityHandles.Add(SkillTag, PassiveSkillHandle);
+		GivenDrawMarkerAbilityHandles.Add(SkillTag, PassiveSkillHandle);
 	}
 }
 

@@ -19,6 +19,11 @@
  * Last Modified Date:
  */
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLearnSkillEvent,FGameplayTag,SkillTag,int32,Level);
+
+class UMJUIManagerSubsystem;
+class UMJSkillWidget;
+
 USTRUCT(BlueprintType)
 struct FSkillData
 {
@@ -65,7 +70,7 @@ public:
 
 	virtual UDataTable* GetSkillDataTable() const PURE_VIRTUAL(UMJSkillComponentBase::GetSkillDataTable, return nullptr;);
 
-
+	FOnLearnSkillEvent OnLearnSkillEvent;
 protected:	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FSkillData> OwnedSkillMap;
@@ -85,4 +90,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FGameplayAbilitySpecHandle> GivenDrawMarkerAbilityHandles;
 
+
+	// 시간관계상 구조를 생각하지 않고.. 임시로 갖고 있겠다...
 };
