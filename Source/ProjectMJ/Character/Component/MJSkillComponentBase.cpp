@@ -55,8 +55,10 @@ void UMJSkillComponentBase::LearnSkill(const FGameplayTag& SkillTag)
 			OwnedSkillMap.Add(SkillTag, NewSkillData);
 		}
 	}
-	OnLearnSkillEvent.Broadcast(SkillTag,OwnedSkillMap[SkillTag].Level);
-
+	if (OwnedSkillMap.Contains(SkillTag))
+	{
+		OnLearnSkillEvent.Broadcast(SkillTag, OwnedSkillMap[SkillTag].Level);
+	}
 }
 
 void UMJSkillComponentBase::EquipSkill(const FGameplayTag& SkillTag)
