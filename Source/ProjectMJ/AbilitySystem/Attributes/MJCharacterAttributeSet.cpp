@@ -19,7 +19,6 @@ UMJCharacterAttributeSet::UMJCharacterAttributeSet()
 	, Health(100.0f)
 	, MaxHealth(100.0f)
 	, HealthRegeneration(0.0f)
-	, MaxHealthRegeneration(100.0f)
 	, Stamina(100.0f)
 	, MaxStamina(100.0f)
 	, StaminaRegeneration(0.0f)
@@ -57,11 +56,98 @@ UMJCharacterAttributeSet::UMJCharacterAttributeSet()
 void UMJCharacterAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
 	Super::PreAttributeChange(Attribute, NewValue);
+
+	if (Attribute == GetHealthAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
+	}
+	else if (Attribute == GetStaminaAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxStamina());
+	}
+	else if (Attribute == GetManaAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMana());
+	}
+	else if (Attribute == GetFocusAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxFocus());
+	}
+	//
+	else if (Attribute == GetExperienceAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxExperience());
+	}
+	else if (Attribute == GetDropExperienceAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxDropExperience());
+	}
+	//
+	else if (Attribute == GetAttackSpeedAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxAttackSpeed());
+	}
+	else if (Attribute == GetSkillCooldownAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxSkillCooldown());
+	}
+	else if (Attribute == GetResistanceAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxResistance());
+	}
+	else if (Attribute == GetMovementSpeedAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMovementSpeed());
+	}
+
 }
 
 void UMJCharacterAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
 {
 	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+
+	if (Attribute == GetMaxHealthAttribute())
+	{
+		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
+	}
+	else if (Attribute == GetMaxStaminaAttribute())
+	{
+		SetStamina(FMath::Clamp(GetStamina(), 0.f, GetMaxStamina()));
+	}
+	else if (Attribute == GetMaxManaAttribute())
+	{
+		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
+	}
+	else if (Attribute == GetMaxFocusAttribute())
+	{
+		SetFocus(FMath::Clamp(GetFocus(), 0.f, GetMaxFocus()));
+	}
+	//
+	else if (Attribute == GetMaxExperienceAttribute())
+	{
+		SetExperience(FMath::Clamp(GetExperience(), 0.f, GetMaxExperience()));
+	}
+	else if (Attribute == GetMaxDropExperienceAttribute())
+	{
+		SetDropExperience(FMath::Clamp(GetDropExperience(), 0.f, GetMaxDropExperience()));
+	}
+	//
+	else if (Attribute == GetMaxAttackSpeedAttribute())
+	{
+		SetAttackSpeed(FMath::Clamp(GetAttackSpeed(), 0.f, GetMaxAttackSpeed()));
+	}
+	else if (Attribute == GetMaxSkillCooldownAttribute())
+	{
+		SetSkillCooldown(FMath::Clamp(GetSkillCooldown(), 0.f, GetMaxSkillCooldown()));
+	}
+	else if (Attribute == GetMaxResistanceAttribute())
+	{
+		SetResistance(FMath::Clamp(GetResistance(), 0.f, GetMaxResistance()));
+	}
+	else if (Attribute == GetMaxMovementSpeedAttribute())
+	{
+		SetMovementSpeed(FMath::Clamp(GetMovementSpeed(), 0.f, GetMaxMovementSpeed()));
+	}
 
 }
 
@@ -133,16 +219,62 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 				}
 			}
 		}
-		else if (Data.EvaluatedData.Attribute == GetMaxMovementSpeedAttribute())
+
+	}
+
+	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	{
+		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetStaminaAttribute())
+	{
+		SetStamina(FMath::Clamp(GetStamina(), 0.f, GetMaxStamina()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetManaAttribute())
+	{
+		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetFocusAttribute())
+	{
+		SetFocus(FMath::Clamp(GetFocus(), 0.f, GetMaxFocus()));
+	}
+	//
+	else if (Data.EvaluatedData.Attribute == GetExperienceAttribute())
+	{
+		SetExperience(FMath::Clamp(GetExperience(), 0.f, GetMaxExperience()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetDropExperienceAttribute())
+	{
+		SetDropExperience(FMath::Clamp(GetDropExperience(), 0.f, GetMaxDropExperience()));
+	}
+	//
+	else if (Data.EvaluatedData.Attribute == GetAttackSpeedAttribute())
+	{
+		SetAttackSpeed(FMath::Clamp(GetAttackSpeed(), 0.f, GetMaxAttackSpeed()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetSkillCooldownAttribute())
+	{
+		SetSkillCooldown(FMath::Clamp(GetSkillCooldown(), 0.f, GetMaxSkillCooldown()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetResistanceAttribute())
+	{
+		SetResistance(FMath::Clamp(GetResistance(), 0.f, GetMaxResistance()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetMovementSpeedAttribute())
+	{
+		SetMovementSpeed(FMath::Clamp(GetMovementSpeed(), 0.f, GetMaxMovementSpeed()));
+	}
+
+	// 이동속도 변경 바로 반영
+	if(Data.EvaluatedData.Attribute == GetMaxMovementSpeedAttribute() || Data.EvaluatedData.Attribute == GetMovementSpeedAttribute())
+	{
+		AMJCharacterBase* Character = Cast<AMJCharacterBase>(Data.Target.GetAvatarActor());
+		if (Character)
 		{
-			AMJCharacterBase* Character = Cast<AMJCharacterBase>(Data.Target.GetAvatarActor());
-			if (Character)
+			UCharacterMovementComponent* MoveComponent = Character->GetCharacterMovement();
+			if (MoveComponent)
 			{
-				UCharacterMovementComponent* MoveComponent = Character->GetCharacterMovement();
-				if (MoveComponent)
-				{
-					MoveComponent->MaxWalkSpeed = GetMaxMovementSpeed();
-				}
+				MoveComponent->MaxWalkSpeed = GetMaxMovementSpeed();
 			}
 		}
 	}

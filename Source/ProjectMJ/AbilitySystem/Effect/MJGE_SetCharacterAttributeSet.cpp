@@ -27,7 +27,6 @@ UMJGE_SetCharacterAttributeSet::UMJGE_SetCharacterAttributeSet()
         { UMJCharacterAttributeSet::GetMaxHealthAttribute(),        FName("Data.Character.MaxHealth") },
 
         { UMJCharacterAttributeSet::GetHealthRegenerationAttribute(),   FName("Data.Character.HealthRegeneration") },
-        { UMJCharacterAttributeSet::GetMaxHealthRegenerationAttribute(),FName("Data.Character.MaxHealthRegeneration") },
 
         { UMJCharacterAttributeSet::GetStaminaAttribute(),          FName("Data.Character.Stamina") },
         { UMJCharacterAttributeSet::GetMaxStaminaAttribute(),       FName("Data.Character.MaxStamina") },

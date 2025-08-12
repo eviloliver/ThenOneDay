@@ -10,6 +10,7 @@
 #include "Player/MJPlayerState.h"
 #include "MotionWarpingComponent.h"
 #include "Component/MJAbilityContextComponent.h"
+#include "DataAsset/MJInnateGameplayEffectDataAsset.h"
 #include "DataAsset/MJStateAbilityDataAsset.h"
 #include "TG/Component/MJMiniMapIconMeshComponent.h"
 #include "UI/World/MJDamageComponent.h"
@@ -69,6 +70,27 @@ void AMJCharacterBase::BeginPlay()
 
 		FGameplayAbilitySpec DeathAbilitySpec(StateAbilityDataAsset->ActionDeathAbilityClass);
 		ASC->GiveAbility(DeathAbilitySpec);
+	}
+
+	// TODO: 함수로 만들기 - 동민 -
+	if(InnateGameplayEffectData)
+	{
+		for (const TSubclassOf<UGameplayEffect>& GameplayEffect : InnateGameplayEffectData->Effects)
+		{
+			if (!*GameplayEffect)
+			{
+				continue;
+			}
+			FGameplayEffectContextHandle GameplayEffectContextHandle = ASC->MakeEffectContext();
+			GameplayEffectContextHandle.AddSourceObject(this);
+
+			FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(GameplayEffect, 1.f, GameplayEffectContextHandle);
+			if (Spec.IsValid())
+			{
+				FActiveGameplayEffectHandle ActiveGameplayEffectHandle = ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+				InnateGEHandles.Add(ActiveGameplayEffectHandle);
+			}
+		}
 	}
 }
 
