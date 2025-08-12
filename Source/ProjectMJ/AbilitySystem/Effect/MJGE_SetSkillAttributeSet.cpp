@@ -35,10 +35,11 @@ UMJGE_SetSkillAttributeSet::UMJGE_SetSkillAttributeSet()
         { UMJCharacterSkillAttributeSet::GetSkillAttackLocationOffsetAttribute(), FName("Data.Skill.SkillAttackLocationOffset") },
 
         // Time
-        { UMJCharacterSkillAttributeSet::GetCooldownAttribute(),             FName("Data.Skill.Cooldown") },
+        // DOTO: Max가 먼저 와야함
         { UMJCharacterSkillAttributeSet::GetMaxCooldownAttribute(),          FName("Data.Skill.MaxCooldown") },
+        { UMJCharacterSkillAttributeSet::GetCooldownAttribute(),             FName("Data.Skill.Cooldown") },
+		{ UMJCharacterSkillAttributeSet::GetMaxSkillAttackRateAttribute(),   FName("Data.Skill.MaxSkillAttackRate") },
         { UMJCharacterSkillAttributeSet::GetSkillAttackRateAttribute(),      FName("Data.Skill.SkillAttackRate") },
-        { UMJCharacterSkillAttributeSet::GetMaxSkillAttackRateAttribute(),   FName("Data.Skill.MaxSkillAttackRate") },
         { UMJCharacterSkillAttributeSet::GetCastTimeAttribute(),             FName("Data.Skill.CastTime") },
         { UMJCharacterSkillAttributeSet::GetPreDelayAttribute(),             FName("Data.Skill.PreDelay") },
         { UMJCharacterSkillAttributeSet::GetPostDelayAttribute(),            FName("Data.Skill.PostDelay") },
@@ -50,18 +51,19 @@ UMJGE_SetSkillAttributeSet::UMJGE_SetSkillAttributeSet()
         { UMJCharacterSkillAttributeSet::GetStatusBaseDamageAttribute(),     FName("Data.Skill.StatusBaseDamage") },
         { UMJCharacterSkillAttributeSet::GetStatusEffectADScalingAttribute(),FName("Data.Skill.StatusEffectADScaling") },
         { UMJCharacterSkillAttributeSet::GetStatusEffectAPScalingAttribute(), FName("Data.Skill.StatusEffectAPScaling") },
+		{ UMJCharacterSkillAttributeSet::GetMaxStatusEffectMaxStackAttribute(), FName("Data.Skill.MaxStatusEffectMaxStack") },
+
         { UMJCharacterSkillAttributeSet::GetStatusEffectMaxStackAttribute(), FName("Data.Skill.StatusEffectMaxStack") },
-        { UMJCharacterSkillAttributeSet::GetMaxStatusEffectMaxStackAttribute(), FName("Data.Skill.MaxStatusEffectMaxStack") },
         { UMJCharacterSkillAttributeSet::GetStatusEffectPeriodAttribute(), FName("Data.Skill.StatusEffectPeriod") },
         { UMJCharacterSkillAttributeSet::GetStatusEffectSlowPercentAttribute(),FName("Data.Skill.StatusEffectSlowPercent") },
 
         // Projectile
         { UMJCharacterSkillAttributeSet::GetProjectileSpeedAttribute(),      FName("Data.Skill.ProjectileSpeed") },
+		{ UMJCharacterSkillAttributeSet::GetMaxProjectileCountAttribute(),   FName("Data.Skill.MaxProjectileCount") },
         { UMJCharacterSkillAttributeSet::GetProjectileCountAttribute(),      FName("Data.Skill.ProjectileCount") },
-        { UMJCharacterSkillAttributeSet::GetMaxProjectileCountAttribute(),   FName("Data.Skill.MaxProjectileCount") },
         { UMJCharacterSkillAttributeSet::GetProjectileLifeSpanAttribute(),   FName("Data.Skill.ProjectileLifeSpan") },
+		{ UMJCharacterSkillAttributeSet::GetMaxProjectilePierceCountAttribute(),   FName("Data.Skill.MaxProjectilePierceCount") },
         { UMJCharacterSkillAttributeSet::GetProjectilePierceCountAttribute(),   FName("Data.Skill.ProjectilePierceCount") },
-        { UMJCharacterSkillAttributeSet::GetMaxProjectilePierceCountAttribute(),   FName("Data.Skill.MaxProjectilePierceCount") },
 
     	// Explosion
         { UMJCharacterSkillAttributeSet::GetExplosionRadiusAttribute(), FName("Data.Skill.ExplosionRadius") },
