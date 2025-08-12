@@ -9,6 +9,8 @@
 #include "MJ/AI/AIPerceptionInfo.h"
 #include "MJCharacterBase.generated.h"
 
+struct FActiveGameplayEffectHandle;
+class UMJInnateGameplayEffectDataAsset;
 class UMJDamageComponent;
 class UMJStateAbilityDataAsset;
 class UMJAbilityContextComponent;
@@ -69,6 +71,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS")
 	TSoftObjectPtr<UDataAsset_StartDataBase>CharacterStartData;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GAS")
+	TObjectPtr<UMJInnateGameplayEffectDataAsset> InnateGameplayEffectData;
+
+	UPROPERTY()
+	TArray<FActiveGameplayEffectHandle> InnateGEHandles;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GAS")
 	TObjectPtr<UMJStateAbilityDataAsset> StateAbilityDataAsset;
