@@ -47,6 +47,6 @@ void UMJEC_MovementSpeedModifier::Execute_Implementation(
     if (SlowPercent != 0.f)
     {
         float NewSpeedMult = FMath::Clamp(1.f - SlowPercent * 0.01f, 0.f, 1.f);
-        OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UMJCharacterAttributeSet::GetMovementSpeedAttribute(), EGameplayModOp::Multiplicitive, NewSpeedMult));
+        OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UMJCharacterAttributeSet::GetMaxMovementSpeedAttribute(), EGameplayModOp::Multiplicitive, NewSpeedMult));
     }
 }

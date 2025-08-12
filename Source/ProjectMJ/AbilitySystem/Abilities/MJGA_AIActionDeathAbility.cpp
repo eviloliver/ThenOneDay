@@ -35,7 +35,6 @@ void UMJGA_AIActionDeathAbility::ActivateAbility(const FGameplayAbilitySpecHandl
 	UAbilityTask_PlayMontageAndWait* PlayDeathMontage = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, TEXT("PlayDeath"), DeathActionAnimMontage, 1.0f);
 
 	PlayDeathMontage->OnCompleted.AddDynamic(this, &UMJGA_AIActionDeathAbility::OnCompleteCallback);
-	PlayDeathMontage->OnInterrupted.AddDynamic(this, &UMJGA_AIActionDeathAbility::OnInterruptedCallback);
 	PlayDeathMontage->OnCancelled.AddDynamic(this, &UMJGA_AIActionDeathAbility::OnInterruptedCallback);
 	PlayDeathMontage->OnBlendOut.AddDynamic(this, &UMJGA_AIActionDeathAbility::OnBlendOutCallback);
 
