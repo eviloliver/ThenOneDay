@@ -76,4 +76,8 @@ protected:
 	
 	FVector PreTargetLocation;
 	FVector CurrentTargetLocation;
+	
+	UPROPERTY(EditDefaultsOnly) // TG : 25.08.11
+	TObjectPtr<USoundCue> OverlapSFX;
+	
 };

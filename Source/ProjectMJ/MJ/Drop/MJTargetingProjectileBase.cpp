@@ -11,8 +11,10 @@
 #include "Character/Component/MJPlayerSkillComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Physics/MJCollision.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AMJTargetingProjectileBase::AMJTargetingProjectileBase()
@@ -112,6 +114,7 @@ void AMJTargetingProjectileBase::OnSphereOverlap(UPrimitiveComponent* Overlapped
 		if (SkillTag.IsValid())
 		{
 			Player->SkillComponent->LearnSkill(SkillTag);
+			UGameplayStatics::PlaySound2D(GetWorld(),OverlapSFX);
 			if (GEngine)
 			{
 				GEngine->AddOnScreenDebugMessage(

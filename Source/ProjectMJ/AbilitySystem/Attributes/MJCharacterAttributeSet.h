@@ -48,7 +48,6 @@ public:
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxHealth)
 
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, HealthRegeneration)
-	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxHealthRegeneration)
 
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, Stamina)
 	ATTRIBUTE_ACCESSORS(UMJCharacterAttributeSet, MaxStamina)
@@ -104,6 +103,7 @@ public:
 	friend struct FMJEC_SkillDamageStatics;
 	friend struct FMJEC_DamageOverTimeStatics;
 	friend struct FMJEC_MovementSpeedModifierStatics;
+	friend struct FMJEC_StaminaRegenStatics;
 
 protected:
 
@@ -126,8 +126,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Stat|Resource", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData HealthRegeneration;
-	UPROPERTY(BlueprintReadOnly, Category = "Stat|Resource", Meta = (AllowPrivateAccess = true))
-	FGameplayAttributeData MaxHealthRegeneration;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Stat|Resource", Meta = (AllowPrivateAccess = true))
 	FGameplayAttributeData Stamina;

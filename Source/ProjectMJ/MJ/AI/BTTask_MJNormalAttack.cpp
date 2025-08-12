@@ -32,11 +32,10 @@ EBTNodeResult::Type UBTTask_MJNormalAttack::ExecuteTask(UBehaviorTreeComponent& 
 
 	UAbilitySystemComponent* ASC = Monster->GetAbilitySystemComponent();
 	UMJEnemySkillComponent* SkillComponent = Monster->GetSkillComponent();
-	
-	// FGameplayTag SkillTypeTag = FGameplayTag::RequestGameplayTag(FName("Skill.Normal"));
-	// FGameplayTag AttackTag = SkillComponent->GetEquippedSkillMap()[SkillTypeTag];
 
 	SkillComponent->ActivateNormalSkill();
 
+	MJ_LOG(LogMJ, Warning, TEXT("Normal Attack"));
+	
 	return EBTNodeResult::Succeeded;
 }

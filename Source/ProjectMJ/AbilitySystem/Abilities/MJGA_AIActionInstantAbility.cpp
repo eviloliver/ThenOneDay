@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Character/Component/MJAbilityContextComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "MJ/AI/MJMonsterAIControllerBase.h"
 #include "MJ/Character/MJMonsterCharacter.h"
@@ -58,6 +59,13 @@ void UMJGA_AIActionInstantAbility::ActivateAbility(const FGameplayAbilitySpecHan
 	{
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 		return;
+	}
+
+	FVector AimLocation = TargetActor->GetActorLocation();
+	UMJAbilityContextComponent* ContextComponent = AMJCharacter->FindComponentByClass<UMJAbilityContextComponent>();
+	if (ContextComponent)
+	{
+		ContextComponent->LastTargetedMouseLocation = AimLocation;
 	}
 	
 	FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(CharacterLocation, TargetActor->GetActorLocation());

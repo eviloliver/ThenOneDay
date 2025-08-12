@@ -34,6 +34,8 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	CachedOwnerComp = &OwnerComp;
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
+	OwnerComp.GetBlackboardComponent()->ClearValue("IsInAttackRange");
+	
 	APawn* ControlledPawn = OwnerComp.GetAIOwner()->GetPawn();
 	if (ControlledPawn == nullptr)
 	{
@@ -144,7 +146,6 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	 * 키 값을 지워주고 이동해야 할 위치(KeepDistancePos) 설정해준다.
 	 * 타겟 위치 변동이 있을 경우에만.
 	 */
-	OwnerComp.GetBlackboardComponent()->ClearValue("IsInAttackRange");
 
 	CurrTargetLocation = Target->GetActorLocation();
 	if (PreTargetLocation == FVector::ZeroVector)
@@ -182,6 +183,11 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	}
 
 	OwnerComp.GetBlackboardComponent()->SetValueAsVector("KeepDistancePos", MoveToLocation);
+}
+
+void UBTService_MJCheckAttackRange::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
 }
 
 void UBTService_MJCheckAttackRange::InitializeFromAsset(UBehaviorTree& Asset)

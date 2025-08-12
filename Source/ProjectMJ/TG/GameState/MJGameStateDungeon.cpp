@@ -68,6 +68,29 @@ void AMJGameStateDungeon::BeginPlay()
 	}
 }
 
+void AMJGameStateDungeon::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	for (auto& Iter : SpawnedActorRefs)
+	{
+		if (Iter.IsValid())
+		{
+			Iter.Get()->OnDestroyed.RemoveDynamic(this,&AMJGameStateDungeon::OnAIDestroy);
+
+			AMJCharacterBase* Char = Cast<AMJCharacterBase>(Iter.Get());
+			if (IsValid(Char))
+			{
+				Char->GetMesh()->GetAnimInstance()->StopAllMontages(0.2f);
+			}
+			
+		}
+	}
+	GetWorldTimerManager().ClearAllTimersForObject(this);
+	
+
+}
+
 
 void AMJGameStateDungeon::Initialize_BattleNode()
 {
@@ -316,7 +339,7 @@ void AMJGameStateDungeon::OnAIDestroy(AActor* DestroyedActor)
 		--CurrentSpawnedAINum;
 
 		UMJDungeonGenerationSubSystem* GS = GetGameInstance()->GetSubsystem<UMJDungeonGenerationSubSystem>();
-		check(GS);
+
 		if (GS)
 		{
 			EMJNodeType CurrentNodeType = GS->GetDungeonGraph()->Nodes[LoadedDungeonSessionData.DungeonNodeNum].NodeType;
@@ -378,6 +401,17 @@ TSubclassOf<AActor> AMJGameStateDungeon::GetActorFromPool()
 	}
 	
 	return Keys[RandomIndex];
+}
+
+void AMJGameStateDungeon::Test_DeleteAI()
+{
+	for (auto& Iter : SpawnedActorRefs)
+	{
+		if (Iter.IsValid())
+		{
+			Iter.Get()->Destroy();
+		}
+	}
 }
 
 void AMJGameStateDungeon::SpawnDungeonPortal()

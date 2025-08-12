@@ -35,7 +35,6 @@ void UMJGA_AIActionDeathAbility::ActivateAbility(const FGameplayAbilitySpecHandl
 	UAbilityTask_PlayMontageAndWait* PlayDeathMontage = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, TEXT("PlayDeath"), DeathActionAnimMontage, 1.0f);
 
 	PlayDeathMontage->OnCompleted.AddDynamic(this, &UMJGA_AIActionDeathAbility::OnCompleteCallback);
-	PlayDeathMontage->OnInterrupted.AddDynamic(this, &UMJGA_AIActionDeathAbility::OnInterruptedCallback);
 	PlayDeathMontage->OnCancelled.AddDynamic(this, &UMJGA_AIActionDeathAbility::OnInterruptedCallback);
 	PlayDeathMontage->OnBlendOut.AddDynamic(this, &UMJGA_AIActionDeathAbility::OnBlendOutCallback);
 
@@ -53,8 +52,6 @@ void UMJGA_AIActionDeathAbility::EndAbility(const FGameplayAbilitySpecHandle Han
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
-	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-
 	AMJCharacterBase* AMJCharacter = Cast<AMJCharacterBase>(ActorInfo->AvatarActor.Get());
 	if (!AMJCharacter)
 	{
@@ -68,7 +65,8 @@ void UMJGA_AIActionDeathAbility::EndAbility(const FGameplayAbilitySpecHandle Han
 		Enemy->GiveDeathRewardTo();
 	}
 	
-	AMJCharacter->Destroy();
+	// Minjin: Super에서 Destroy
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 void UMJGA_AIActionDeathAbility::OnCompleteCallback()

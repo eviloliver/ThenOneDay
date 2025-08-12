@@ -32,7 +32,6 @@ void UMJGA_PlayerActionDeathAbility::ActivateAbility(const FGameplayAbilitySpecH
 	UAbilityTask_PlayMontageAndWait* PlayDeathMontage = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, TEXT("PlayDeath"), DeathActionAnimMontage, 1.0f);
 
 	PlayDeathMontage->OnCompleted.AddDynamic(this, &UMJGA_PlayerActionDeathAbility::OnCompleteCallback);
-	PlayDeathMontage->OnInterrupted.AddDynamic(this, &UMJGA_PlayerActionDeathAbility::OnInterruptedCallback);
 	PlayDeathMontage->OnCancelled.AddDynamic(this, &UMJGA_PlayerActionDeathAbility::OnInterruptedCallback);
 	PlayDeathMontage->OnBlendOut.AddDynamic(this, &UMJGA_PlayerActionDeathAbility::OnBlendOutCallback);
 
@@ -50,15 +49,11 @@ void UMJGA_PlayerActionDeathAbility::EndAbility(const FGameplayAbilitySpecHandle
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
+	// Minjin: Super 호출 전 필요한 거 작업
+	
+
+	// Minjin: Super에서 Destroy하는데 바꿔도 됨
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-
-	AMJCharacterBase* AMJCharacter = Cast<AMJCharacterBase>(ActorInfo->AvatarActor.Get());
-	if (!AMJCharacter)
-	{
-		return; 
-	}
-
-	//AMJCharacter->Destroy();
 }
 
 void UMJGA_PlayerActionDeathAbility::OnCompleteCallback()
