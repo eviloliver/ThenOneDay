@@ -14,6 +14,7 @@
  * Last Modified Date: 2025-07-21
  */
 
+class UButton;
 class UHorizontalBox;
 class UVerticalBox;
 class UTextBlock;
@@ -47,6 +48,9 @@ protected:
 	UFUNCTION()
 	void SwitchToInGame();
 
+	UFUNCTION()
+	void DeleteSelf();
+
 	UPROPERTY()
 	int8 SlotNum;
 
@@ -61,6 +65,9 @@ protected:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> PlayerNameText;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> DeleteButton;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USoundCue> SuccessSound;

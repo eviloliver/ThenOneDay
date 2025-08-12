@@ -46,10 +46,10 @@ protected:
 	TObjectPtr<UMJChildMenuBaseWidget> SettingsWidget;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UMJChildMenuBaseWidget> ForceExitCautionWidgetClass;
+	TSubclassOf<UMJChildMenuBaseWidget> PopUpMsgnWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<UMJChildMenuBaseWidget> ForceExitCautionWidget;
+	TObjectPtr<UMJChildMenuBaseWidget> PopUpMsgWidget;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_Resume;

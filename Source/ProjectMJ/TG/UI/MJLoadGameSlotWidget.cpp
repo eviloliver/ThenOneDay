@@ -8,6 +8,7 @@
 #include "MJLoadGameWidget.h"
 #include "ProjectMJ.h"
 #include "Components/AudioComponent.h"
+#include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Controller/MJPlayerController.h"
 #include "Kismet/GameplayStatics.h"
@@ -24,6 +25,8 @@ void UMJLoadGameSlotWidget::NativeOnInitialized()
 void UMJLoadGameSlotWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	DeleteButton->OnClicked.AddDynamic(this, &UMJLoadGameSlotWidget::DeleteSelf);
 	
 	PopUpMsgWidget = Cast<UMJGameFlowPopUpMsgWidget>(CreateWidget(this,PopUpMessageWidgetClass));
 	if (PopUpMsgWidget)
@@ -84,6 +87,16 @@ void UMJLoadGameSlotWidget::SwitchToInGame()
 	UGameplayStatics::OpenLevel(this,MAP_TOWN);
 }
 
+void UMJLoadGameSlotWidget::DeleteSelf()
+{
+	
+	bool bDeleted = UGameplayStatics::DeleteGameInSlot("Slot_" + FString::FromInt(SlotNum),0);
+
+	if (bDeleted)
+	{
+		RemoveFromParent();	
+	}
+}
 
 
 void UMJLoadGameSlotWidget::SetText(const FText NewSlotNumberText, const FText NewPlayerNameText, const FText NewCreatedDateText,

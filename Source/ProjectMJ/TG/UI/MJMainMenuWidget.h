@@ -41,6 +41,12 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UMJChildMenuBaseWidget> SettingsWidget;
+	
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<UMJChildMenuBaseWidget> PopUpMsgWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UMJChildMenuBaseWidget> PopUpMsgWidget;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_NewGame;
