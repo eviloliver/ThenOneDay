@@ -70,23 +70,23 @@ void UMJCharacterSkillAttributeSet::PreAttributeChange(const FGameplayAttribute&
 
     if (Attribute == GetCooldownAttribute())
     {
-        ClampBaseToMax(GetCooldownAttribute(), GetMaxCooldownAttribute(), 0.f);
+        NewValue = FMath::Clamp(NewValue, 0.f, GetMaxCooldown());
     }
     else if (Attribute == GetSkillAttackRateAttribute())
     {
-        ClampBaseToMax(GetSkillAttackRateAttribute(), GetMaxSkillAttackRateAttribute(), 0.f);
+        NewValue = FMath::Clamp(NewValue, 0.f, GetMaxSkillAttackRate());
     }
     else if (Attribute == GetStatusEffectMaxStackAttribute())
     {
-        ClampBaseToMax(GetStatusEffectMaxStackAttribute(), GetMaxStatusEffectMaxStackAttribute(), 0.f);
+        NewValue = FMath::Clamp(NewValue, 0.f, GetMaxStatusEffectMaxStack());
     }
     else if (Attribute == GetProjectileCountAttribute())
     {
-        ClampBaseToMax(GetProjectileCountAttribute(), GetMaxProjectileCountAttribute(), 0.f);
+        NewValue = FMath::Clamp(NewValue, 0.f, GetMaxProjectileCount());
     }
     else if (Attribute == GetProjectilePierceCountAttribute())
     {
-        ClampBaseToMax(GetProjectilePierceCountAttribute(), GetMaxProjectilePierceCountAttribute(), 0.f);
+        NewValue = FMath::Clamp(NewValue, 0.f, GetMaxProjectilePierceCount());
     }
 }
 
@@ -97,23 +97,23 @@ void UMJCharacterSkillAttributeSet::PostAttributeChange(const FGameplayAttribute
 
     if (Attribute == GetMaxCooldownAttribute())
     {
-        ClampBaseToMax(GetCooldownAttribute(), GetMaxCooldownAttribute(), 0.f);
+        SetCooldown(FMath::Clamp(GetCooldown(), 0.f, GetMaxCooldown()));
     }
     else if (Attribute == GetMaxSkillAttackRateAttribute())
     {
-	    ClampBaseToMax(GetSkillAttackRateAttribute(), GetMaxSkillAttackRateAttribute(), 0.f);
+        SetSkillAttackRate(FMath::Clamp(GetSkillAttackRate(), 0.f, GetMaxSkillAttackRate()));
     }
     else if (Attribute == GetMaxStatusEffectMaxStackAttribute())
     {
-	    ClampBaseToMax(GetStatusEffectMaxStackAttribute(), GetMaxStatusEffectMaxStackAttribute(), 0.f);
+        SetStatusEffectMaxStack(FMath::Clamp(GetStatusEffectMaxStack(), 0.f, GetMaxStatusEffectMaxStack()));
     }
     else if (Attribute == GetMaxProjectileCountAttribute())
     {
-	    ClampBaseToMax(GetProjectileCountAttribute(), GetMaxProjectileCountAttribute(), 0.f);
+        SetProjectileCount(FMath::Clamp(GetProjectileCount(), 0.f, GetMaxProjectileCount()));
     }
     else if (Attribute == GetMaxProjectilePierceCountAttribute())
     {
-	    ClampBaseToMax(GetProjectilePierceCountAttribute(), GetMaxProjectilePierceCountAttribute(), 0.f);
+        SetProjectilePierceCount(FMath::Clamp(GetProjectilePierceCount(), 0.f, GetMaxProjectilePierceCount()));
     }
 
 }
@@ -128,40 +128,22 @@ void UMJCharacterSkillAttributeSet::PostGameplayEffectExecute(const FGameplayEff
 	Super::PostGameplayEffectExecute(Data);
     if (Data.EvaluatedData.Attribute == GetCooldownAttribute())
     {
-	    ClampBaseToMax(GetCooldownAttribute(), GetMaxCooldownAttribute(), 0.f);
+        SetCooldown(FMath::Clamp(GetCooldown(), 0.f, GetMaxCooldown()));
     }
     else if (Data.EvaluatedData.Attribute == GetSkillAttackRateAttribute())
     {
-	    ClampBaseToMax(GetSkillAttackRateAttribute(), GetMaxSkillAttackRateAttribute(), 0.f);
+        SetSkillAttackRate(FMath::Clamp(GetSkillAttackRate(), 0.f, GetMaxSkillAttackRate()));
     }
     else if (Data.EvaluatedData.Attribute == GetStatusEffectMaxStackAttribute())
     {
-	    ClampBaseToMax(GetStatusEffectMaxStackAttribute(), GetMaxStatusEffectMaxStackAttribute(), 0.f);
+        SetStatusEffectMaxStack(FMath::Clamp(GetStatusEffectMaxStack(), 0.f, GetMaxStatusEffectMaxStack()));
     }
     else if (Data.EvaluatedData.Attribute == GetProjectileCountAttribute())
     {
-	    ClampBaseToMax(GetProjectileCountAttribute(), GetMaxProjectileCountAttribute(), 0.f);
+        SetProjectileCount(FMath::Clamp(GetProjectileCount(), 0.f, GetMaxProjectileCount()));
     }
     else if (Data.EvaluatedData.Attribute == GetProjectilePierceCountAttribute())
     {
-	    ClampBaseToMax(GetProjectilePierceCountAttribute(), GetMaxProjectilePierceCountAttribute(), 0.f);
+        SetProjectilePierceCount(FMath::Clamp(GetProjectilePierceCount(), 0.f, GetMaxProjectilePierceCount()));
     }
  }
-
-void UMJCharacterSkillAttributeSet::ClampBaseToMax(const FGameplayAttribute& BaseAttribute,
-	const FGameplayAttribute& MaxAttribute, float Min)
-{
-    UMJAbilitySystemComponent* ASC = Cast<UMJAbilitySystemComponent>(GetOwningAbilitySystemComponent());
-    if (!ASC)
-    {
-        MJ_LOG(LogMJ, Warning, TEXT("Not Exist ASC"));
-        return;
-    }
-    const float MaxValue = MaxAttribute.GetNumericValue(this);
-    const float CurrentValue = BaseAttribute.GetNumericValue(this);
-    const float Clamped = FMath::Clamp(CurrentValue, Min, MaxValue);
-    if (!FMath::IsNearlyEqual(CurrentValue, Clamped))
-    {
-        ASC->ApplyModToAttributeUnsafe(BaseAttribute, EGameplayModOp::Additive, Clamped - CurrentValue);
-    }
-}
