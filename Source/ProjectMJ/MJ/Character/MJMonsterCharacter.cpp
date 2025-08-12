@@ -22,6 +22,7 @@
 #include "Character/Component/MJPlayerStatComponent.h"
 #include "DataAsset/MJStateAbilityDataAsset.h"
 #include "Item/MJItemBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "MJ/DataAssetMJ/MJDropItemsDataAsset.h"
 #include "UI/Inventory/ItemDataRow.h"
 #include "UI/Bar/MJEnemyHPBar.h"
@@ -203,9 +204,10 @@ void AMJMonsterCharacter::GiveDeathRewardTo()
 			FVector SpawnLocation = GetActorLocation();
 			SpawnLocation.Z = 0.0f;
 			FTransform SpawnTransform(SpawnLocation);
-			AMJItemBase* Item = GetWorld()->SpawnActorDeferred<AMJItemBase>(ItemClass, SpawnTransform);
-			// Item->SetActorEnableCollision(false);
-			Item->FinishSpawning(SpawnTransform);
+			if (GetWorld())
+			{
+				GetWorld()->SpawnActor<AMJItemBase>(ItemClass, SpawnTransform);				
+			}
 		}
 	}
 }

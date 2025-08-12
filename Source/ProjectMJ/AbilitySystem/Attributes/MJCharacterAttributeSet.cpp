@@ -81,6 +81,11 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 	Super::PostGameplayEffectExecute(Data);
 	// Effect 적용 후
 
+	if (Data.Target.GetAvatarActor() == nullptr)
+	{
+		return;
+	}
+
 	if (UMJStatComponentBase* StatComp = Data.Target.GetAvatarActor()->FindComponentByClass<UMJStatComponentBase>())
 	{
 		if (Data.EvaluatedData.Attribute == GetHealthAttribute())
