@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "MJItemBase.generated.h"
 
+class UMJNameBarWidgetComponent;
 class UDataTable;
 class UMJInventoryComponent;
 UCLASS()
@@ -17,7 +18,15 @@ class PROJECTMJ_API AMJItemBase : public AActor
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
 	FGameplayTag ItemTag;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
+	TObjectPtr<UMJNameBarWidgetComponent> NameBarWidgetComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UStaticMeshComponent> MeshComp; //
 public:
+	AMJItemBase();
+
+	virtual	void BeginPlay() override;
 	FGameplayTag GetItemTag() {return ItemTag;}
 };

@@ -31,12 +31,10 @@ void UMJStoreWidget::NativeConstruct()
 		
 	//Delegate
 	PurchasePopup->SetVisibility(ESlateVisibility::Hidden);
-	//PurchasePopup->SetNotification(FText::FromString("정말 구매하시겠어요? 구매 시 철회가 불가능합니다."));
 	PurchasePopup->GetYesButton()->OnClicked.AddDynamic(this,&UMJStoreWidget::OnClicked_PurchasePopupYes);
 	PurchasePopup->GetNoButton()->OnClicked.AddDynamic(this,&UMJStoreWidget::OnClicked_PurchasePopupNo);
 
 	SellPopup->SetVisibility(ESlateVisibility::Hidden);
-	//SellPopup->SetNotification(FText::FromString("정말 판매하시겠어요? 판매 시 재구매가 불가능합니다."));
 	SellPopup->GetYesButton()->OnClicked.AddDynamic(this,&UMJStoreWidget::OnClicked_SellPopupYes);
 	SellPopup->GetNoButton()->OnClicked.AddDynamic(this,&UMJStoreWidget::OnClicked_SellPopupNo);
 	//
@@ -46,7 +44,6 @@ void UMJStoreWidget::UpdateInventorySlot()
 {
 	if (!InvenScrollBox || !InventorySlotClass) 
 	{
-		UE_LOG(LogTemp,Error,TEXT("인벤용 슬롯 클래스가 없다"));
 		return;
 	}
 	
@@ -73,57 +70,33 @@ void UMJStoreWidget::SetAvailableGold(int32 Gold)
 void UMJStoreWidget::Onclicked_PurchaseButton()
 {
 	PurchasePopup->SetVisibility(ESlateVisibility::Visible);
-	// for (int i =0; i < MerchandiseSlots.Num(); i++)
-	// {
-	// 	MerchandiseSlots[i]->GetButton()->SetIsEnabled(false);
-	// }
 }
 
 void UMJStoreWidget::OnClicked_PurchasePopupYes()
 {
 	PurchasePopup->SetVisibility(ESlateVisibility::Hidden);
-	for (int i =0; i < MerchandiseSlots.Num(); i++)
-	{
-		MerchandiseSlots[i]->GetButton()->SetIsEnabled(true);
-	}
 	OnClickedPurchaseYes.Broadcast();
 }
 
 void UMJStoreWidget::OnClicked_PurchasePopupNo()
 {
 	PurchasePopup->SetVisibility(ESlateVisibility::Hidden);
-	for (int i =0; i < MerchandiseSlots.Num(); i++)
-	{
-		MerchandiseSlots[i]->GetButton()->SetIsEnabled(true);
-	}
 }
 
 void UMJStoreWidget::Onclicked_SellButton()
 {
 	SellPopup->SetVisibility(ESlateVisibility::Visible);
-	// for (int i =0; i < InventorySlots.Num(); i++)
-	// {
-	// 	InventorySlots[i]->GetButton()->SetIsEnabled(false);
-	// }
 }
 
 void UMJStoreWidget::OnClicked_SellPopupYes()
 {
 	SellPopup->SetVisibility(ESlateVisibility::Hidden);
-	for (int i =0; i < InventorySlots.Num(); i++)
-	{
-		InventorySlots[i]->GetButton()->SetIsEnabled(true);
-	}
 	OnClickedSellYes.Broadcast();
 }
 
 void UMJStoreWidget::OnClicked_SellPopupNo()
 {
 	SellPopup->SetVisibility(ESlateVisibility::Hidden);
-	for (int i =0; i < InventorySlots.Num(); i++)
-	{
-		InventorySlots[i]->GetButton()->SetIsEnabled(true);
-	}
 }
 
 void UMJStoreWidget::CloseWidget()

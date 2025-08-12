@@ -3,7 +3,6 @@
 
 #include "UI/Store/MJSalesSlot.h"
 
-#include "Components/Button.h"
 #include "Components/TextBlock.h"
 
 void UMJSalesSlot::SetCount(int32 count)
