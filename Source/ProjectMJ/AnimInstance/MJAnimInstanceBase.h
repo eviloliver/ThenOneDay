@@ -25,7 +25,10 @@ public:
 
 	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds)override;
 
+	FORCEINLINE void SetbIsOpen(bool Value) { bIsOpen = Value; }
 
+	UFUNCTION(BlueprintCallable)
+	void SetOpen(bool Value);
 public:
 	UPROPERTY(VisibleDefaultsOnly,BlueprintReadOnly,Category="AnimData|LocomotionData")
 	TObjectPtr<AMJCharacterBase> OwningCharacter;
@@ -39,6 +42,9 @@ public:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Animation|LocomotionData")
 	bool bHasAcceleration;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Animation|LocomotionData")
+	bool bIsOpen;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AnimData|LocomotionData")
 	float MoveAnimPlayRate = 1.0f;

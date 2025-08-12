@@ -16,6 +16,7 @@ void UMJAnimInstanceBase::NativeInitializeAnimation()
 		OwningCharacterMovementComponent = OwningCharacter->GetCharacterMovement();
 
 	}
+	bIsOpen = false;
 }
 
 void UMJAnimInstanceBase::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
@@ -38,4 +39,9 @@ void UMJAnimInstanceBase::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 	const float BaseRunSpeed = 600.f; // 기본 속도
 
 	MoveAnimPlayRate = FMath::Max(GroundSpeed / BaseRunSpeed, 0.2f);
+}
+
+void UMJAnimInstanceBase::SetOpen(bool Value)
+{
+	SetbIsOpen(Value);
 }

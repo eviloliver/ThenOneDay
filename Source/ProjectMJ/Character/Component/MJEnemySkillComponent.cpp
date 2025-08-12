@@ -52,8 +52,6 @@ void UMJEnemySkillComponent::InitializeComponent()
 	LearnSkill(DataRow->IdentitySkillTag);
 	EquipSkill(DataRow->IdentitySkillTag);
 
-	LearnSkill(DataRow->NormalAttackTag);
-	EquipSkill(DataRow->NormalAttackTag);
 	// Minjin: Activate 때 사용할 수 있도록 스킬 태그를 저장
 	NormalSkillTag = DataRow->NormalAttackTag;
 	IdentitySkillTag = DataRow->IdentitySkillTag;

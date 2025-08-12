@@ -73,10 +73,11 @@ EBTNodeResult::Type UBTTask_MJPlayMontage::ExecuteTask(UBehaviorTreeComponent& O
 			3.0f,
 			false
 		);
-		UBlackboardComponent* board = OwnerComp.GetBlackboardComponent();
-		board->SetValueAsBool(TEXT("IsPatten"), false);
-
+		/*UBlackboardComponent* board = OwnerComp.GetBlackboardComponent();
+		board->SetValueAsBool(TEXT("IsPatten"), false);*/
 	}
+	UBlackboardComponent* board = OwnerComp.GetBlackboardComponent();
+	board->SetValueAsBool(TEXT("IsPatten"), false);
 	Anim->OnMontageEnded.AddDynamic(this, &UBTTask_MJPlayMontage::OnMontageEnded);
 	
 	return EBTNodeResult::InProgress;
@@ -88,6 +89,7 @@ void UBTTask_MJPlayMontage::JumpToSection(UAnimInstance* AnimInstance)
 	{
 		MontagePlay = AnimInstance->GetCurrentActiveMontage();
 		AnimInstance->Montage_JumpToSection(SessionName, MontagePlay);
+		
 	}
 
 }
