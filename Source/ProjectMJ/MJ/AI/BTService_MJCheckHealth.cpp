@@ -45,7 +45,7 @@ void UBTService_MJCheckHealth::EnemyOnChangedHealth(const FOnAttributeChangeData
 		return;
 	}
 	float CurrentHP = Data.NewValue;
-	bool IsSet = (CurrentHP > 200.f) ? false : true;
+	bool IsSet = (CurrentHP <= 200.f) ? true : false;
 	
-	Blackboard->SetValueAsBool("IsAttack", IsSet);
+	Blackboard->SetValueAsBool("IsAttack",IsSet);
 }

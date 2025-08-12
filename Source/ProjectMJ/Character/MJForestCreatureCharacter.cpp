@@ -22,3 +22,8 @@ void AMJForestCreatureCharacter::BeginPlay()
 	
 	
 }
+
+void AMJForestCreatureCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+}

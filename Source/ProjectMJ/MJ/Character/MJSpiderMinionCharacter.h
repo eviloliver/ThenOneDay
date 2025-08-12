@@ -14,4 +14,12 @@ class PROJECTMJ_API AMJSpiderMinionCharacter : public AMJMonsterCharacter
 {
 	GENERATED_BODY()
 	
+protected:
+
+	virtual void BeginPlay() override;
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetbIsOpen(bool Value);
+
 };
