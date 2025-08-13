@@ -19,9 +19,7 @@ void UMJPlayerSkillComponent::BeginPlay()
 	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.PoisonSlash")));
 
 	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirSwordAura")));
-	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirSwordAura")));
-	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirSwordAura")));
-	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirSwordAura")));
+
 	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirSwordAura")));
 
 	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.AlphaStrike")));
@@ -30,8 +28,8 @@ void UMJPlayerSkillComponent::BeginPlay()
 	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
 	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
 
-	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.Test")));
-	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.Test")));
+	LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.DamageUp")));
+	EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.DamageUp")));
 
 }
 
