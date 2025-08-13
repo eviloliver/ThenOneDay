@@ -202,7 +202,7 @@ void AMJMonsterCharacter::GiveDeathRewardTo()
 		if (ItemClass)
 		{
 			FVector SpawnLocation = GetActorLocation();
-			SpawnLocation.Z = 0.0f;
+			//SpawnLocation.Z = 0.0f;
 			FTransform SpawnTransform(SpawnLocation);
 			if (GetWorld())
 			{
