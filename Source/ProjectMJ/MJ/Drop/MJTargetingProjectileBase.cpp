@@ -78,18 +78,21 @@ void AMJTargetingProjectileBase::BeginPlay()
 void AMJTargetingProjectileBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	
-	FVector TargetLocation = Target->GetActorLocation();
-	if (TargetLocation != CurrentTargetLocation)
-	{
-		PreTargetLocation = CurrentTargetLocation;
-		CurrentTargetLocation = TargetLocation;
-		
-		TargetLocationChanged.ExecuteIfBound();
-	}
 
-	float Distance = GetDistanceTo(Target);
-	ProjectileMovement->MaxSpeed = FMath::GetMappedRangeValueClamped(FVector2D(0.0f, 600.0f), FVector2D(1.0f, 600.0f), Distance);
+	if (Target)
+	{
+		FVector TargetLocation = Target->GetActorLocation();
+		if (TargetLocation != CurrentTargetLocation)
+		{
+			PreTargetLocation = CurrentTargetLocation;
+			CurrentTargetLocation = TargetLocation;
+		
+			TargetLocationChanged.ExecuteIfBound();
+		}
+
+		float Distance = GetDistanceTo(Target);
+		ProjectileMovement->MaxSpeed = FMath::GetMappedRangeValueClamped(FVector2D(0.0f, 600.0f), FVector2D(1.0f, 600.0f), Distance);
+	}
 	// MJ_LOG(LogMJ, Warning, TEXT("MaxSpeed: %f"), ProjectileMovement->MaxSpeed);
 	
 	// if (GEngine)
