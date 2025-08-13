@@ -82,13 +82,5 @@ FGameplayAbilityTargetDataHandle AMJTA_CapsuleTrace::MakeTargetData() const
 	FGameplayAbilityTargetData_ActorArray* ActorData = new FGameplayAbilityTargetData_ActorArray();
 	ActorData->SetActors(HitActors);
 
-#if ENABLE_DRAW_DEBUG
-	if (bShowDebug)
-	{
-		FColor DrawColor = OutHitResults.Num() != 0 ? FColor::Green : FColor::Red;
-		DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(Forward).ToQuat(), DrawColor, false, 5.0f);
-	}
-
-#endif
 	return FGameplayAbilityTargetDataHandle(ActorData);
 }

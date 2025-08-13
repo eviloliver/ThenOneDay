@@ -72,14 +72,6 @@ FGameplayAbilityTargetDataHandle AMJTA_SphereTrace::MakeTargetData() const
 	FGameplayAbilityTargetData_ActorArray* ActorData = new FGameplayAbilityTargetData_ActorArray();
 	ActorData->SetActors(HitActors);
 
-#if ENABLE_DRAW_DEBUG
-	if (bShowDebug)
-	{
-		FColor DrawColor = HitActors.Num() > 0 ? FColor::Green : FColor::Red;
-		DrawDebugSphere(GetWorld(), Center, AttackRadius, 16, DrawColor, false, 5.0f);
-	}
-
-#endif
 	return FGameplayAbilityTargetDataHandle(ActorData);
 }
 

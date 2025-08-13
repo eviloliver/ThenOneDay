@@ -76,7 +76,7 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	UITrigger->InitSphereRadius(180.f);
 	UITrigger->SetCollisionProfileName(TEXT("Trigger"));
 	UITrigger->SetGenerateOverlapEvents(true);
-	UITrigger->SetHiddenInGame(false);
+	UITrigger->SetHiddenInGame(true);
 
 	InventoryComponent = CreateDefaultSubobject<UMJInventoryComponent>(TEXT("InventoryComponent"));
 	// Skill Component
