@@ -79,8 +79,8 @@ void UMJEnvQueryGenerator_MJDonut::GenerateItems(FEnvQueryInstance& QueryInstanc
 		{
 			if (TestingPawn->IsSelected())
 			{
-				DrawDebugCircle(GetWorld(), CenterPoints[0], InnerRadiusValue, 20, FColor::Red, false,ShowDebugLifeTime,0,5.0f,FVector(1,0,0), FVector(0,1,0), false);
-				DrawDebugCircle(GetWorld(), CenterPoints[0], OuterRadiusValue, 20, FColor::Red, false,ShowDebugLifeTime,0,5.0f,FVector(1,0,0), FVector(0,1,0), false);
+				//DrawDebugCircle(GetWorld(), CenterPoints[0], InnerRadiusValue, 20, FColor::Red, false,ShowDebugLifeTime,0,5.0f,FVector(1,0,0), FVector(0,1,0), false);
+				//DrawDebugCircle(GetWorld(), CenterPoints[0], OuterRadiusValue, 20, FColor::Red, false,ShowDebugLifeTime,0,5.0f,FVector(1,0,0), FVector(0,1,0), false);
 			}
 			else
 			{
