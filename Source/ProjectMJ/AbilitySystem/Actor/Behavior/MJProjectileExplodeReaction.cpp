@@ -61,7 +61,7 @@ void UMJProjectileExplodeReaction::Explode()
 		ActorsToIgnore,
 		OverlappedActors);
 
-	DrawDebugSphere(
+	/*DrawDebugSphere(
 		OwnerProjectile->GetWorld(),
 		ExplosionLocation,
 		ExplosionRadius,
@@ -71,7 +71,7 @@ void UMJProjectileExplodeReaction::Explode()
 		5.0f,
 		0,
 		1.0f
-	);
+	);*/
 
 	MJ_LOG(LogMJ, Warning, TEXT("A"));
 	for (AActor* OverlappedActor : OverlappedActors)
