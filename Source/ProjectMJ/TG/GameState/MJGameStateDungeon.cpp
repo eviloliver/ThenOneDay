@@ -5,6 +5,7 @@
 
 #include "EngineUtils.h"
 #include "NavigationSystem.h"
+#include "Character/MJForestCreatureCharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "TG/MJGameInstanceTG.h"
@@ -199,7 +200,7 @@ void AMJGameStateDungeon::Initialize_BossNode()
 {
 	if (LoadedDungeonSessionData.DungeonContext == EMJDungeonContext::InActive)
 	{
-		BossAIRef = Cast<AMJAIBossCharacterTG>(UGameplayStatics::GetActorOfClass(GetWorld(),AMJAIBossCharacterTG::StaticClass()));
+		BossAIRef = Cast<AMJForestCreatureCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(),AMJForestCreatureCharacter::StaticClass()));
 		if (BossAIRef)
 		{
 			BossAIRef->OnDestroyed.AddDynamic(this ,&AMJGameStateDungeon::OnAIDestroy);

@@ -18,7 +18,7 @@
  */
 
 class UMJMiniMapIconMeshComponent;
-class AMJAIBossCharacterTG;
+class AMJForestCreatureCharacter;
 class UEnvQuery;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJAIBossOnHealthChangedSignature, float, Delta);
@@ -169,7 +169,7 @@ protected:
 	// Boss Section
 
 	UPROPERTY()
-	TObjectPtr<AMJAIBossCharacterTG> BossAIRef;
+	TObjectPtr<AMJForestCreatureCharacter> BossAIRef;
 
 	UPROPERTY()
 	FTimerHandle OnBossSpawnedBroadCastTimerHandle;
