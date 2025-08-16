@@ -6,7 +6,7 @@
 #include "MJBacklogWidget.h"
 #include "MJDialogueChoiceWidget.h"
 #include "MJDialogueWidget.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/MJUIManagerSubsystem.h"
 
@@ -90,11 +90,11 @@ const FMJDialogueRow* UMJDialogueComponent::GetPreviousRow() const // 백로그�
 
 UMJDialogueWidget* UMJDialogueComponent::GetDialogueWidget()
 {
-	if (GetWorld() && GetWorld()->GetGameInstance<UMJGameInstanceTG>() &&
-		GetWorld()->GetGameInstance<UMJGameInstanceTG>()->GetSubsystem<UMJUIManagerSubsystem>() &&
-		GetWorld()->GetGameInstance<UMJGameInstanceTG>()->GetSubsystem<UMJUIManagerSubsystem>()->GetHUDWidget())
+	if (GetWorld() && GetWorld()->GetGameInstance<UMJGameInstance>() &&
+		GetWorld()->GetGameInstance<UMJGameInstance>()->GetSubsystem<UMJUIManagerSubsystem>() &&
+		GetWorld()->GetGameInstance<UMJGameInstance>()->GetSubsystem<UMJUIManagerSubsystem>()->GetHUDWidget())
 	{
-		return 	GetWorld()->GetGameInstance<UMJGameInstanceTG>()->GetSubsystem<UMJUIManagerSubsystem>()
+		return 	GetWorld()->GetGameInstance<UMJGameInstance>()->GetSubsystem<UMJUIManagerSubsystem>()
         	->GetHUDWidget()->GetDialogueWidget();
 	}
 	return nullptr;

@@ -9,7 +9,7 @@
 #include "DataTable/MJEnemyDataRow.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MJ/Character/MJMonsterCharacter.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 
 
 UMJEnemyStatComponent::UMJEnemyStatComponent()

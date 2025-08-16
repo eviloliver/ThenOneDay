@@ -18,7 +18,7 @@
 #include "Components/WidgetComponent.h"
 #include "UI/World/MJDamageWidget.h"
 #include "UI/MJUIManagerSubsystem.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 #include "Character/Component/MJPlayerStatComponent.h"
 #include "DataAsset/MJStateAbilityDataAsset.h"
 #include "Item/MJItemBase.h"
@@ -120,7 +120,7 @@ void AMJMonsterCharacter::PossessedBy(AController* NewController)
 	* EnemyDataTable을 통해 스탯 초기화
 	* 기본 태그와 행이름이 동일. 기본 태그를 통해 행을 가져온다. 기본 태그는 BP에서 설정
 	*/
-	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance* GI = GetWorld()->GetGameInstance<UMJGameInstance>();
 	if (!GI || !GI->EnemyDataTable)
 	{
 		MJ_LOG(LogMJ, Error, TEXT("Not Exist GI or EnemyDataTable"));
@@ -184,7 +184,7 @@ void AMJMonsterCharacter::GiveDeathRewardTo()
 
 	if (EnemyBequest.ItemTag.IsValid())
 	{
-		UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+		UMJGameInstance* GI = GetWorld()->GetGameInstance<UMJGameInstance>();
 		if (!GI || !GI->ItemDataTable)
 		{
 			MJ_LOG(LogMJ, Error, TEXT("Not Exist GI or ItemDataTable"));

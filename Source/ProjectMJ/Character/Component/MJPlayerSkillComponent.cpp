@@ -5,7 +5,7 @@
 
 #include "ProjectMJ.h"
 #include "DataTable/MJSkillDataRow.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 
 UMJPlayerSkillComponent::UMJPlayerSkillComponent()
 {
@@ -34,7 +34,7 @@ void UMJPlayerSkillComponent::BeginPlay()
 
 UDataTable* UMJPlayerSkillComponent::GetSkillDataTable() const
 {
-	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance* GI = GetWorld()->GetGameInstance<UMJGameInstance>();
 	if (!GI)
 	{
 		MJ_LOG(LogMJ, Log, TEXT("Not Exist GI"));

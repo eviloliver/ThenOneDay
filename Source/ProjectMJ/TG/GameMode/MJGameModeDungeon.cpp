@@ -6,7 +6,7 @@
 #include "ProjectMJ.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/MJPlayerState.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 #include "TG/GameState/MJGameStateDungeon.h"
 
 
@@ -30,7 +30,7 @@ void AMJGameModeDungeon::BeginPlay()
 bool AMJGameModeDungeon::TravelToMapByNode(const FString MapName, const uint8 NodeNum)
 {
 
-	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance* MJGI = GetGameInstance<UMJGameInstance>();
 	if (MJGI)
 	{
 		AMJPlayerState* PS = Cast<AMJPlayerState>(UGameplayStatics::GetPlayerState(this,0));

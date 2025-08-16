@@ -7,7 +7,7 @@
 #include "DataTable/MJEnemyDataRow.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "MJ/Character/MJMonsterCharacter.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 
 UMJEnemySkillComponent::UMJEnemySkillComponent()
 {
@@ -18,7 +18,7 @@ void UMJEnemySkillComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
 
-	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance* GI = GetWorld()->GetGameInstance<UMJGameInstance>();
 	if (!GI || !GI->EnemyDataTable)
 	{
 		MJ_LOG(LogMJ, Error, TEXT("Not Exist GI or EnemyDataTable"));
@@ -67,7 +67,7 @@ void UMJEnemySkillComponent::BeginPlay()
 
 UDataTable* UMJEnemySkillComponent::GetSkillDataTable() const
 {
-	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance* GI = GetWorld()->GetGameInstance<UMJGameInstance>();
 	if (!GI)
 	{
 		MJ_LOG(LogMJ, Log, TEXT("Not Exist GI"));

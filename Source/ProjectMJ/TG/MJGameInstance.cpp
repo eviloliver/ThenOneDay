@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "MJGameInstanceTG.h"
+#include "MJGameInstance.h"
 
 #include "GameFramework/GameUserSettings.h"
 
-UMJGameInstanceTG::UMJGameInstanceTG()
+UMJGameInstance::UMJGameInstance()
 {
 	PlayerSessionData.CurrentDungeonMapNum = -1;
 
@@ -12,12 +12,12 @@ UMJGameInstanceTG::UMJGameInstanceTG()
 
 }
 
-void UMJGameInstanceTG::Init()
+void UMJGameInstance::Init()
 {
 	Super::Init();
 }
 
-void UMJGameInstanceTG::OnStart()
+void UMJGameInstance::OnStart()
 {
 	Super::OnStart();
 
@@ -36,12 +36,12 @@ void UMJGameInstanceTG::OnStart()
 
 }
 
-FMJPlayerSessionData& UMJGameInstanceTG::GetPlayerSessionDataRef() 
+FMJPlayerSessionData& UMJGameInstance::GetPlayerSessionDataRef() 
 {
 	return PlayerSessionData;
 }
 
-TArray<FMJDungeonSessionData>& UMJGameInstanceTG::GetDungeonSessionDataRef()
+TArray<FMJDungeonSessionData>& UMJGameInstance::GetDungeonSessionDataRef()
 {
 	return DungeonSessionData;
 }

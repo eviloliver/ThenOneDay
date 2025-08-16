@@ -6,7 +6,7 @@
 #include "MoviePlayer.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 #include "TG/Struct/MJSaveGame.h"
 
 UMJSaveGameSubsystem::UMJSaveGameSubsystem()
@@ -63,7 +63,7 @@ UMJSaveGame* UMJSaveGameSubsystem::GetSaveGameData()
 void UMJSaveGameSubsystem::SaveGameToCurrentSlotNum()
 {
 
-	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetGameInstance());
+	UMJGameInstance* MJGI = Cast<UMJGameInstance>(GetGameInstance());
 	if (MJGI)
 	{
 		const uint8 SlotNum = MJGI->GetPlayerSessionDataRef().SaveGameSlotNum;
@@ -98,7 +98,7 @@ void UMJSaveGameSubsystem::SaveGameToCurrentSlotNum()
 void UMJSaveGameSubsystem::SaveGameToSelectedSlotNum(const uint8 InputSlotNum)
 {
 	// using only in SavePointActor
-	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetGameInstance());
+	UMJGameInstance* MJGI = Cast<UMJGameInstance>(GetGameInstance());
 	if (MJGI)
 	{
 		const FString SlotName = FString::Printf(TEXT("Slot_%d"), InputSlotNum);
@@ -131,7 +131,7 @@ void UMJSaveGameSubsystem::SaveGameToSelectedSlotNum(const uint8 InputSlotNum)
 bool UMJSaveGameSubsystem::LoadGameFromSlotNum(int8 SlotNum)
 {
 	
-	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetGameInstance());
+	UMJGameInstance* MJGI = Cast<UMJGameInstance>(GetGameInstance());
 	if (MJGI)
 	{
 		const FString SlotName = FString::Printf(TEXT("Slot_%d"), SlotNum);

@@ -9,7 +9,7 @@
 #include "Character/MJPlayerCharacter.h"
 #include "Character/Component/MJPlayerStatComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 
 AMJPlayerState::AMJPlayerState()
 {
@@ -38,7 +38,7 @@ FMJPlayerSessionData& AMJPlayerState::GetPlayerSessionDataRef()
 
 void AMJPlayerState::SaveToInstancedPlayerSessionData()
 {
-	FMJPlayerSessionData& MJGIPlayerSessionData = GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef();
+	FMJPlayerSessionData& MJGIPlayerSessionData = GetGameInstance<UMJGameInstance>()->GetPlayerSessionDataRef();
 	
 	UMJPlayerStatComponent* PlayerStatComp = GetPawn()->FindComponentByClass<UMJPlayerStatComponent>();
 	if (PlayerStatComp)
@@ -51,9 +51,9 @@ void AMJPlayerState::SaveToInstancedPlayerSessionData()
 
 void AMJPlayerState::LoadFromInstancedPlayerSessionData()
 {
-	PlayerSessionData = GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef();
-	PlayerSessionData.PlayerLevel =  GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef().PlayerLevel;
-	PlayerSessionData.PlayerExp = GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef().PlayerExp;
+	PlayerSessionData = GetGameInstance<UMJGameInstance>()->GetPlayerSessionDataRef();
+	PlayerSessionData.PlayerLevel =  GetGameInstance<UMJGameInstance>()->GetPlayerSessionDataRef().PlayerLevel;
+	PlayerSessionData.PlayerExp = GetGameInstance<UMJGameInstance>()->GetPlayerSessionDataRef().PlayerExp;
 
 	if (AMJPlayerCharacter* MJPlayer = Cast<AMJPlayerCharacter>(GetPawn()))
 	{

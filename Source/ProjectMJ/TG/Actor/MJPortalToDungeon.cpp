@@ -4,7 +4,7 @@
 
 #include "GameMode/MJGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 #include "TG/GameMode/MJGameModeTown.h"
 #include "TG/SubSystem/MJDungeonGenerationSubSystem.h"
 #include "TG/SubSystem/MJSaveGameSubsystem.h"
@@ -29,8 +29,8 @@ void AMJPortalToDungeon::Execute()
 	AMJGameModeTown* GMTown = Cast<AMJGameModeTown>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (GMTown && SubSystem)
 	{
-		uint8 NodeId = SubSystem->GetDungeonGraph()->Nodes[GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef().CurrentDungeonMapNum].AssignedMapID;
-		EMJNodeType NodeType = SubSystem->GetDungeonGraph()->Nodes[GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef().CurrentDungeonMapNum].NodeType;
+		uint8 NodeId = SubSystem->GetDungeonGraph()->Nodes[GetGameInstance<UMJGameInstance>()->GetPlayerSessionDataRef().CurrentDungeonMapNum].AssignedMapID;
+		EMJNodeType NodeType = SubSystem->GetDungeonGraph()->Nodes[GetGameInstance<UMJGameInstance>()->GetPlayerSessionDataRef().CurrentDungeonMapNum].NodeType;
 
 		FString MapName;
 		

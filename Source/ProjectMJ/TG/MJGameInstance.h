@@ -6,7 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "Struct/MJDungeonSessionDataStruct.h"
 #include "Struct/MJPlayerSessionDataStruct.h"
-#include "MJGameInstanceTG.generated.h"
+#include "MJGameInstance.generated.h"
 
 
 class UMJAnimMontageDataAsset;
@@ -26,11 +26,11 @@ class UDataTable;
  * Modified Description: 전역에서 접근할 DataAsset 생성
  */
 UCLASS()
-class PROJECTMJ_API UMJGameInstanceTG : public UGameInstance
+class PROJECTMJ_API UMJGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 public:
-	UMJGameInstanceTG();
+	UMJGameInstance();
 
 	virtual void Init() override;
 	virtual void OnStart() override;

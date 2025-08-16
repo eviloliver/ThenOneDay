@@ -8,7 +8,7 @@
 #include "Components/Button.h"
 #include "Components/ScrollBox.h"
 #include "DataTable/MJSkillDataRow.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 
 
 void UMJSkillWidget::NativeConstruct()
@@ -32,7 +32,7 @@ void UMJSkillWidget::NativeConstruct()
 
 void UMJSkillWidget::UpdateSkillSlots(FGameplayTag SkillTag,int32 Level)
 {
-	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance* GI = GetWorld()->GetGameInstance<UMJGameInstance>();
 	if (!GI ||!GI->PlayerSkillDataTable)
 	{
 		return;

@@ -8,7 +8,7 @@
 #include "Components/Button.h"
 #include "Dialogue/MJDialogueChoiceWidget.h"
 #include "Dialogue/MJDialogueWidget.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/MJUIManagerSubsystem.h"
 #include "UI/Inventory/ItemDataRow.h"
@@ -17,7 +17,7 @@
 
 void UMJStoreComponent::UpdateStore()
 {
-	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance* GI = GetWorld()->GetGameInstance<UMJGameInstance>();
 	if (!GI ||!GI->ItemDataTable)
 	{
 		return;
@@ -70,7 +70,7 @@ void UMJStoreComponent::UpdateStore()
 
 void UMJStoreComponent::UpdateInventory(UMJInventoryComponent* InvenComp)
 {
-	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance* GI = GetWorld()->GetGameInstance<UMJGameInstance>();
 	if (!GI ||!GI->ItemDataTable)
 	{
 		return;
@@ -122,13 +122,13 @@ void UMJStoreComponent::UpdateInventory(UMJInventoryComponent* InvenComp)
 void UMJStoreComponent::TryPurchase()
 {
 	// 구매하시겠어요 팝업을 뜨게 함
-	GetWorld()->GetGameInstance<UMJGameInstanceTG>()->
+	GetWorld()->GetGameInstance<UMJGameInstance>()->
 	GetSubsystem<UMJUIManagerSubsystem>()->GetHUDWidget()->GetStoreWidget()->Onclicked_PurchaseButton();
 }
 
 void UMJStoreComponent::TrySale()
 {
-	GetWorld()->GetGameInstance<UMJGameInstanceTG>()->
+	GetWorld()->GetGameInstance<UMJGameInstance>()->
 	GetSubsystem<UMJUIManagerSubsystem>()->GetHUDWidget()->GetStoreWidget()->Onclicked_SellButton();
 }
 

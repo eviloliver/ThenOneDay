@@ -5,7 +5,7 @@
 
 #include "ProjectMJ.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 #include "UI/Inventory/ItemDataRow.h"
 #include "Item/MJItemBase.h"
 

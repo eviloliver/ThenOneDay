@@ -8,7 +8,7 @@
 #include "Character/MJForestCreatureCharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "Kismet/GameplayStatics.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 #include "TG/Actor/MJDungeonAISpawnPointActor.h"
 #include "TG/AI/MJAIBossCharacterTG.h"
 #include "TG/DataTable/MJStaticAISpawnRow.h"
@@ -34,7 +34,7 @@ void AMJGameStateDungeon::BeginPlay()
 
 	UMJDungeonGenerationSubSystem* GS = GetGameInstance()->GetSubsystem<UMJDungeonGenerationSubSystem>();
 	
-	UMJGameInstanceTG * MJGI = GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance * MJGI = GetGameInstance<UMJGameInstance>();
 	if (MJGI)
 	{
 		//LoadedDungeonSessionData = FMJDungeonSessionData();
@@ -459,7 +459,7 @@ void AMJGameStateDungeon::SetDungeonSessionData(const FMJDungeonSessionData& Dun
 
 void AMJGameStateDungeon::SaveToInstancedDungeonSessionData(uint8 SaveToNum)
 {
-	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance* MJGI = GetGameInstance<UMJGameInstance>();
 
 	FMJDungeonSessionData NewDungeonSessionData = LoadedDungeonSessionData;
 	NewDungeonSessionData.SpawnInfos.Empty();
@@ -484,7 +484,7 @@ void AMJGameStateDungeon::SaveToInstancedDungeonSessionData(uint8 SaveToNum)
 
 void AMJGameStateDungeon::LoadFromInstancedDungeonSessionData(uint8 LoadFromNum)
 {
-	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance* MJGI = GetGameInstance<UMJGameInstance>();
 
 	if (MJGI)
 	{

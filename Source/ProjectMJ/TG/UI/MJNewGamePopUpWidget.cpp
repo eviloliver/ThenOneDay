@@ -9,7 +9,7 @@
 #include "Components/EditableTextBox.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 #include "TG/Struct/MJSaveGame.h"
 
 
@@ -69,7 +69,7 @@ void UMJNewGamePopUpWidget::OnClicked_ConfirmButton()
 
 void UMJNewGamePopUpWidget::SwitchToInGame()
 {
-	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance* MJGI = GetGameInstance<UMJGameInstance>();
 	if (MJGI)
 	{
 		MJGI->GetPlayerSessionDataRef().PlayerName = InputPlayerNameTextBox->GetText().ToString();

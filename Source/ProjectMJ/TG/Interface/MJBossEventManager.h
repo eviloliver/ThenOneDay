@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "MJBossEventManagerTG.generated.h"
+#include "MJBossEventManager.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UMJBossEventManagerTG : public UInterface
+class UMJBossEventManager : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -20,7 +20,7 @@ class UMJBossEventManagerTG : public UInterface
  * Last Modified By: Cha Tae Gwan
  * Last Modified Date: 2025-06-30
  */
-class PROJECTMJ_API IMJBossEventManagerTG
+class PROJECTMJ_API IMJBossEventManager
 {
 	GENERATED_BODY()
 

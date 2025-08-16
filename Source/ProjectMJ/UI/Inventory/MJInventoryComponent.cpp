@@ -5,7 +5,7 @@
 #include "ItemDataRow.h"
 #include "MJInventorySlot.h"
 #include "MJInventoryWidget.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/MJUIManagerSubsystem.h"
 #include "UI/Store/MJStoreComponent.h"
@@ -19,7 +19,7 @@ UMJInventoryComponent::UMJInventoryComponent()
 void UMJInventoryComponent::PickUpItem(FGameplayTag ItemTag, int32 Count, UMJStoreWidget* StoreWidget) 
 {
 #pragma region InventoryRef
-	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance* GI = GetWorld()->GetGameInstance<UMJGameInstance>();
 	if (!GI || !GI->ItemDataTable)
 	{
 		UE_LOG(LogTemp,Error,TEXT("게임인스턴스를 제대로 못 받아왔나보다"));
@@ -109,7 +109,7 @@ void UMJInventoryComponent::DropItem(FGameplayTag ItemTag, int32 count)
 void UMJInventoryComponent::UpdateSlot(FGameplayTag ItemTag)
 {
 #pragma region Inventory
-	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance* GI = GetWorld()->GetGameInstance<UMJGameInstance>();
 	if (!GI || !GI->ItemDataTable)
 	{
 		UE_LOG(LogTemp,Error,TEXT("게임인스턴스를 제대로 못 받아왔나보다"));

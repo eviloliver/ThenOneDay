@@ -7,7 +7,7 @@
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetStringLibrary.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 #include "TG/GameMode/MJGameModeDungeon.h"
 #include "TG/SubSystem/MJDungeonGenerationSubSystem.h"
 #include "TG/SubSystem/MJSaveGameSubsystem.h"
@@ -42,7 +42,7 @@ FReply UMJDungeonNodeWidget::NativeOnMouseButtonDoubleClick(const FGeometry& InG
 		{
 			if (GMDungeon)
 			{
-				uint8 CurrentPlayerMapNum = GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef().CurrentDungeonMapNum;
+				uint8 CurrentPlayerMapNum = GetGameInstance<UMJGameInstance>()->GetPlayerSessionDataRef().CurrentDungeonMapNum;
 
 				if (true)//GetGameInstance()->GetSubsystem<UMJDungeonGenerationSubSystem>()->CheckHasRoute(CurrentPlayerMapNum, NodeNumber))
 				{

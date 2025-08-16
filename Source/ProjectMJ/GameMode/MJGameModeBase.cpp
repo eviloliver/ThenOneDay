@@ -7,7 +7,7 @@
 #include "Controller/MJPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/MJPlayerState.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 #include "TG/GameState/MJGameStateDungeon.h"
 
 AMJGameModeBase::AMJGameModeBase()
@@ -34,7 +34,7 @@ bool AMJGameModeBase::TravelToMap(const FString MapName)
 bool AMJGameModeBase::TravelToMapByNode(const FString MapName, const uint8 NodeNum)
 {
 
-	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance* MJGI = GetGameInstance<UMJGameInstance>();
 	if (MJGI)
 	{
 		AMJPlayerState* PS = Cast<AMJPlayerState>(UGameplayStatics::GetPlayerState(this,0));

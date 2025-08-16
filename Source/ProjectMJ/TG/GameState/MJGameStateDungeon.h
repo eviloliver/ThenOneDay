@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
-#include "TG/Interface/MJBossEventManagerTG.h"
+#include "TG/Interface/MJBossEventManager.h"
 #include "TG/DataTable/MJWaveAISpawnRow.h"
 #include "TG/Struct/MJDungeonSessionDataStruct.h"
 #include "MJGameStateDungeon.generated.h"
@@ -29,7 +29,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMJActorSpawnedSignature, AActor*, A
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMJAIOnDestroyedSignature);
 
 UCLASS()
-class PROJECTMJ_API AMJGameStateDungeon : public AGameStateBase, public IMJBossEventManagerTG
+class PROJECTMJ_API AMJGameStateDungeon : public AGameStateBase, public IMJBossEventManager
 {
 	GENERATED_BODY()
 	

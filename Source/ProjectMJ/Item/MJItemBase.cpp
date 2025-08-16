@@ -4,7 +4,7 @@
 #include "Item/MJItemBase.h"
 
 #include "NavigationSystemTypes.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 #include "UI/Inventory/ItemDataRow.h"
 #include "UI/World/MJNameBarWidget.h"
 #include "UI/World/MJNameBarWidgetComponent.h"
@@ -23,7 +23,7 @@ void AMJItemBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UMJGameInstanceTG* GI = GetWorld()->GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance* GI = GetWorld()->GetGameInstance<UMJGameInstance>();
 	if (!GI || !GI->ItemDataTable)
 	{
 		return;

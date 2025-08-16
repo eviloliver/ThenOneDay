@@ -3,7 +3,7 @@
 
 #include "MJDungeonGenerationSubSystem.h"
 #include <functional>
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 
 
 UMJDungeonGenerationSubSystem::UMJDungeonGenerationSubSystem()
@@ -25,7 +25,7 @@ void UMJDungeonGenerationSubSystem::Initialize(FSubsystemCollectionBase& Collect
 
 void UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 {
-	UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetGameInstance());
+	UMJGameInstance* MJGI = Cast<UMJGameInstance>(GetGameInstance());
 	
 	check(MJGI);
 
