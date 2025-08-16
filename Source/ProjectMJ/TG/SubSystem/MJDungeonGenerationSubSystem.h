@@ -52,14 +52,20 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly)
 	uint8 MaxNodeNum;
-
-
-
+	
+	uint8 CurrentNotAssignedNodeNum;
 	
 	UFUNCTION()
 	FMJDungeonNode MakeNewNode(uint8 NodeNum, uint8 AssignedMapID,  EMJNodeType NodeType, EMJAISpawnType AISpawnType, FVector2D UICoordinate);
 
+
+	UFUNCTION()
+	void DetermineNodeType(float Prob,FVector2D CandidatePoint);
 	
+	UFUNCTION()
+	uint8 ChooseMostFarNodeFromBoss();
+
+
 	
 	UFUNCTION()
 	void ConnectNodesByDistance(float MaxDistance, int MaxEdgePerNode);
@@ -75,17 +81,6 @@ protected:
 	UFUNCTION()
 	void DFS(uint8 CurrentNode, const uint8 BossID, TArray<bool>& Visited);
 	
-	
-	
-
-	
-	
-	UFUNCTION()
-	FVector2D GetCubicBezier(float t, const FVector2D Point);
-	
 	UFUNCTION()
 	FVector2D GetQuadBezier(float t, const FVector2D StartPoint, const FVector2D EndPoint, const FVector2D ControlPoint);
-
-	
-	
 };

@@ -1,26 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "MJDungeonGenerationSubSystem.h"
 #include <functional>
 #include "TG/MJGameInstance.h"
 
-
 UMJDungeonGenerationSubSystem::UMJDungeonGenerationSubSystem()
 {
 	MaxNodeNum = 10;
+	CurrentNotAssignedNodeNum = 0;
 }
 
 void UMJDungeonGenerationSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	
-	// do
-	// {
-	// 	GenerateDungeonGraph();
-	// }
-	// while (!CheckHasIterableGraph());
-
 }
 
 void UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
@@ -37,7 +29,6 @@ void UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 	FVector2D EndPoint;
 
 	FVector2D ControlPoint;
-	uint8 CurrentNotAssignedNodeNum = 0;
 	
 	FVector2D ViewportSize = FVector2D(1920.f,1080.f);
 
@@ -61,8 +52,7 @@ void UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 		FVector2D CandidatePoint = BasePosition + RandomOffset;
 		
 		// When Node is outside of Viewpoert, re-generates node.
-		if (CandidatePoint.X < 0.f || CandidatePoint.X > ViewportSize.X ||
-			CandidatePoint.Y < 0.f || CandidatePoint.Y > ViewportSize.Y)
+		if (CandidatePoint.X < 0.f || CandidatePoint.X > ViewportSize.X ||CandidatePoint.Y < 0.f || CandidatePoint.Y > ViewportSize.Y)
 		{
 			continue;
 		}
@@ -81,119 +71,25 @@ void UMJDungeonGenerationSubSystem::GenerateDungeonGraph()
 		{
 			continue;
 		}
-
+		
 		// Determine Map`s Type
 		float Prob = FMath::RandRange(0.0f,100.f);
-		
-		// First, Check is there any boss room in DungeonGraph
-		if (CurrentNotAssignedNodeNum == MaxNodeNum - 1 && DungeonGraph.BossNodeID == -1)
-		{
-			// Boss
-			
-			FMJDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,EMJNodeType::Boss, EMJAISpawnType::Static, CandidatePoint);
-			DungeonGraph.Nodes.Add(NewNode);
-			DungeonGraph.BossNodeID = CurrentNotAssignedNodeNum;
-
-			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, EMJAISpawnType::Static, FString(TEXT("Boss"))));
-	
-			CurrentNotAssignedNodeNum++;
-			
-		}
-		else if (Prob > 0.0f && Prob < 80.f)
-		{	
-			// Battle 1~5 Map Assign
-			// AISpawn Wave Map : 01 02
-			// AISpawn Static Map : 03 04 05 
-			float RandNum = FMath::RandRange(1,5);
-
-			EMJAISpawnType AISpawnType = EMJAISpawnType::Static;
-			
-			// Wave 
-			if (RandNum == 1 || RandNum == 2)
-			{
-				AISpawnType = EMJAISpawnType::Wave;
-				
-			}
-			
-			FMJDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,RandNum,EMJNodeType::Battle, AISpawnType, CandidatePoint);
-			DungeonGraph.Nodes.Add(NewNode);
-
-			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, AISpawnType, FString(TEXT("Battle"))));
-			
-			CurrentNotAssignedNodeNum++;
-		}
-		else if (Prob >= 80.f && Prob < 90.f)
-		{
-			// Reward
-			FMJDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,EMJNodeType::Reward, EMJAISpawnType::Static, CandidatePoint);
-			DungeonGraph.Nodes.Add(NewNode);
-
-			
-			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, EMJAISpawnType::Static, FString(TEXT("Reward"))));
-	
-			CurrentNotAssignedNodeNum++;
-		}
-		else if (Prob >= 90.f && Prob < 100.f)
-		{
-			// Boss
-			bool HasBossRoom = false;
-			
-			for (auto iter : DungeonGraph.Nodes)
-			{
-				if (iter.NodeType == EMJNodeType::Boss)
-				{
-					HasBossRoom = true;
-					break;
-				}
-			}
-			
-			if (HasBossRoom)
-			{
-				continue;
-			}
-			
-			FMJDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,EMJNodeType::Boss, EMJAISpawnType::Static, CandidatePoint);
-			DungeonGraph.Nodes.Add(NewNode);
-			DungeonGraph.BossNodeID = CurrentNotAssignedNodeNum;
-
-			MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, EMJAISpawnType::Static,  FString(TEXT("Boss"))));
-	
-			CurrentNotAssignedNodeNum++;
-		}
-	}
-
-	
-	
-
-	// Choose most far node from BossNode
-	float MaxDist = FLT_MIN;
-	uint8 MaxDistNodeNum = -1;
-	for (auto& iter : DungeonGraph.Nodes)
-	{
-		if (iter.NodeType  != EMJNodeType::Battle)
-			continue;
-		
-		if (MaxDist < FVector2D::Distance(DungeonGraph.Nodes[iter.NodeID].UICoordinate, DungeonGraph.Nodes[DungeonGraph.BossNodeID].UICoordinate))
-		{
-			MaxDist = FVector2D::Distance(DungeonGraph.Nodes[iter.NodeID].UICoordinate, DungeonGraph.Nodes[DungeonGraph.BossNodeID].UICoordinate);
-			MaxDistNodeNum = iter.NodeID;
-			
-		}
+		DetermineNodeType(Prob,CandidatePoint);
 	}
 	
+	uint8 MaxDistNodeNum = ChooseMostFarNodeFromBoss();
 	DungeonGraph.StartNodeID = MaxDistNodeNum;
 
+	// Set info to PlayerSession
 	if (MJGI)
 	{
-		
 		MJGI->GetPlayerSessionDataRef().CurrentDungeonMapNum = DungeonGraph.StartNodeID;
-		
 	}
 	
 	ConnectNodesByMST(FVector2D::Distance(FVector2D(0.0f,0.0f), ViewportSize));
 	
 	ConnectNodesByDistance(400.f,4);
-
+	
 	if (!CheckHasIterableGraph())
 	{
 		return GenerateDungeonGraph();
@@ -212,6 +108,109 @@ FMJDungeonNode UMJDungeonGenerationSubSystem::MakeNewNode(uint8 NodeNum, uint8 A
 	NewNode.UICoordinate = UICoordinate;
 	
 	return NewNode;
+}
+
+void UMJDungeonGenerationSubSystem::DetermineNodeType(float Prob, FVector2D CandidatePoint)
+{
+	UMJGameInstance* MJGI = Cast<UMJGameInstance>(GetGameInstance());
+	
+	check(MJGI);
+	
+	// First, Check is there any boss room in DungeonGraph
+	if (CurrentNotAssignedNodeNum == MaxNodeNum - 1 && DungeonGraph.BossNodeID == -1)
+	{
+		// Boss
+		
+		FMJDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,EMJNodeType::Boss, EMJAISpawnType::Static, CandidatePoint);
+		DungeonGraph.Nodes.Add(NewNode);
+		DungeonGraph.BossNodeID = CurrentNotAssignedNodeNum;
+
+		MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, EMJAISpawnType::Static, FString(TEXT("Boss"))));
+	
+		CurrentNotAssignedNodeNum++;
+		
+	}
+	else if (Prob > 0.0f && Prob < 80.f)
+	{	
+		// Battle 1~5 Map Assign
+		// AISpawn Wave Map : 01 02
+		// AISpawn Static Map : 03 04 05 
+		float RandNum = FMath::RandRange(1,5);
+
+		EMJAISpawnType AISpawnType = EMJAISpawnType::Static;
+		
+		// Wave 
+		if (RandNum == 1 || RandNum == 2)
+		{
+			AISpawnType = EMJAISpawnType::Wave;
+			
+		}
+		
+		FMJDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,RandNum,EMJNodeType::Battle, AISpawnType, CandidatePoint);
+		DungeonGraph.Nodes.Add(NewNode);
+
+		MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, AISpawnType, FString(TEXT("Battle"))));
+		
+		CurrentNotAssignedNodeNum++;
+	}
+	else if (Prob >= 80.f && Prob < 90.f)
+	{
+		// Reward
+		FMJDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,EMJNodeType::Reward, EMJAISpawnType::Static, CandidatePoint);
+		DungeonGraph.Nodes.Add(NewNode);
+
+		
+		MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, EMJAISpawnType::Static, FString(TEXT("Reward"))));
+	
+		CurrentNotAssignedNodeNum++;
+	}
+	else if (Prob >= 90.f && Prob < 100.f)
+	{
+		// Boss
+		bool HasBossRoom = false;
+		
+		for (auto iter : DungeonGraph.Nodes)
+		{
+			if (iter.NodeType == EMJNodeType::Boss)
+			{
+				HasBossRoom = true;
+				break;
+			}
+		}
+		
+		if (HasBossRoom)
+		{
+			DetermineNodeType(Prob, CandidatePoint);
+		}
+		
+		FMJDungeonNode NewNode = MakeNewNode(CurrentNotAssignedNodeNum,0,EMJNodeType::Boss, EMJAISpawnType::Static, CandidatePoint);
+		DungeonGraph.Nodes.Add(NewNode);
+		DungeonGraph.BossNodeID = CurrentNotAssignedNodeNum;
+
+		MJGI->GetDungeonSessionDataRef().Add(FMJDungeonSessionData(EMJDungeonContext::InActive, CurrentNotAssignedNodeNum, EMJAISpawnType::Static,  FString(TEXT("Boss"))));
+	
+		CurrentNotAssignedNodeNum++;
+	}
+}
+
+uint8 UMJDungeonGenerationSubSystem::ChooseMostFarNodeFromBoss()
+{
+	// Choose most far node from BossNode
+	float MaxDist = FLT_MIN;
+	uint8 MaxDistNodeNum = -1;
+	for (auto& iter : DungeonGraph.Nodes)
+	{
+		if (iter.NodeType  != EMJNodeType::Battle)
+			continue;
+		
+		if (MaxDist < FVector2D::Distance(DungeonGraph.Nodes[iter.NodeID].UICoordinate, DungeonGraph.Nodes[DungeonGraph.BossNodeID].UICoordinate))
+		{
+			MaxDist = FVector2D::Distance(DungeonGraph.Nodes[iter.NodeID].UICoordinate, DungeonGraph.Nodes[DungeonGraph.BossNodeID].UICoordinate);
+			MaxDistNodeNum = iter.NodeID;
+		}
+	}
+
+	return MaxDistNodeNum;
 }
 
 void UMJDungeonGenerationSubSystem::ConnectNodesByDistance(float MaxDistance, int MaxEdgePerNode)
@@ -367,10 +366,6 @@ bool UMJDungeonGenerationSubSystem::CheckHasRoute(uint8 CurrentNodeNum, uint8 De
 	return false;
 }
 
-FVector2D UMJDungeonGenerationSubSystem::GetCubicBezier(float t, const FVector2D Point)
-{
-	return FVector2D(0,0);
-}
 
 FVector2D UMJDungeonGenerationSubSystem::GetQuadBezier(float t, const FVector2D StartPoint, const FVector2D EndPoint,
 	const FVector2D ControlPoint)
