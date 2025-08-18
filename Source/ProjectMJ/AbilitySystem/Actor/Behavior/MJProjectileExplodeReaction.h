@@ -11,9 +11,9 @@
  * Class Description: 투사체 폭발
  * Author: 신동민
  * Created Date: 2025.07.29
- * Description of Change:
- * Modified By:
- * Modified Date:
+ * Description of Change: 적끼리 공격 못하게 수정
+ * Modified By: 김민진
+ * Modified Date: 2025.08.18.
  */
 
 UCLASS()

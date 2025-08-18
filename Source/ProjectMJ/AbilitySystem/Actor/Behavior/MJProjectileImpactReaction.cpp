@@ -38,6 +38,15 @@ void UMJProjectileImpactReaction::OnProjectileReact(AMJProjectileBase* Projectil
 		return;
 	}
 
+	// Minjin: Enemey의 경우 같은 Enemy를 공격하면 안 된다.
+	TSubclassOf<AActor> TargetClass = GetParentNativeClass(HitActor->GetClass());
+	TSubclassOf<AActor> OwnerClass = GetParentNativeClass(OwnerProjectile->ProjectileParams.SourceASC->GetAvatarActor()->GetClass());
+	if ((TargetClass && OwnerClass)&& (TargetClass == OwnerClass))
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("The same class as Target"));
+		return;
+	}
+	
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitActor);
 	if (!TargetASC)
 	{

@@ -76,6 +76,15 @@ void UMJProjectileExplodeReaction::Explode()
 	MJ_LOG(LogMJ, Warning, TEXT("A"));
 	for (AActor* OverlappedActor : OverlappedActors)
 	{
+		// Minjin: Enemey의 경우 같은 Enemy를 공격하면 안 된다.
+		TSubclassOf<AActor> TargetClass = GetParentNativeClass(OverlappedActor->GetClass());
+		TSubclassOf<AActor> OwnerClass = GetParentNativeClass(OwnerProjectile->ProjectileParams.SourceASC->GetAvatarActor()->GetClass());
+		if ((TargetClass && OwnerClass)&& (TargetClass == OwnerClass))
+		{
+			MJ_LOG(LogMJ, Warning, TEXT("The same class as Target"));
+			continue;
+		}
+		
 		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OverlappedActor);
 		if (!TargetASC)
 		{
@@ -83,7 +92,7 @@ void UMJProjectileExplodeReaction::Explode()
 			continue;
 		}
 		MJ_LOG(LogMJ, Warning, TEXT("AA"));
-
+		
 		FGameplayEffectContextHandle EffectContext = OwnerProjectile->ProjectileParams.SourceASC->MakeEffectContext();
 		EffectContext.AddSourceObject(this);
 
