@@ -7,6 +7,7 @@
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetStringLibrary.h"
+#include "Kismet/KismetTextLibrary.h"
 #include "TG/MJGameInstance.h"
 #include "TG/GameMode/MJGameModeDungeon.h"
 #include "TG/SubSystem/MJDungeonGenerationSubSystem.h"
@@ -15,10 +16,26 @@
 void UMJDungeonNodeWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	LoadedPlayerSessionData = GetGameInstance<UMJGameInstance>()->GetPlayerSessionDataRef();
+	
+}
+
+void UMJDungeonNodeWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	if (LoadedPlayerSessionData.CurrentDungeonMapNum == UKismetStringLibrary::Conv_StringToInt(UKismetTextLibrary::Conv_TextToString((NodeNum->GetText()))))
+	{
+		FLinearColor NewColor(NodeImage->GetColorAndOpacity());
+		NewColor.A = ((FMath::Sin(UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld()) * 10) + 1.0f) * 0.5f);
+		NodeImage->SetColorAndOpacity(NewColor);
+	}
+	
 }
 
 FReply UMJDungeonNodeWidget::NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry,
-	const FPointerEvent& InMouseEvent)
+                                                            const FPointerEvent& InMouseEvent)
 {
 	UMJDungeonGenerationSubSystem* DGSubSystem = GetGameInstance()->GetSubsystem<UMJDungeonGenerationSubSystem>();
 	

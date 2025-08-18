@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "TG/Struct/MJPlayerSessionDataStruct.h"
 #include "MJDungeonNodeWidget.generated.h"
 
 class UImage;
@@ -28,8 +29,12 @@ public:
 	UPROPERTY(meta = (BindWidget), BlueprintReadWrite)
 	TObjectPtr<UTextBlock> NodeNum;
 
+	FMJPlayerSessionData LoadedPlayerSessionData;
+
 protected:
 	virtual void NativeConstruct() override;
+
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	virtual FReply NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 
