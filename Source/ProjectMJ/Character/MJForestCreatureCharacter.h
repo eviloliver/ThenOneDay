@@ -7,7 +7,10 @@
 #include "MJForestCreatureCharacter.generated.h"
 
 /**
- * 
+ * Class Description: ForestMonster
+ * Author: Lee JuHyeon
+ * Created Date: 2025.07.20.
+
  */
 class UMJCharacterAttributeSet;
 UCLASS()

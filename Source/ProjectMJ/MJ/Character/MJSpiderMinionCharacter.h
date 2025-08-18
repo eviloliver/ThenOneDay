@@ -7,7 +7,10 @@
 #include "MJSpiderMinionCharacter.generated.h"
 
 /**
- * 
+ * Class Description: SpiderMinion
+ * Author: Lee JuHyeon
+ * Created Date: 2025.08.11.
+
  */
 UCLASS()
 class PROJECTMJ_API AMJSpiderMinionCharacter : public AMJMonsterCharacter
