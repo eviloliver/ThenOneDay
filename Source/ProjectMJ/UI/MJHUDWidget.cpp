@@ -156,9 +156,13 @@ void UMJHUDWidget::SetShiftVisibility()
 	ToggleWidget(Shift);
 }
 
-void UMJHUDWidget::SetInstructionWidgetVisibilityAndText(const FString& InInstruction)
+void UMJHUDWidget::SetInstructionWidgetVisibility()
 {
 	ToggleWidget(Instruction);
+}
+
+void UMJHUDWidget::SetInstructionText(const FString& InInstruction)
+{
 	Instruction->SetInstructionText(InInstruction);
 }
 

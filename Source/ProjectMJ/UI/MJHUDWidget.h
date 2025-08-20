@@ -116,10 +116,11 @@ public:
 	void SetShiftVisibility();
 	
 	UFUNCTION()
-	void SetInstructionWidgetVisibilityAndText(const FString& InInstruction);
-	
-	// UFUNCTION()
-	// void
+	void SetInstructionWidgetVisibility();
+
+	UFUNCTION()
+	void SetInstructionText(const FString& InInstruction);
+
 	//
 	UMJInventoryWidget* GetInventoryWidget() {return Inventory;};
 	UMJStoreWidget* GetStoreWidget() {return Store;};

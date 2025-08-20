@@ -33,6 +33,7 @@
 #include "UI/Store/MJStoreComponent.h"
 #include "UI/Store/MJStoreWidget.h"
 #include "UI/Skill/MJSkillSlotWidget.h"
+#include "UI/Tutorial/MJTutorialCollision.h"
 #include "UI/Tutorial/MJTutorialStartDialogueComponent.h"
 
 
@@ -506,7 +507,8 @@ void AMJPlayerController::TutorialDialogueEnd() // Tutorial
 	ChangeToIMCDefault();
 	UIManager->SetDialogueVisibility();
 	UIManager->GetHUDWidget()->SetLeftMouseVisibility();
-	UIManager->GetHUDWidget()->SetInstructionWidgetVisibilityAndText("Use the left mouse button to move the map");
+	UIManager->GetHUDWidget()->SetInstructionWidgetVisibility();
+	UIManager->GetHUDWidget()->SetInstructionText("Use the left mouse button to move the map");
 }
 
 void AMJPlayerController::ShowStore()
@@ -603,6 +605,25 @@ void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor*
 				{
 					InteractComp->GetStoreComponent()->SetItemData(MJChar->GetInventoryComponent()->GetItemTags(),MJChar->GetInventoryComponent()->GetItemTags().Num(),MJChar->GetInventoryComponent());
 				}
+			}
+		}
+		
+		if (AMJTutorialCollision* TutorialCollision = Cast<AMJTutorialCollision>(Other))
+		{
+			if (TutorialCollision->GetCollisionType() == ECollisionType::AttackTutorial)
+			{
+				UIManager->GetHUDWidget()->SetShiftVisibility();
+				UIManager->GetHUDWidget()->SetInstructionText(TutorialCollision->GetInstructionText());
+			}
+
+			if (TutorialCollision->GetCollisionType() == ECollisionType::InstantSkillTutorial)
+			{
+				
+			}
+
+			if (TutorialCollision->GetCollisionType() == ECollisionType::ChargeSkillTutorial)
+			{
+				
 			}
 		}
 	}
