@@ -14,7 +14,7 @@
  * Last Modified By: (Last Modifier)
  * Last Modified Date: (Last Modified Date)
  */
-class AMJForestCreatureCharacter;
+class AMJBossMonsterCharacter;
 class UAbilitySystemComponent;
 class UBlackboardComponent; 
 
@@ -32,9 +32,10 @@ protected:
 
 private:
 
-	AMJForestCreatureCharacter* ControlledPawn = nullptr;
+	AMJBossMonsterCharacter* ControlledPawn = nullptr;
 	UAbilitySystemComponent* CachedASC;
 	UBlackboardComponent* Blackboard;
+	float MaxHealth;
 public:
 
 	void EnemyOnChangedHealth(const FOnAttributeChangeData& Data);

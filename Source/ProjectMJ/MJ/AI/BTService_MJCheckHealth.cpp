@@ -21,7 +21,7 @@ void UBTService_MJCheckHealth::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 	
-	ControlledPawn =Cast<AMJForestCreatureCharacter>(OwnerComp.GetAIOwner()->GetPawn());
+	ControlledPawn =Cast<AMJBossMonsterCharacter>(OwnerComp.GetAIOwner()->GetPawn());
 	if (!ControlledPawn)
 	{
 		return;
@@ -35,7 +35,7 @@ void UBTService_MJCheckHealth::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 	}
 
 	CachedASC->GetGameplayAttributeValueChangeDelegate(ControlledPawn->GetAttributeSet()->GetHealthAttribute()).AddUObject(this, &UBTService_MJCheckHealth::EnemyOnChangedHealth);
-
+	MaxHealth = ControlledPawn->GetAttributeSet()->GetMaxHealth();
 }
 
 void UBTService_MJCheckHealth::EnemyOnChangedHealth(const FOnAttributeChangeData& Data)
@@ -45,7 +45,7 @@ void UBTService_MJCheckHealth::EnemyOnChangedHealth(const FOnAttributeChangeData
 		return;
 	}
 	float CurrentHP = Data.NewValue;
-	bool IsSet = (CurrentHP <= 200.f) ? true : false;
+	bool IsSet = (CurrentHP/MaxHealth <= 0.6f) ? true : false;
 	
 	Blackboard->SetValueAsBool("IsAttack",IsSet);
 }
