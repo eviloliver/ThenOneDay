@@ -13,9 +13,12 @@
 #include "Dialogue/MJDialogueWidget.h"
 #include "World/MJStatWidget.h"
 #include "Inventory/MJInventoryWidget.h"
+#include "Kismet/GameplayStatics.h"
 #include "Skill/MJSkillWidget.h"
 #include "Store/MJStoreWidget.h"
 #include "TG/UI/MJBossHpBarWidget.h"
+#include "Tutorial/MJMouseWidget.h"
+#include "Tutorial/MJTutorialInstruction.h"
 
 void UMJHUDWidget::NativeConstruct()
 {
@@ -35,9 +38,37 @@ void UMJHUDWidget::NativeConstruct()
 		Store->SetVisibility(ESlateVisibility::Hidden);
 	}
 
+	const FString CurrentLevel = UGameplayStatics::GetCurrentLevelName(this, true);
 	if (Dialogue)
 	{
-		Dialogue->SetVisibility(ESlateVisibility::Hidden);
+		if (CurrentLevel.Equals(TEXT("Tutorial_StartStory")))
+		{
+			Dialogue->SetVisibility(ESlateVisibility::Visible);
+		}
+		else
+		{
+			Dialogue->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+
+	if (LeftMouse)
+	{
+		LeftMouse->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (RightMouse)
+	{
+		RightMouse->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (Shift)
+	{
+		Shift->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (Instruction)
+	{
+		Instruction->SetVisibility(ESlateVisibility::Hidden);
 	}
 
 	if (UIToggle)
@@ -53,17 +84,18 @@ void UMJHUDWidget::NativeConstruct()
 	}
 }
 
+void UMJHUDWidget::ToggleWidget(UUserWidget* Widget)
+{
+	const bool bIsVisible = (Widget->GetVisibility() == ESlateVisibility::Visible);
+	Widget->SetVisibility(bIsVisible ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
+}
+
 void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJCharacterAttributeSet* AttributeSet, UMJPlayerStatComponent* Stat)
 {
 	if (HealthBar)
 	{
 		HealthBar->BindToAttributes(ASC,AttributeSet);
 	}
-	//
-	// if (ManaBar)
-	// {
-	// 	ManaBar->BindToAttributes(ASC,AttributeSet);
-	// }
 
 	if (StaminaBar)
 	{
@@ -78,26 +110,12 @@ void UMJHUDWidget::BindAtrributesToChildren(UMJAbilitySystemComponent* ASC, UMJC
 
 void UMJHUDWidget::ShowStatPanel()
 {
-	if (StatPanel->GetVisibility() == ESlateVisibility::Visible)
-	{
-		StatPanel->SetVisibility(ESlateVisibility::Hidden);
-	}
-	else if (StatPanel->GetVisibility() == ESlateVisibility::Hidden)
-	{
-		StatPanel->SetVisibility(ESlateVisibility::Visible);
-	}
+	ToggleWidget(StatPanel);
 }
 
 void UMJHUDWidget::ShowInventory()
 {
-	if (Inventory->GetVisibility() == ESlateVisibility::Visible)
-	{
-		Inventory->SetVisibility(ESlateVisibility::Hidden);
-	}
-	else if (Inventory->GetVisibility() == ESlateVisibility::Hidden)
-	{
-		Inventory->SetVisibility(ESlateVisibility::Visible);
-	}
+	ToggleWidget(Inventory);
 }
 
 void UMJHUDWidget::ShowStore()
@@ -115,25 +133,32 @@ void UMJHUDWidget::ShowStore()
 
 void UMJHUDWidget::SetSkillWidgetVisibility()
 {
-	if (SkillWidget->GetVisibility() == ESlateVisibility::Visible)
-	{
-		SkillWidget->SetVisibility(ESlateVisibility::Hidden);
-	}
-	else if (SkillWidget->GetVisibility() == ESlateVisibility::Hidden)
-	{
-		SkillWidget->SetVisibility(ESlateVisibility::Visible);
-	}
+	ToggleWidget(SkillWidget);
 }
 
 void UMJHUDWidget::SetDialogueVisibility()
 {
-	if (Dialogue->GetVisibility() == ESlateVisibility::Visible)
-	{
-		Dialogue->SetVisibility(ESlateVisibility::Hidden);
-	}
-	else if (Dialogue->GetVisibility() == ESlateVisibility::Hidden)
-	{
-		Dialogue->SetVisibility(ESlateVisibility::Visible);
-	}
+	ToggleWidget(Dialogue);
+}
+
+void UMJHUDWidget::SetLeftMouseVisibility()
+{
+	ToggleWidget(LeftMouse);
+}
+
+void UMJHUDWidget::SetRightMouseVisibility()
+{
+	ToggleWidget(RightMouse);
+}
+
+void UMJHUDWidget::SetShiftVisibility()
+{
+	ToggleWidget(Shift);
+}
+
+void UMJHUDWidget::SetInstructionWidgetVisibilityAndText(const FString& InInstruction)
+{
+	ToggleWidget(Instruction);
+	Instruction->SetInstructionText(InInstruction);
 }
 
