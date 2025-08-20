@@ -21,6 +21,7 @@
 #include "DataTable/MJSkillDataRow.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "TG/UI/MJGameFlowHUDWidget.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/Component/MJInteractComponent.h"
@@ -32,6 +33,7 @@
 #include "UI/Store/MJStoreComponent.h"
 #include "UI/Store/MJStoreWidget.h"
 #include "UI/Skill/MJSkillSlotWidget.h"
+#include "UI/Tutorial/MJTutorialStartDialogueComponent.h"
 
 
 // TODO: Input 관련한 로직들 Component로 따로 빼기 - 동민 - 
@@ -120,8 +122,20 @@ void AMJPlayerController::BeginPlay()
 		UIManager->GetHUDWidget()->GetSkillWidget()->GetSkillSlots()[i]->OnClickedEquipButton.AddDynamic(this,&AMJPlayerController::UpdateEquipedSkillWidget);
 		UIManager->GetHUDWidget()->GetSkillWidget()->GetSkillSlots()[i]->GetEquipButton()->OnClicked.AddDynamic(this,&ThisClass::GetOwnedSkill);
 	}
-	
-	
+
+	const FString CurrentLevel = UGameplayStatics::GetCurrentLevelName(this, true);
+	if (CurrentLevel.Equals(TEXT("Tutorial_StartStory")))
+	{
+		ChangeToIMCDialogue();
+		bIsTutorialMode = true;
+		UMJTutorialStartDialogueComponent* TutorialStartDialogue = MJChar->FindComponentByClass<UMJTutorialStartDialogueComponent>();
+		if (!TutorialStartDialogue)
+		{
+			return;
+		}
+		TutorialStartDialogue->FloatLine();
+		TutorialStartDialogue->OnTutorialStartDialogueEnd.AddDynamic(this,&ThisClass::TutorialDialogueEnd);
+	}
 }
 
 void AMJPlayerController::SetupInputComponent()
@@ -420,8 +434,7 @@ void AMJPlayerController::StartDialogue()// x키를 눌렀을 때 실행되는 �
 	if (!MyChar) return;
 	
 	if (UMJInteractComponent* InteractComp = MyChar->GetUITarget()->FindComponentByClass<UMJInteractComponent>())
-	{
-		
+	{		
 		InteractComp->StartInteraction();
 		switch (InteractComp->CurrentType)
 		{
@@ -467,23 +480,33 @@ void AMJPlayerController::ProceedDialogue()
 	{
 		return;
 	}
-	if (!MyChar->GetUITarget())
+	if (MyChar->GetUITarget())
 	{
-		return;
+		UMJInteractComponent* InteractComp = MyChar->GetUITarget()->FindComponentByClass<UMJInteractComponent>();
+        if (InteractComp)
+        {
+        	InteractComp->ProceedInteraction();
+        }
 	}
-	
-	UMJInteractComponent* InteractComp = MyChar->GetUITarget()->FindComponentByClass<UMJInteractComponent>();
-	if (!InteractComp)
+	if (bIsTutorialMode)
 	{
-		return;
+		UMJTutorialStartDialogueComponent* TutorialStartDialogue = MyChar->FindComponentByClass<UMJTutorialStartDialogueComponent>();
+		TutorialStartDialogue->ProceedStory();
 	}
-	InteractComp->ProceedInteraction();
 }
 
 void AMJPlayerController::SetDialogueVisibility()
 {
 	ChangeToIMCDefault();
 	UIManager->SetDialogueVisibility();
+}
+
+void AMJPlayerController::TutorialDialogueEnd() // Tutorial
+{
+	ChangeToIMCDefault();
+	UIManager->SetDialogueVisibility();
+	UIManager->GetHUDWidget()->SetLeftMouseVisibility();
+	UIManager->GetHUDWidget()->SetInstructionWidgetVisibilityAndText("Use the left mouse button to move the map");
 }
 
 void AMJPlayerController::ShowStore()
@@ -583,6 +606,7 @@ void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor*
 			}
 		}
 	}
+	
 }
 
 void AMJPlayerController::OnTriggeredOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,

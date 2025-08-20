@@ -19,6 +19,7 @@
 #include "Component/MJPlayerStatComponent.h"
 #include "Perception/AISense_Damage.h"
 #include "Perception/AISense_Hearing.h"
+#include "UI/Tutorial/MJTutorialStartDialogueComponent.h"
 
 
 class UMJSaveGameSubsystem;
@@ -79,6 +80,7 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	UITrigger->SetHiddenInGame(true);
 
 	InventoryComponent = CreateDefaultSubobject<UMJInventoryComponent>(TEXT("InventoryComponent"));
+	TutorialDialogueComp = CreateDefaultSubobject<UMJTutorialStartDialogueComponent>(TEXT("TutorialDialogueComponent"));
 	// Skill Component
 	SkillComponent = CreateDefaultSubobject<UMJPlayerSkillComponent>(TEXT("SkillComponent"));
 	// Stat Component

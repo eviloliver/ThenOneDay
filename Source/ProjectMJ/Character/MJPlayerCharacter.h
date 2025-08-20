@@ -9,6 +9,7 @@
 #include "UI/Inventory/MJInventoryInterface.h"
 #include "MJPlayerCharacter.generated.h"
 
+class UMJTutorialStartDialogueComponent;
 class UMJPlayerEffectComponent;
 class UMJPlayerStatComponent;
 class UMJPlayerSkillComponent;
@@ -66,6 +67,9 @@ protected:
  	UPROPERTY()
  	TObjectPtr<AActor> UITarget;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tutorial")
+	TObjectPtr<UMJTutorialStartDialogueComponent> TutorialDialogueComp;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
 	TObjectPtr<UMJInventoryComponent> InventoryComponent;
 

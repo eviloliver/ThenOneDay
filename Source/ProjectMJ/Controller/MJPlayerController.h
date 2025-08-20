@@ -77,6 +77,7 @@ private:
 	TObjectPtr<UInputAction> ShiftAction;
 #pragma region UIPart
 private:
+	bool bIsTutorialMode = false;
 	bool IsInteracted = false;
 	FGameplayTag PurchaseItemTag;
 	int32 ItemPrice;
@@ -126,6 +127,10 @@ public:
 	
 	UFUNCTION()
 	void SetDialogueVisibility();
+
+	UFUNCTION()
+	void TutorialDialogueEnd();
+	
 	// Store
 	UFUNCTION()
 	void ShowStore();
