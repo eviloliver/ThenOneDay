@@ -14,6 +14,8 @@
  * Last Modified Date: 
  */
 
+class UMJTutorialInstruction;
+class UMJMouseWidget;
 class UMJEquipedSkillWidget;
 class UMJSkillWidget;
 class UMJUIToggle;
@@ -66,10 +68,26 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJEquipedSkillWidget> EquipedSkillWidget;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJMouseWidget> LeftMouse;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJMouseWidget> RightMouse;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJMouseWidget> Shift;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJTutorialInstruction> Instruction;
+
+
 public:
 	UFUNCTION()
 	virtual void NativeConstruct() override;
 
+	UFUNCTION()
+	void ToggleWidget(UUserWidget* Widget);
+	
 	UFUNCTION()
 	void BindAtrributesToChildren(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet, class UMJPlayerStatComponent* Stat);
 
@@ -88,6 +106,21 @@ public:
 	UFUNCTION()
 	void SetDialogueVisibility();
 
+	UFUNCTION()
+	void SetLeftMouseVisibility();
+
+	UFUNCTION()
+	void SetRightMouseVisibility();
+
+	UFUNCTION()
+	void SetShiftVisibility();
+	
+	UFUNCTION()
+	void SetInstructionWidgetVisibilityAndText(const FString& InInstruction);
+	
+	// UFUNCTION()
+	// void
+	//
 	UMJInventoryWidget* GetInventoryWidget() {return Inventory;};
 	UMJStoreWidget* GetStoreWidget() {return Store;};
 	UMJDialogueWidget* GetDialogueWidget() {return Dialogue;};
