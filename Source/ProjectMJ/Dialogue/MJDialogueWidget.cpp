@@ -5,6 +5,7 @@
 #include "MJBacklogWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
+#include "Kismet/GameplayStatics.h"
 
 void UMJDialogueWidget::NativeConstruct()
 {
@@ -27,6 +28,26 @@ void UMJDialogueWidget::SetTextBlock(const FString& InText,const FString& speake
 	if (Speaker)
 	{
 		Speaker->SetText(FText::FromString(speaker));
+	}
+}
+
+void UMJDialogueWidget::SetNPCImage(UTexture2D* InNPCImage)
+{
+	if (NPCImage)
+	{
+		FSlateBrush Brush;
+		Brush.SetResourceObject(InNPCImage);
+		NPCImage->SetBrush(Brush);
+	}
+}
+
+void UMJDialogueWidget::SetPlayerImage(UTexture2D* InPlayerImage)
+{
+	if (PlayerImage)
+	{
+		FSlateBrush Brush;
+		Brush.SetResourceObject(InPlayerImage);
+		PlayerImage->SetBrush(Brush);
 	}
 }
 

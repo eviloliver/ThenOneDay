@@ -68,6 +68,8 @@ void UMJDialogueComponent::FloatLine()
 	GetDialogueWidget()->SetTextBlock(GetCurrentRow()->Script, GetCurrentRow()->Speaker);
 	GetDialogueWidget()->StartTyping(GetCurrentRow()->Script,0.05);
 	GetDialogueWidget()->SetImageOpacity(GetCurrentRow()->Speaker);
+	GetDialogueWidget()->SetPlayerImage(GetCurrentRow()->PlayerMugImage);
+	GetDialogueWidget()->SetNPCImage(GetCurrentRow()->NPCMugImage);
 }
 
 const FMJDialogueRow* UMJDialogueComponent::GetCurrentRow() const
