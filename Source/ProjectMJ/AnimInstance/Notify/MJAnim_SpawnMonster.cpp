@@ -30,36 +30,37 @@ void UMJAnim_SpawnMonster::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 	}
 
 	int32 LimitSearch = SpawnCount * 10;
-	/*float InnerRadius = Owner->GetCapsuleComponent()->GetScaledCapsuleRadius();
-	float Angle = FMath::FRandRange(0.f, 2 * PI);
-
-	float Distance = FMath::Sqrt(FMath::FRandRange(InnerRadius * InnerRadius, OuterRadius * OuterRadius));
-
-	float OffsetX = FMath::Cos(Angle) * Distance;
-	float OffsetY = FMath::Sin(Angle) * Distance;
-
-	FVector SpawnVector = FVector(Owner->GetActorLocation().X + OffsetX, 0.f, 0.f);
-
-	GetWorld()->SpawnActor<APawn>(SpawnMonster, SpawnVector, FRotator::ZeroRotator);*/
+	
 	float InnerRadius = Owner->GetCapsuleComponent()->GetScaledCapsuleRadius();
+	float ExcludeHalfAngle = FMath::DegreesToRadians(60.f);
+
 	for (int32 i = 0; i < SpawnCount; i++)
 	{
 		bool SpawnCheck = false;
 		FVector NewDistance;
 		
-		for (int Attempt = 0; Attempt < LimitSearch; Attempt++)
+		/*for (int Attempt = 0; Attempt < LimitSearch; Attempt++)
+		{*/
+		while (SpawnLocation.Num() >SpawnCount)
 		{
-			//float InnerRadius = Owner->GetCapsuleComponent()->GetScaledCapsuleRadius();
-
 			float Angle = FMath::FRandRange(0.f, 2 * PI);
 			float Distance = FMath::Sqrt(FMath::FRandRange(InnerRadius * InnerRadius, OuterRadius * OuterRadius));
 
 			float OffsetX = FMath::Cos(Angle) * Distance;
 			float OffsetY = FMath::Sin(Angle) * Distance;
 
-			NewDistance = FVector(Owner->GetActorLocation().X + OffsetX, Owner->GetActorLocation().Y+OffsetY, 0.f);
+			NewDistance = FVector(Owner->GetActorLocation().X + OffsetX, Owner->GetActorLocation().Y + OffsetY, 0.f);
+
+			FVector DirToCandidate = (NewDistance - Owner->GetActorLocation()).GetSafeNormal();
+			float Dot = FVector::DotProduct(Owner->GetActorForwardVector(), DirToCandidate);
+			if (FMath::Acos(Dot) < ExcludeHalfAngle)
+			{
+				continue;
+			}
+
 			if (SpawnLocation.IsEmpty())
 			{
+
 				SpawnLocation.Add(NewDistance);
 				break;
 			}
@@ -78,6 +79,7 @@ void UMJAnim_SpawnMonster::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 				SpawnCheck = true;
 				break;
 			}
+			//}
 		}
 		if (SpawnCheck)
 		{

@@ -24,6 +24,9 @@ public:
 	UPROPERTY(EditAnywhere,Category="Pawn")
 	float OuterRadius;
 
+	UPROPERTY(EditAnywhere,Category="Pawn")
+	bool ForwordSpawn;
+
 	UFUNCTION()
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
 
