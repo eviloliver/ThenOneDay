@@ -78,6 +78,7 @@ private:
 #pragma region UIPart
 private:
 	bool bIsTutorialMode = false;
+	
 	bool IsInteracted = false;
 	FGameplayTag PurchaseItemTag;
 	int32 ItemPrice;
@@ -126,7 +127,7 @@ public:
 	void ProceedDialogue();
 	
 	UFUNCTION()
-	void SetDialogueVisibility();
+	void DialogueEnd();
 
 	UFUNCTION()
 	void TutorialDialogueEnd();

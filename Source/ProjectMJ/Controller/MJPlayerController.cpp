@@ -158,6 +158,8 @@ void AMJPlayerController::SetupInputComponent()
 	//Dialogue Input
 	MJInputComponent->BindAction(ChangeIMCAction, ETriggerEvent::Triggered, this, &ThisClass::StartDialogue);
 	MJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
+	
+	
 	MJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
 
 	// UI Input
@@ -452,7 +454,12 @@ void AMJPlayerController::StartDialogue()// x키를 눌렀을 때 실행되는 �
 		default:
 			break;
 		}
-	}	
+	}
+
+	if (bIsTutorialMode)
+	{
+		UIManager->GetHUDWidget()->SetInstructionWidgetVisibility();
+	}
 }
 
 void AMJPlayerController::ChangeToIMCDialogue()
@@ -487,6 +494,7 @@ void AMJPlayerController::ProceedDialogue()
         if (InteractComp)
         {
         	InteractComp->ProceedInteraction();
+        	return;
         }
 	}
 	if (bIsTutorialMode)
@@ -496,19 +504,26 @@ void AMJPlayerController::ProceedDialogue()
 	}
 }
 
-void AMJPlayerController::SetDialogueVisibility()
+void AMJPlayerController::DialogueEnd()
 {
 	ChangeToIMCDefault();
 	UIManager->SetDialogueVisibility();
+	if (bIsTutorialMode)
+	{
+		UIManager->GetHUDWidget()->SetMouseVisibility();
+		UIManager->GetHUDWidget()->SetInstructionWidgetVisibility();
+		UIManager->GetHUDWidget()->ShowShift();
+		UIManager->GetHUDWidget()->SetInstructionText("Hold Shift and left-click to execute a basic attack.");
+	}
 }
 
-void AMJPlayerController::TutorialDialogueEnd() // Tutorial
+void AMJPlayerController::TutorialDialogueEnd() // Tutorial 시작 다이어로그가 끝나면
 {
 	ChangeToIMCDefault();
 	UIManager->SetDialogueVisibility();
-	UIManager->GetHUDWidget()->SetLeftMouseVisibility();
+	UIManager->GetHUDWidget()->SetLeftMouse();
 	UIManager->GetHUDWidget()->SetInstructionWidgetVisibility();
-	UIManager->GetHUDWidget()->SetInstructionText("Use the left mouse button to move the map");
+	UIManager->GetHUDWidget()->SetInstructionText("Click the left mouse button to move the map. Move to your sister.");
 }
 
 void AMJPlayerController::ShowStore()
@@ -572,7 +587,6 @@ void AMJPlayerController::GetOwnedSkill()
 	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
 	if (UMJPlayerSkillComponent* SkillComponent = MJChar->FindComponentByClass<UMJPlayerSkillComponent>())
 	{
-	
 		SkillComponent->EquipSkill(TempTag);
 		UE_LOG(LogTemp,Error,TEXT("AMJPlayerController::GetOwnedSkill, %s"),*TempTag.ToString());
 	}
@@ -589,8 +603,8 @@ void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor*
 			IsInteracted = true;
 			InteractComp->OnBeginInteract();
 			
-			InteractComp->OndialogueEnd.RemoveDynamic(this, &AMJPlayerController::SetDialogueVisibility);
-			InteractComp->OndialogueEnd.AddDynamic(this, &AMJPlayerController::SetDialogueVisibility);
+			InteractComp->OndialogueEnd.RemoveDynamic(this, &AMJPlayerController::DialogueEnd);
+			InteractComp->OndialogueEnd.AddDynamic(this, &AMJPlayerController::DialogueEnd);
 			
 			InteractComp->OnstoreOpen.RemoveDynamic(this, &AMJPlayerController::ShowStore);
 			InteractComp->OnstoreOpen.AddDynamic(this, &AMJPlayerController::ShowStore);
@@ -606,28 +620,40 @@ void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor*
 					InteractComp->GetStoreComponent()->SetItemData(MJChar->GetInventoryComponent()->GetItemTags(),MJChar->GetInventoryComponent()->GetItemTags().Num(),MJChar->GetInventoryComponent());
 				}
 			}
+
+			if (bIsTutorialMode)
+			{
+				static bool bHasRun = false;
+				if (bHasRun) return;
+				bHasRun = true;
+				
+				UIManager->GetHUDWidget()->SetMouseVisibility(); // OFF
+				UIManager->GetHUDWidget()->SetInstructionText("Interaction is possible with F key. Press F key to talk with your sister.");
+			}
 		}
 		
 		if (AMJTutorialCollision* TutorialCollision = Cast<AMJTutorialCollision>(Other))
 		{
-			if (TutorialCollision->GetCollisionType() == ECollisionType::AttackTutorial)
-			{
-				UIManager->GetHUDWidget()->SetShiftVisibility();
-				UIManager->GetHUDWidget()->SetInstructionText(TutorialCollision->GetInstructionText());
-			}
+			// if (TutorialCollision->GetCollisionType() == ECollisionType::AttackTutorial)
+			// {
+			// 	UIManager->GetHUDWidget()->ShowShift();
+			// 	UIManager->GetHUDWidget()->SetInstructionText(TutorialCollision->GetInstructionText());
+			// }
 
 			if (TutorialCollision->GetCollisionType() == ECollisionType::InstantSkillTutorial)
 			{
-				
+				UIManager->GetHUDWidget()->HideShift();
+				UIManager->GetHUDWidget()->SetRightMouse();
+				UIManager->GetHUDWidget()->SetInstructionText(TutorialCollision->GetInstructionText());
 			}
 
 			if (TutorialCollision->GetCollisionType() == ECollisionType::ChargeSkillTutorial)
 			{
-				
+				UIManager->GetHUDWidget()->SetRightPressMouse();
+				UIManager->GetHUDWidget()->SetInstructionText(TutorialCollision->GetInstructionText());
 			}
 		}
 	}
-	
 }
 
 void AMJPlayerController::OnTriggeredOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,

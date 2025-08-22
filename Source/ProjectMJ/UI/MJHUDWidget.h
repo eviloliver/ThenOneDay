@@ -14,6 +14,7 @@
  * Last Modified Date: 
  */
 
+class UBorder;
 class UMJTutorialInstruction;
 class UMJMouseWidget;
 class UMJEquipedSkillWidget;
@@ -68,25 +69,33 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJEquipedSkillWidget> EquipedSkillWidget;
 
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UMJMouseWidget> LeftMouse;
 
+	// Tutorial Widget
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UMJMouseWidget> RightMouse;
+	TObjectPtr<UBorder> TutorialMouse;
 
+	UPROPERTY(EditDefaultsOnly, Category = SettingWidgetClass)
+	TSubclassOf<UMJMouseWidget> LeftMouseClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = SettingWidgetClass)
+	TSubclassOf<UMJMouseWidget> RightMouseClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = SettingWidgetClass)
+	TSubclassOf<UMJMouseWidget> RightPressMouseClass;
+	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJMouseWidget> Shift;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJTutorialInstruction> Instruction;
 
-
+	
 public:
 	UFUNCTION()
 	virtual void NativeConstruct() override;
 
 	UFUNCTION()
-	void ToggleWidget(UUserWidget* Widget);
+	void ToggleWidget(UWidget* Widget);
 	
 	UFUNCTION()
 	void BindAtrributesToChildren(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet, class UMJPlayerStatComponent* Stat);
@@ -107,14 +116,26 @@ public:
 	void SetDialogueVisibility();
 
 	UFUNCTION()
-	void SetLeftMouseVisibility();
+	void SetTutorialMouse(TSubclassOf<UMJMouseWidget> NewWidget);
 
 	UFUNCTION()
-	void SetRightMouseVisibility();
-
-	UFUNCTION()
-	void SetShiftVisibility();
+	void SetMouseVisibility();
 	
+	UFUNCTION()
+	void SetLeftMouse() {SetTutorialMouse(LeftMouseClass);}
+
+	UFUNCTION()
+	void SetRightMouse() {SetTutorialMouse(RightMouseClass);}
+
+	UFUNCTION()
+	void SetRightPressMouse() {SetTutorialMouse(RightPressMouseClass);}
+	
+	UFUNCTION()
+	void ShowShift();
+
+	UFUNCTION()
+	void HideShift();
+
 	UFUNCTION()
 	void SetInstructionWidgetVisibility();
 

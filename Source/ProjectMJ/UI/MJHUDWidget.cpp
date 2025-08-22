@@ -9,7 +9,9 @@
 #include "Bar/MJStaminaBar.h"
 #include "Bar/MJExperienceWidget.h"
 #include "Character/Component/MJPlayerStatComponent.h"
+#include "Components/Border.h"
 #include "Components/Button.h"
+#include "Components/WidgetInteractionComponent.h"
 #include "Dialogue/MJDialogueWidget.h"
 #include "World/MJStatWidget.h"
 #include "Inventory/MJInventoryWidget.h"
@@ -51,16 +53,6 @@ void UMJHUDWidget::NativeConstruct()
 		}
 	}
 
-	if (LeftMouse)
-	{
-		LeftMouse->SetVisibility(ESlateVisibility::Hidden);
-	}
-
-	if (RightMouse)
-	{
-		RightMouse->SetVisibility(ESlateVisibility::Hidden);
-	}
-
 	if (Shift)
 	{
 		Shift->SetVisibility(ESlateVisibility::Hidden);
@@ -84,7 +76,7 @@ void UMJHUDWidget::NativeConstruct()
 	}
 }
 
-void UMJHUDWidget::ToggleWidget(UUserWidget* Widget)
+void UMJHUDWidget::ToggleWidget(UWidget* Widget)
 {
 	const bool bIsVisible = (Widget->GetVisibility() == ESlateVisibility::Visible);
 	Widget->SetVisibility(bIsVisible ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
@@ -141,19 +133,33 @@ void UMJHUDWidget::SetDialogueVisibility()
 	ToggleWidget(Dialogue);
 }
 
-void UMJHUDWidget::SetLeftMouseVisibility()
+void UMJHUDWidget::SetTutorialMouse(TSubclassOf<UMJMouseWidget> NewWidget)
 {
-	ToggleWidget(LeftMouse);
+	if (!TutorialMouse) return;
+	if (!NewWidget) return;
+
+	TutorialMouse->ClearChildren(); // 이전에 있던 마우스 위젯은 제거한다
+	
+	UMJMouseWidget* Mouse = CreateWidget<UMJMouseWidget>(GetWorld(),NewWidget);
+	if (Mouse)
+	{
+		TutorialMouse->AddChild(Mouse);
+	}
 }
 
-void UMJHUDWidget::SetRightMouseVisibility()
+void UMJHUDWidget::SetMouseVisibility()
 {
-	ToggleWidget(RightMouse);
+	ToggleWidget(TutorialMouse);
 }
 
-void UMJHUDWidget::SetShiftVisibility()
+void UMJHUDWidget::ShowShift()
 {
-	ToggleWidget(Shift);
+	Shift->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UMJHUDWidget::HideShift()
+{
+	Shift->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UMJHUDWidget::SetInstructionWidgetVisibility()
