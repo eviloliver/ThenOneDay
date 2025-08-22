@@ -12,7 +12,7 @@
 #include "DataTable/MJSkillDataRow.h"
 #include "DataTable/MJSkillLevelAbilityRow.h"
 
-// Sets default values for this component's properties
+// Sets default values for this component's propertiesk
 UMJSkillComponentBase::UMJSkillComponentBase()
 {
 	PrimaryComponentTick.bCanEverTick = false;
@@ -326,7 +326,7 @@ void UMJSkillComponentBase::RemoveAbility(const FGameplayTag& SkillTag)
 
 	if (GivenPassiveAbilityHandles.Contains(SkillTag))
 	{
-		ASC->ClearAbility(GivenSkillAbilityHandles[SkillTag]);
+		ASC->ClearAbility(GivenPassiveAbilityHandles[SkillTag]);
 		GivenPassiveAbilityHandles.Remove(SkillTag);
 	}
 

@@ -15,8 +15,8 @@
  * - *더 구체적으로 분류한다면, AI가 스킬을 여러개 사용 + 장착을 안 하는 개념으로 더 추상화 가능*
  * Author: 신동민
  * Created Date: 2025.07.08
- * Last Modified By:
- * Last Modified Date:
+ * Last Modified By: LEE JUHyeon
+ * Last Modified Date:2025.08.22
  */
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLearnSkillEvent,FGameplayTag,SkillTag,int32,Level);
