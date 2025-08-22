@@ -5,6 +5,7 @@
 
 #include "MJGameFlowPopUpMsgWidget.h"
 #include "MJSettingsWidget.h"
+#include "ProjectMJ.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -16,6 +17,7 @@ void UMJMainMenuWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	Button_NewGame->OnClicked.AddDynamic(this, &ThisClass::OnClicked_NewGame);
+	Button_Tutorial->OnClicked.AddDynamic(this, &ThisClass::OnClicked_Tutorial);
 	Button_LoadGame->OnClicked.AddDynamic(this, &ThisClass::OnClicked_LoadGame);
 	Button_Settings->OnClicked.AddDynamic(this, &ThisClass::OnClicked_Settings);
 	Button_Quit->OnClicked.AddDynamic(this, &ThisClass::OnClicked_Quit);
@@ -89,6 +91,12 @@ void UMJMainMenuWidget::OnClicked_NewGame()
 		NewGamePopUpWidget->SetVisibility(ESlateVisibility::Visible);
 
 	}
+}
+
+void UMJMainMenuWidget::OnClicked_Tutorial()
+{
+	SetVisibility(ESlateVisibility::Hidden);
+	UGameplayStatics::OpenLevel(this,MAP_Tutorial);
 }
 
 void UMJMainMenuWidget::OnClicked_LoadGame()
