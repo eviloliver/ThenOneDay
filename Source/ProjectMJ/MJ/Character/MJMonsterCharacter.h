@@ -10,6 +10,7 @@
 #include "AbilitySystemComponent.h"
 #include "MJMonsterCharacter.generated.h"
 
+class UMJDetectionWidgetComponent;
 class UMJEnemySkillComponent;
 class UMJDropItemsDataAsset;
 class UMJHealthBarComponent;
@@ -46,7 +47,9 @@ public:
 	FGameplayTag GetAttackTag() {return AttackTag;}
 	UMJEnemySkillComponent* GetSkillComponent() {return SkillComponent;}
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UMJDetectionWidgetComponent* GetDetectionComponent(){return DetectionComponent;}
 
+	
 	TObjectPtr<UAnimationAsset> GetAppearanceAnimation(){return AppearanceAnimation;}
 
 	const EnemyTransferData& GetEnemyBequest(){return EnemyBequest;}
@@ -96,8 +99,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UMJHealthBarComponent> HPBarComponent;
 	
-	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
-	// TArray<TObjectPtr<UMJDamageComponent>> DamageComponents;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UMJDetectionWidgetComponent> DetectionComponent;
 	int DamageIndex = 0;
 	float OffSet = 0;
 
