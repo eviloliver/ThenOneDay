@@ -14,7 +14,7 @@
  * Created Date: 2025.07.03
  * Last Modified By: 김민진
  * Last Modified Date: (25.08.24.)상속받아서 쓸 수 있게 private 영역을 protected로 변경,
- * 나이아가라 스케일 계산 변경, OnSphereHit Detroy 주석 처리, 디버그 구 추가
+ * 나이아가라 스케일 계산 변경, OnSphereHit Detroy 주석 처리
  */
 
 class UMJProjectileReactionBehaviorBase;

@@ -38,15 +38,6 @@ void AMJProjectileBase::Tick(float DeltaSeconds)
 	{
 		MovementBehavior->Move(this, DeltaSeconds);
 	}
-
-	#if ENABLE_DRAW_DEBUG
-		if (true)
-		{
-			FColor DrawColor = FColor::Green;
-			DrawDebugSphere(GetWorld(), GetActorLocation(), Sphere->GetScaledSphereRadius(), 16, DrawColor, false);
-		}
-
-	#endif
 }
 
 void AMJProjectileBase::InitProjectile(const FMJSkillProjectileParams& InParams,
