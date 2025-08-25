@@ -621,14 +621,11 @@ void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor*
 				}
 			}
 
-			if (bIsTutorialMode)
+			if (bIsTutorialMode && !UIManager->GetbHasRun())
 			{
-				static bool bHasRun = false;
-				if (bHasRun) return;
-				bHasRun = true;
-				
 				UIManager->GetHUDWidget()->SetMouseVisibility(); // OFF
 				UIManager->GetHUDWidget()->SetInstructionText("Interaction is possible with F key. Press F key to talk with your sister.");
+				UIManager->SetbHasRun(true);
 			}
 		}
 		

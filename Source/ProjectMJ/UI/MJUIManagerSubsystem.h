@@ -49,10 +49,17 @@ public:
 	void ShowStore();
 
 	void SetSkillWidgetVisibility();
+
+	bool GetbHasRun() {return bHasRun;}
+	void SetbHasRun(bool b) {bHasRun = b;}
+
 protected:
 	UPROPERTY()
 	TObjectPtr<UMJHUDWidget> HUDWidget;
 
 	UPROPERTY()
 	TSubclassOf<UMJHUDWidget> HUDWidgetClass;
+
+	UPROPERTY()
+	bool bHasRun = false;
 };
