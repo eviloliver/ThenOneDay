@@ -38,6 +38,15 @@ void AMJProjectileBase::Tick(float DeltaSeconds)
 	{
 		MovementBehavior->Move(this, DeltaSeconds);
 	}
+
+	#if ENABLE_DRAW_DEBUG
+		if (true)
+		{
+			FColor DrawColor = FColor::Green;
+			DrawDebugSphere(GetWorld(), GetActorLocation(), Sphere->GetScaledSphereRadius(), 16, DrawColor, false);
+		}
+
+	#endif
 }
 
 void AMJProjectileBase::InitProjectile(const FMJSkillProjectileParams& InParams,
@@ -71,12 +80,11 @@ void AMJProjectileBase::InitProjectile(const FMJSkillProjectileParams& InParams,
 	if (ProjectileParams.SkillRadius > 0.0f)
 	{
 		Sphere->SetSphereRadius(ProjectileParams.SkillRadius);
-
 	}
 
 	if (NiagaraComponent)
 	{
-		const float NiagaraScale = ProjectileParams.SkillRadius / VFXRatio;
+		const float NiagaraScale = /*ProjectileParams.SkillRadius /*/ VFXRatio;
 		NiagaraComponent->SetFloatParameter(TEXT("Scale_All"), NiagaraScale);
 	}
 }
@@ -157,5 +165,5 @@ void AMJProjectileBase::OnSphereHit(UPrimitiveComponent* HitComponent, AActor* O
 			ReactionBehavior->OnProjectileReact(this, OtherActor, Hit);
 		}
 	}
-	Destroy();
+	//Destroy();
 }
