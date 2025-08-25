@@ -7,9 +7,9 @@
 #include "MJCollisionProjectile.generated.h"
 
 /**
- * Class Description: 콜리전만 생성하는 발사제 - 나이아가라는 
+ * Class Description: 나이아가라 자연스럽게 사라지는 발사제 - 이름 변경 예정 
  * Author: Kim Minjin
- * Created Date: 2025.07.03
+ * Created Date: 2025.08.24.
  * Last Modified By:
  * Last Modified Date:
  */
