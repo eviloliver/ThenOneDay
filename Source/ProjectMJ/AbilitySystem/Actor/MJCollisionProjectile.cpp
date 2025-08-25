@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "ProjectMJ.h"
 #include "Character/MJCharacterBase.h"
 #include "Components/SphereComponent.h"
@@ -57,8 +58,8 @@ void AMJCollisionProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComp
 	}
 	
 	NiagaraComponent->SetBoolParameter(TEXT("HasCollided"), true);
-	// TODO: 콜리전 비활성화
-
+	Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 	for (const TObjectPtr <UMJProjectileReactionBehaviorBase> ReactionBehavior : ReactionBehaviors)
 	{
 		if (ReactionBehavior)
