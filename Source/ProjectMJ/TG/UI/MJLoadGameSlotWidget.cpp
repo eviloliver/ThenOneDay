@@ -39,6 +39,9 @@ void UMJLoadGameSlotWidget::NativeConstruct()
 FReply UMJLoadGameSlotWidget::NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	UMJSaveGameSubsystem* SGSS = GetGameInstance()->GetSubsystem<UMJSaveGameSubsystem>();
+
+	
+		
 	
 	if (SGSS)
 	{
@@ -65,12 +68,17 @@ FReply UMJLoadGameSlotWidget::NativeOnMouseButtonDoubleClick(const FGeometry& In
 						UGameplayStatics::SpawnSound2D(WeakThis->GetWorld(),WeakThis->FailSound);
 					}
 
-				}), FText::FromString(FString::Printf(TEXT("Are you sure to Save at Slot_%d ?"), SlotNum) ));
+				}), FText::FromString(FString::Printf(TEXT("Are you sure to SAVE at Slot_%d ?"), SlotNum) ));
 		}
 		else if (UGameplayStatics::GetCurrentLevelName(GetWorld()) == MAP_MAINMENU)
 		{
+			if (!UGameplayStatics::DoesSaveGameExist(FString::Printf(TEXT("Slot_%d"),SlotNum),0))
+			{
+				return FReply::Handled();
+			}
+			
 			bool bLoadSlotSucceeded  = SGSS->LoadGameFromSlotNum(SlotNum);
-		
+			
 			if (bLoadSlotSucceeded)
 			{
 				UGameplayStatics::SpawnSound2D(GetWorld(),FailSound);
@@ -89,13 +97,31 @@ void UMJLoadGameSlotWidget::SwitchToInGame()
 
 void UMJLoadGameSlotWidget::DeleteSelf()
 {
-	
-	bool bDeleted = UGameplayStatics::DeleteGameInSlot("Slot_" + FString::FromInt(SlotNum),0);
+	PopUpMsgWidget->SetVisibility(ESlateVisibility::Visible);
+			
+	TWeakObjectPtr<UMJLoadGameSlotWidget> WeakThis = this;
+	PopUpMsgWidget->PopUpWithCallback(FOnUserConfirmed::CreateLambda([WeakThis]
+		{
+			// Saving at SavePoint. Widget popups only in town.
+			if (WeakThis.IsValid())
+			{
+				bool bDeleted = UGameplayStatics::DeleteGameInSlot("Slot_" + FString::FromInt(WeakThis->SlotNum),0);
 
-	if (bDeleted)
-	{
-		RemoveFromParent();	
-	}
+				if (bDeleted)
+				{
+					//RemoveFromParent();
+					WeakThis->PlayerNameText->SetText(FText::FromString(TEXT("Empty")));
+					WeakThis->CreatedDateText->SetText(FText::FromString(TEXT("")));
+					WeakThis->RecentPlayedDateText->SetText(FText::FromString(TEXT("")));
+				}
+					
+				UGameplayStatics::SpawnSound2D(WeakThis->GetWorld(),WeakThis->SuccessSound);
+			}
+
+		}), FText::FromString(FString::Printf(TEXT("Are you sure to DELETE Slot_%d ?"), SlotNum) ));
+
+	
+
 }
 
 

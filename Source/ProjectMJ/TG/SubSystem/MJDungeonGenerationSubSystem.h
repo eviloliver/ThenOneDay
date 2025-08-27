@@ -17,75 +17,75 @@
 UCLASS()
 class PROJECTMJ_API UMJDungeonGenerationSubSystem : public UGameInstanceSubsystem
 {
-	GENERATED_BODY()
+   GENERATED_BODY()
 
 public:
-	
-	UMJDungeonGenerationSubSystem();
+   
+   UMJDungeonGenerationSubSystem();
 
-	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+   virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
-	
-	UFUNCTION(BlueprintCallable)
-	void GenerateDungeonGraph();
-	
-	UFUNCTION(BlueprintCallable)
-	bool CheckHasRoute(uint8 CurrentNodeNum, uint8 DestNodeNum);
-	
-	UFUNCTION(BlueprintCallable)
-	void GetDungeonGraphOut(FMJDungeonGraph& OutGraph) const { OutGraph = DungeonGraph;}
-	
-	FMJDungeonGraph* GetDungeonGraph()  { return &DungeonGraph; }
+   
+   UFUNCTION(BlueprintCallable)
+   void GenerateDungeonGraph();
+   
+   UFUNCTION(BlueprintCallable)
+   bool CheckHasRoute(uint8 CurrentNodeNum, uint8 DestNodeNum);
+   
+   UFUNCTION(BlueprintCallable)
+   void GetDungeonGraphOut(FMJDungeonGraph& OutGraph) const { OutGraph = DungeonGraph;}
+   
+   FMJDungeonGraph* GetDungeonGraph()  { return &DungeonGraph; }
 
-	UFUNCTION(BlueprintCallable, Category="Dungeon")
-	uint8 GetMaxNodeNum() const;
-	
-	UFUNCTION(BlueprintCallable, Category="Dungeon")
-	void SetMaxNodeNum(uint8 NewMaxNodeNum);
+   UFUNCTION(BlueprintCallable, Category="Dungeon")
+   uint8 GetMaxNodeNum() const;
+   
+   UFUNCTION(BlueprintCallable, Category="Dungeon")
+   void SetMaxNodeNum(uint8 NewMaxNodeNum);
 
 protected:
-	
-	// GeneratingDungeonSystem Section
+   
+   // GeneratingDungeonSystem Section
 
-	UPROPERTY(BlueprintReadOnly)
-	FMJDungeonGraph DungeonGraph;
-	
-	UPROPERTY(BlueprintReadOnly)
-	uint8 MaxNodeNum;
+   UPROPERTY(BlueprintReadOnly)
+   FMJDungeonGraph DungeonGraph;
+   
+   UPROPERTY(BlueprintReadOnly)
+   uint8 MaxNodeNum;
 
 
 
-	
-	UFUNCTION()
-	FMJDungeonNode MakeNewNode(uint8 NodeNum, uint8 AssignedMapID,  EMJNodeType NodeType, EMJAISpawnType AISpawnType, FVector2D UICoordinate);
+   
+   UFUNCTION()
+   FMJDungeonNode MakeNewNode(uint8 NodeNum, uint8 AssignedMapID,  EMJNodeType NodeType, EMJAISpawnType AISpawnType, FVector2D UICoordinate);
 
-	
-	
-	UFUNCTION()
-	void ConnectNodesByDistance(float MaxDistance, int MaxEdgePerNode);
+   
+   
+   UFUNCTION()
+   void ConnectNodesByDistance(float MaxDistance, int MaxEdgePerNode);
 
-	UFUNCTION()
-	void ConnectNodesByMST(float MaxDistance);
+   UFUNCTION()
+   void ConnectNodesByMST(float MaxDistance);
 
-	UFUNCTION()
-	bool CheckHasIterableGraph();
+   UFUNCTION()
+   bool CheckHasIterableGraph(); 
 
-	// DFS Section
-	
-	UFUNCTION()
-	void DFS(uint8 CurrentNode, const uint8 BossID, TArray<bool>& Visited);
-	
-	
-	
+   // DFS Section
+   
+   UFUNCTION()
+   void DFS(uint8 CurrentNode, const uint8 BossID, TArray<bool>& Visited);
+   
+   
+   
 
-	
-	
-	UFUNCTION()
-	FVector2D GetCubicBezier(float t, const FVector2D Point);
-	
-	UFUNCTION()
-	FVector2D GetQuadBezier(float t, const FVector2D StartPoint, const FVector2D EndPoint, const FVector2D ControlPoint);
+   
+   
+   UFUNCTION()
+   FVector2D GetCubicBezier(float t, const FVector2D Point);
+   
+   UFUNCTION()
+   FVector2D GetQuadBezier(float t, const FVector2D StartPoint, const FVector2D EndPoint, const FVector2D ControlPoint);
 
-	
-	
+   
+   
 };
