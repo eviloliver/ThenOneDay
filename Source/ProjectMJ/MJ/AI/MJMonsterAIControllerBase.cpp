@@ -104,15 +104,15 @@ void AMJMonsterAIControllerBase::TargetPerceptionUpdated(AActor* Actor, FAIStimu
 		// Minjin: 감지한 첫 순간
 		if(Stimulus.Type == UAISense::GetSenseID<UAISense_Sight>())
 		{
-			HandleSight_Detected(Actor, Stimulus);
+			HandleSightDetected(Actor, Stimulus);
 		}
 		else if (Stimulus.Type == UAISense::GetSenseID<UAISense_Damage>())
 		{
-			HandleDamage_Detected(Actor, Stimulus);
+			HandleDamageDetected(Actor, Stimulus);
 		}
 		else if(Stimulus.Type == UAISense::GetSenseID<UAISense_Hearing>())
 		{
-			HandleHearing_Detected(Actor, Stimulus);
+			HandleHearingDetected(Actor, Stimulus);
 		}
 	}
 	else
@@ -120,15 +120,15 @@ void AMJMonsterAIControllerBase::TargetPerceptionUpdated(AActor* Actor, FAIStimu
 		// Minjin: 감지 실패한 첫 순간
 		if(Stimulus.Type == UAISense::GetSenseID<UAISense_Sight>())
 		{
-			HandleSight_Lost(Actor, Stimulus);
+			HandleSightLost(Actor, Stimulus);
 		}
 		else if (Stimulus.Type == UAISense::GetSenseID<UAISense_Damage>())
 		{
-			HandleDamage_Lost(Actor, Stimulus);
+			HandleDamageLost(Actor, Stimulus);
 		}
 		else if(Stimulus.Type == UAISense::GetSenseID<UAISense_Hearing>())
 		{
-			HandleHearing_Lost(Actor, Stimulus);
+			HandleHearingLost(Actor, Stimulus);
 		}
 	}		
 }
@@ -190,42 +190,42 @@ ETeamAttitude::Type AMJMonsterAIControllerBase::GetTeamAttitudeTowards(const AAc
 	}
 }
 
-void AMJMonsterAIControllerBase::HandleSight_Detected(AActor* Actor, FAIStimulus Stimulus)
+void AMJMonsterAIControllerBase::HandleSightDetected(AActor* Actor, FAIStimulus Stimulus)
 {
 	Blackboard->SetValueAsObject("Target", Actor);
 	UE_LOG(LogMJ, Log, TEXT("시야로 감지"));
 	Blackboard->SetValueAsBool("IsTargetVisible", true);
 }
 
-void AMJMonsterAIControllerBase::HandleDamage_Detected(AActor* Actor, FAIStimulus Stimulus)
+void AMJMonsterAIControllerBase::HandleDamageDetected(AActor* Actor, FAIStimulus Stimulus)
 {
 	UE_LOG(LogMJ, Log, TEXT("데미지로 감지"));
 	
 	Blackboard->SetValueAsVector("DamagePos", Stimulus.StimulusLocation);		
 }
 
-void AMJMonsterAIControllerBase::HandleHearing_Detected(AActor* Actor, FAIStimulus Stimulus)
+void AMJMonsterAIControllerBase::HandleHearingDetected(AActor* Actor, FAIStimulus Stimulus)
 {
 	UE_LOG(LogMJ, Log, TEXT("소리로 감지"));
 	
 	Blackboard->SetValueAsVector("HearingPos", Stimulus.StimulusLocation);
 }
 
-void AMJMonsterAIControllerBase::HandleHearing_Lost(AActor* Actor, FAIStimulus Stimulus)
+void AMJMonsterAIControllerBase::HandleHearingLost(AActor* Actor, FAIStimulus Stimulus)
 {
 	UE_LOG(LogMJ, Log, TEXT("소리감지 해제"));
 	
 	Blackboard->ClearValue("HearingPos");
 }
 
-void AMJMonsterAIControllerBase::HandleSight_Lost(AActor* Actor, FAIStimulus Stimulus)
+void AMJMonsterAIControllerBase::HandleSightLost(AActor* Actor, FAIStimulus Stimulus)
 {
 	UE_LOG(LogTemp, Log, TEXT("시야 감지 해제"));
 	Blackboard->SetValueAsVector("LastKnownPos", Stimulus.StimulusLocation);
 	Blackboard->ClearValue("IsTargetVisible");
 }
 
-void AMJMonsterAIControllerBase::HandleDamage_Lost(AActor* Actor, FAIStimulus Stimulus)
+void AMJMonsterAIControllerBase::HandleDamageLost(AActor* Actor, FAIStimulus Stimulus)
 {
 	UE_LOG(LogMJ, Log, TEXT("데미지 감지 해제"));
 	
