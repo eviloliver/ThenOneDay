@@ -31,9 +31,9 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	/*
 	 * How to: 타겟이 몬스터의 공격 범위에 들어갔을 때 Maximum 혹은 Minimum 범위에 들어오면 블랙보드 키를 설정
 	 */
-	CachedOwnerComp = &OwnerComp;
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
+	CachedOwnerComp = &OwnerComp;
 	OwnerComp.GetBlackboardComponent()->ClearValue("IsInAttackRange");
 	
 	APawn* ControlledPawn = OwnerComp.GetAIOwner()->GetPawn();
