@@ -56,6 +56,12 @@ void UNotify_MJSpawnTargetProjectile::Notify(USkeletalMeshComponent* MeshComp, U
 					MJ_LOG(LogMJ, Warning, TEXT("Target is nullptr"));
 					return;
 				}
+				AMJPlayerCharacter* TargetPlayer = Cast<AMJPlayerCharacter>(Enemy->GetEnemyBequest().Target);
+				if (TargetPlayer == nullptr)
+				{
+					MJ_LOG(LogMJ, Warning, TEXT("Target is not Player."));
+					return;
+				}
 				if (!Enemy->GetEnemyBequest().IdentitySkillTag.IsValid())
 				{
 					MJ_LOG(LogMJ, Warning, TEXT("SkillTage is not valid"));
