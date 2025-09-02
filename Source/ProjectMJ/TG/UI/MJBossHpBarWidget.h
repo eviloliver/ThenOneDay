@@ -13,6 +13,8 @@ class UProgressBar;
  * Created Date: 2025-07-19
  * Last Modified By: Cha Tae Gwan
  * Last Modified Date: 2025-07-19
+ * Last Modified By: Lee Ju Hyeon
+ * Last Modified Date: 2025-08-30
  */
 UCLASS()
 class PROJECTMJ_API UMJBossHpBarWidget : public UUserWidget

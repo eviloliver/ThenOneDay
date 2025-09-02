@@ -28,6 +28,10 @@ void UMJAnim_SpawnMonster::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 	{
 		return;
 	}
+	if (!SpawnLocation.IsEmpty())
+	{
+		SpawnLocation.Empty();
+	}
 
 	int32 LimitSearch = SpawnCount * 10;
 	
@@ -41,7 +45,7 @@ void UMJAnim_SpawnMonster::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 		
 		/*for (int Attempt = 0; Attempt < LimitSearch; Attempt++)
 		{*/
-		while (SpawnLocation.Num() >SpawnCount)
+		while (SpawnLocation.Num() <SpawnCount)
 		{
 			float Angle = FMath::FRandRange(0.f, 2 * PI);
 			float Distance = FMath::Sqrt(FMath::FRandRange(InnerRadius * InnerRadius, OuterRadius * OuterRadius));
@@ -58,13 +62,6 @@ void UMJAnim_SpawnMonster::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 				continue;
 			}
 
-			if (SpawnLocation.IsEmpty())
-			{
-
-				SpawnLocation.Add(NewDistance);
-				break;
-			}
-
 			bool bTooClose = false;
 			for (const FVector& OldLocation : SpawnLocation)
 			{
@@ -76,6 +73,7 @@ void UMJAnim_SpawnMonster::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
 			}
 			if (!bTooClose)
 			{
+
 				SpawnCheck = true;
 				break;
 			}

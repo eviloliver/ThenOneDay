@@ -7,6 +7,7 @@
 #include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "Components/ProgressBar.h"
 #include "Kismet/GameplayStatics.h"
+#include "MJ/Character/MJBossMonsterCharacter.h"
 #include "TG/AI/MJAIBossCharacterTG.h"
 
 void UMJBossHpBarWidget::NativeConstruct()
@@ -16,11 +17,11 @@ void UMJBossHpBarWidget::NativeConstruct()
 
 void UMJBossHpBarWidget::BindToAttributes()
 {
-	AActor* BossRef = UGameplayStatics::GetActorOfClass(GetWorld(),AMJAIBossCharacterTG::StaticClass());
+	AActor* BossRef = UGameplayStatics::GetActorOfClass(GetWorld(),AMJBossMonsterCharacter::StaticClass());
 	
 	if (BossRef)
 	{
-		AMJAIBossCharacterTG* MJBossRef = Cast<AMJAIBossCharacterTG>(BossRef);
+		AMJBossMonsterCharacter* MJBossRef = Cast<AMJBossMonsterCharacter>(BossRef);
 
 		if (MJBossRef)
 		{
