@@ -184,4 +184,6 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 void UBTService_MJCheckAttackRange::InitializeFromAsset(UBehaviorTree& Asset)
 {
 	Super::InitializeFromAsset(Asset);
+
+	bCallTickOnSearchStart = true;
 }
