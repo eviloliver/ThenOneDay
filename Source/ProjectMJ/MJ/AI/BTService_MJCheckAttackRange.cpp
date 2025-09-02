@@ -21,7 +21,11 @@
 UBTService_MJCheckAttackRange::UBTService_MJCheckAttackRange()
 {
 	NodeName = "CheckAttackRange";
-	Interval = 0.1f;
+
+	INIT_SERVICE_NODE_NOTIFY_FLAGS();
+
+	// Force the service to tick every frame
+	Interval = 0.0f;
 	PreTargetLocation = FVector::ZeroVector;
 	CurrTargetLocation = FVector::ZeroVector;
 }
