@@ -41,5 +41,5 @@ public:
 	void ActivateIdentitySkill();
 
 	// Minjin TODO: 확률에 따른 기억(스킬) 전달
-	FGameplayTag TryGiveMemory();
+	FGameplayTag TryGiveMemory() const;
 };
