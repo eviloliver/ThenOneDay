@@ -13,3 +13,8 @@ AMJTutorialCollision::AMJTutorialCollision()
 	CollisionBox->SetHiddenInGame(true);
 }
 
+void AMJTutorialCollision::Hide()
+{
+	Destroy();
+}
+

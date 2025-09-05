@@ -12,6 +12,7 @@
 #include "Components/Border.h"
 #include "Components/Button.h"
 #include "Components/WidgetInteractionComponent.h"
+#include "Dialogue/MJBacklogWidget.h"
 #include "Dialogue/MJDialogueWidget.h"
 #include "World/MJStatWidget.h"
 #include "Inventory/MJInventoryWidget.h"
@@ -130,7 +131,15 @@ void UMJHUDWidget::SetSkillWidgetVisibility()
 
 void UMJHUDWidget::SetDialogueVisibility()
 {
-	ToggleWidget(Dialogue);
+	if (Dialogue->GetVisibility() == ESlateVisibility::Visible)
+	{
+		Dialogue->SetVisibility(ESlateVisibility::Hidden);
+		Dialogue->GetBacklogWidget()->ClearBacklog();
+	}
+	else if (Dialogue->GetVisibility() == ESlateVisibility::Hidden)
+	{
+		Dialogue->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 
 void UMJHUDWidget::SetTutorialMouse(TSubclassOf<UMJMouseWidget> NewWidget)

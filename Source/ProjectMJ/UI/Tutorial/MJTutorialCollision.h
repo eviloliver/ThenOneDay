@@ -36,4 +36,6 @@ public:
 
 	ECollisionType GetCollisionType() { return CollisionType; }
 	FString GetInstructionText() { return InstructionText; }
+
+	void Hide();
 };

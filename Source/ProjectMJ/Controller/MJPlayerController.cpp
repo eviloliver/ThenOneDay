@@ -513,7 +513,7 @@ void AMJPlayerController::DialogueEnd()
 		UIManager->GetHUDWidget()->SetMouseVisibility();
 		UIManager->GetHUDWidget()->SetInstructionWidgetVisibility();
 		UIManager->GetHUDWidget()->ShowShift();
-		UIManager->GetHUDWidget()->SetInstructionText("Hold Shift and left-click to execute a basic attack.");
+		UIManager->GetHUDWidget()->SetInstructionText("Move right and defeat the monster. Hold Shift and left-click to execute a basic attack.");
 	}
 }
 
@@ -642,12 +642,14 @@ void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor*
 				UIManager->GetHUDWidget()->HideShift();
 				UIManager->GetHUDWidget()->SetRightMouse();
 				UIManager->GetHUDWidget()->SetInstructionText(TutorialCollision->GetInstructionText());
+				TutorialCollision->Hide();
 			}
 
 			if (TutorialCollision->GetCollisionType() == ECollisionType::ChargeSkillTutorial)
 			{
 				UIManager->GetHUDWidget()->SetRightPressMouse();
 				UIManager->GetHUDWidget()->SetInstructionText(TutorialCollision->GetInstructionText());
+				TutorialCollision->Hide();
 			}
 		}
 	}

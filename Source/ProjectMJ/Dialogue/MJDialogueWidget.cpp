@@ -107,7 +107,7 @@ void UMJDialogueWidget::SetImageOpacity(const FString& SpeakerName)
 	if (!NPCImage)
 		return;
 	
-	if (SpeakerName == TEXT("Player"))
+	if (SpeakerName == TEXT("A la Mode"))
 	{
 		PlayerImage->SetOpacity(1.0f);
 		NPCImage->SetOpacity(0.3f);

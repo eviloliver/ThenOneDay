@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MJBacklogWidget.generated.h"
 
+
 /*
  * Class Description: Backlog를 띄우는 위젯 클래스
  * Author: 이지수
@@ -13,6 +14,9 @@
  * Last Modified By: 이지수
  * Last Modified Date: 2025.06.17
  */
+
+struct FMJDialogueRow;
+class UTextBlock;
 class UScrollBox;
 UCLASS()
 class PROJECTMJ_API UMJBacklogWidget : public UUserWidget
@@ -21,7 +25,10 @@ class PROJECTMJ_API UMJBacklogWidget : public UUserWidget
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-	class UScrollBox* BacklogScrollBox;
+	TObjectPtr<UScrollBox> BacklogScrollBox;
+
+	UPROPERTY()
+	TObjectPtr<UTextBlock> NewTextBlock;
 
 public:
 	UFUNCTION()
