@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "Character/Component/MJSkillComponentBase.h"
 #include "MJSaveGame.generated.h"
 
 /**
@@ -38,5 +39,28 @@ public:
 	UPROPERTY(BlueprintReadOnly, SaveGame)
 	FDateTime SaveGameCreatedDateTime;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+	TMap<FGameplayTag, FSkillData> CurrentOwnedSkillMap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+	TMap<FGameplayTag, FGameplayTag> CurrentEquippedSkillMap;
+
+	void SetCurrentOwnedSKillMap(TMap<FGameplayTag, FSkillData> Input)
+	{
+		CurrentOwnedSkillMap.Empty();
+		for (auto Iter : Input)
+		{
+			CurrentOwnedSkillMap.Add(Iter);
+		}
+	}
+	
+	void SetCurrentEquippedSkillMap(TMap<FGameplayTag, FGameplayTag> Input)
+	{
+		CurrentEquippedSkillMap.Empty();
+		for (auto Iter : Input)
+		{
+			CurrentEquippedSkillMap.Add(Iter);
+		}
+	}
 	
 };

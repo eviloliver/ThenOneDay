@@ -326,7 +326,7 @@ void UMJSkillComponentBase::RemoveAbility(const FGameplayTag& SkillTag)
 
 	if (GivenPassiveAbilityHandles.Contains(SkillTag))
 	{
-		ASC->ClearAbility(GivenSkillAbilityHandles[SkillTag]);
+		ASC->ClearAbility(GivenPassiveAbilityHandles[SkillTag]);
 		GivenPassiveAbilityHandles.Remove(SkillTag);
 	}
 
@@ -337,3 +337,24 @@ void UMJSkillComponentBase::RemoveAbility(const FGameplayTag& SkillTag)
 	}
 }
 
+void UMJSkillComponentBase::SetOwnedSkillMap(TMap<FGameplayTag, FSkillData> InputOwnedSkillMap)
+{
+	LoadedOwnedSkillMap.Empty();
+
+	for (auto Iter : InputOwnedSkillMap)
+	{
+		LoadedOwnedSkillMap.Add(Iter);
+	}
+	
+}
+
+void UMJSkillComponentBase::SetEquippedSkillMap(TMap<FGameplayTag, FGameplayTag> InputEquippedSkillMap)
+{
+	LoadedEquippedSkillMap.Empty();
+	
+	for (auto Iter : InputEquippedSkillMap)
+	{
+		LoadedEquippedSkillMap.Add(Iter);
+	}
+	
+}

@@ -68,6 +68,9 @@ public:
 	TMap<FGameplayTag, FSkillData> GetOwnedSkillMap() const { return OwnedSkillMap; }
 	TMap<FGameplayTag, FGameplayTag> GetEquippedSkillMap() const {return EquippedSkillMap;}
 
+	void SetOwnedSkillMap(TMap<FGameplayTag, FSkillData> InputOwnedSkillMap);
+	void SetEquippedSkillMap(TMap<FGameplayTag, FGameplayTag> InputEquippedSkillMap);
+
 	virtual UDataTable* GetSkillDataTable() const PURE_VIRTUAL(UMJSkillComponentBase::GetSkillDataTable, return nullptr;);
 
 	FOnLearnSkillEvent OnLearnSkillEvent;
@@ -77,6 +80,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FGameplayTag> EquippedSkillMap;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+	TMap<FGameplayTag, FSkillData> LoadedOwnedSkillMap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+	TMap<FGameplayTag, FGameplayTag> LoadedEquippedSkillMap;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FGameplayAbilitySpecHandle> GivenActionAbilityHandles;

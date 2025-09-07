@@ -7,6 +7,7 @@
 #include "AbilitySystem//Attributes/MJCharacterAttributeSet.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
 #include "Character/MJPlayerCharacter.h"
+#include "Character/Component/MJPlayerSkillComponent.h"
 #include "Character/Component/MJPlayerStatComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TG/MJGameInstance.h"
@@ -47,6 +48,13 @@ void AMJPlayerState::SaveToInstancedPlayerSessionData()
 		MJGIPlayerSessionData.PlayerExp = PlayerStatComp->GetTotalCumulativeExperience();
 	}
 
+	UMJPlayerSkillComponent* PlayerSkillComponent = GetPawn()->FindComponentByClass<UMJPlayerSkillComponent>();
+	if (PlayerSkillComponent)
+	{
+
+		MJGIPlayerSessionData.SetCurrentEquippedSkillMap(PlayerSkillComponent->GetEquippedSkillMap());
+		MJGIPlayerSessionData.SetCurrentOwnedSKillMap(PlayerSkillComponent->GetOwnedSkillMap());
+	}
 }
 
 void AMJPlayerState::LoadFromInstancedPlayerSessionData()
@@ -62,15 +70,24 @@ void AMJPlayerState::LoadFromInstancedPlayerSessionData()
 			PlayerStatComp->SetPlayerLevel(PlayerSessionData.PlayerLevel);
 			PlayerStatComp->SetTotalCumulativeExperience(PlayerSessionData.PlayerExp);
 			PlayerStatComp->InitializeStat();
-		}		
+		}
+		UMJPlayerSkillComponent* PlayerSkillComponent = GetPawn()->FindComponentByClass<UMJPlayerSkillComponent>();
+		if (PlayerSkillComponent)
+		{
+			PlayerSkillComponent->SetOwnedSkillMap(PlayerSessionData.CurrentOwnedSkillMap);
+			PlayerSkillComponent->SetEquippedSkillMap(PlayerSessionData.CurrentEquippedSkillMap);
+		}
 	}
 
+	
+	
+	
+		
 }
 
 void AMJPlayerState::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	//FCoreDelegates::GetApplicationWillTerminateDelegate().AddUObject(this, &ThisClass::OnUserEndPlay);
 }
 
 void AMJPlayerState::BeginPlay()
@@ -78,10 +95,5 @@ void AMJPlayerState::BeginPlay()
 	Super::BeginPlay();
 
 	LoadFromInstancedPlayerSessionData();
-}
-
-void AMJPlayerState::OnUserEndPlay()
-{
-	//SaveToInstancedPlayerSessionData();
 }
 

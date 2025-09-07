@@ -89,6 +89,10 @@ void UMJSaveGameSubsystem::SaveGameToCurrentSlotNum()
 		SaveGame->SlotNum = MJGI->GetPlayerSessionDataRef().SaveGameSlotNum;
 		SaveGame->RecentPlayedDateTime = FDateTime::Now();
 
+		SaveGame->SetCurrentEquippedSkillMap(MJGI->GetPlayerSessionDataRef().CurrentEquippedSkillMap);
+		SaveGame->SetCurrentOwnedSKillMap(MJGI->GetPlayerSessionDataRef().CurrentOwnedSkillMap);
+
+		
 		UGameplayStatics::SaveGameToSlot(SaveGame, SlotName, 0);
 	}
 	
@@ -122,6 +126,9 @@ void UMJSaveGameSubsystem::SaveGameToSelectedSlotNum(const uint8 InputSlotNum)
 			SaveGame->SlotNum = InputSlotNum;
 			SaveGame->RecentPlayedDateTime = FDateTime::Now();
 			SaveGame->SaveGameCreatedDateTime = FDateTime::Now();
+			
+			SaveGame->SetCurrentEquippedSkillMap(MJGI->GetPlayerSessionDataRef().CurrentEquippedSkillMap);
+			SaveGame->SetCurrentOwnedSKillMap(MJGI->GetPlayerSessionDataRef().CurrentOwnedSkillMap);
 		}
 
 		UGameplayStatics::SaveGameToSlot(SaveGame, SlotName, 0);
@@ -143,6 +150,10 @@ bool UMJSaveGameSubsystem::LoadGameFromSlotNum(int8 SlotNum)
 			MJGI->GetPlayerSessionDataRef().PlayerLevel = SaveGame->PlayerLevel;
 			MJGI->GetPlayerSessionDataRef().PlayerExp = SaveGame->PlayerExp;
 			MJGI->GetPlayerSessionDataRef().SaveGameSlotNum = SaveGame->SlotNum;
+			MJGI->GetPlayerSessionDataRef().SetCurrentEquippedSkillMap(SaveGame->CurrentEquippedSkillMap);
+			MJGI->GetPlayerSessionDataRef().SetCurrentOwnedSKillMap(SaveGame->CurrentOwnedSkillMap);
+			
+			
 
 			return true;
 		}

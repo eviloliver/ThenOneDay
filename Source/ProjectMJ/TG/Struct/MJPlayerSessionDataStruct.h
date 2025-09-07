@@ -1,7 +1,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Character/Component/MJSkillComponentBase.h"
 #include "MJPlayerSessionDataStruct.generated.h"
+
 
 UENUM(BlueprintType)
 enum class EMJGameplayContext : uint8
@@ -34,5 +36,30 @@ struct FMJPlayerSessionData
 	
 	UPROPERTY(BlueprintReadOnly)
 	uint8 CurrentDungeonMapNum;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+	TMap<FGameplayTag, FSkillData> CurrentOwnedSkillMap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+	TMap<FGameplayTag, FGameplayTag> CurrentEquippedSkillMap;
+
+
+	void SetCurrentOwnedSKillMap(TMap<FGameplayTag, FSkillData> Input)
+	{
+		CurrentOwnedSkillMap.Empty();
+		for (auto Iter : Input)
+		{
+			CurrentOwnedSkillMap.Add(Iter);
+		}
+	}
+	
+	void SetCurrentEquippedSkillMap(TMap<FGameplayTag, FGameplayTag> Input)
+	{
+		CurrentEquippedSkillMap.Empty();
+		for (auto Iter : Input)
+		{
+			CurrentEquippedSkillMap.Add(Iter);
+		}
+	}
 
 };
