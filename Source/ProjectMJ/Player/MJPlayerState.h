@@ -43,10 +43,6 @@ protected:
 
 	virtual void BeginPlay() override;
 	
-
-	void OnUserEndPlay();
-	
-	
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TObjectPtr<class UMJAbilitySystemComponent> ASC;
 

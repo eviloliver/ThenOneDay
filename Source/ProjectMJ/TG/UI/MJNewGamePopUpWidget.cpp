@@ -74,6 +74,34 @@ void UMJNewGamePopUpWidget::SwitchToInGame()
 	{
 		MJGI->GetPlayerSessionDataRef().PlayerName = InputPlayerNameTextBox->GetText().ToString();
 		MJGI->GetPlayerSessionDataRef().SaveGameSlotNum = NextSlotNum;
+		MJGI->GetPlayerSessionDataRef().CurrentOwnedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.PoisonSlash")));
+		MJGI->GetPlayerSessionDataRef().CurrentEquippedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.PoisonSlash")));
+		
+		MJGI->GetPlayerSessionDataRef().CurrentOwnedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.AlphaStrike")));
+		MJGI->GetPlayerSessionDataRef().CurrentEquippedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.AlphaStrike")));
+
+		MJGI->GetPlayerSessionDataRef().CurrentOwnedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
+		MJGI->GetPlayerSessionDataRef().CurrentEquippedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
+
+		MJGI->GetPlayerSessionDataRef().CurrentOwnedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.DamageUp")));
+		MJGI->GetPlayerSessionDataRef().CurrentEquippedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.DamageUp")));
+			
+		// LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.PoisonSlash")));
+	// EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.PoisonSlash")));
+	//
+	// LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirSwordAura")));
+	// EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirSwordAura")));
+	//
+	// LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.AlphaStrike")));
+	// EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.AlphaStrike")));
+	//
+	// LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
+	// EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
+	//
+	// LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.DamageUp")));
+	// EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.DamageUp")));
+
+		
 	}
 	
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0))

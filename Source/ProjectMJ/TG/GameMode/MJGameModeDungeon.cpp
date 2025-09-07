@@ -22,7 +22,7 @@ void AMJGameModeDungeon::BeginPlay()
 
 	if (MJPS)
 	{
-		MJPS->LoadFromInstancedPlayerSessionData();
+	//	MJPS->LoadFromInstancedPlayerSessionData();
 	}
 	
 }
