@@ -32,6 +32,7 @@ void UMJLoadGameSlotWidget::NativeConstruct()
 	if (PopUpMsgWidget)
 	{
 		PopUpMsgWidget->AddToViewport(3);
+		PopUpMsgWidget->SetParentWidget(this);
 		PopUpMsgWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
