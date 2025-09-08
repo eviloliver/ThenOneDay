@@ -15,30 +15,23 @@ void UMJPlayerSkillComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Beginplay 시마다 스킬들을 저장된 정보에 따라 다시 배우고 장착
+	// 맨 처음 기본 스킬 -> MJNewGamePopUpWidget.cpp Line:78 참고
+	OwnedSkillMap.Empty();
 	for (auto Iter : LoadedOwnedSkillMap)
 	{
 		LearnSkill(Iter.Key);
-		EquipSkill(Iter.Key);
 	}
-
+	
+	EquippedSkillMap.Empty();
+	for (auto Iter : LoadedEquippedSkillMap)
+	{
+		EquipSkill(Iter.Value);
+	}
+	
+	// For Debug
 	if (EquippedSkillMap.IsEmpty()) {}
 	if (OwnedSkillMap.IsEmpty()){}
-	
-	
-	//
-	// LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.PoisonSlash")));
-	// EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.PoisonSlash")));
-	//
-	//
-	// LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.AlphaStrike")));
-	// EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.AlphaStrike")));
-	//
-	// LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
-	// EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
-	//
-	// LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.DamageUp")));
-	// EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.DamageUp")));
-
 }
 
 UDataTable* UMJPlayerSkillComponent::GetSkillDataTable() const

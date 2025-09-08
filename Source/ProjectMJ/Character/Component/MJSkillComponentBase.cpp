@@ -44,6 +44,12 @@ void UMJSkillComponentBase::LearnSkill(const FGameplayTag& SkillTag)
 		if (DataRow)
 		{
 			FSkillData NewSkillData;
+			
+			// TG : struct 에서 매번 1로 초기화하기 때문에 따로 레벨 복구 로직 추가
+			if (LoadedOwnedSkillMap.Contains(SkillTag))
+			{
+				NewSkillData.Level = LoadedOwnedSkillMap[SkillTag].Level;
+			}
 			NewSkillData.SkillDefaultTag = SkillTag;
 			int32 TagLength = SkillTag.GetGameplayTagParents().Num();
 			if (TagLength < 2)

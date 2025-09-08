@@ -80,10 +80,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FGameplayTag> EquippedSkillMap;
-	
+
+	// PlayerSessionData 에서 로딩된 데이터는 여기에 담겨 다시 Learn 함
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FSkillData> LoadedOwnedSkillMap;
 
+	// PlayerSessionData 에서 로딩된 데이터는 여기에 담겨 다시 Equip 함
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
 	TMap<FGameplayTag, FGameplayTag> LoadedEquippedSkillMap;
 
