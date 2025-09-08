@@ -74,34 +74,21 @@ void UMJNewGamePopUpWidget::SwitchToInGame()
 	{
 		MJGI->GetPlayerSessionDataRef().PlayerName = InputPlayerNameTextBox->GetText().ToString();
 		MJGI->GetPlayerSessionDataRef().SaveGameSlotNum = NextSlotNum;
+
+		// 처음 생성하는 세이브 파일일 경우 원하는 기본 스킬들을 가지고 있을 수 있음 (장착은 별도)
+		// - 맨 처음 세이브 파일을 생성했을 때만 단 한번 기본 스킬들을 건네줘야 하기 때문에 여기서 저장하는게 좋을듯.
+		// 아래 코드를 그대로 사용하고 태그만 바꿔주면 됩니다.
 		MJGI->GetPlayerSessionDataRef().CurrentOwnedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.PoisonSlash")));
-		MJGI->GetPlayerSessionDataRef().CurrentEquippedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.PoisonSlash")));
+		//MJGI->GetPlayerSessionDataRef().CurrentEquippedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.PoisonSlash")));
 		
 		MJGI->GetPlayerSessionDataRef().CurrentOwnedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.AlphaStrike")));
-		MJGI->GetPlayerSessionDataRef().CurrentEquippedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.AlphaStrike")));
+		//MJGI->GetPlayerSessionDataRef().CurrentEquippedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.AlphaStrike")));
 
 		MJGI->GetPlayerSessionDataRef().CurrentOwnedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
-		MJGI->GetPlayerSessionDataRef().CurrentEquippedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
+		//MJGI->GetPlayerSessionDataRef().CurrentEquippedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
 
 		MJGI->GetPlayerSessionDataRef().CurrentOwnedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.DamageUp")));
-		MJGI->GetPlayerSessionDataRef().CurrentEquippedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.DamageUp")));
-			
-		// LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.PoisonSlash")));
-	// EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.PoisonSlash")));
-	//
-	// LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirSwordAura")));
-	// EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.AirSwordAura")));
-	//
-	// LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.AlphaStrike")));
-	// EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.AlphaStrike")));
-	//
-	// LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
-	// EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Normal.MeleeAttack")));
-	//
-	// LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.DamageUp")));
-	// EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.DamageUp")));
-
-		
+		//MJGI->GetPlayerSessionDataRef().CurrentEquippedSkillMap.Add(FGameplayTag::RequestGameplayTag(FName("Skill.Passive.DamageUp")));
 	}
 	
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0))

@@ -21,7 +21,6 @@ AMJPlayerState::AMJPlayerState()
 	CharacterSkillAttributeSet = CreateDefaultSubobject<UMJCharacterSkillAttributeSet>(TEXT("CharacterSkillAttributeSet"));
 }
 
-
 UAbilitySystemComponent* AMJPlayerState::GetAbilitySystemComponent() const
 {
 	return ASC;
@@ -77,12 +76,8 @@ void AMJPlayerState::LoadFromInstancedPlayerSessionData()
 			PlayerSkillComponent->SetOwnedSkillMap(PlayerSessionData.CurrentOwnedSkillMap);
 			PlayerSkillComponent->SetEquippedSkillMap(PlayerSessionData.CurrentEquippedSkillMap);
 		}
+	
 	}
-
-	
-	
-	
-		
 }
 
 void AMJPlayerState::PostInitializeComponents()
