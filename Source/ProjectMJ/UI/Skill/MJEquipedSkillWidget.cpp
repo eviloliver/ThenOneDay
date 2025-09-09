@@ -2,7 +2,10 @@
 
 
 #include "UI/Skill/MJEquipedSkillWidget.h"
+#include "TG/MJGameInstance.h"
+#include "GameplayTagContainer.h"
 #include "Components/Image.h"
+#include "DataTable/MJSkillDataRow.h"
 
 void UMJEquipedSkillWidget::SetInstantImage(UTexture2D* ItemTexture)
 {
@@ -39,3 +42,33 @@ void UMJEquipedSkillWidget::SetPassiveImage(UTexture2D* ItemTexture)
 		PassiveImage->SetOpacity(1.0);
 	}
 }
+
+void UMJEquipedSkillWidget::SetAllImage(FGameplayTag SkillTag)
+{
+	UMJGameInstance* GI = GetWorld()->GetGameInstance<UMJGameInstance>();
+	if (!GI ||!GI->PlayerSkillDataTable)
+	{
+		return;
+	}
+	
+	const FMJSkillDataRow* Row = GI->PlayerSkillDataTable->FindRow<FMJSkillDataRow>(SkillTag.GetTagName(),TEXT(""));
+	if (!Row)
+	{
+		return;
+	}
+
+	if (Row->SkillType == ESkillType::Instant)
+	{
+		SetInstantImage(Row->Icon);
+	}
+	if (Row->SkillType == ESkillType::Passive)
+	{
+		SetPassiveImage(Row->Icon);
+	}
+	if (Row->SkillType == ESkillType::Charge)
+	{
+		SetChargingImage(Row->Icon);
+	}
+}
+
+

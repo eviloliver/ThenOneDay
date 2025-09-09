@@ -120,7 +120,6 @@ public:
 	UFUNCTION()
 	void ChangeToIMCDefault();
 	
-
 	UFUNCTION()
 	void ProceedDialogue();
 	
@@ -147,7 +146,9 @@ public:
 	void UpdateEquipedSkillWidget(UTexture2D* Icon, ESkillType SkillType, FGameplayTag Tag);
 	UFUNCTION()
 	void GetOwnedSkill();
-
+	UFUNCTION()
+	void UpdateSkillSlot(FGameplayTag SkillTag);
+	
 	FGameplayTag TempTag;
 	
 	UFUNCTION()

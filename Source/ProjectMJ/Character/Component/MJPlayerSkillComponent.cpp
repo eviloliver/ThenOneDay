@@ -27,7 +27,10 @@ void UMJPlayerSkillComponent::BeginPlay()
 	for (auto Iter : LoadedEquippedSkillMap)
 	{
 		EquipSkill(Iter.Value);
+		OnLearnSkillEvents.Broadcast(Iter.Value);
 	}
+
+
 	
 	// For Debug
 	if (EquippedSkillMap.IsEmpty()) {}

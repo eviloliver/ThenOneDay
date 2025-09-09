@@ -36,6 +36,7 @@ enum class ESkillType : uint8
 	Instant UMETA(DisplayName = "Instant", ToolTip = "Instantly Action Skill"),
 	Charge UMETA(DisplayName = "Charge", ToolTip = "Charging Action Skill"),
 	Passive UMETA(DisplayName = "Passive", ToolTip = "Passive Skill"),
+	Normal UMETA(DisplayName = "Normal", ToolTip = "Normal Action Skill"),
 };
 
 UENUM(BlueprintType)
