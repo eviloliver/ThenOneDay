@@ -52,6 +52,9 @@ protected:
 	TObjectPtr<UButton> Button_NewGame;
 	
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> Button_Tutorial;
+	
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> Button_LoadGame;
 	
 	UPROPERTY(meta = (BindWidget))
@@ -62,6 +65,9 @@ protected:
 	
 	UFUNCTION()
 	void OnClicked_NewGame();
+
+	UFUNCTION()
+	void OnClicked_Tutorial();
 	
 	UFUNCTION()
 	void OnClicked_LoadGame();

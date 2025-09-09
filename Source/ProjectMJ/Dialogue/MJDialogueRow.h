@@ -42,7 +42,12 @@ struct FMJDialogueRow : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString ScriptForExit;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* PlayerMugImage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* NPCMugImage;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FDialogueChoice> Choices; // 선택지는 여러개니까 배열?
 };

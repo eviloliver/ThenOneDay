@@ -6,10 +6,13 @@
 #include "ProjectMJ.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
+#include "MJ/Character/MJMonsterCharacter.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Damage.h"
 #include "Perception/AISense_Hearing.h"
+#include "UI/Component/MJDetectionWidgetComponent.h"
+#include "UI/World/MJDetectionWidget.h"
 
 AMJMonsterAIControllerBase::AMJMonsterAIControllerBase()
 {
@@ -195,6 +198,15 @@ void AMJMonsterAIControllerBase::HandleSight_Detected(AActor* Actor, FAIStimulus
 	Blackboard->SetValueAsObject("Target", Actor);
 	UE_LOG(LogMJ, Log, TEXT("시야로 감지"));
 	Blackboard->SetValueAsBool("IsTargetVisible", true);
+
+	// Jisoo
+	AMJMonsterCharacter* Monster = Cast<AMJMonsterCharacter>(GetPawn());
+	if (UMJDetectionWidget* DetectionWidget = Cast<UMJDetectionWidget>(Monster->GetDetectionComponent()->GetUserWidgetObject()))
+	{
+		Monster->GetDetectionComponent()->SetVisibility(true);
+		DetectionWidget->PlayAnim();
+	}
+	
 }
 
 void AMJMonsterAIControllerBase::HandleDamage_Detected(AActor* Actor, FAIStimulus Stimulus)

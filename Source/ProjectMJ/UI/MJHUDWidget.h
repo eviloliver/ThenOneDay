@@ -14,6 +14,9 @@
  * Last Modified Date: 
  */
 
+class UBorder;
+class UMJTutorialInstruction;
+class UMJMouseWidget;
 class UMJEquipedSkillWidget;
 class UMJSkillWidget;
 class UMJUIToggle;
@@ -66,10 +69,34 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UMJEquipedSkillWidget> EquipedSkillWidget;
 
+
+	// Tutorial Widget
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UBorder> TutorialMouse;
+
+	UPROPERTY(EditDefaultsOnly, Category = SettingWidgetClass)
+	TSubclassOf<UMJMouseWidget> LeftMouseClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = SettingWidgetClass)
+	TSubclassOf<UMJMouseWidget> RightMouseClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = SettingWidgetClass)
+	TSubclassOf<UMJMouseWidget> RightPressMouseClass;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJMouseWidget> Shift;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJTutorialInstruction> Instruction;
+
+	
 public:
 	UFUNCTION()
 	virtual void NativeConstruct() override;
 
+	UFUNCTION()
+	void ToggleWidget(UWidget* Widget);
+	
 	UFUNCTION()
 	void BindAtrributesToChildren(class UMJAbilitySystemComponent* ASC, class UMJCharacterAttributeSet* AttributeSet, class UMJPlayerStatComponent* Stat);
 
@@ -88,6 +115,34 @@ public:
 	UFUNCTION()
 	void SetDialogueVisibility();
 
+	UFUNCTION()
+	void SetTutorialMouse(TSubclassOf<UMJMouseWidget> NewWidget);
+
+	UFUNCTION()
+	void SetMouseVisibility();
+	
+	UFUNCTION()
+	void SetLeftMouse() {SetTutorialMouse(LeftMouseClass);}
+
+	UFUNCTION()
+	void SetRightMouse() {SetTutorialMouse(RightMouseClass);}
+
+	UFUNCTION()
+	void SetRightPressMouse() {SetTutorialMouse(RightPressMouseClass);}
+	
+	UFUNCTION()
+	void ShowShift();
+
+	UFUNCTION()
+	void HideShift();
+
+	UFUNCTION()
+	void SetInstructionWidgetVisibility();
+
+	UFUNCTION()
+	void SetInstructionText(const FString& InInstruction);
+
+	//
 	UMJInventoryWidget* GetInventoryWidget() {return Inventory;};
 	UMJStoreWidget* GetStoreWidget() {return Store;};
 	UMJDialogueWidget* GetDialogueWidget() {return Dialogue;};

@@ -11,6 +11,7 @@
 // static MapName
 #define MAP_TOWN TEXT("TG_Town")
 #define MAP_MAINMENU TEXT("TG_MainMenu")
+#define MAP_Tutorial TEXT("Tutorial_StartStory")
 
 // cpp 파일에 DEFINE_LOG_CATEGORY 선언 필요함
 DECLARE_LOG_CATEGORY_EXTERN(LogMJ, Log, All);

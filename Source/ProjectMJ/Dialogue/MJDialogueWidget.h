@@ -28,6 +28,8 @@ public:
 	virtual void NativeConstruct() override;
 	
 	void SetTextBlock(const FString& InText, const FString& Speaker);
+	void SetNPCImage(UTexture2D* InNPCImage);
+	void SetPlayerImage(UTexture2D* InPlayerImage);
 
 	void ShowBacklog();
 

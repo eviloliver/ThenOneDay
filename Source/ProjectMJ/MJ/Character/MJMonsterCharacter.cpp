@@ -26,6 +26,7 @@
 #include "MJ/DataAssetMJ/MJDropItemsDataAsset.h"
 #include "UI/Inventory/ItemDataRow.h"
 #include "UI/Bar/MJEnemyHPBar.h"
+#include "UI/Component/MJDetectionWidgetComponent.h"
 #include "UI/Component/MJHealthBarComponent.h"
 
 AMJMonsterCharacter::AMJMonsterCharacter()
@@ -57,6 +58,9 @@ AMJMonsterCharacter::AMJMonsterCharacter()
 	// UI Component
 	HPBarComponent = CreateDefaultSubobject<UMJHealthBarComponent>(TEXT("HPBarComponent"));
 	HPBarComponent->SetupAttachment(GetRootComponent());
+
+	DetectionComponent = CreateDefaultSubobject<UMJDetectionWidgetComponent>(TEXT("DetectionComponent"));
+	DetectionComponent->SetupAttachment(GetRootComponent());
 
 	// Minjin: ID 설정
 	ID = ETeam_ID::MONSTER;
@@ -247,6 +251,7 @@ void AMJMonsterCharacter::OnDead(AActor* InEffectCauser)
 void AMJMonsterCharacter::OnDamage(float Magnitude, bool bIsCritical)
 {	
 	HPBarComponent->SetVisibility(true);
+	DetectionComponent->SetVisibility(true);
 
 	FloatDamage(Magnitude, bIsCritical, EOwnerType::Monster);
 }

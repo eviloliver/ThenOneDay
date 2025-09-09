@@ -21,6 +21,7 @@
 #include "DataTable/MJSkillDataRow.h"
 #include "UI/Inventory/MJInventoryComponent.h"
 #include "Item/MJItemBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "TG/UI/MJGameFlowHUDWidget.h"
 #include "UI/MJHUDWidget.h"
 #include "UI/Component/MJInteractComponent.h"
@@ -32,6 +33,8 @@
 #include "UI/Store/MJStoreComponent.h"
 #include "UI/Store/MJStoreWidget.h"
 #include "UI/Skill/MJSkillSlotWidget.h"
+#include "UI/Tutorial/MJTutorialCollision.h"
+#include "UI/Tutorial/MJTutorialStartDialogueComponent.h"
 
 
 // TODO: Input 관련한 로직들 Component로 따로 빼기 - 동민 - 
@@ -120,8 +123,20 @@ void AMJPlayerController::BeginPlay()
 		UIManager->GetHUDWidget()->GetSkillWidget()->GetSkillSlots()[i]->OnClickedEquipButton.AddDynamic(this,&AMJPlayerController::UpdateEquipedSkillWidget);
 		UIManager->GetHUDWidget()->GetSkillWidget()->GetSkillSlots()[i]->GetEquipButton()->OnClicked.AddDynamic(this,&ThisClass::GetOwnedSkill);
 	}
-	
-	
+
+	const FString CurrentLevel = UGameplayStatics::GetCurrentLevelName(this, true);
+	if (CurrentLevel.Equals(TEXT("Tutorial_StartStory")))
+	{
+		ChangeToIMCDialogue();
+		bIsTutorialMode = true;
+		UMJTutorialStartDialogueComponent* TutorialStartDialogue = MJChar->FindComponentByClass<UMJTutorialStartDialogueComponent>();
+		if (!TutorialStartDialogue)
+		{
+			return;
+		}
+		TutorialStartDialogue->FloatLine();
+		TutorialStartDialogue->OnTutorialStartDialogueEnd.AddDynamic(this,&ThisClass::TutorialDialogueEnd);
+	}
 }
 
 void AMJPlayerController::SetupInputComponent()
@@ -143,6 +158,8 @@ void AMJPlayerController::SetupInputComponent()
 	//Dialogue Input
 	MJInputComponent->BindAction(ChangeIMCAction, ETriggerEvent::Triggered, this, &ThisClass::StartDialogue);
 	MJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
+	
+	
 	MJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
 
 	// UI Input
@@ -420,8 +437,7 @@ void AMJPlayerController::StartDialogue()// x키를 눌렀을 때 실행되는 �
 	if (!MyChar) return;
 	
 	if (UMJInteractComponent* InteractComp = MyChar->GetUITarget()->FindComponentByClass<UMJInteractComponent>())
-	{
-		
+	{		
 		InteractComp->StartInteraction();
 		switch (InteractComp->CurrentType)
 		{
@@ -438,7 +454,12 @@ void AMJPlayerController::StartDialogue()// x키를 눌렀을 때 실행되는 �
 		default:
 			break;
 		}
-	}	
+	}
+
+	if (bIsTutorialMode)
+	{
+		UIManager->GetHUDWidget()->SetInstructionWidgetVisibility();
+	}
 }
 
 void AMJPlayerController::ChangeToIMCDialogue()
@@ -467,23 +488,42 @@ void AMJPlayerController::ProceedDialogue()
 	{
 		return;
 	}
-	if (!MyChar->GetUITarget())
+	if (MyChar->GetUITarget())
 	{
-		return;
+		UMJInteractComponent* InteractComp = MyChar->GetUITarget()->FindComponentByClass<UMJInteractComponent>();
+        if (InteractComp)
+        {
+        	InteractComp->ProceedInteraction();
+        	return;
+        }
 	}
-	
-	UMJInteractComponent* InteractComp = MyChar->GetUITarget()->FindComponentByClass<UMJInteractComponent>();
-	if (!InteractComp)
+	if (bIsTutorialMode)
 	{
-		return;
+		UMJTutorialStartDialogueComponent* TutorialStartDialogue = MyChar->FindComponentByClass<UMJTutorialStartDialogueComponent>();
+		TutorialStartDialogue->ProceedStory();
 	}
-	InteractComp->ProceedInteraction();
 }
 
-void AMJPlayerController::SetDialogueVisibility()
+void AMJPlayerController::DialogueEnd()
 {
 	ChangeToIMCDefault();
 	UIManager->SetDialogueVisibility();
+	if (bIsTutorialMode)
+	{
+		UIManager->GetHUDWidget()->SetMouseVisibility();
+		UIManager->GetHUDWidget()->SetInstructionWidgetVisibility();
+		UIManager->GetHUDWidget()->ShowShift();
+		UIManager->GetHUDWidget()->SetInstructionText("Move right and defeat the monster. Hold Shift and left-click to execute a basic attack.");
+	}
+}
+
+void AMJPlayerController::TutorialDialogueEnd() // Tutorial 시작 다이어로그가 끝나면
+{
+	ChangeToIMCDefault();
+	UIManager->SetDialogueVisibility();
+	UIManager->GetHUDWidget()->SetLeftMouse();
+	UIManager->GetHUDWidget()->SetInstructionWidgetVisibility();
+	UIManager->GetHUDWidget()->SetInstructionText("Click the left mouse button to move the map. Move to your sister.");
 }
 
 void AMJPlayerController::ShowStore()
@@ -547,7 +587,6 @@ void AMJPlayerController::GetOwnedSkill()
 	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
 	if (UMJPlayerSkillComponent* SkillComponent = MJChar->FindComponentByClass<UMJPlayerSkillComponent>())
 	{
-	
 		SkillComponent->EquipSkill(TempTag);
 		UE_LOG(LogTemp,Error,TEXT("AMJPlayerController::GetOwnedSkill, %s"),*TempTag.ToString());
 	}
@@ -564,8 +603,8 @@ void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor*
 			IsInteracted = true;
 			InteractComp->OnBeginInteract();
 			
-			InteractComp->OndialogueEnd.RemoveDynamic(this, &AMJPlayerController::SetDialogueVisibility);
-			InteractComp->OndialogueEnd.AddDynamic(this, &AMJPlayerController::SetDialogueVisibility);
+			InteractComp->OndialogueEnd.RemoveDynamic(this, &AMJPlayerController::DialogueEnd);
+			InteractComp->OndialogueEnd.AddDynamic(this, &AMJPlayerController::DialogueEnd);
 			
 			InteractComp->OnstoreOpen.RemoveDynamic(this, &AMJPlayerController::ShowStore);
 			InteractComp->OnstoreOpen.AddDynamic(this, &AMJPlayerController::ShowStore);
@@ -580,6 +619,37 @@ void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor*
 				{
 					InteractComp->GetStoreComponent()->SetItemData(MJChar->GetInventoryComponent()->GetItemTags(),MJChar->GetInventoryComponent()->GetItemTags().Num(),MJChar->GetInventoryComponent());
 				}
+			}
+
+			if (bIsTutorialMode && !UIManager->GetbHasRun())
+			{
+				UIManager->GetHUDWidget()->SetMouseVisibility(); // OFF
+				UIManager->GetHUDWidget()->SetInstructionText("Interaction is possible with F key. Press F key to talk with your sister.");
+				UIManager->SetbHasRun(true);
+			}
+		}
+		
+		if (AMJTutorialCollision* TutorialCollision = Cast<AMJTutorialCollision>(Other))
+		{
+			// if (TutorialCollision->GetCollisionType() == ECollisionType::AttackTutorial)
+			// {
+			// 	UIManager->GetHUDWidget()->ShowShift();
+			// 	UIManager->GetHUDWidget()->SetInstructionText(TutorialCollision->GetInstructionText());
+			// }
+
+			if (TutorialCollision->GetCollisionType() == ECollisionType::InstantSkillTutorial)
+			{
+				UIManager->GetHUDWidget()->HideShift();
+				UIManager->GetHUDWidget()->SetRightMouse();
+				UIManager->GetHUDWidget()->SetInstructionText(TutorialCollision->GetInstructionText());
+				TutorialCollision->Hide();
+			}
+
+			if (TutorialCollision->GetCollisionType() == ECollisionType::ChargeSkillTutorial)
+			{
+				UIManager->GetHUDWidget()->SetRightPressMouse();
+				UIManager->GetHUDWidget()->SetInstructionText(TutorialCollision->GetInstructionText());
+				TutorialCollision->Hide();
 			}
 		}
 	}
