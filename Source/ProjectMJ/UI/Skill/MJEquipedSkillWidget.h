@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MJEquipedSkillWidget.generated.h"
 
+struct FGameplayTag;
 class UImage;
 /**
  * 
@@ -29,4 +30,6 @@ public:
 	void SetInstantImage(UTexture2D* ItemTexture);
 	void SetChargingImage(UTexture2D* ItemTexture);
 	void SetPassiveImage(UTexture2D* ItemTexture);
+
+	void SetAllImage(FGameplayTag SkillTag);
 };

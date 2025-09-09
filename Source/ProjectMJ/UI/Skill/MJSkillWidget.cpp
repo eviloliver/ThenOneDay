@@ -50,8 +50,11 @@ void UMJSkillWidget::UpdateSkillSlots(FGameplayTag SkillTag,int32 Level)
 	FText Description =Row->SkillDescription;
 	ESkillType SkillType =Row->SkillType;
 	//FText Type = StaticEnum<ESkillType>()->GetDisplayNameTextByValue((int64)SkillType);
-	
-	SkillSlots[Index]->SetSkillWidget(SkillTag,Image, Name, Description, SkillType, Level);
+
+	if (Index >= 0)
+	{
+		SkillSlots[Index]->SetSkillWidget(SkillTag,Image, Name, Description, SkillType, Level);
+	}
 }
 
 void UMJSkillWidget::UpdateEquipedSlots()

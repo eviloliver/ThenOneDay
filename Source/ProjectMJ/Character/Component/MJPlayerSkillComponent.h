@@ -19,6 +19,7 @@
  * Modified Date: 2025.07.30
  */
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLearnSkillEvents, FGameplayTag, Tag);
 class UDataTable;
 
 UCLASS()
@@ -27,7 +28,7 @@ class PROJECTMJ_API UMJPlayerSkillComponent : public UMJSkillComponentBase
 	GENERATED_BODY()
 
 public:
-	UMJPlayerSkillComponent();
+	UMJPlayerSkillComponent(); 
 
 	virtual void BeginPlay() override;
 
@@ -36,4 +37,6 @@ public:
 	void ActivateSkillByInputTag(const FGameplayTag InputTag);
 
 	void ReleaseSkillByInputTag(const FGameplayTag InputTag);
+
+	FOnLearnSkillEvents OnLearnSkillEvents;
 };

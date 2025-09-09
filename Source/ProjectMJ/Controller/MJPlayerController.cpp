@@ -113,6 +113,7 @@ void AMJPlayerController::BeginPlay()
 	if (UMJPlayerSkillComponent* SkillComponent = MJChar->FindComponentByClass<UMJPlayerSkillComponent>())
 	{
 		SkillComponent->OnLearnSkillEvent.AddDynamic(this,&AMJPlayerController::UpdateSkillWidget);
+		SkillComponent->OnLearnSkillEvents.AddDynamic(this,&AMJPlayerController::UpdateSkillSlot);
 	}
 
 	for (int i = 0; i < 10; i++)
@@ -120,8 +121,6 @@ void AMJPlayerController::BeginPlay()
 		UIManager->GetHUDWidget()->GetSkillWidget()->GetSkillSlots()[i]->OnClickedEquipButton.AddDynamic(this,&AMJPlayerController::UpdateEquipedSkillWidget);
 		UIManager->GetHUDWidget()->GetSkillWidget()->GetSkillSlots()[i]->GetEquipButton()->OnClicked.AddDynamic(this,&ThisClass::GetOwnedSkill);
 	}
-	
-	
 }
 
 void AMJPlayerController::SetupInputComponent()
@@ -547,10 +546,14 @@ void AMJPlayerController::GetOwnedSkill()
 	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
 	if (UMJPlayerSkillComponent* SkillComponent = MJChar->FindComponentByClass<UMJPlayerSkillComponent>())
 	{
-	
 		SkillComponent->EquipSkill(TempTag);
 		UE_LOG(LogTemp,Error,TEXT("AMJPlayerController::GetOwnedSkill, %s"),*TempTag.ToString());
 	}
+}
+
+void AMJPlayerController::UpdateSkillSlot(FGameplayTag SkillTag)
+{
+	UIManager->GetHUDWidget()->GetEquipedSkillWidget()->SetAllImage(SkillTag);
 }
 
 
