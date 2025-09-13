@@ -21,7 +21,11 @@
 UBTService_MJCheckAttackRange::UBTService_MJCheckAttackRange()
 {
 	NodeName = "CheckAttackRange";
-	Interval = 0.1f;
+
+	INIT_SERVICE_NODE_NOTIFY_FLAGS();
+
+	// Force the service to tick every frame
+	Interval = 0.0f;
 	PreTargetLocation = FVector::ZeroVector;
 	CurrTargetLocation = FVector::ZeroVector;
 }
@@ -31,9 +35,8 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	/*
 	 * How to: 타겟이 몬스터의 공격 범위에 들어갔을 때 Maximum 혹은 Minimum 범위에 들어오면 블랙보드 키를 설정
 	 */
-	CachedOwnerComp = &OwnerComp;
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
-
+	
 	OwnerComp.GetBlackboardComponent()->ClearValue("IsInAttackRange");
 	
 	APawn* ControlledPawn = OwnerComp.GetAIOwner()->GetPawn();
@@ -65,13 +68,6 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	 * HowTo: 설정한 태그를 가지고 있는 태그와 비교해서 구체적인 태그를 가져온다.
 	 * 가져온 태그로 Skill Set 가져온다.
 	 */
-
-	/*if (!Enemy->HasAnyMatchingGameplayTags(SkillTags))
-	{
-		MJ_LOG(LogMJ, Log, TEXT("Has not AnyMatchingGameplayTags"));
-		return;
-	}*/
-	
 	UMJSkillComponentBase* SkillComp = Enemy->GetSkillComponent();
 	FGameplayTag SkillTag = FGameplayTag::EmptyTag;
 
@@ -127,9 +123,6 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	const float MinimumAttackRange = Character->GetCapsuleComponent()->GetScaledCapsuleRadius() * ((Offset!=0)?Offset:1);	
 	const float MaximumAttackRange = MinimumAttackRange + AttackRange;
 
-	//DrawDebugCircle(GetWorld(), ControlledPawn->GetActorLocation(), MaximumAttackRange, 16, FColor::Emerald, false, 0.2f, 0, 0, FVector::RightVector,FVector::ForwardVector, false);
-	//DrawDebugCircle(GetWorld(), ControlledPawn->GetActorLocation(), MinimumAttackRange, 16, FColor::Magenta, false, 0.2f, 0, 0, FVector::RightVector,FVector::ForwardVector, false);
-	
 	bool IsInAttackRange = DistanceToTarget <= MaximumAttackRange
 		&& DistanceToTarget >= MinimumAttackRange;
 
@@ -185,12 +178,9 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 	OwnerComp.GetBlackboardComponent()->SetValueAsVector("KeepDistancePos", MoveToLocation);
 }
 
-void UBTService_MJCheckAttackRange::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
-{
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-}
-
 void UBTService_MJCheckAttackRange::InitializeFromAsset(UBehaviorTree& Asset)
 {
 	Super::InitializeFromAsset(Asset);
+
+	bCallTickOnSearchStart = true;
 }

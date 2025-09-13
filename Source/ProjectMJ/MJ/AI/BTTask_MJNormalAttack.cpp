@@ -14,6 +14,8 @@
 UBTTask_MJNormalAttack::UBTTask_MJNormalAttack()
 {
 	NodeName = TEXT("Normal Attack");
+
+	INIT_TASK_NODE_NOTIFY_FLAGS();
 }
 
 EBTNodeResult::Type UBTTask_MJNormalAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -35,7 +37,35 @@ EBTNodeResult::Type UBTTask_MJNormalAttack::ExecuteTask(UBehaviorTreeComponent& 
 
 	SkillComponent->ActivateNormalSkill();
 
+	Handle = ASC->OnAbilityEnded.AddLambda(
+	[&](const FAbilityEndedData& EndedData)
+	{
+		MJ_LOG(LogMJ, Error,TEXT("A"));
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	});
+
 	MJ_LOG(LogMJ, Warning, TEXT("Normal Attack"));
 	
-	return EBTNodeResult::Succeeded;
+	return EBTNodeResult::InProgress;
+}
+
+void UBTTask_MJNormalAttack::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory,
+	EBTNodeResult::Type TaskResult)
+{
+	APawn* ControlledPawn = OwnerComp.GetAIOwner()->GetPawn();
+	if (ControlledPawn == nullptr)
+	{
+		return;
+	}
+	
+	AMJMonsterCharacter* Monster = Cast<AMJMonsterCharacter>(ControlledPawn);
+	if (Monster == nullptr)
+	{
+		return;
+	}
+	UAbilitySystemComponent* ASC = Monster->GetAbilitySystemComponent();
+	ASC->OnAbilityEnded.Remove(Handle);
+	MJ_LOG(LogMJ, Error,TEXT("Remove Handle."));
+	
+	Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
 }

@@ -22,13 +22,7 @@ class PROJECTMJ_API UMJStateAbilityDataAsset : public UDataAsset
 
 public:
 	UMJStateAbilityDataAsset(){};
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UGameplayAbility> ActionAppearanceAbilityClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UGameplayAbility> ActionDamageAbilityClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UGameplayAbility> ActionDeathAbilityClass;
+	TArray<TSubclassOf<UGameplayAbility>> StateAbilityClasses;
 };

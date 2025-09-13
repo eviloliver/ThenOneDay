@@ -62,7 +62,7 @@ void AMJTargetingProjectileBase::BeginPlay()
 	ProjectileMovement->Velocity = NewVelocity;
 	
 	ProjectileMovement->InitialSpeed = 300.0f; 
-	ProjectileMovement->MaxSpeed = 600.0f;
+	ProjectileMovement->MaxSpeed = 1000.0f;
 	
 	ProjectileMovement->bIsHomingProjectile = true;
 	ProjectileMovement->HomingAccelerationMagnitude = 300.0f;
@@ -91,7 +91,7 @@ void AMJTargetingProjectileBase::Tick(float DeltaSeconds)
 		}
 
 		float Distance = GetDistanceTo(Target);
-		ProjectileMovement->MaxSpeed = FMath::GetMappedRangeValueClamped(FVector2D(0.0f, 600.0f), FVector2D(1.0f, 600.0f), Distance);
+		ProjectileMovement->MaxSpeed = FMath::GetMappedRangeValueClamped(FVector2D(0.0f, 600.0f), FVector2D(600.0f, 1000.0f), Distance);
 	}
 	// MJ_LOG(LogMJ, Warning, TEXT("MaxSpeed: %f"), ProjectileMovement->MaxSpeed);
 	
