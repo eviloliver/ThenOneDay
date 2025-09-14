@@ -6,6 +6,7 @@
 #include "MJTargetingProjectileBase.h"
 #include "ProjectMJ.h"
 #include "Character/MJPlayerCharacter.h"
+#include "Components/CapsuleComponent.h"
 #include "MJ/Character/MJMonsterCharacter.h"
 
 UNotify_MJSpawnTargetProjectile::UNotify_MJSpawnTargetProjectile()
@@ -36,8 +37,10 @@ void UNotify_MJSpawnTargetProjectile::Notify(USkeletalMeshComponent* MeshComp, U
 			if (TargetingProjectile)
 			{
 				FVector SpawnLocation = Player->GetActorLocation();
-				SpawnLocation.Z = 0.0f;
+				float CapsuleHalfHeight = Player->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+				SpawnLocation.Z -= CapsuleHalfHeight;
 				FTransform SpawnTransform(SpawnLocation);
+				
 				AMJTargetingProjectileBase* Projectile = Player->GetWorld()->SpawnActorDeferred<AMJTargetingProjectileBase>(TargetingProjectile, SpawnTransform/*, this, this, ESpawnActorCollisionHandlingMethod::AlwaysSpawn*/);
 				MJ_LOG(LogMJ, Warning, TEXT("Create TargetProjectile"));
 	
@@ -68,8 +71,10 @@ void UNotify_MJSpawnTargetProjectile::Notify(USkeletalMeshComponent* MeshComp, U
 					return;
 				}
 				FVector SpawnLocation = Enemy->GetActorLocation();
-				SpawnLocation.Z = 0.0f;
+				float CapsuleHalfHeight = Enemy->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+				SpawnLocation.Z -= CapsuleHalfHeight;
 				FTransform SpawnTransform(SpawnLocation);
+				
 				AMJTargetingProjectileBase* Projectile = Enemy->GetWorld()->SpawnActorDeferred<AMJTargetingProjectileBase>(TargetingProjectile, SpawnTransform/*, this, this, ESpawnActorCollisionHandlingMethod::AlwaysSpawn*/);
 				MJ_LOG(LogMJ, Warning, TEXT("Create TargetProjectile"));
 				

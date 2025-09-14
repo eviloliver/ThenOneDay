@@ -20,6 +20,7 @@
 #include "UI/MJUIManagerSubsystem.h"
 #include "TG/MJGameInstance.h"
 #include "Character/Component/MJPlayerStatComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "DataAsset/MJStateAbilityDataAsset.h"
 #include "Item/MJItemBase.h"
 #include "Kismet/GameplayStatics.h"
@@ -202,7 +203,9 @@ void AMJMonsterCharacter::GiveDeathRewardTo()
 		if (ItemClass)
 		{
 			FVector SpawnLocation = GetActorLocation();
-			//SpawnLocation.Z = 0.0f;
+			float CapsuleHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+			SpawnLocation.Z -= CapsuleHalfHeight;
+
 			FTransform SpawnTransform(SpawnLocation);
 			if (GetWorld())
 			{
