@@ -1,7 +1,7 @@
 // ThenOneDayStudio
 
 
-#include "AbilitySystem/Actor/MJCollisionProjectile.h"
+#include "AbilitySystem/Actor/MJNiagaraProjectile.h"
 
 #include "AbilitySystemComponent.h"
 #include "NiagaraComponent.h"
@@ -14,18 +14,18 @@
 #include "Behavior/MJProjectileMovementBehaviorBase.h"
 #include "Behavior/MJProjectileMovementLinear.h"
 
-AMJCollisionProjectile::AMJCollisionProjectile()
+AMJNiagaraProjectile::AMJNiagaraProjectile()
 {
 }
 
-void AMJCollisionProjectile::BeginPlay()
+void AMJNiagaraProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	NiagaraComponent->OnSystemFinished.AddDynamic(this, &AMJCollisionProjectile::OnNiagaraEnded);
+	NiagaraComponent->OnSystemFinished.AddDynamic(this, &AMJNiagaraProjectile::OnNiagaraEnded);
 }
 
-void AMJCollisionProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void AMJNiagaraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//Super::OnSphereOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
@@ -71,7 +71,7 @@ void AMJCollisionProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComp
 	MJ_LOG(LogMJ, Warning, TEXT("Sphere Overlap"));
 }
 
-void AMJCollisionProjectile::OnNiagaraEnded(UNiagaraComponent* PSystem)
+void AMJNiagaraProjectile::OnNiagaraEnded(UNiagaraComponent* PSystem)
 {
 	Destroy();
 }

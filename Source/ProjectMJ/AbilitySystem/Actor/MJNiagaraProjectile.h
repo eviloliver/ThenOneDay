@@ -4,22 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Actor/MJProjectileBase.h"
-#include "MJCollisionProjectile.generated.h"
+#include "MJNiagaraProjectile.generated.h"
 
 /**
- * Class Description: 나이아가라 자연스럽게 사라지는 발사제 - 이름 변경 예정 
+ * Class Description: 나이아가라 자연스럽게 사라지는 발사체
  * Author: Kim Minjin
  * Created Date: 2025.08.24.
  * Last Modified By:
  * Last Modified Date:
  */
 UCLASS()
-class PROJECTMJ_API AMJCollisionProjectile : public AMJProjectileBase
+class PROJECTMJ_API AMJNiagaraProjectile : public AMJProjectileBase
 {
 	GENERATED_BODY()
 
 public:
-	AMJCollisionProjectile();
+	AMJNiagaraProjectile();
 
 protected:
 	virtual void BeginPlay() override;
