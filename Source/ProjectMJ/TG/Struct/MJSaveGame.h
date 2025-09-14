@@ -3,12 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MJCharacterAttributeSaveDataStruct.h"
 #include "GameFramework/SaveGame.h"
+#include "Character/Component/MJSkillComponentBase.h"
 #include "MJSaveGame.generated.h"
 
-struct FGameplayAttributeData;
-class UMJCharacterAttributeSet;
 /**
  * Class Description: 게임을 저장할 데이터들을 모아놓은 USaveGame 클래스
  * Author: 차태관
@@ -20,20 +18,49 @@ UCLASS()
 class PROJECTMJ_API UMJSaveGame : public USaveGame
 {
 	GENERATED_BODY()
+	
 public:
 	UMJSaveGame();
-
-	FMJCharacterAttributeSaveData& GetAttributeSaveData();
-	
-protected:
+	UPROPERTY(SaveGame)
+	int8 SlotNum = -1;
 
 	UPROPERTY(BlueprintReadOnly, SaveGame)
 	FString PlayerName;
+
+	UPROPERTY(BlueprintReadOnly, SaveGame)
+	int32 PlayerLevel = 1;
 	
 	UPROPERTY(BlueprintReadOnly, SaveGame)
-	FMJCharacterAttributeSaveData AttributeSaveData;
-	
+	int32 PlayerExp;
 
+	UPROPERTY(BlueprintReadOnly, SaveGame)
+	FDateTime RecentPlayedDateTime;
 	
+	UPROPERTY(BlueprintReadOnly, SaveGame)
+	FDateTime SaveGameCreatedDateTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+	TMap<FGameplayTag, FSkillData> CurrentOwnedSkillMap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skill")
+	TMap<FGameplayTag, FGameplayTag> CurrentEquippedSkillMap;
+
+	void SetCurrentOwnedSKillMap(TMap<FGameplayTag, FSkillData> Input)
+	{
+		CurrentOwnedSkillMap.Empty();
+		for (auto Iter : Input)
+		{
+			CurrentOwnedSkillMap.Add(Iter);
+		}
+	}
+	
+	void SetCurrentEquippedSkillMap(TMap<FGameplayTag, FGameplayTag> Input)
+	{
+		CurrentEquippedSkillMap.Empty();
+		for (auto Iter : Input)
+		{
+			CurrentEquippedSkillMap.Add(Iter);
+		}
+	}
 	
 };

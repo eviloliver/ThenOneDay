@@ -13,6 +13,9 @@
  * Last Modified By: Cha Tae Gwan
  * Last Modified Date: 2025-06-20
  */
+
+class UMJSaveGame;
+
 UCLASS()
 class PROJECTMJ_API UMJSaveGameSubsystem : public UGameInstanceSubsystem
 {
@@ -23,43 +26,44 @@ public:
 	UMJSaveGameSubsystem();
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void Deinitialize() override;
 
 	UFUNCTION(BlueprintCallable)
 	UMJSaveGame* GetSaveGameData();
 
-	UFUNCTION(BlueprintCallable)
-	FString GetSaveSlotName() const;
+	UFUNCTION()
+	void SaveGameToCurrentSlotNum();
 
-	UFUNCTION(BlueprintCallable)
-	int32 GetUserIndex() const;
+	UFUNCTION()
+	void SaveGameToSelectedSlotNum(const uint8 InputSlotNum);
 
-	UFUNCTION(BlueprintCallable)
-	void CreateSaveGame();
-	
-	UFUNCTION(BlueprintCallable)
-	void LoadSaveGame(AMJPlayerCharacter* Player);
+	UFUNCTION()
+	bool LoadGameFromSlotNum(int8 SlotNum);
 
-	UFUNCTION(BlueprintCallable)
-	void SaveGameToSlot(AMJPlayerCharacter* Player);
+	UFUNCTION()
+	const uint8 GetCurrentSavedSlotNum();
 
+	const uint8 GetMaxSaveSlotNum() {return MaxSaveSlotNum; }
 
-	// Loading Screen Section
+	const bool IsSlotFull();
+
+	// Loading Screen Section	
 	
 	UFUNCTION()
 	virtual void BeginLoadingScreen(const FString& MapName);
 	UFUNCTION()
 	virtual void EndLoadingScreen(UWorld* InLoadedWorld);
 
-	UPROPERTY(VisibleAnywhere)
-	TSubclassOf<UUserWidget> LoadingScreen;
 	
 protected:
 	
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UMJSaveGame> SaveGameData;
-	
-	const FString SaveSlotName = TEXT("DefaultSaveGameSlot");
+	TSubclassOf<UUserWidget> LoadingScreen;
 
-	const int32 UserIndex = 0;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UMJSaveGame> SaveGameData;
+
+	UPROPERTY(VisibleAnywhere)
+	uint8 MaxSaveSlotNum;
 	
 };

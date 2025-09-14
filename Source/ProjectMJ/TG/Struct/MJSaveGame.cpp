@@ -3,14 +3,8 @@
 
 #include "MJSaveGame.h"
 
-#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 
 UMJSaveGame::UMJSaveGame()
 {
 	
-}
-
-FMJCharacterAttributeSaveData& UMJSaveGame::GetAttributeSaveData()
-{
-	return AttributeSaveData;
 }

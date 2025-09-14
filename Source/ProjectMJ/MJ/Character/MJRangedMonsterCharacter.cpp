@@ -7,37 +7,15 @@ AMJRangedMonsterCharacter::AMJRangedMonsterCharacter()
 {
 }
 
-float AMJRangedMonsterCharacter::GetAIMaximumAttackRange()
+void AMJRangedMonsterCharacter::BeginPlay()
 {
-	return 800.0f;
-}
-
-float AMJRangedMonsterCharacter::GetAIMinimumAttackRange()
-{
-	return 200.0f;
-}
-
-void AMJRangedMonsterCharacter::AttackByAI()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("RangedMonster: 공격"));
-}
-
-void AMJRangedMonsterCharacter::MeleeAttackByAI()
-{
-	/*
-	 * Minjin
-	 * TODO
-	 * 근거리 공격
-	 */
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("RangedMonster: 근거리공격"));
-}
-
-void AMJRangedMonsterCharacter::RangeAttackByAI()
-{
-	/*
-	 * Minjin
-	 * TODO
-	 * 원거리 공격
-	 */
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("RangedMonster: 원거리공격"));
+	Super::BeginPlay();
+	
+	// Minjin: 기본 원거리 공격 스킬 추가
+	// SkillComponent->LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.Catastrophe")));
+	// SkillComponent->EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Charge.Catastrophe")));
+	//
+	// // Minjin: 근거리 공격 스킬 추가
+	// SkillComponent->LearnSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.BasicMeleeAttack")));
+	// SkillComponent->EquipSkill(FGameplayTag::RequestGameplayTag(FName("Skill.Instant.BasicMeleeAttack")));
 }

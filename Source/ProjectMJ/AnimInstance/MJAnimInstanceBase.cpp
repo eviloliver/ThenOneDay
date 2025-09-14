@@ -1,21 +1,22 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "AnimInstance/MJAnimInstanceBase.h"
 #include "MJAnimInstanceBase.h"
-#include "Character/MJPlayerCharacter.h"
+#include "Character/MJCharacterBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 void UMJAnimInstanceBase::NativeInitializeAnimation()
 {
 	
-	OwningCharacter = Cast<AMJPlayerCharacter>(TryGetPawnOwner());
+	OwningCharacter = Cast<AMJCharacterBase>(TryGetPawnOwner());
 	
 	if (OwningCharacter)
 	{
 		OwningCharacterMovementComponent = OwningCharacter->GetCharacterMovement();
 
 	}
+	bIsOpen = false;
 }
 
 void UMJAnimInstanceBase::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
@@ -30,4 +31,17 @@ void UMJAnimInstanceBase::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 	{
 		bHasAcceleration = true;
 	}
+	else
+	{
+		bHasAcceleration = false;
+	}
+
+	const float BaseRunSpeed = 600.f; // 기본 속도
+
+	MoveAnimPlayRate = FMath::Max(GroundSpeed / BaseRunSpeed, 0.2f);
+}
+
+void UMJAnimInstanceBase::SetOpen(bool Value)
+{
+	SetbIsOpen(Value);
 }

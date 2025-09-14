@@ -7,13 +7,15 @@
 #include "MJGA_ChargeSkill.generated.h"
 
 /**
- * Class Description: ÇÃ·¹ÀÌ¾îÀÇ ½ºÅ³À» Instant, Charging, Passive·Î ±¸ºĞ
- * Charge´Â ¿ìÅ¬¸¯À» ±æ°Ô ´­·¶´Ù ¶® À»¶§ ¹ßµ¿ÇÏ´Â ½ºÅ³
- * Author: ½Åµ¿¹Î
- * Created Date: 2025_06_24
- * Last Modified By: (Last Modifier)
- * Last Modified Date: (Last Modified Date)
+ * Class Description: í”Œë ˆì´ì–´ì˜ ìŠ¤í‚¬ì„ Instant, Charging, Passiveë¡œ êµ¬ë¶„
+ * ChargeëŠ” ìš°í´ë¦­ì„ ê¸¸ê²Œ ëˆŒë €ë‹¤ ë•  ì„ë•Œ ë°œë™í•˜ëŠ” ìŠ¤í‚¬
+ * Author: ì‹ ë™ë¯¼
+ * Created Date: 2025.06.24
+ * Description of Change: ì°¨ì§• ì• ë‹ˆë©”ì´ì…˜ ì¶”ê°€
+ * Modified By: ì‹ ë™ë¯¼
+ * Modified Date: 2025.08.06
  */
+
 UCLASS()
 class PROJECTMJ_API UMJGA_ChargeSkill : public UMJGA_GameplayAbility
 {
@@ -21,5 +23,26 @@ class PROJECTMJ_API UMJGA_ChargeSkill : public UMJGA_GameplayAbility
 
 public:
 	UMJGA_ChargeSkill();
+
+	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+
+	virtual void InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
+
+protected:
+
+	virtual bool CalculateFinalCosts(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FSkillCost& OutCost) const;
+	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
+	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+
+	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+
+protected:
+	UPROPERTY(EditAnywhere, Category="Animation")
+	TObjectPtr<UAnimMontage> SkillChargeAnimMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	TObjectPtr<UAnimMontage> SkillActionAnimMontage;
 
 };

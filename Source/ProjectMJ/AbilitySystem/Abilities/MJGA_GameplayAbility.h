@@ -15,12 +15,21 @@ enum class EMJAbilityActivationPolicy :uint8
 	OnTriggered,
 	OnGiven
 };
+
+struct FSkillCost
+{
+	float StaminaCost = 0.0f;
+	float ManaCost = 0.0f;
+	float FocusCost = 0.0f;
+};
+
 /**
  * Class Description:
  * Author: Lee JuHyeon
  * Created Date: 2025_06_11
- * Last Modified By: Add CombatComponent Data
- * Last Modified Date: 2025_06_18
+ * Description of Change: 자원 소모 쿨타임 감소 추가
+ * Modified By: 신동민	
+ * Modified Date: 2025.07.23
  */
 UCLASS()
 class PROJECTMJ_API UMJGA_GameplayAbility : public UGameplayAbility
@@ -29,7 +38,8 @@ class PROJECTMJ_API UMJGA_GameplayAbility : public UGameplayAbility
 	
 protected:
 	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
-	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)override;
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	EMJAbilityActivationPolicy AbilityActivationPolicy = EMJAbilityActivationPolicy::OnTriggered;
@@ -39,4 +49,6 @@ protected:
 
 	UFUNCTION(BlueprintPure, Category = "Player|Combat")
 	UMJAbilitySystemComponent* GetAbilitySysteamComponent() const;
+
+	
 };

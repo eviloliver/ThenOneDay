@@ -17,54 +17,75 @@
 UCLASS()
 class PROJECTMJ_API UMJDungeonGenerationSubSystem : public UGameInstanceSubsystem
 {
-	GENERATED_BODY()
+   GENERATED_BODY()
 
 public:
-	
-	UMJDungeonGenerationSubSystem();
+   
+   UMJDungeonGenerationSubSystem();
 
-	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-	
-	UFUNCTION(BlueprintCallable)
-	bool GenerateDungeonGraph();
-	
-	UFUNCTION(BlueprintCallable)
-	const FDungeonGraph& GetDungeonGraph() const { return DungeonGraph; }
+   virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 
-	UFUNCTION(BlueprintCallable, Category="Dungeon")
-	uint8 GetMaxNodeNum() const;
-	
-	UFUNCTION(BlueprintCallable, Category="Dungeon")
-	void SetMaxNodeNum(uint8 NewMaxNodeNum);
+   
+   UFUNCTION(BlueprintCallable)
+   void GenerateDungeonGraph();
+   
+   UFUNCTION(BlueprintCallable)
+   bool CheckHasRoute(uint8 CurrentNodeNum, uint8 DestNodeNum);
+   
+   UFUNCTION(BlueprintCallable)
+   void GetDungeonGraphOut(FMJDungeonGraph& OutGraph) const { OutGraph = DungeonGraph;}
+   
+   FMJDungeonGraph* GetDungeonGraph()  { return &DungeonGraph; }
+
+   UFUNCTION(BlueprintCallable, Category="Dungeon")
+   uint8 GetMaxNodeNum() const;
+   
+   UFUNCTION(BlueprintCallable, Category="Dungeon")
+   void SetMaxNodeNum(uint8 NewMaxNodeNum);
 
 protected:
-	
-	// GeneratingDungeonSystem Section
+   
+   // GeneratingDungeonSystem Section
 
-	UPROPERTY(BlueprintReadOnly)
-	FDungeonGraph DungeonGraph;
-	
-	UPROPERTY(BlueprintReadOnly)
-	uint8 MaxNodeNum;
+   UPROPERTY(BlueprintReadOnly)
+   FMJDungeonGraph DungeonGraph;
+   
+   UPROPERTY(BlueprintReadOnly)
+   uint8 MaxNodeNum;
 
-	UFUNCTION()
-	FDungeonNode MakeNewNode(uint8 NodeNum, uint8 AssignedMapID,  ENodeType NodeType, FVector2D UICoordinate);
-	
-	UFUNCTION()
-	void ConnectNodesByDistance(float MaxDistance, int MaxEdgePerNode);
 
-	UFUNCTION()
-	void ConnectNodesByMST(float MaxDistance);
 
-	UFUNCTION(BlueprintCallable)
-	bool CheckHasRoute(uint8 CurrentNodeNum, uint8 DestNodeNum);
+   
+   UFUNCTION()
+   FMJDungeonNode MakeNewNode(uint8 NodeNum, uint8 AssignedMapID,  EMJNodeType NodeType, EMJAISpawnType AISpawnType, FVector2D UICoordinate);
 
-	UFUNCTION()
-	FVector2D GetCubicBezier(float t, const FVector2D Point);
-	
-	UFUNCTION()
-	FVector2D GetQuadBezier(float t, const FVector2D StartPoint, const FVector2D EndPoint, const FVector2D ControlPoint);
+   
+   
+   UFUNCTION()
+   void ConnectNodesByDistance(float MaxDistance, int MaxEdgePerNode);
 
-	
-	
+   UFUNCTION()
+   void ConnectNodesByMST(float MaxDistance);
+
+   UFUNCTION()
+   bool CheckHasIterableGraph(); 
+
+   // DFS Section
+   
+   UFUNCTION()
+   void DFS(uint8 CurrentNode, const uint8 BossID, TArray<bool>& Visited);
+   
+   
+   
+
+   
+   
+   UFUNCTION()
+   FVector2D GetCubicBezier(float t, const FVector2D Point);
+   
+   UFUNCTION()
+   FVector2D GetQuadBezier(float t, const FVector2D StartPoint, const FVector2D EndPoint, const FVector2D ControlPoint);
+
+   
+   
 };

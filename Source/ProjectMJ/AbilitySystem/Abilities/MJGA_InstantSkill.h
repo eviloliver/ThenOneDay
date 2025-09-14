@@ -7,9 +7,9 @@
 #include "MJGA_InstantSkill.generated.h"
 
 /**
- * Class Description: ÇÃ·¹ÀÌ¾îÀÇ ½ºÅ³À» Instant, Charging, Passive·Î ±¸ºĞ
- * Instant´Â ¿ìÅ¬¸¯ µş±ï¿¡ ¸ÅÄªÇÏ´Â ½ºÅ³ + ±âº» °ø°İ
- * Author: ½Åµ¿¹Î
+ * Class Description: í”Œë ˆì´ì–´ì˜ ìŠ¤í‚¬ì„ Instant, Charging, Passiveë¡œ êµ¬ë¶„
+ * InstantëŠ” ìš°í´ë¦­ ë”¸ê¹ì— ë§¤ì¹­í•˜ëŠ” ìŠ¤í‚¬ + ê¸°ë³¸ ê³µê²©
+ * Author: ì‹ ë™ë¯¼
  * Created Date: 2025_06_24
  * Last Modified By: (Last Modifier)
  * Last Modified Date: (Last Modified Date)
@@ -26,7 +26,20 @@ class PROJECTMJ_API UMJGA_InstantSkill : public UMJGA_GameplayAbility
 public:
 	UMJGA_InstantSkill();
 
+	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+
+protected:
+
+	virtual bool CalculateFinalCosts(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FSkillCost& OutCost) const;
+	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
+	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+
+	// CalculateFinalCooldown ë„ ë§Œë“¤ì–´ì„œ ì ìš©í•˜ë©´ ì–´ë–¨ê¹Œ?
+	virtual void ApplyCooldown(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	TObjectPtr<UAnimMontage> SkillActionAnimMontage;
+
 };

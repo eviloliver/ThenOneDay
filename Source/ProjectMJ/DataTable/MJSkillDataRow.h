@@ -9,12 +9,15 @@
 /**
  * Class Description: DataTable Base
  * Author: 신동민
- * Created Date: 2025_06_27
- * Last Modified By:
- * Last Modified Date:
+ * Created Date: 2025.06.27
+ * Description of Change: Ability 부분 수정
+ * Modified By: 신동민
+ * Modified Date: 2025.08.06
  */
 
+class AMJProjectileBase;
 class UGameplayAbility;
+class UCurveTable;
 
 UENUM(BlueprintType)
 enum class ERequiredWeapon : uint8
@@ -33,6 +36,7 @@ enum class ESkillType : uint8
 	Instant UMETA(DisplayName = "Instant", ToolTip = "Instantly Action Skill"),
 	Charge UMETA(DisplayName = "Charge", ToolTip = "Charging Action Skill"),
 	Passive UMETA(DisplayName = "Passive", ToolTip = "Passive Skill"),
+	Normal UMETA(DisplayName = "Normal", ToolTip = "Normal Action Skill"),
 };
 
 UENUM(BlueprintType)
@@ -43,9 +47,6 @@ enum class ESkillTargetType : uint8
 	Area    UMETA(DisplayName = "AoE", ToolTip = "Area of Effect"),
 };
 
-class UAnimMontage;
-class UCurveTable;
-
 USTRUCT(BlueprintType)
 struct FMJSkillDataRow : public FTableRowBase
 {
@@ -53,12 +54,18 @@ struct FMJSkillDataRow : public FTableRowBase
 
 public:
 	// Dongmin: RowName을 태그와 같게 할 목적
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Skill"))
 	FGameplayTag DefaultSkillTag;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 SkillIndex;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText SkillName;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* Icon;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FText SkillDescription;
 
@@ -71,13 +78,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ESkillTargetType SkillTargetType;
 
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UAnimMontage> ActionAnimMontage;*/
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UGameplayAbility> SkillAbilityClass;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftObjectPtr<UCurveTable> SkillLevelDataTable;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSoftObjectPtr<UDataTable> SkillLevelAbilityTable;
 };

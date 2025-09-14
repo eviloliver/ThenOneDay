@@ -4,25 +4,17 @@
 #include "GameMode/MJGameModeBase.h"
 
 #include "ProjectMJ.h"
+#include "Controller/MJPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/MJPlayerState.h"
-#include "TG/MJGameInstanceTG.h"
-#include "TG/GameState/MJGameStateDungeonTG.h"
+#include "TG/MJGameInstance.h"
+#include "TG/GameState/MJGameStateDungeon.h"
 
 AMJGameModeBase::AMJGameModeBase()
 {
 	MJ_LOG(LogTG,Warning,TEXT("Ptr : %p"),this);
 
 }
-
-void AMJGameModeBase::BeginPlay()
-{
-	Super::BeginPlay();
-	
-	
-	
-}
-
 
 bool AMJGameModeBase::TravelToMap(const FString MapName)
 {
@@ -42,7 +34,7 @@ bool AMJGameModeBase::TravelToMap(const FString MapName)
 bool AMJGameModeBase::TravelToMapByNode(const FString MapName, const uint8 NodeNum)
 {
 
-	UMJGameInstanceTG* MJGI = GetGameInstance<UMJGameInstanceTG>();
+	UMJGameInstance* MJGI = GetGameInstance<UMJGameInstance>();
 	if (MJGI)
 	{
 		AMJPlayerState* PS = Cast<AMJPlayerState>(UGameplayStatics::GetPlayerState(this,0));
@@ -50,8 +42,8 @@ bool AMJGameModeBase::TravelToMapByNode(const FString MapName, const uint8 NodeN
 		{
 			PS->GetPlayerSessionDataRef().CurrentDungeonMapNum = NodeNum;
 			PS->SaveToInstancedPlayerSessionData();
+			
 		}
-		MJGI->bIsPlayerStateDirty = true;
 		
 	}
 

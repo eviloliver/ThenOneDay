@@ -6,8 +6,11 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystem//Attributes/MJCharacterAttributeSet.h"
 #include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
+#include "Character/MJPlayerCharacter.h"
+#include "Character/Component/MJPlayerSkillComponent.h"
+#include "Character/Component/MJPlayerStatComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "TG/MJGameInstanceTG.h"
+#include "TG/MJGameInstance.h"
 
 AMJPlayerState::AMJPlayerState()
 {
@@ -17,7 +20,6 @@ AMJPlayerState::AMJPlayerState()
 	
 	CharacterSkillAttributeSet = CreateDefaultSubobject<UMJCharacterSkillAttributeSet>(TEXT("CharacterSkillAttributeSet"));
 }
-
 
 UAbilitySystemComponent* AMJPlayerState::GetAbilitySystemComponent() const
 {
@@ -36,18 +38,57 @@ FMJPlayerSessionData& AMJPlayerState::GetPlayerSessionDataRef()
 
 void AMJPlayerState::SaveToInstancedPlayerSessionData()
 {
-	PlayerSessionData.CharacterAttribute = *CharacterAttributeSet;
-	PlayerSessionData.CharacterSkillAttribute = *CharacterSkillAttributeSet;
-	GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef() = PlayerSessionData;
+	FMJPlayerSessionData& MJGIPlayerSessionData = GetGameInstance<UMJGameInstance>()->GetPlayerSessionDataRef();
 	
-	MJ_LOG(LogTG,Warning, TEXT("PlayerState Copied!!"));
+	UMJPlayerStatComponent* PlayerStatComp = GetPawn()->FindComponentByClass<UMJPlayerStatComponent>();
+	if (PlayerStatComp)
+	{
+		MJGIPlayerSessionData.PlayerLevel = PlayerStatComp->GetPlayerLevel();
+		MJGIPlayerSessionData.PlayerExp = PlayerStatComp->GetTotalCumulativeExperience();
+	}
 
+	UMJPlayerSkillComponent* PlayerSkillComponent = GetPawn()->FindComponentByClass<UMJPlayerSkillComponent>();
+	if (PlayerSkillComponent)
+	{
+
+		MJGIPlayerSessionData.SetCurrentEquippedSkillMap(PlayerSkillComponent->GetEquippedSkillMap());
+		MJGIPlayerSessionData.SetCurrentOwnedSKillMap(PlayerSkillComponent->GetOwnedSkillMap());
+	}
 }
 
 void AMJPlayerState::LoadFromInstancedPlayerSessionData()
 {
-	PlayerSessionData = GetGameInstance<UMJGameInstanceTG>()->GetPlayerSessionDataRef();
-	PlayerSessionData.CharacterAttribute.ApplyToAttributeSet(*CharacterAttributeSet);
-	PlayerSessionData.CharacterSkillAttribute.ApplyToAttributeSet(*CharacterSkillAttributeSet);
+	PlayerSessionData = GetGameInstance<UMJGameInstance>()->GetPlayerSessionDataRef();
+	PlayerSessionData.PlayerLevel =  GetGameInstance<UMJGameInstance>()->GetPlayerSessionDataRef().PlayerLevel;
+	PlayerSessionData.PlayerExp = GetGameInstance<UMJGameInstance>()->GetPlayerSessionDataRef().PlayerExp;
+
+	if (AMJPlayerCharacter* MJPlayer = Cast<AMJPlayerCharacter>(GetPawn()))
+	{
+		if (UMJPlayerStatComponent* PlayerStatComp = MJPlayer->FindComponentByClass<UMJPlayerStatComponent>())
+		{
+			PlayerStatComp->SetPlayerLevel(PlayerSessionData.PlayerLevel);
+			PlayerStatComp->SetTotalCumulativeExperience(PlayerSessionData.PlayerExp);
+			PlayerStatComp->InitializeStat();
+		}
+		UMJPlayerSkillComponent* PlayerSkillComponent = GetPawn()->FindComponentByClass<UMJPlayerSkillComponent>();
+		if (PlayerSkillComponent)
+		{
+			PlayerSkillComponent->SetOwnedSkillMap(PlayerSessionData.CurrentOwnedSkillMap);
+			PlayerSkillComponent->SetEquippedSkillMap(PlayerSessionData.CurrentEquippedSkillMap);
+		}
+	
+	}
+}
+
+void AMJPlayerState::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+}
+
+void AMJPlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+
+	LoadFromInstancedPlayerSessionData();
 }
 

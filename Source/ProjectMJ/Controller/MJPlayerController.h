@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -7,6 +7,8 @@
 #include "GameplayTagContainer.h"
 #include "MJPlayerController.generated.h"
 
+
+class UMJGameFlowHUDWidget;
 class UDataAsset_InputConfig;
 class UInputAction;
 class UMJUIManagerSubsystem;
@@ -14,9 +16,13 @@ class UMJUIManagerSubsystem;
 /**
  * Class Description:
  * Author: Lee JuHyeon
- * Created Date: Create Controller
- * Last Modified By: Lee JuHyeon
- * Last Modified Date: Change Input And Move Actor beHind
+ * Created Date: ?
+ * Modified By: Lee Jisoo
+ * Modified Date: 2025.06.25(BeginPlay에 ShowHUD 추가)
+ * ---
+ * Modified By: 신동민
+ * Modified Date: 2025.07.14
+ * Modified Description: 이동과 공격 관련 Input 
  */
 
 UCLASS()
@@ -27,74 +33,172 @@ public:
 	AMJPlayerController();
 
 protected:
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
-	
-	virtual void PlayerTick(float DeltaTime)override;
-#pragma region move and Input
-	void StopMove();
-	void HoldingMove();
-	void OnTouchStart();
-	void OnTouchReleased();
-	
-
-
-	void Input_AbilityInputPressed(FGameplayTag InInputTag);
-	void Input_AbilityInputReleased(FGameplayTag InInputTag);
-	
-#pragma endregion 
-
-private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterData", meta = (AllowPrivateAccess = "true"))
-	UDataAsset_InputConfig* InputConfigDataAsset;
-
-	FVector CachedDestination;
-
-	bool bIsTouch; // Is it a touch device
-	float FollowTime; // For how long it has been pressed
-
-	bool bIsHolding;
-	bool bIspressed;
-
-	float HoldThresHold = 0.2f;
-	float PressTimed = 0.0f;
-	
-#pragma region DialoguePart
-private:
-	bool IsTriggered = false;
+	virtual void PlayerTick(float DeltaTime) override;
 
 public:
+	void OnLeftMousePressed();
+	void OnLeftMouseReleased();
+	void HandleLeftMouseHold();
+
+	void OnRightMousePressed();
+	void OnRightMouseReleased();
+	void HandleRightMouseHold();
+
+	void AttackOrMove(const FHitResult& HitResult);
+
+	void AbilityInputPressed(FGameplayTag InInputTag);
+	void AbilityInputReleased(FGameplayTag InInputTag);
+
+	void ShiftPressed();
+	void ShiftReleased();
+private:
+	bool bIsLMBPressed = false;
+	bool bIsLMBHolding = false;
+	float LMBHoldTime = 0.0f;
+
+	bool bIsRMBPressed = false;
+	bool bIsRMBHolding = false;
+	float RMBHoldTime = 0.0f;
+
+	bool bIsCharge = false;
+
+	bool bShiftKeyDown = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	float ChargeThreshold = 0.4f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inpur", meta = (AllowPrivateAccess = "true"))
+	UDataAsset_InputConfig* InputConfigDataAsset;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> ShiftAction;
+#pragma region UIPart
+private:
+	bool IsInteracted = false;
+	FGameplayTag PurchaseItemTag;
+	int32 ItemPrice;
+	int32 ItemQuantity;
+
+	FGameplayTag SalesItemTag;
+	int32 SalesPrice;
+	int32 SalesQuantity;
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* ChangeIMCAction;
+	TObjectPtr<UInputAction> ChangeIMCAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* NextDialogueAction;
+	TObjectPtr<UInputAction> NextDialogueAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* ShowBacklogAction;
+	TObjectPtr<UInputAction> ShowBacklogAction;
 
-	UPROPERTY()
-	UMJUIManagerSubsystem* UIManager; 
-
-	// 이것들이 작동하면 아래 4개 함수는 지워도된다
-	void ChangeToIMCDialogue();
-	void ChangeToIMCDefault();
-	void ProceedDialogue();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<UInputAction> ShowStatPanelAction;
 	
-	void ShowBacklog();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<UInputAction> ShowInventoryAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<UInputAction> ShowStoreAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	TObjectPtr<UInputAction> ShowSkillWidgetAction;
+	
+	UPROPERTY()
+	TObjectPtr<UMJUIManagerSubsystem> UIManager;
+
+	//Dialogue
+	UFUNCTION()
+	void StartDialogue();
 
 	UFUNCTION()
-	void OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
+	void ChangeToIMCDialogue();
+
+	UFUNCTION()
+	void ChangeToIMCDefault();
+	
+	UFUNCTION()
+	void ProceedDialogue();
+	
+	UFUNCTION()
+	void SetDialogueVisibility();
+	// Store
+	UFUNCTION()
+	void ShowStore();
+	UFUNCTION()
+	void HideStore();
+		
+	// Show Widget
+	UFUNCTION()
+	void ShowBacklog();
+	UFUNCTION()
+	void ShowStatPanel();
+	UFUNCTION()
+	void ShowInventory();
+	UFUNCTION()
+	void ShowSkillWidget();
+	UFUNCTION()
+	void UpdateSkillWidget(FGameplayTag SkillTag,int32 Level);
+	UFUNCTION()
+	void UpdateEquipedSkillWidget(UTexture2D* Icon, ESkillType SkillType, FGameplayTag Tag);
+	UFUNCTION()
+	void GetOwnedSkill();
+	UFUNCTION()
+	void UpdateSkillSlot(FGameplayTag SkillTag);
+	
+	FGameplayTag TempTag;
+	
+	UFUNCTION()
+	void OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 										int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-	void OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
+	void OnTriggeredOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
 										int32 OtherBodyIndex);
 
-		
+	UFUNCTION()
+	void OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
+										int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnTryPurchase(FGameplayTag& ItemTag, int32 Price, int32 Quantity);
+
+	UFUNCTION()
+	void OnTrySell(FGameplayTag& ItemTag, int32 Price, int32 Quantity);
+
+	UFUNCTION()
+	void OnPurchase();
+
+	UFUNCTION()
+	void OnSell();
 #pragma endregion
 
-	// Active Ability
-	void Input_InstantSkillPressed(FGameplayTag InInputTag);
-	void Input_InstantSkillReleased(FGameplayTag InInputTag);
+
+public:
+
+	UFUNCTION(BlueprintCallable)
+	UMJGameFlowHUDWidget* GetGameFlowHUD() {return GameFlowHUD; }
+
+protected:
+	UPROPERTY()
+	TObjectPtr<UMJGameFlowHUDWidget> GameFlowHUD;
+	
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<UUserWidget> GameFlowHUDWidgetClass;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = UI)
+	UInputAction* PauseAction;
+	//
+	UFUNCTION()
+	void PauseGame();
+
+
+
+protected:
+	UFUNCTION()
+	void OnDead(AActor* InEffectCauser);
+
 };

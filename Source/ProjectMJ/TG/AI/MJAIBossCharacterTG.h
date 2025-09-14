@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/MJCharacterBase.h"
+#include "MJ/Character/MJMonsterCharacter.h"
 #include "MJAIBossCharacterTG.generated.h"
 
 /**
@@ -14,7 +14,7 @@
  * Last Modified Date: 2025-06-28
  */
 UCLASS()
-class PROJECTMJ_API AMJAIBossCharacterTG : public AMJCharacterBase
+class PROJECTMJ_API AMJAIBossCharacterTG : public AMJMonsterCharacter
 {
 	GENERATED_BODY()
 
@@ -22,6 +22,9 @@ public:
 	AMJAIBossCharacterTG();
 
 protected:
+
+	virtual void BeginPlay() override;
+	virtual void PossessedBy(AController* NewController) override;
 	
 	
 };

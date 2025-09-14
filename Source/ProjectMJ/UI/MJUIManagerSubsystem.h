@@ -10,13 +10,17 @@
  * Class Description: UI를 띄우고 내리기 위한 싱글톤 매니저
  * Author: 이지수
  * Created Date: 2025-06-20
- * Last Modified By: 
- * Last Modified Date: 
+ * Last Modified By: 이지수
+ * Last Modified Date: 2025-06-26
  */
 
+class UWidgetComponent;
+class UMJBossHpBarWidget;
 class UMJDialogueWidget;
-class UMJBacklogWidget;
 class UMJDialogueComponent;
+class UMJHUDWidget;
+class UMJCharacterAttributeSet;
+class UMJAbilitySystemComponent;
 
 UCLASS()
 class PROJECTMJ_API UMJUIManagerSubsystem : public UGameInstanceSubsystem
@@ -24,24 +28,31 @@ class PROJECTMJ_API UMJUIManagerSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 
 public:
+	UMJUIManagerSubsystem();
+	
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-	virtual void Deinitialize() override;
 
-	// Dialogue Section
-	void ShowDialogue(UMJDialogueComponent* DialogueComp);
-	void NextDialogue(UMJDialogueComponent* DialogueComp);
-	void HideDialogue();
-	
-	void SetDialogue(const UMJDialogueComponent* DialogueComp) const;
-	
-	//BackLog Section
-	void ShowBacklog();
+	// HUD
+	void ShowHUD(class AMJPlayerState* PlayerState, class AMJPlayerController* PC, class UMJPlayerStatComponent* Stat);
+	UMJHUDWidget* GetHUDWidget() {return HUDWidget;}
 
+	// Dialouge Section
+	void SetDialogueVisibility();
+	
+	// StatPanel Section
+	void ShowStatPanel();
+
+	// Inventory Section
+	void ShowInventory();
+
+	// Store Section
+	void ShowStore();
+
+	void SetSkillWidgetVisibility();
 protected:
 	UPROPERTY()
-	UMJDialogueWidget* DialogueWidget;
+	TObjectPtr<UMJHUDWidget> HUDWidget;
 
-	TSubclassOf<class UMJDialogueWidget> DialogueWidgetClass;
-
-	bool bIsDialogueActive;
+	UPROPERTY()
+	TSubclassOf<UMJHUDWidget> HUDWidgetClass;
 };

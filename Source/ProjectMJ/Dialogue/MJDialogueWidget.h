@@ -5,9 +5,10 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Image.h"
-//#include "MJDialogueRow.h"
 #include "MJDialogueWidget.generated.h"
 
+class UMJDialogueChoiceWidget;
+class UMJBacklogWidget;
 /**
  * Class Description: 다이어로그 위젯을 화면에 띄우기 위한 클래스 / BP_DialogueWidget의 부모 클래스로, 그래프에서 데이터 테이블 연동해줘야 함
  * Author: 이지수
@@ -26,8 +27,7 @@ public:
 	UFUNCTION()
 	virtual void NativeConstruct() override;
 	
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent)
-	void ShowDialogue(const FMJDialogueRow& DialogueRow);
+	void SetTextBlock(const FString& InText, const FString& Speaker);
 
 	void ShowBacklog();
 
@@ -38,15 +38,20 @@ public:
 
 	// Image
 	void SetImageOpacity(const FString& SpeakerName);
-	
-	UPROPERTY(meta = (BindWidget))
-	class UMJBacklogWidget* BacklogWidget;
+
 	
 	bool GetIsTyping() {return bIsTyping;}
+
+	// Getter
+	UMJBacklogWidget* GetBacklogWidget() {return BacklogWidget;}
+	UMJDialogueChoiceWidget* GetDialogueChoiceWidget() {return DialogueChoice;}
 
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UTextBlock*	Text;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock*	Speaker;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UImage* PlayerImage;
@@ -56,6 +61,12 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UImage* BacklogKey;
+		
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMJBacklogWidget> BacklogWidget;
+
+	UPROPERTY(meta=(BindWidget))
+	TObjectPtr<UMJDialogueChoiceWidget> DialogueChoice;
 	
 	FTimerHandle TypingTimerHandle;
 	FString FullText;

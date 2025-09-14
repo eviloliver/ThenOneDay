@@ -4,109 +4,37 @@
 #include "MJSaveGameSubsystem.h"
 
 #include "MoviePlayer.h"
-#include "ProjectMJ.h"
-#include "AbilitySystem/MJAbilitySystemComponent.h"
-#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
 #include "Blueprint/UserWidget.h"
-#include "Character/MJPlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "TG/MJGameInstance.h"
 #include "TG/Struct/MJSaveGame.h"
 
 UMJSaveGameSubsystem::UMJSaveGameSubsystem()
 {
 	
-	static ConstructorHelpers::FClassFinder<UUserWidget> LoadingScreenRef(TEXT("/Game/TG/WBP_LoadingScreen.WBP_LoadingScreen_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> LoadingScreenRef(TEXT("/Game/TG/TestWBP/WBP_LoadingScreen.WBP_LoadingScreen_C"));
 	if (LoadingScreenRef.Succeeded())
 	{
 		LoadingScreen = LoadingScreenRef.Class;
 	}
+	MaxSaveSlotNum = 8;
 }
 
 void UMJSaveGameSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-
 	
 	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UMJSaveGameSubsystem::BeginLoadingScreen);
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UMJSaveGameSubsystem::EndLoadingScreen);
+}
 
+void UMJSaveGameSubsystem::Deinitialize()
+{
+	Super::Deinitialize();
+	
+	//SaveGameToCurrentSlotNum();
 	
 }
-
-void UMJSaveGameSubsystem::CreateSaveGame()
-{
-	SaveGameData = CastChecked<UMJSaveGame>(UGameplayStatics::CreateSaveGameObject(UMJSaveGame::StaticClass()));
-	if (SaveGameData)
-	{
-		//SaveGameToSlot(nullptr);
-	}
-}
-
-void UMJSaveGameSubsystem::LoadSaveGame(AMJPlayerCharacter* Player)
-{
-	if (!Player) return;
-	
-	if (!UGameplayStatics::DoesSaveGameExist(SaveSlotName, UserIndex))
-	{
-		MJ_LOG(LogTG, Log, TEXT("No save found. Saving current character state as default."));
-
-		SaveGameData = CastChecked<UMJSaveGame>(UGameplayStatics::CreateSaveGameObject(UMJSaveGame::StaticClass()));
-		SaveGameToSlot(Player); // Save as Default
-		return;
-	}
-	
-	SaveGameData = Cast<UMJSaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlotName, UserIndex));
-	if (SaveGameData)
-	{
-		if (Player)
-		{
-			UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(Player->GetAbilitySystemComponent());
-	 		if (MJASC)
-	 		{
-	 			UMJCharacterAttributeSet* MJCAS = const_cast<UMJCharacterAttributeSet*>(MJASC->GetSet<UMJCharacterAttributeSet>());
-				if (MJCAS)
-				{
-					//SaveGameData->GetAttributeSaveData().ApplyTo(MJASC);
-				}
-	 		}
-			
-			MJ_LOG(LogTG,Log,TEXT("loaded health : %f"), MJASC->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));
-		}
-	}
-}
-
-void UMJSaveGameSubsystem::SaveGameToSlot(AMJPlayerCharacter* Player)
-{
-	if (SaveGameData)
-	{
-		if (Player)
-		{
-			UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(Player->GetAbilitySystemComponent());
-
-			if (MJASC)
-			{
-			
-				UMJCharacterAttributeSet* MJCAS = const_cast<UMJCharacterAttributeSet*>(MJASC->GetSet<UMJCharacterAttributeSet>());
-				if (MJCAS)
-				{
-					//SaveGameData->GetAttributeSaveData() = FCharacterAttributeSaveData::FromAttributeSet(MJCAS);
-				}
-			}
-			
-			MJ_LOG(LogTG,Log,TEXT("saved health : %f"), SaveGameData->GetAttributeSaveData().Health);
-		}
-		else
-		{
-			bool bSaved = false;
-			MJ_LOG(LogTG, Log, TEXT("Character Info Save success: %s"), bSaved ? TEXT("true") : TEXT("false"));
-		}
-		
-		bool bSaved = UGameplayStatics::SaveGameToSlot(SaveGameData, SaveSlotName, UserIndex);
-		MJ_LOG(LogTG, Log, TEXT("Save success: %s"), bSaved ? TEXT("true") : TEXT("false"));
-		
-	}
-}
-
 
 void UMJSaveGameSubsystem::BeginLoadingScreen(const FString& MapName)
 {
@@ -124,20 +52,141 @@ void UMJSaveGameSubsystem::BeginLoadingScreen(const FString& MapName)
 
 void UMJSaveGameSubsystem::EndLoadingScreen(UWorld* InLoadedWorld)
 {
+	
 }
-
 
 UMJSaveGame* UMJSaveGameSubsystem::GetSaveGameData()
 {
-	return SaveGameData;	
+	return SaveGameData;		
 }
 
-FString UMJSaveGameSubsystem::GetSaveSlotName() const
+void UMJSaveGameSubsystem::SaveGameToCurrentSlotNum()
 {
-	return SaveSlotName;
+
+	UMJGameInstance* MJGI = Cast<UMJGameInstance>(GetGameInstance());
+	if (MJGI)
+	{
+		const uint8 SlotNum = MJGI->GetPlayerSessionDataRef().SaveGameSlotNum;
+
+		if (MJGI->GetPlayerSessionDataRef().SaveGameSlotNum == INDEX_NONE)
+		{
+			return;
+		}
+		
+		const FString SlotName = FString::Printf(TEXT("Slot_%d"), SlotNum);
+
+		UMJSaveGame* SaveGame = Cast<UMJSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
+
+		if (!SaveGame)
+		{
+			SaveGame = Cast<UMJSaveGame>(UGameplayStatics::CreateSaveGameObject(UMJSaveGame::StaticClass()));
+			SaveGame->SlotNum = SlotNum;
+		}
+
+		SaveGame->PlayerName = MJGI->GetPlayerSessionDataRef().PlayerName;
+		SaveGame->PlayerLevel = MJGI->GetPlayerSessionDataRef().PlayerLevel;
+		SaveGame->PlayerExp = MJGI->GetPlayerSessionDataRef().PlayerExp;
+		SaveGame->SlotNum = MJGI->GetPlayerSessionDataRef().SaveGameSlotNum;
+		SaveGame->RecentPlayedDateTime = FDateTime::Now();
+
+		SaveGame->SetCurrentEquippedSkillMap(MJGI->GetPlayerSessionDataRef().CurrentEquippedSkillMap);
+		SaveGame->SetCurrentOwnedSKillMap(MJGI->GetPlayerSessionDataRef().CurrentOwnedSkillMap);
+
+		
+		UGameplayStatics::SaveGameToSlot(SaveGame, SlotName, 0);
+	}
+	
+	
 }
 
-int32 UMJSaveGameSubsystem::GetUserIndex() const
+void UMJSaveGameSubsystem::SaveGameToSelectedSlotNum(const uint8 InputSlotNum)
 {
-	return UserIndex;
+	// using only in SavePointActor
+	UMJGameInstance* MJGI = Cast<UMJGameInstance>(GetGameInstance());
+	if (MJGI)
+	{
+		const FString SlotName = FString::Printf(TEXT("Slot_%d"), InputSlotNum);
+
+		UMJSaveGame* SaveGame;
+
+		if (UGameplayStatics::DoesSaveGameExist(SlotName,0))
+		{
+			SaveGame = Cast<UMJSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
+		}
+		else
+		{
+			SaveGame = Cast<UMJSaveGame>(UGameplayStatics::CreateSaveGameObject(UMJSaveGame::StaticClass()));
+		}
+
+		if (SaveGame)
+		{
+			SaveGame->PlayerName = MJGI->GetPlayerSessionDataRef().PlayerName;
+			SaveGame->PlayerLevel = MJGI->GetPlayerSessionDataRef().PlayerLevel;
+			SaveGame->PlayerExp = MJGI->GetPlayerSessionDataRef().PlayerExp;
+			SaveGame->SlotNum = InputSlotNum;
+			SaveGame->RecentPlayedDateTime = FDateTime::Now();
+			SaveGame->SaveGameCreatedDateTime = FDateTime::Now();
+			
+			SaveGame->SetCurrentEquippedSkillMap(MJGI->GetPlayerSessionDataRef().CurrentEquippedSkillMap);
+			SaveGame->SetCurrentOwnedSKillMap(MJGI->GetPlayerSessionDataRef().CurrentOwnedSkillMap);
+		}
+
+		UGameplayStatics::SaveGameToSlot(SaveGame, SlotName, 0);
+	}
+}
+
+bool UMJSaveGameSubsystem::LoadGameFromSlotNum(int8 SlotNum)
+{
+	
+	UMJGameInstance* MJGI = Cast<UMJGameInstance>(GetGameInstance());
+	if (MJGI)
+	{
+		const FString SlotName = FString::Printf(TEXT("Slot_%d"), SlotNum);
+		if (UGameplayStatics::DoesSaveGameExist(SlotName, 0))
+		{
+			UMJSaveGame* SaveGame = Cast<UMJSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
+
+			MJGI->GetPlayerSessionDataRef().PlayerName = SaveGame->PlayerName;
+			MJGI->GetPlayerSessionDataRef().PlayerLevel = SaveGame->PlayerLevel;
+			MJGI->GetPlayerSessionDataRef().PlayerExp = SaveGame->PlayerExp;
+			MJGI->GetPlayerSessionDataRef().SaveGameSlotNum = SaveGame->SlotNum;
+			MJGI->GetPlayerSessionDataRef().SetCurrentEquippedSkillMap(SaveGame->CurrentEquippedSkillMap);
+			MJGI->GetPlayerSessionDataRef().SetCurrentOwnedSKillMap(SaveGame->CurrentOwnedSkillMap);
+			
+			
+
+			return true;
+		}
+	}
+	return false;
+}
+
+const uint8 UMJSaveGameSubsystem::GetCurrentSavedSlotNum()
+{
+	uint8 Result = 0;
+	
+	for (int i = 0; i < MaxSaveSlotNum; ++i)
+	{
+		const FString SlotName = FString::Printf(TEXT("Slot_%d"), i);
+    		
+		if (UGameplayStatics::DoesSaveGameExist(SlotName, 0))
+		{
+			UMJSaveGame* SaveGame = Cast<UMJSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
+			if (SaveGame)
+			{
+				++Result;	
+			}
+		}
+	}
+
+	return Result;
+}
+
+const bool UMJSaveGameSubsystem::IsSlotFull()
+{
+	if (GetCurrentSavedSlotNum() == MaxSaveSlotNum)
+	{
+		return true;
+	}
+	return false;
 }

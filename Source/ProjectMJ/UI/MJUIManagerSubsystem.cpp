@@ -2,99 +2,83 @@
 
 
 #include "UI/MJUIManagerSubsystem.h"
+#include "MJHUDWidget.h"
 #include "Dialogue/MJDialogueWidget.h"
 #include "Dialogue/MJBacklogWidget.h"
 #include "Dialogue/MJDialogueComponent.h"
+#include "Player/MJPlayerState.h"
+#include "AbilitySystem/MJAbilitySystemComponent.h"
+#include "Bar/MJEnemyHPBar.h"
+#include "Components/WidgetComponent.h"
+#include "Controller/MJPlayerController.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Inventory/MJInventoryWidget.h"
+#include "Kismet/GameplayStatics.h"
+#include "TG/GameState/MJGameStateDungeon.h"
+#include "TG/UI/MJBossHpBarWidget.h"
+#include "TG/UI/MJGameFlowHUDWidget.h"
+
+
+
+UMJUIManagerSubsystem::UMJUIManagerSubsystem()
+{
+
+	static ConstructorHelpers::FClassFinder<UMJHUDWidget> HUDWidgetRef(TEXT("/Game/UI/WBP/HUD/WBP_HUD.WBP_HUD_C"));
+	if (HUDWidgetRef.Succeeded())
+	{
+		HUDWidgetClass = HUDWidgetRef.Class;
+	}
+}
 
 void UMJUIManagerSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-
-	UE_LOG(LogTemp, Log, TEXT("으앵"));
-	DialogueWidgetClass = LoadClass<UMJDialogueWidget>(
-			nullptr,
-			TEXT("/Game/Dialogue/Widget/BP_MJDialogueWidget.BP_MJDialogueWidget_C"));
-
-}
-
-void UMJUIManagerSubsystem::Deinitialize()
-{
-	Super::Deinitialize();
-}
-
-void UMJUIManagerSubsystem::ShowDialogue(UMJDialogueComponent* DialogueComp) // 위젯 띄우기만 하는 함수
-{
-	if (!DialogueWidgetClass)
-		return;
 	
-	// 위젯 생성
-	if (!DialogueWidget)
+	
+	// EnemyHPBarWidgetClass = LoadClass<UMJEnemyHPBar>(
+	// 	nullptr,
+	// 	TEXT("/Game/UI/WBP/World/Bar/WBP_EnemyHPBar.WBP_EnemyHPBar_C"));
+	//
+	// EnemyHPBarWidget = CreateWidget<UMJEnemyHPBar>(GetWorld(),EnemyHPBarWidgetClass );
+}
+
+void UMJUIManagerSubsystem::ShowHUD(AMJPlayerState* PlayerState, AMJPlayerController* PC, UMJPlayerStatComponent* Stat)
+{
+	HUDWidget = CreateWidget<UMJHUDWidget>(PC, HUDWidgetClass);
+	if (HUDWidget)
 	{
-		DialogueWidget = CreateWidget<UMJDialogueWidget>(GetWorld(), DialogueWidgetClass);
-		if (!DialogueWidget)
-			return;
-
-		DialogueWidget->AddToViewport();
-	}
-	
-	DialogueComp->StartDialogue(); // 데이터테이블을 불러오고, index를 0으로 설정
-	
-	SetDialogue(DialogueComp); // 인덱스 0일 때의 대사들이 세팅되어 타이핑된다
-}
-
-void UMJUIManagerSubsystem::NextDialogue(UMJDialogueComponent* DialogueComp)
-{
-	if (DialogueWidget)
-	{
-		if (DialogueWidget->GetIsTyping())
+		HUDWidget->AddToViewport();
+		
+		if (PlayerState) 
 		{
-			DialogueWidget->SkipTyping();
-			return;
-		}
-		
-		DialogueComp->NextDialogue(); // 인덱스 +1
-		
-		SetDialogue(DialogueComp); // +1된 row를 가져와 타이핑 >> 순서 중요
-		
-
-		if (DialogueComp->IsDialogueEnd())
-		{
-			HideDialogue();
+			auto* MJASC = Cast<UMJAbilitySystemComponent>(PlayerState->GetAbilitySystemComponent());
+			HUDWidget->BindAtrributesToChildren(MJASC,PlayerState->GetCharacterAttributeSet(),Stat);
 		}
 	}
 }
 
-void UMJUIManagerSubsystem::SetDialogue(const UMJDialogueComponent* DialogueComp) const
+void UMJUIManagerSubsystem::SetDialogueVisibility()
 {
-	if (const FMJDialogueRow* Row = DialogueComp->GetCurrentRow())
-	{
-		DialogueWidget->ShowDialogue(*Row);
-		DialogueWidget->StartTyping(Row->Text, 0.08f);
-		DialogueWidget->SetImageOpacity(Row->Speaker);
-	}
-
-	if (const FMJDialogueRow* PrevRow = DialogueComp->GetPreviousRow())
-	{
-		if (DialogueWidget->BacklogWidget)
-		{
-			DialogueWidget->BacklogWidget->AddLine(*PrevRow);
-		}
-	}
+	HUDWidget->SetDialogueVisibility();
 }
 
-void UMJUIManagerSubsystem::HideDialogue()
+void UMJUIManagerSubsystem::ShowStatPanel()
 {
-	if (DialogueWidget)
-	{
-		DialogueWidget->RemoveFromParent();
-       	DialogueWidget = nullptr;
-	}
+	HUDWidget->ShowStatPanel();
 }
 
-void UMJUIManagerSubsystem::ShowBacklog()
+void UMJUIManagerSubsystem::ShowInventory()
 {
-	DialogueWidget->ShowBacklog();
+	HUDWidget->ShowInventory();
 }
 
+void UMJUIManagerSubsystem::ShowStore()
+{
+	HUDWidget->ShowStore();
+}
+
+void UMJUIManagerSubsystem::SetSkillWidgetVisibility()
+{
+	HUDWidget->SetSkillWidgetVisibility();
+}
 

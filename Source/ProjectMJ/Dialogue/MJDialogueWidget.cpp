@@ -13,13 +13,27 @@ void UMJDialogueWidget::NativeConstruct()
 	if (BacklogWidget)
 	{
 		BacklogWidget->SetVisibility(ESlateVisibility::Hidden);
-		UE_LOG(LogTemp, Warning, TEXT("Dialogue Widget Constructed"));
+	}
+}
+
+void UMJDialogueWidget::SetTextBlock(const FString& InText,const FString& speaker)
+{
+	// 여기서 크래시가 난다면 component에 DT를 넣었는지 확인해보세요
+	if (Text)
+	{
+		Text->SetText(FText::FromString(InText));
+	}
+	
+	if (Speaker)
+	{
+		Speaker->SetText(FText::FromString(speaker));
 	}
 }
 
 void UMJDialogueWidget::StartTyping(const FString& InText, float TypingSpeed)
 {
 	FullText = InText;
+	UE_LOG(LogTemp, Display, TEXT("Text: %s"), *FullText);
 	CurrentCharIndex = 0;
 	bIsTyping = true;
 	Text->SetText(FText::FromString(TEXT(""))); // 빈문자열로 초기화해서 한글자씩 나타날 수 있도록 하기
@@ -57,6 +71,7 @@ void UMJDialogueWidget::SkipTyping()
 {
 	if (bIsTyping)
 	{
+		UE_LOG(LogTemp, Display, TEXT("SkipTyping"));
 		GetWorld()->GetTimerManager().ClearTimer(TypingTimerHandle);
 		Text->SetText(FText::FromString(FullText));
 		bIsTyping = false;
@@ -67,17 +82,16 @@ void UMJDialogueWidget::SetImageOpacity(const FString& SpeakerName)
 {
 	if (!PlayerImage)
 		return;
+	
 	if (!NPCImage)
 		return;
 	
-	if (SpeakerName == TEXT("태관"))
+	if (SpeakerName == TEXT("Player"))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Image Opacity"));
 		PlayerImage->SetOpacity(1.0f);
 		NPCImage->SetOpacity(0.3f);
 	}
-
-	if (SpeakerName == TEXT("주현"))
+	else
 	{
 		NPCImage->SetOpacity(1.0f);
 		PlayerImage->SetOpacity(0.3f);

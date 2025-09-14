@@ -22,5 +22,16 @@ public:
 	UBTTask_MJTurnToTarget();
 	
 protected:
+	UPROPERTY()
+	TObjectPtr<UBehaviorTreeComponent> MyOwnerComp;
+	
+	FRotator TargetRot;
+	
+	FTimerDelegate TimerDelegate;
+	FTimerHandle TimerHandle;
+	
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+	virtual EBTNodeResult::Type AbortTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+
+	void OnRotated();
 };

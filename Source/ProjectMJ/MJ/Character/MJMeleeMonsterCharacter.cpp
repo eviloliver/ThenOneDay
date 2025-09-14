@@ -3,46 +3,16 @@
 
 #include "MJ/Character/MJMeleeMonsterCharacter.h"
 
+
 AMJMeleeMonsterCharacter::AMJMeleeMonsterCharacter()
 {
 }
 
-float AMJMeleeMonsterCharacter::GetAIMaximumAttackRange()
+void AMJMeleeMonsterCharacter::BeginPlay()
 {
-	return 400.0f;
-}
+	Super::BeginPlay();
 
-float AMJMeleeMonsterCharacter::GetAIMinimumAttackRange()
-{
-	return 200.0f;
-}
+	// // Minjin: 기본 공격 스킬 추가
+	// AttackTag = FGameplayTag::RequestGameplayTag(FName("Skill.Instant.BasicMeleeAttack"));
 
-void AMJMeleeMonsterCharacter::AttackByAI()
-{
-	/*
-	 * Minjin
-	 * TODO
-	 * 공격
-	 */
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("MeleeMonster: 공격"));
-}
-
-void AMJMeleeMonsterCharacter::MeleeAttackByAI()
-{
-	/*
-	 * Minjin
-	 * TODO
-	 * 근거리 공격
-	 */
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("MeleeMonster: 근거리 공격"));
-}
-
-void AMJMeleeMonsterCharacter::RangeAttackByAI()
-{
-	/*
-	 * Minjin
-	 * TODO
-	 * 중거리 공격-돌진?
-	 */
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Emerald, TEXT("MeleeMonster: 중거리 공격"));
 }

@@ -10,8 +10,8 @@
  * Class Description: ServiceNode-타겟이 공격범위에 들어와 있는지 확인(근거리, 원거리)
  * Author: Kim Minjin
  * Created Date: 2025.06.25.
- * Last Modified By: (Last Modifier)
- * Last Modified Date: (Last Modified Date)
+ * Last Modified By: Kim Minjin
+ * Last Modified Date: (2025.08.10.) 하드코딩 수정. 스킬 태그를 받아와 스킬의 공격범위를 체크. KeepDistancePos 설정
  */
 UCLASS()
 class PROJECTMJ_API UBTService_MJCheckAttackRange : public UBTService
@@ -23,4 +23,14 @@ public:
 
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
+	virtual void InitializeFromAsset(UBehaviorTree& Asset) override;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tag", meta=(Categories = "Skill"))
+	FGameplayTagContainer SkillTags;
+
+	FVector PreTargetLocation;
+	FVector CurrTargetLocation;
+
+	UBehaviorTreeComponent* CachedOwnerComp;
 };

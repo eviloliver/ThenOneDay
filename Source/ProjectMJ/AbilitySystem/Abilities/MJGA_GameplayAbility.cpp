@@ -7,6 +7,10 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "MJGA_GameplayAbility.h"
 
+#include "ProjectMJ.h"
+#include "AbilitySystem/Attributes/MJCharacterAttributeSet.h"
+#include "AbilitySystem/Attributes/MJCharacterSkillAttributeSet.h"
+
 void UMJGA_GameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	Super::OnGiveAbility(ActorInfo, Spec);
@@ -17,6 +21,14 @@ void UMJGA_GameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* Actor
 			ActorInfo->AbilitySystemComponent->TryActivateAbility(Spec.Handle);
 		}
 	}
+}
+
+void UMJGA_GameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	const FGameplayEventData* TriggerEventData)
+{
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
 }
 
 void UMJGA_GameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)

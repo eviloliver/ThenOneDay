@@ -39,6 +39,9 @@ public:
 
 	
 protected:
+	virtual void PostInitializeComponents() override;
+
+	virtual void BeginPlay() override;
 	
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TObjectPtr<class UMJAbilitySystemComponent> ASC;
@@ -53,5 +56,6 @@ protected:
 	FMJPlayerSessionData PlayerSessionData;
 	
 };
+
 
 

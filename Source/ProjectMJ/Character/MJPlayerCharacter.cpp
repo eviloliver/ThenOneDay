@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Character/MJPlayerCharacter.h"
@@ -10,10 +10,16 @@
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "DataAsset/DataAsset_StartDataBase.h"
 #include "Component/MJPlayerCombatComponent.h"
+#include "Component/MJPlayerSkillComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
+#include "UI/Inventory/MJInventoryComponent.h"
+#include "Component/MJFadeObjectComponent.h"
+#include "Component/MJPlayerEffectComponent.h"
+#include "Component/MJPlayerStatComponent.h"
 #include "Perception/AISense_Damage.h"
 #include "Perception/AISense_Hearing.h"
+
 
 class UMJSaveGameSubsystem;
 
@@ -40,12 +46,16 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 	FollowCamera->bUsePawnControlRotation = false;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
-	GetCharacterMovement()->MaxWalkSpeed = 400.0;
-	GetCharacterMovement()->BrakingDecelerationWalking = 2000.0;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+	// GetCharacterMovement()->BrakingDecelerationWalking = 2000.0;
+	GetCharacterMovement()->MaxAcceleration = 99999.f;
+	GetCharacterMovement()->BrakingFrictionFactor = 999.f;
+	GetCharacterMovement()->BrakingDecelerationWalking = 99999.f;
 
 	PlayerCombatComponent = CreateDefaultSubobject<UMJPlayerCombatComponent>(TEXT("PlayerCombatComponent"));
 
+	//Add FadeComponent
+	//FadeComponent = CreateDefaultSubobject<UMJFadeObjectComponent>(TEXT("FadeComponent"));
 	// Minjin: AI Perception-캐릭터를 StimuliSource로 등록(AI가 감지)
 	PerceptionStimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("AIPerceptionStimuliSourceComponent"));
 	if (nullptr!= PerceptionStimuliSourceComponent)
@@ -59,20 +69,52 @@ AMJPlayerCharacter::AMJPlayerCharacter()
 		PerceptionStimuliSourceComponent->RegisterWithPerceptionSystem();
 	}
 
-	DialogueTarget = nullptr;
+	UITarget = nullptr;
 
-	DialogueTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("DialogueTrigger"));
-	DialogueTrigger->SetupAttachment(RootComponent);
-	DialogueTrigger->InitSphereRadius(120.f);
-	DialogueTrigger->SetCollisionProfileName(TEXT("Trigger"));
-	DialogueTrigger->SetGenerateOverlapEvents(true);
-	DialogueTrigger->SetHiddenInGame(false);
+	UITrigger = CreateDefaultSubobject<USphereComponent>(TEXT("UITrigger"));
+	UITrigger->SetupAttachment(RootComponent);
+	UITrigger->InitSphereRadius(180.f);
+	UITrigger->SetCollisionProfileName(TEXT("Trigger"));
+	UITrigger->SetGenerateOverlapEvents(true);
+	UITrigger->SetHiddenInGame(true);
+
+	InventoryComponent = CreateDefaultSubobject<UMJInventoryComponent>(TEXT("InventoryComponent"));
+	// Skill Component
+	SkillComponent = CreateDefaultSubobject<UMJPlayerSkillComponent>(TEXT("SkillComponent"));
+	// Stat Component
+	StatComponent = CreateDefaultSubobject<UMJPlayerStatComponent>(TEXT("StatComponent"));
+	// Effect Component
+	EffectComponent = CreateDefaultSubobject<UMJPlayerEffectComponent>(TEXT("EffectComponent"));
+
+	// Minjin: ID 설정
+	ID = ETeam_ID::PLAYER;
+
+	static ConstructorHelpers::FClassFinder<AActor>WEAPONCLASS(TEXT("/Game/Characters/Item/BP_Sword.BP_Sword_C"));
+	if (WEAPONCLASS.Succeeded())
+	{
+		WeaponClass = WEAPONCLASS.Class;
+	}
 }
 
 void AMJPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	APawn* WeaponInstigator = Cast<APawn>(GetMesh()->GetOwner());
+	FTransform Trans;
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = GetMesh()->GetOwner();
+	SpawnParams.Instigator = WeaponInstigator;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
+	AActor* Weapon = GetWorld()->SpawnActor<AActor>(WeaponClass, Trans, SpawnParams);
+
+	if (!Weapon)
+	{
+		return;
+	}
+	Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("Weapon"));
+	
 }
 
 void AMJPlayerCharacter::PossessedBy(AController* NewController)
@@ -88,34 +130,21 @@ void AMJPlayerCharacter::PossessedBy(AController* NewController)
 	// 로딩 데이터 있을 시 받아와서 AttributeSet에 적용
 	// 없을 시엔 무시하고 기본 AttributeSet 으로 진행됩니다.
 
-
-	
-	// UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetWorld()->GetGameInstance());
-	//
-	// if (MJGI)
+	// 태관 : MJPlayerState 에서 LoadPlayersessionData 함수가 InitializeStat 을 호출합니다.
+	// if (StatComponent)
 	// {
-	// 	UMJSaveGameSubsystem* MJSaveGameSubsystem = MJGI->GetSubsystem<UMJSaveGameSubsystem>();
-	// 	if (MJSaveGameSubsystem)
-	// 	{
-	// 		MJSaveGameSubsystem->LoadSaveGame(this);
-	// 	}
-	// 	MJ_LOG(LogTG, Log, TEXT("player loaded health : %f"),  GetAbilitySystemComponent()->GetNumericAttribute(UMJCharacterAttributeSet::GetHealthAttribute()));
+	// 	StatComponent->InitializeStat();
 	// }
-	
+	StatComponent->OnDamage.AddDynamic(this,&ThisClass::OnDamage);
 }
 
 void AMJPlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
-	
-	// if (UMJGameInstanceTG* MJGI = Cast<UMJGameInstanceTG>(GetGameInstance()))
-	// {
-	// 	UMJSaveGameSubsystem* MJSaveGameSubsystem = MJGI->GetSubsystem<UMJSaveGameSubsystem>();
-	// 	if (MJSaveGameSubsystem)
-	// 	{
-	// 		MJSaveGameSubsystem->SaveGameToSlot(this);
-	// 	}
-	// 	MJ_LOG(LogTG,Log, TEXT("Character Attribute Saved"));
-	// }
 
+}
+
+void AMJPlayerCharacter::OnDamage(float Magnitude, bool bIsCritical)
+{
+	FloatDamage(Magnitude, bIsCritical,EOwnerType::Player);
 }

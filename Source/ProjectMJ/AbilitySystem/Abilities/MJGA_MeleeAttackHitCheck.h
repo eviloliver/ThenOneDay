@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Abilities/MJGA_GameplayAbility.h"
+#include "GameplayTagContainer.h"
 #include "MJGA_MeleeAttackHitCheck.generated.h"
 
 /**
@@ -33,18 +34,15 @@ protected:
 	UFUNCTION()
 	void OnTraceResultCallback(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 
-	UPROPERTY(EditAnywhere, Category = "GAS")
-	TSubclassOf<UGameplayEffect> AttackDamageEffect;
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Effects")
+	TSubclassOf<UGameplayEffect> DamageGameplayEffectClass;
 
-	// 사용할 어빌리티들 적용을 해야하나
-	// 버프/디버프 등
-
-	// 데이터로 따로 관리할 가능성이 높음
-	// 그래서 추후 사용할지도
-	// 명시 안해주면 1.f긴 함
-	// float CurrentLevel;
+	UPROPERTY(EditDefaultsOnly, Category = "GAS|Effects")
+	TSubclassOf<UGameplayEffect> StatusGameplayEffectClass;
 
 	UPROPERTY(EditAnywhere, Category = "GAS")
 	TSubclassOf<AMJTA_Trace> TargetActorClass;
 
+	UPROPERTY(EditAnywhere, Category = "GameplayCue" , meta = (Categories = "GameplayCue"))
+	FGameplayTag GameplayCueTag;
 };

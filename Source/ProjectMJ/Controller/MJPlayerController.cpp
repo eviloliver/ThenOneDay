@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Controller/MJPlayerController.h"
@@ -10,26 +10,54 @@
 #include "Component/Input/MJInputComponent.h"
 #include "Character/MJPlayerCharacter.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "AbilitySystem/MJAbilitySystemComponent.h"
-#include "MJGamePlayTags.h"
-#include "Dialogue/MJDialogueComponent.h"
 #include "Components/SphereComponent.h"
 #include "UI/MJUIManagerSubsystem.h"
+#include "Player/MJPlayerState.h"
 #include "ProjectMJ.h"
-#include "Navigation/PathFollowingComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Character/MJPlayerCharacter.h"
-#include "Character/Component/MJSkillComponent.h"
-#include "Compression/lz4.h"
+#include "Character/Component/MJPlayerSkillComponent.h"
+#include "Dialogue/MJDialogueWidget.h"
+#include "Character/Component/MJPlayerStatComponent.h"
+#include "Components/Button.h"
+#include "DataTable/MJSkillDataRow.h"
+#include "UI/Inventory/MJInventoryComponent.h"
+#include "Item/MJItemBase.h"
+#include "TG/UI/MJGameFlowHUDWidget.h"
+#include "UI/MJHUDWidget.h"
+#include "UI/Component/MJInteractComponent.h"
+#include "UI/Skill/MJEquipedSkillWidget.h"
+#include "UI/Skill/MJSkillWidget.h"
+#include "UI/Store/MJMerchandiseSlot.h"
+#include "UI/Store/MJPopupWidget.h"
+#include "UI/Store/MJSalesSlot.h"
+#include "UI/Store/MJStoreComponent.h"
+#include "UI/Store/MJStoreWidget.h"
+#include "UI/Skill/MJSkillSlotWidget.h"
 
+
+// TODO: Input 관련한 로직들 Component로 따로 빼기 - 동민 - 
 
 AMJPlayerController::AMJPlayerController()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
-	CachedDestination = FVector::ZeroVector;
-	FollowTime = 0.f;
-	bIsTouch=false;
+
+	bIsLMBPressed = false;
+	bIsLMBHolding = false;
+	LMBHoldTime = 0.0f;
+
+	bIsRMBPressed = false;
+	bIsRMBHolding = false;
+	RMBHoldTime = 0.0f;
+
+	bIsCharge = false;
+	bShiftKeyDown = false;
+
+	ChargeThreshold = 0.3f;
+}
+
+void AMJPlayerController::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
 }
 
 void AMJPlayerController::BeginPlay()
@@ -38,15 +66,60 @@ void AMJPlayerController::BeginPlay()
 
 	UIManager =	GetGameInstance()->GetSubsystem<UMJUIManagerSubsystem>();
 	ensure(UIManager);
-	// 언리얼 엔진의 초기화 순서 : GameInstance > GameMode > Actor
-	// 그러므로 GetSubsystem 시 nullptr 을 반환할 일은 없지만, !
-	// 혹시 모를 상황(모듈 누락, 이상한 호출 타이밍, 비동기 로직 중 접근 등)에 대비하여 ensure() 또는 UE_LOG 찍기
 	
 	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
 	if (MJChar)
 	{
-		MJChar->GetDialogueTrigger()->OnComponentBeginOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueIn);
-		MJChar->GetDialogueTrigger()->OnComponentEndOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredDialogueOut);
+		MJChar->GetUITrigger()->OnComponentBeginOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredIn);
+		MJChar->GetUITrigger()->OnComponentEndOverlap.AddDynamic(this,&AMJPlayerController::OnTriggeredOut);
+		MJChar->GetUITrigger()->OnComponentBeginOverlap.AddDynamic(this,&ThisClass::OnTriggeredItemIn);
+	}
+	
+	GameFlowHUD = CastChecked<UMJGameFlowHUDWidget>(CreateWidget(this, GameFlowHUDWidgetClass));
+	if (GameFlowHUD)
+	{
+		// TG : Do not change order of PC setter. 
+		GameFlowHUD->SetPlayerController(this);
+		GameFlowHUD->AddToViewport(1);
+	}
+	UMJPlayerStatComponent* MJPlayerStatComp = GetPawn()->FindComponentByClass<UMJPlayerStatComponent>();
+	if (MJPlayerStatComp)
+	{
+		MJPlayerStatComp->OnDeath.AddDynamic(this,&AMJPlayerController::OnDead);
+	}
+
+	AMJPlayerState* State = GetPlayerState<AMJPlayerState>();
+    if (State && MJPlayerStatComp)
+    {
+    	UIManager->ShowHUD(State, this, MJPlayerStatComp);
+    	UIManager->GetHUDWidget()->GetStoreWidget()->SetStatComponent(MJPlayerStatComp);
+    }
+	
+	TArray<UMJMerchandiseSlot*> MerSlot = UIManager->GetHUDWidget()->GetStoreWidget()->GetMerchandiseSlots();
+	for (int i = 0; i < MerSlot.Num(); i++)
+	{
+		if (MerSlot[i])
+		{
+			MerSlot[i]->OnMerchandiseSlotEvent.AddDynamic(this, &AMJPlayerController::OnTryPurchase);
+		}
+	}
+
+	if (UIManager->GetHUDWidget()->GetStoreWidget())
+	{
+		UIManager->GetHUDWidget()->GetStoreWidget()->OnClickedPurchaseYes.AddDynamic(this,&AMJPlayerController::OnPurchase);
+		UIManager->GetHUDWidget()->GetStoreWidget()->OnClickedSellYes.AddDynamic(this,&AMJPlayerController::OnSell);
+	}
+
+	if (UMJPlayerSkillComponent* SkillComponent = MJChar->FindComponentByClass<UMJPlayerSkillComponent>())
+	{
+		SkillComponent->OnLearnSkillEvent.AddDynamic(this,&AMJPlayerController::UpdateSkillWidget);
+		SkillComponent->OnLearnSkillEvents.AddDynamic(this,&AMJPlayerController::UpdateSkillSlot);
+	}
+
+	for (int i = 0; i < 10; i++)
+	{
+		UIManager->GetHUDWidget()->GetSkillWidget()->GetSkillSlots()[i]->OnClickedEquipButton.AddDynamic(this,&AMJPlayerController::UpdateEquipedSkillWidget);
+		UIManager->GetHUDWidget()->GetSkillWidget()->GetSkillSlots()[i]->GetEquipButton()->OnClicked.AddDynamic(this,&ThisClass::GetOwnedSkill);
 	}
 }
 
@@ -56,253 +129,596 @@ void AMJPlayerController::SetupInputComponent()
 
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
-		Subsystem->AddMappingContext(InputConfigDataAsset->DefaultMappingContext, 0);
+		Subsystem->AddMappingContext(InputConfigDataAsset->GetDefaultMappingContext(), 0);
 	}
 	
-	UMJInputComponent* ProjectMJInputComponent = CastChecked< UMJInputComponent>(InputComponent);
+	UMJInputComponent* MJInputComponent = CastChecked< UMJInputComponent>(InputComponent);
 
-	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Click, ETriggerEvent::Started, this, &ThisClass::OnTouchStart);
-	ProjectMJInputComponent->BindNativeInputAction(InputConfigDataAsset, MJGameplayTags::Input_SetDestination_Click, ETriggerEvent::Completed, this, &ThisClass::OnTouchReleased);
+	MJInputComponent->BindAbilityInputAction(InputConfigDataAsset, this, &AMJPlayerController::AbilityInputPressed, &AMJPlayerController::AbilityInputReleased);
 
-
-	ProjectMJInputComponent->BindAbilityInputAction(InputConfigDataAsset, this, &AMJPlayerController::Input_AbilityInputPressed, &AMJPlayerController::Input_AbilityInputReleased);
+	MJInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AMJPlayerController::ShiftPressed);
+	MJInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AMJPlayerController::ShiftReleased);
 
 	//Dialogue Input
-	ProjectMJInputComponent->BindAction(ChangeIMCAction, ETriggerEvent::Triggered, this, &ThisClass::ChangeToIMCDialogue);
-	ProjectMJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
-	ProjectMJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
+	MJInputComponent->BindAction(ChangeIMCAction, ETriggerEvent::Triggered, this, &ThisClass::StartDialogue);
+	MJInputComponent->BindAction(NextDialogueAction, ETriggerEvent::Triggered, this, &ThisClass::ProceedDialogue);
+	MJInputComponent->BindAction(ShowBacklogAction, ETriggerEvent::Triggered, this, &ThisClass::ShowBacklog);
 
+	// UI Input
+	MJInputComponent->BindAction(ShowInventoryAction, ETriggerEvent::Triggered, this, &ThisClass::ShowInventory);
+	MJInputComponent->BindAction(ShowStatPanelAction, ETriggerEvent::Triggered, this, &ThisClass::ShowStatPanel);
+	MJInputComponent->BindAction(ShowSkillWidgetAction, ETriggerEvent::Triggered, this, &ThisClass::ShowSkillWidget);
+	MJInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &ThisClass::PauseGame);
 }
+
 void AMJPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
-	if (bIspressed && !bIsHolding)
+
+	if (bIsLMBPressed && !bIsLMBHolding)
 	{
-		PressTimed += DeltaTime;
-		if (PressTimed >= HoldThresHold)
+		bIsLMBHolding = true;
+	}
+
+	if (bIsLMBHolding)
+	{
+		LMBHoldTime += DeltaTime;
+		HandleLeftMouseHold();
+	}
+
+	if (bIsRMBPressed && !bIsRMBHolding)
+	{
+		bIsRMBHolding = true;
+	}
+
+	if (bIsRMBHolding)
+	{
+		RMBHoldTime += DeltaTime;
+		HandleRightMouseHold();
+	}
+}
+
+void AMJPlayerController::OnLeftMousePressed()
+{
+	bIsLMBPressed = true;
+	LMBHoldTime = 0.0f;
+	bIsLMBHolding = false;
+
+	if (bShiftKeyDown)
+	{
+		AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
+		if (!ControlledCharacter)
 		{
-			bIsHolding = true;
-			StopMove();
+			return;
+		}
+
+		UMJPlayerSkillComponent* SkillComponent = ControlledCharacter->FindComponentByClass<UMJPlayerSkillComponent>();
+		if (!SkillComponent)
+		{
+			return;
+		}
+
+		FGameplayTag BasicAttackTag = FGameplayTag::RequestGameplayTag(FName("Skill.Normal"));
+		SkillComponent->ActivateSkillByInputTag(BasicAttackTag);
+	}
+}
+
+void AMJPlayerController::OnLeftMouseReleased()
+{
+	if (!bIsLMBHolding)
+	{
+		FHitResult HitResult;
+		if (GetHitResultUnderCursor(ECC_Visibility, false, HitResult))
+		{
+			AttackOrMove(HitResult);
 		}
 	}
-	if (bIsHolding)
-	{
-		HoldingMove();
-	}
+
+	bIsLMBPressed = false;
+	bIsLMBHolding = false;
 }
 
-void AMJPlayerController::StopMove()
+void AMJPlayerController::HandleLeftMouseHold()
 {
-		StopMovement();	
-}
-
-
-void AMJPlayerController::HoldingMove()
-{
-	//FollowTime = 0.f;
-	FHitResult Hit;
-
-	if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
+	// 꾹 눌렀을 때는 몹 위에 마우스 있어도 이동이 맞음 - 동민 -
+	FHitResult HitResult;
+	if (GetHitResultUnderCursor(ECC_Visibility, false, HitResult))
 	{
-		FVector MoveDir = Hit.ImpactPoint - GetPawn()->GetActorLocation();
-		MoveDir.Z = 0;
-		MoveDir.Normalize();
-
-		if (!MoveDir.IsNearlyZero())
+		if (bShiftKeyDown)
 		{
-			GetPawn()->AddMovementInput(MoveDir, 1.0f);
-		}
-	}
-}
-
-void AMJPlayerController::OnTouchStart()
-{
-	//bIsTouch = true;
-	bIspressed = true;
-	bIsHolding = false;
-	PressTimed = 0.0f;
-}
-
-void AMJPlayerController::OnTouchReleased()
-{
-	//bIsTouch = false;
-	const float TraceOffsetZ = 10.0f;
-	const float TraceDepthZ = 1000.0;
-
-
-	if (!bIsHolding)
-	{
-		FHitResult Hit;
-		
-		FVector WorldOrigin, WorldDirection;
-
-		if (GetHitResultUnderCursor(ECC_Visibility, false, Hit))
-		{
-			if (DeprojectMousePositionToWorld(WorldOrigin, WorldDirection))
+			AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
+			if (!ControlledCharacter)
 			{
-				FVector TraceStart = WorldOrigin;
-				FVector TraceEnd = TraceStart + WorldDirection * 10000.0f;
-
-				TArray<FHitResult> HitResults;
-				FCollisionQueryParams TraceParams;
-				TraceParams.AddIgnoredActor(GetPawn()); 
-				
-				bool bHit = GetWorld()->LineTraceMultiByChannel(
-					HitResults,
-					TraceStart,
-					TraceEnd,
-					ECC_Visibility,
-					TraceParams
-				);
-				DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Red, false, 1.5f);
-				for (const FHitResult& Hits : HitResults)
-				{
-					UE_LOG(LogTemp, Warning, TEXT("%d"), HitResults.Num());
-					AActor* HitActor = Hits.GetActor();
-					if (!HitActor)
-					{
-						continue;
-					}
-			
-					if (HitActor->ActorHasTag("BlockClick"))
-					{
-						continue;
-					}
-				
-					if (HitActor->ActorHasTag("Ground") || Hits.Component->GetCollisionObjectType() == ECC_WorldStatic)
-					{
-						UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, Hits.ImpactPoint);
-						break;
-					}
-				}
+				return;
 			}
 
-			CachedDestination = Hit.Location;
+			UMJPlayerSkillComponent* SkillComponent = ControlledCharacter->FindComponentByClass<UMJPlayerSkillComponent>();
+			if (!SkillComponent)
+			{
+				return;
+			}
 
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
+			FGameplayTag BasicAttackTag = FGameplayTag::RequestGameplayTag(FName("Skill.Normal"));
+			SkillComponent->ActivateSkillByInputTag(BasicAttackTag);
+			StopMovement();
+
 		}
+		else
+		{
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitResult.Location);
+
+		}
+	}
+}
+
+void AMJPlayerController::OnRightMousePressed()
+{
+	bIsRMBPressed = true;
+	bIsRMBHolding = false;
+	bIsCharge = false;
+	RMBHoldTime = 0.0f;
+}
+
+void AMJPlayerController::OnRightMouseReleased()
+{
+	StopMovement();
+
+
+
+	AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
+	if (!ControlledCharacter)
+	{
+		return;
+	}
+
+	UMJPlayerSkillComponent* SkillComponent = ControlledCharacter->FindComponentByClass<UMJPlayerSkillComponent>();
+	if (!SkillComponent)
+	{
+		return;
+	}
+	MJ_LOG(LogMJ, Warning, TEXT("%f"), RMBHoldTime);
+
+
+	if (!bIsCharge)
+	{
+		
+		FGameplayTag InstantSkillTag = FGameplayTag::RequestGameplayTag(FName("Skill.Instant"));
+		SkillComponent->ActivateSkillByInputTag(InstantSkillTag);
 	}
 	else
 	{
-		StopMove();
+		FGameplayTag ChargeSkillTag = FGameplayTag::RequestGameplayTag(FName("Skill.Charge"));
+		SkillComponent->ReleaseSkillByInputTag(ChargeSkillTag);
 	}
 
-	bIspressed = false;
-	bIsHolding = false;
-	PressTimed = 0.0f;
+	bIsRMBPressed = false;
+	bIsRMBHolding = false;
+	bIsCharge = false;
+	RMBHoldTime = 0.f;
 }
 
+void AMJPlayerController::HandleRightMouseHold()
+{
+	if (!bIsCharge && RMBHoldTime >= ChargeThreshold)
+	{
+		bIsCharge = true;
 
+		AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
+		if (!ControlledCharacter)
+		{
+			return;
+		}
+
+		UMJPlayerSkillComponent* SkillComponent = ControlledCharacter->FindComponentByClass<UMJPlayerSkillComponent>();
+		if (!SkillComponent)
+		{
+			return;
+		}
+
+		FGameplayTag ChargeSkillTag = FGameplayTag::RequestGameplayTag(FName("Skill.Charge"));
+		SkillComponent->ActivateSkillByInputTag(ChargeSkillTag);
+	}
+}
+
+void AMJPlayerController::AttackOrMove(const FHitResult& HitResult)
+{
+	if (bShiftKeyDown)
+	{
+		// Shift + Left Click은 OnLeftMousePressed에서 처리되므로 여기서는 아무것도 하지 않습니다.
+		return;
+	}
+
+	AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
+	if (!ControlledCharacter)
+	{
+		return;
+	}
+
+	UMJPlayerSkillComponent* SkillComponent = ControlledCharacter->FindComponentByClass<UMJPlayerSkillComponent>();
+	if (!SkillComponent)
+	{
+		return;
+	}
+
+	AMJCharacterBase* TargetCharacter = Cast<AMJCharacterBase>(HitResult.GetActor());
+	if (!TargetCharacter)
+	{
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitResult.Location);;
+	}
+	else if (TargetCharacter != ControlledCharacter && TargetCharacter->GetGenericTeamId() != ControlledCharacter->GetGenericTeamId())
+	{
+		MJ_LOG(LogMJ, Warning, TEXT("NormalAttack"));
+		FGameplayTag LeftClickInputTag = FGameplayTag::RequestGameplayTag(FName("Skill.Normal"));
+		SkillComponent->ActivateSkillByInputTag(LeftClickInputTag);
+	}
+	else
+	{
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, HitResult.Location);
+	}
+}
+
+void AMJPlayerController::AbilityInputPressed(FGameplayTag InInputTag)
+{
+	AMJPlayerCharacter* ControlledCharacter = Cast<AMJPlayerCharacter>(GetPawn());
+	if (!ControlledCharacter)
+	{
+		return;
+	}
+
+	UMJPlayerSkillComponent* SkillComponent = ControlledCharacter->FindComponentByClass<UMJPlayerSkillComponent>();
+	if (!SkillComponent)
+	{
+		return;
+	}
+
+	if (InInputTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Input.Mouse.Left.Pressed"))))
+	{
+		OnLeftMousePressed();
+	}
+	else if (InInputTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Input.Mouse.Right.Pressed"))))
+	{
+		OnRightMousePressed();
+	}
+	else
+	{
+		
+	}
+}
+
+void AMJPlayerController::AbilityInputReleased(FGameplayTag InInputTag)
+{
+	if (InInputTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Input.Mouse.Left.Released"))))
+	{
+		OnLeftMouseReleased();
+	}
+	else if (InInputTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Input.Mouse.Right.Released"))))
+	{
+		OnRightMouseReleased();
+	}
+	else
+	{
+		
+	}
+}
+
+void AMJPlayerController::ShiftPressed()
+{
+	bShiftKeyDown = true;
+}
+
+void AMJPlayerController::ShiftReleased()
+{
+	bShiftKeyDown = false;
+}
+
+void AMJPlayerController::StartDialogue()// x키를 눌렀을 때 실행되는 함수
+{
+	if (!IsInteracted) return; 
+	
+	AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
+	if (!MyChar) return;
+	
+	if (UMJInteractComponent* InteractComp = MyChar->GetUITarget()->FindComponentByClass<UMJInteractComponent>())
+	{
+		
+		InteractComp->StartInteraction();
+		switch (InteractComp->CurrentType)
+		{
+		case EMJInteractionType::Dialogue:
+			ChangeToIMCDialogue();
+			UIManager->SetDialogueVisibility();
+			break;
+
+		case EMJInteractionType::Store:
+			ChangeToIMCDialogue();
+			UIManager->SetDialogueVisibility();
+			break;
+
+		default:
+			break;
+		}
+	}	
+}
 
 void AMJPlayerController::ChangeToIMCDialogue()
 {
-	if (IsTriggered)
-	{
-		AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
-		if (!MyChar) return;
-		AActor* DialogueTarget = MyChar->GetDialogueTarget();
-		if (!DialogueTarget) return;
-		UMJDialogueComponent* DialogueComp = DialogueTarget->GetComponentByClass<UMJDialogueComponent>();
-		if (!DialogueComp) return;
-		
-		UIManager->ShowDialogue(DialogueComp);
-		
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-        {
-        		Subsystem->AddMappingContext(InputConfigDataAsset->DialogueMappingContext, 0);
-        		Subsystem->RemoveMappingContext(InputConfigDataAsset->DefaultMappingContext);
-        }
-	}
+	StopMovement();
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+    {
+		Subsystem->AddMappingContext(InputConfigDataAsset->GetDialogueMappingContext(), 0);
+   		Subsystem->RemoveMappingContext(InputConfigDataAsset->GetDefaultMappingContext());
+    }
 }
 
-void AMJPlayerController::ChangeToIMCDefault() // showDialogue 마지막에 들어가야 함
+void AMJPlayerController::ChangeToIMCDefault() 
 {
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
-		Subsystem->AddMappingContext(InputConfigDataAsset->DefaultMappingContext, 0);
-		Subsystem->RemoveMappingContext(InputConfigDataAsset->DialogueMappingContext);
+		Subsystem->AddMappingContext(InputConfigDataAsset->GetDefaultMappingContext(), 0);
+		Subsystem->RemoveMappingContext(InputConfigDataAsset->GetDialogueMappingContext());
 	}
 }
 
-void AMJPlayerController::ProceedDialogue() 
+void AMJPlayerController::ProceedDialogue()
 {
-	if (IsTriggered)
+	AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
+	if (!MyChar)
 	{
-		AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
-		if (!MyChar) return;
-		AActor* DialogueTarget = MyChar->GetDialogueTarget();
-		if (!DialogueTarget) return;
-		UMJDialogueComponent* DialogueComp = DialogueTarget->GetComponentByClass<UMJDialogueComponent>();
-		if (!DialogueComp) return;
-
-		UIManager->NextDialogue(DialogueComp);
-		
-		if (DialogueComp->IsDialogueEnd()) // 마지막 대사라면 imc 전환
-		{
-			ChangeToIMCDefault();
-		}
+		return;
 	}
+	if (!MyChar->GetUITarget())
+	{
+		return;
+	}
+	
+	UMJInteractComponent* InteractComp = MyChar->GetUITarget()->FindComponentByClass<UMJInteractComponent>();
+	if (!InteractComp)
+	{
+		return;
+	}
+	InteractComp->ProceedInteraction();
+}
+
+void AMJPlayerController::SetDialogueVisibility()
+{
+	ChangeToIMCDefault();
+	UIManager->SetDialogueVisibility();
+}
+
+void AMJPlayerController::ShowStore()
+{
+	UIManager->SetDialogueVisibility();
+ 	UIManager->ShowStore();
+}
+
+void AMJPlayerController::HideStore()
+{
+	UIManager->ShowStore();
+	ChangeToIMCDefault();
+	UE_LOG(LogTemp, Display, TEXT("AMJPlayerController::HideStore"));
 }
 
 void AMJPlayerController::ShowBacklog()
 {
-	UIManager->ShowBacklog();
+	UIManager->GetHUDWidget()->GetDialogueWidget()->ShowBacklog();
 }
 
-void AMJPlayerController::OnTriggeredDialogueIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
-                                                int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AMJPlayerController::ShowStatPanel()
 {
-	UE_LOG(LogTemp, Log, TEXT("OnTriggerBegin"));
-	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
-	if ( Other && Other->FindComponentByClass<UMJDialogueComponent>())
+	UIManager->ShowStatPanel();
+}
+
+void AMJPlayerController::ShowInventory()
+{
+	UIManager->ShowInventory();
+}
+
+void AMJPlayerController::ShowSkillWidget()
+{
+	UIManager->SetSkillWidgetVisibility();
+}
+
+void AMJPlayerController::UpdateSkillWidget(FGameplayTag SkillTag,int32 Level)
+{
+	UIManager->GetHUDWidget()->GetSkillWidget()->UpdateSkillSlots(SkillTag,Level);
+}
+
+void AMJPlayerController::UpdateEquipedSkillWidget(UTexture2D* Icon, ESkillType SkillType, FGameplayTag Tag)
+{
+	if (SkillType == ESkillType::Instant)
 	{
-		MJChar->SetDialogueTarget(Other);
-		IsTriggered = true;
+		UIManager->GetHUDWidget()->GetEquipedSkillWidget()->SetInstantImage(Icon);
+	}
+	if (SkillType == ESkillType::Passive)
+	{
+		UIManager->GetHUDWidget()->GetEquipedSkillWidget()->SetPassiveImage(Icon);
+	}
+	if (SkillType == ESkillType::Charge)
+	{
+		UIManager->GetHUDWidget()->GetEquipedSkillWidget()->SetChargingImage(Icon);
+	}
+
+	TempTag = Tag;
+}
+
+void AMJPlayerController::GetOwnedSkill()
+{
+	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
+	if (UMJPlayerSkillComponent* SkillComponent = MJChar->FindComponentByClass<UMJPlayerSkillComponent>())
+	{
+		SkillComponent->EquipSkill(TempTag);
+		UE_LOG(LogTemp,Error,TEXT("AMJPlayerController::GetOwnedSkill, %s"),*TempTag.ToString());
 	}
 }
 
-void AMJPlayerController::OnTriggeredDialogueOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex)
+void AMJPlayerController::UpdateSkillSlot(FGameplayTag SkillTag)
 {
-	AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn());
-	if (MJChar->GetDialogueTarget()== Other)
-	{
-		MJChar->SetDialogueTarget(nullptr);
-		IsTriggered = false;
-	}
+	UIManager->GetHUDWidget()->GetEquipedSkillWidget()->SetAllImage(SkillTag);
 }
 
 
-
-void AMJPlayerController::Input_AbilityInputPressed(FGameplayTag InInputTag)
+void AMJPlayerController::OnTriggeredIn(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
+                                        int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	MJ_LOG(LogMJ, Warning, TEXT("Input Pressed: %s"), *InInputTag.ToString())
-	AMJPlayerCharacter* ControlledPawn = Cast<AMJPlayerCharacter>(GetPawn());
-	if (ControlledPawn)
+	if (Other)
 	{
-		if (UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(ControlledPawn->GetAbilitySystemComponent()))
+		if (UMJInteractComponent* InteractComp = Other->FindComponentByClass<UMJInteractComponent>())
 		{
+			IsInteracted = true;
+			InteractComp->OnBeginInteract();
 			
-			MJASC->OnAbilityInputPressed(InInputTag);
-			if (UMJSkillComponent* SkillComponent = ControlledPawn->FindComponentByClass<UMJSkillComponent>())
+			InteractComp->OndialogueEnd.RemoveDynamic(this, &AMJPlayerController::SetDialogueVisibility);
+			InteractComp->OndialogueEnd.AddDynamic(this, &AMJPlayerController::SetDialogueVisibility);
+			
+			InteractComp->OnstoreOpen.RemoveDynamic(this, &AMJPlayerController::ShowStore);
+			InteractComp->OnstoreOpen.AddDynamic(this, &AMJPlayerController::ShowStore);
+			
+			InteractComp->OnstoreClose.RemoveDynamic(this, &AMJPlayerController::HideStore);
+			InteractComp->OnstoreClose.AddDynamic(this, &AMJPlayerController::HideStore);
+			
+			if (AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn()))
 			{
-				SkillComponent->ActivateSkillByInputTag(InInputTag);
+				MJChar->SetUITarget(Other);
+				if (InteractComp->GetStoreComponent())
+				{
+					InteractComp->GetStoreComponent()->SetItemData(MJChar->GetInventoryComponent()->GetItemTags(),MJChar->GetInventoryComponent()->GetItemTags().Num(),MJChar->GetInventoryComponent());
+				}
 			}
 		}
 	}
-
-	
 }
 
-void AMJPlayerController::Input_AbilityInputReleased(FGameplayTag InInputTag)
+void AMJPlayerController::OnTriggeredOut(UPrimitiveComponent* Overlapped, AActor* Other, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex)
 {
-	AMJPlayerCharacter* ControlledPawn = Cast<AMJPlayerCharacter>(GetPawn());
-	if (ControlledPawn)
+	if (Other)
 	{
-		if (UMJAbilitySystemComponent* MJASC = Cast<UMJAbilitySystemComponent>(ControlledPawn->GetAbilitySystemComponent()))
+		if (UMJInteractComponent* InteractComp = Other->FindComponentByClass<UMJInteractComponent>())
 		{
+			IsInteracted = false;
+			InteractComp->OnEndInteract();
 
-			MJASC->OnAbilityInputReleased(InInputTag);
+			if (AMJPlayerCharacter* MJChar = Cast<AMJPlayerCharacter>(GetPawn()))
+			{
+				MJChar->SetUITarget(nullptr);
+			}
 		}
 	}
+}
+
+void AMJPlayerController::OnTriggeredItemIn(UPrimitiveComponent* Overlapped, AActor* Other,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	AMJItemBase* Item = Cast<AMJItemBase>(Other);
+	if (!Item) return;
+	UE_LOG(LogTemp,Error,TEXT("AMJPlayerController::OnTriggeredItemIn"));
+	AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
+	if (!MyChar) return;
+	
+	UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
+	 if (InventoryComp)
+	 {
+	 	InventoryComp->PickUpItem(Item->GetItemTag(), 1, UIManager->GetHUDWidget()->GetStoreWidget());
+	 	
+	 	TArray<UMJSalesSlot*> SalesSlot = UIManager->GetHUDWidget()->GetStoreWidget()->GetInventorySlots();
+	 	for (int i = 0; i < SalesSlot.Num(); i++)
+	 	{
+	 		if (SalesSlot[i])
+	 		{
+	 			SalesSlot[i]->OnMerchandiseSlotEvent.RemoveDynamic(this, &AMJPlayerController::OnTrySell);
+	 			SalesSlot[i]->OnMerchandiseSlotEvent.AddDynamic(this, &AMJPlayerController::OnTrySell);
+	 			UE_LOG(LogTemp,Error,TEXT("%d개의 슬롯에 델리게이트 연결됨"),SalesSlot.Num());
+	 		}
+	 	}
+
+	 	Item->Destroy();
+	 }
+}
+
+void AMJPlayerController::OnTryPurchase(FGameplayTag& ItemTag, int32 Price, int32 Quantity) // GET Item Data
+{
+	UE_LOG(LogTemp,Error,TEXT("AMJPlayerController::OnTryPurchase"));
+	PurchaseItemTag = ItemTag;
+	ItemPrice = Price;
+	ItemQuantity = Quantity;
+}
+
+void AMJPlayerController::OnTrySell(FGameplayTag& ItemTag, int32 Price, int32 Quantity)
+{
+	UE_LOG(LogTemp,Error,TEXT("AMJPlayerController::OnTrySell"));
+	SalesItemTag = ItemTag;
+	SalesPrice = Price;
+	SalesQuantity = Quantity;
+}
+
+void AMJPlayerController::OnPurchase()
+{
+	AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
+    if (!MyChar) return;
+	
+   	UMJPlayerStatComponent* StatComp = GetPawn()->FindComponentByClass<UMJPlayerStatComponent>();
+	UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
+	
+	if (StatComp && InventoryComp)
+   	{
+   		if (StatComp->GetGold() >= ItemQuantity * ItemPrice)
+   		{
+   			InventoryComp->PickUpItem(PurchaseItemTag, ItemQuantity, UIManager->GetHUDWidget()->GetStoreWidget()); // 인벤토리 내 수량증가
+   			UMJStoreComponent* StoreComp = MyChar->GetUITarget()->FindComponentByClass<UMJStoreComponent>();
+   			StoreComp->SetItemData(MyChar->GetInventoryComponent()->GetItemTags(),MyChar->GetInventoryComponent()->GetItemTags().Num(),InventoryComp);
+   			StatComp->SpendGold(ItemQuantity * ItemPrice);
+   			for (auto* Slot : UIManager->GetHUDWidget()->GetStoreWidget()->GetMerchandiseSlots())
+   			{
+   				if (Slot)
+   				{
+   					Slot->InitializeQuantity(); // 구매 완료 후 구매 희망수량 초기화
+   				}
+   			}
+   		}
+   		else
+   		{
+   			// storewidget이 잔액 부족을 띄우게 한다.
+   			return;
+   		}
+   	}
+}
+
+void AMJPlayerController::OnSell()
+{
+	AMJPlayerCharacter* MyChar = Cast<AMJPlayerCharacter>(GetPawn());
+	if (!MyChar) return;
+	
+	UMJPlayerStatComponent* StatComp = GetPawn()->FindComponentByClass<UMJPlayerStatComponent>();
+	UMJInventoryComponent* InventoryComp = MyChar->GetInventoryComponent();
+	UMJStoreComponent* StoreComp = MyChar->GetUITarget()->FindComponentByClass<UMJStoreComponent>();
+	if (StatComp && InventoryComp)
+	{
+		if (InventoryComp->GetItemInInventory()[SalesItemTag].ItemCount > SalesQuantity)
+		{ 
+			StatComp->GainGold(SalesQuantity * SalesPrice);
+		}
+		
+		InventoryComp->DropItem(SalesItemTag,SalesQuantity);
+		StoreComp->UpdateInventory(InventoryComp);
+
+		for (auto* Slot : UIManager->GetHUDWidget()->GetStoreWidget()->GetInventorySlots())
+		{
+			if (Slot)
+			{
+				Slot->InitializeQuantity(); // 판매 완료 후 판매 수량 초기화
+			}
+		}
+	}
+}
+
+void AMJPlayerController::PauseGame()
+{
+	GameFlowHUD->PauseGame(); 
+}
+
+void AMJPlayerController::OnDead(AActor* InEffectCauser)
+{
+	// TODO 태관 : StatComponent에서 델리게이트 로 호출해서 입력 막고 UI 띄울 예정 
+	DisableInput(this);
+	SetPause(true);
 }
