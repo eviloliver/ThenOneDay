@@ -184,13 +184,3 @@ void UBTService_MJCheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, 
 
 	OwnerComp.GetBlackboardComponent()->SetValueAsVector("KeepDistancePos", MoveToLocation);
 }
-
-void UBTService_MJCheckAttackRange::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
-{
-	Super::PostEditChangeProperty(PropertyChangedEvent);
-}
-
-void UBTService_MJCheckAttackRange::InitializeFromAsset(UBehaviorTree& Asset)
-{
-	Super::InitializeFromAsset(Asset);
-}

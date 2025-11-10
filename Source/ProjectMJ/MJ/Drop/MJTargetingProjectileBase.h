@@ -14,6 +14,7 @@ class UNiagaraComponent;
 class USphereComponent;
 class AMJCharacterBase;
 class UNiagaraSystem;
+class USoundCue;
 /**
  * Class Description: 나이아가라 적용. 이벤트 처리
  * Author: Kim Minjin
