@@ -181,7 +181,6 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 				if (!StatComp->GetbIsDead())
 				{
 					// Minjin: 데미지를 입힌 상대 전달
-					//StatComp->OnDeath.Broadcast(Data.EffectSpec.GetEffectContext().GetEffectCauser());
 					StatComp->OnDead(Data.EffectSpec.GetEffectContext().GetEffectCauser());
 				}
 			}
@@ -201,12 +200,12 @@ void UMJCharacterAttributeSet::PostGameplayEffectExecute(const struct FGameplayE
 				StatComp->OnDamaged(Data.EvaluatedData.Magnitude, bIsCritical);
 
 				// Minjin: Damage Perception - Data 사용함. TODO.위치 수정하기
-				// EventLocation으로 들어가는 값이 Stimulus Location이다.- HitResult값이 nullptr이라서 Target의 Location 넣어놓음
+				// EventLocation으로 들어가는 값이 Stimulus Location이다.- HitResult값이 nullptr이라서 Instigator의 Location 넣어놓음
 				AActor* Target = Data.Target.GetAvatarActor();
-				FVector TargetLocation = Target->GetActorLocation();
+				AActor* Instigator = Data.EffectSpec.GetEffectContext().GetEffectCauser();
 				UAISense_Damage::ReportDamageEvent(Target->GetWorld(), Target,
-					Data.EffectSpec.GetEffectContext().GetEffectCauser(), Data.EvaluatedData.Magnitude,
-					Target->GetActorLocation(), FVector::Zero()/*Data.EffectSpec.GetEffectContext().GetHitResult()->Location*/
+					Instigator, Data.EvaluatedData.Magnitude,
+					Instigator->GetActorLocation(), FVector::Zero()/*Data.EffectSpec.GetEffectContext().GetHitResult()->Location*/
 					);
 
 				// Minjin: Damage Ability

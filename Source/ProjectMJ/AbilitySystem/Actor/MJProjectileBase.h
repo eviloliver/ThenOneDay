@@ -12,8 +12,9 @@
  * Class Description: Projectile Actor
  * Author: 신동민
  * Created Date: 2025.07.03
- * Last Modified By:
- * Last Modified Date:
+ * Last Modified By: 김민진
+ * Last Modified Date: (25.08.24.)상속받아서 쓸 수 있게 private 영역을 protected로 변경,
+ * 나이아가라 스케일 계산 변경, OnSphereHit Detroy 주석 처리
  */
 
 class UMJProjectileReactionBehaviorBase;
@@ -58,7 +59,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Behavior")
 	TArray<TObjectPtr<UMJProjectileReactionBehaviorBase>> ReactionBehaviors;
 
-private:
+/*private:*/
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
 	TObjectPtr<USphereComponent> Sphere;
 

@@ -92,7 +92,7 @@ void UMJEnemySkillComponent::ActivateIdentitySkill()
 	ActivateSkill(IdentitySkillTag);
 }
 
-FGameplayTag UMJEnemySkillComponent::TryGiveMemory()
+FGameplayTag UMJEnemySkillComponent::TryGiveMemory() const
 {
 	if(!IdentitySkillTag.IsValid())
 	{

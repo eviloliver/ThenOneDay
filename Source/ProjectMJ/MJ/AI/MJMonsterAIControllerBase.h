@@ -55,20 +55,20 @@ protected:
 	// Minjin: Handle AI Sense
 	// 자식 클래스에서 오버라이드해서 각 감각별로 다른 처리 진행
 	UFUNCTION()
-	virtual void HandleSight_Detected(AActor* Actor, FAIStimulus Stimulus);
+	virtual void HandleSightDetected(AActor* Actor, FAIStimulus Stimulus);
 
 	UFUNCTION()
-	virtual void HandleDamage_Detected(AActor* Actor, FAIStimulus Stimulus);
+	virtual void HandleDamageDetected(AActor* Actor, FAIStimulus Stimulus);
 
 	UFUNCTION()
-	virtual void HandleHearing_Detected(AActor* Actor, FAIStimulus Stimulus);
+	virtual void HandleHearingDetected(AActor* Actor, FAIStimulus Stimulus);
 	
 	UFUNCTION()
-	virtual void HandleSight_Lost(AActor* Actor, FAIStimulus Stimulus);
+	virtual void HandleSightLost(AActor* Actor, FAIStimulus Stimulus);
 	
 	UFUNCTION()
-	virtual void HandleDamage_Lost(AActor* Actor, FAIStimulus Stimulus);
+	virtual void HandleDamageLost(AActor* Actor, FAIStimulus Stimulus);
 
 	UFUNCTION()
-	virtual void HandleHearing_Lost(AActor* Actor, FAIStimulus Stimulus);
+	virtual void HandleHearingLost(AActor* Actor, FAIStimulus Stimulus);
 };

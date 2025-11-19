@@ -8,6 +8,7 @@
 #include "Character/MJCharacterBase.h"
 #include "AbilitySystem/MJAbilitySystemComponent.h"
 #include "AbilitySystemComponent.h"
+#include "ProjectMJ.h"
 #include "MJMonsterCharacter.generated.h"
 
 class UMJEnemySkillComponent;
@@ -74,7 +75,7 @@ public:
 
 	bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override
 	{
-		return ASC->HasAllMatchingGameplayTags(TagContainer);
+		return ASC->HasAnyMatchingGameplayTags(TagContainer);
 	}
 	
 protected:

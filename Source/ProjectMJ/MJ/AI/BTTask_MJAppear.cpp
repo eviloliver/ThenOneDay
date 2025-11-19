@@ -21,9 +21,6 @@ EBTNodeResult::Type UBTTask_MJAppear::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		return EBTNodeResult::Failed;
 	}
 
-	// ControlledPawn->SetActorHiddenInGame(false);
-	// ControlledPawn->SetActorEnableCollision(true);
-
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool("IsAppear", true);
 
 	AMJCharacterBase* Character = Cast<AMJCharacterBase>(ControlledPawn);

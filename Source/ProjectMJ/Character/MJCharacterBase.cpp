@@ -62,14 +62,11 @@ void AMJCharacterBase::BeginPlay()
 	if(StateAbilityDataAsset)
 	{
 		// Minjin: State Ability 부여
-		FGameplayAbilitySpec AppearAbilitySpec(StateAbilityDataAsset->ActionAppearanceAbilityClass);
-		ASC->GiveAbility(AppearAbilitySpec);
-
-		FGameplayAbilitySpec DamageAbilitySpec(StateAbilityDataAsset->ActionDamageAbilityClass);
-		ASC->GiveAbility(DamageAbilitySpec);
-
-		FGameplayAbilitySpec DeathAbilitySpec(StateAbilityDataAsset->ActionDeathAbilityClass);
-		ASC->GiveAbility(DeathAbilitySpec);
+		for (auto StateAbilityClass: StateAbilityDataAsset->StateAbilityClasses)
+		{
+			FGameplayAbilitySpec StateAbilitySpec(StateAbilityClass);
+			ASC->GiveAbility(StateAbilitySpec);
+		}
 	}
 
 	// TODO: 함수로 만들기 - 동민 -

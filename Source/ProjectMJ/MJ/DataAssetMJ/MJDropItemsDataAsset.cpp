@@ -21,9 +21,9 @@ FGameplayTag UMJDropItemsDataAsset::TryDropItem() const
 		return FGameplayTag::EmptyTag;
 	}
 
-	int32 IndexRamge = DropItems.Num()-1;
+	int32 IndexRange = DropItems.Num()-1;
 
-	int32 RandIndex = UKismetMathLibrary::RandomIntegerInRange(0, IndexRamge);
+	int32 RandIndex = UKismetMathLibrary::RandomIntegerInRange(0, IndexRange);
 
 	FGameplayTag ItemTag = DropItems[RandIndex].ItemTag;
 

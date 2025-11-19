@@ -33,18 +33,19 @@ void UMJGA_AIActionAppearAbility::ActivateAbility(const FGameplayAbilitySpecHand
 
 	AMJCharacter->GetCharacterMovement()->SetMovementMode(MOVE_None);
 
-	// IsInactivated 태그 제거 - 활성화
+	// Minjin: IsInactivated 태그 제거 - 활성화
 	const FGameplayTag InActivatedTag = FGameplayTag::RequestGameplayTag(TEXT("Character.State.IsInactivated"));
 	AMJCharacter->ASC->RemoveLooseGameplayTag(InActivatedTag);
 	
-	UAbilityTask_PlayMontageAndWait* PlayDeathMontage = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, TEXT("PlayAppear"), AppearanceActionAnimMontage, 1.0f);
+	UAbilityTask_PlayMontageAndWait* PlayAppearMontage = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy
+	(this, TEXT("PlayAppear"), AppearanceActionAnimMontage, 1.0f);
 
-	PlayDeathMontage->OnCompleted.AddDynamic(this, &UMJGA_AIActionAppearAbility::OnCompleteCallback);
-	PlayDeathMontage->OnInterrupted.AddDynamic(this, &UMJGA_AIActionAppearAbility::OnInterruptedCallback);
-	PlayDeathMontage->OnCancelled.AddDynamic(this, &UMJGA_AIActionAppearAbility::OnInterruptedCallback);
-	PlayDeathMontage->OnBlendOut.AddDynamic(this, &UMJGA_AIActionAppearAbility::OnBlendOutCallback);
+	PlayAppearMontage->OnCompleted.AddDynamic(this, &UMJGA_AIActionAppearAbility::OnCompleteCallback);
+	PlayAppearMontage->OnInterrupted.AddDynamic(this, &UMJGA_AIActionAppearAbility::OnInterruptedCallback);
+	PlayAppearMontage->OnCancelled.AddDynamic(this, &UMJGA_AIActionAppearAbility::OnInterruptedCallback);
+	PlayAppearMontage->OnBlendOut.AddDynamic(this, &UMJGA_AIActionAppearAbility::OnBlendOutCallback);
 
-	PlayDeathMontage->ReadyForActivation();
+	PlayAppearMontage->ReadyForActivation();
 }
 
 void UMJGA_AIActionAppearAbility::CancelAbility(const FGameplayAbilitySpecHandle Handle,
